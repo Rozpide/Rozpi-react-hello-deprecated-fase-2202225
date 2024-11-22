@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy()
 
 class Usuario(db.Model):
@@ -25,5 +24,4 @@ class Evento(db.Model):
     descripcion = db.Column(db.Text, nullable=True)
     fecha = db.Column(db.DateTime, nullable=False)
     clima = db.Column(db.String(50), nullable=False)
-
     usuario = db.relationship('Usuario', backref='eventos')
