@@ -1,26 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { api } from '../axios';
+import React from 'react';
 
 const Clima = () => {
-  const [clima, setClima] = useState(null);
-
-  useEffect(() => {
-    const obtenerClima = async () => {
-      const res = await api.get('/clima?ciudad=Santiago');
-      setClima(res.data);
-    };
-    obtenerClima();
-  }, []);
-
-  if (!clima) return <div>Cargando...</div>;
+  const forecast = [
+    { day: 'Lun', temp: 18 },
+    { day: 'Mar', temp: 20 },
+    { day: 'Mié', temp: 22 },
+    { day: 'Jue', temp: 19 },
+    { day: 'Vie', temp: 23 },
+    { day: 'Sáb', temp: 21 },
+    { day: 'Dom', temp: 20 },
+  ];
 
   return (
-    <div>
-      <h2>Clima en {clima.name}</h2>
-      <p>Temperatura: {clima.main.temp}°C</p>
-      <p>Descripción: {clima.weather[0].description}</p>
+    <div className="clima-container" style={{ padding: '20px', backgroundColor: '#E3F2FD' }}>
+      <h2>Santiago 23°C</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-around', margin: '20px 0' }}>
+        {forecast.map((item, index) => (
+          <div key={index} style={{ textAlign: 'center' }}>
+            <p>{item.day}</p>
+            <p>{item.temp}°C</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default Clima;
+
