@@ -99,7 +99,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
-			},
+			}, /*courseOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('grados', method, { id, body, bluePrint: 'admin' })
+			}*/
+
+			//actions.subjectsOperations('GET', '', 2)
+			//actions.subjectsOperations('POST', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"})
+			//actions.subjectsOperations('PUT', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"}, 2)
+			//actions.subjectsOperations('DELETE', '', 2)
 
 			// CRUD para usuarios autorizados
 
