@@ -4,8 +4,6 @@ import { Context } from "../store/appContext";
 import { LeftMenuAdmin } from "../component/leftMenuAdmin";
 
 export const DashboardAdmin = () => {
-    const { store, actions } = useContext(Context);
-
     return (
         <div className="container-fluid ">
             <div className="row">
