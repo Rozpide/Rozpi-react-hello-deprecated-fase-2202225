@@ -31,8 +31,6 @@ const Login = () => {
       const user = result.user;
 
       console.log("Usuario logueado con Google:", user);
-
-      // Redirigir al dashboard después del login
       navigate("/dashboard");
     } catch (error) {
       console.error("Error en el inicio de sesión con Google:", error);
@@ -49,8 +47,6 @@ const Login = () => {
       const user = userCredential.user;
 
       console.log("Usuario logueado con correo:", user);
-
-      // Redirigir al dashboard después del login
       navigate("/dashboard");
     } catch (error) {
       console.error("Error en el inicio de sesión con correo:", error);
@@ -67,84 +63,112 @@ const Login = () => {
     <div
       className="login-container"
       style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
         backgroundColor: "#FFFDC4",
-        padding: "50px",
-        textAlign: "center",
+        padding: "20px",
+        boxSizing: "border-box",
       }}
     >
-      <h2>🌦️ App de Clima</h2>
-      <h3>Iniciar Sesión</h3>
-      
-      {/* Formulario de inicio de sesión */}
-      <form onSubmit={handleLogin} style={{ marginBottom: "20px" }}>
-        <input
-          type="email"
-          placeholder="Correo Electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+      <div
+        style={{
+          backgroundColor: "white",
+          borderRadius: "10px",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+          padding: "40px",
+          width: "100%",
+          maxWidth: "400px",
+          textAlign: "center",
+        }}
+      >
+        <h2>🌦️ App de Clima</h2>
+        <h3>Iniciar Sesión</h3>
+        
+        <form onSubmit={handleLogin} style={{ marginBottom: "20px" }}>
+          <input
+            type="email"
+            placeholder="Correo Electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{
+              margin: "10px 0",
+              padding: "10px",
+              width: "100%",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              boxSizing: "border-box",
+            }}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{
+              margin: "10px 0",
+              padding: "10px",
+              width: "100%",
+              borderRadius: "5px",
+              border: "1px solid #ccc",
+              boxSizing: "border-box",
+            }}
+            required
+          />
+          <button
+            type="submit"
+            style={{
+              margin: "10px 0",
+              padding: "10px 20px",
+              backgroundColor: "#007BFF",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              width: "100%",
+              boxSizing: "border-box",
+            }}
+          >
+            Iniciar Sesión
+          </button>
+        </form>
+
+ <button
           style={{
-            margin: "10px",
-            padding: "10px",
-            width: "80%",
-          }}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            margin: "10px",
-            padding: "10px",
-            width: "80%",
-          }}
-          required
-        />
-        <button
-          type="submit"
-          style={{
-            margin: "10px",
+            margin: "10px 0",
             padding: "10px 20px",
-            backgroundColor: "#007BFF",
+            backgroundColor: "#FF5733",
             color: "white",
             border: "none",
+            borderRadius: "5px",
             cursor: "pointer",
+            width: "100%",
+            boxSizing: "border-box",
           }}
+          onClick={handleGoogleLogin}
         >
-          Iniciar Sesión
+          Iniciar sesión con Google
         </button>
-      </form>
 
-      {/* Botón de inicio de sesión con Google */}
-      <button
-        style={{
-          margin: "10px",
-          padding: "10px 20px",
-          backgroundColor: "#FF5733",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-        onClick={handleGoogleLogin}
-      >
-        Iniciar sesión con Google
-      </button>
-
-      {/* Botón para redirigir al registro */}
-      <button
-        style={{
-          margin: "10px",
-          padding: "10px 20px",
-          backgroundColor: "#28a745",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-        onClick={handleRegisterRedirect}
-      >
-        Registrarse
-      </button>
+        <button
+          style={{
+            margin: "10px 0",
+            padding: "10px 20px",
+            backgroundColor: "#28a745",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            width: "100%",
+            boxSizing: "border-box",
+          }}
+          onClick={handleRegisterRedirect}
+        >
+          Registrarse
+        </button>
+      </div>
     </div>
   );
 };
