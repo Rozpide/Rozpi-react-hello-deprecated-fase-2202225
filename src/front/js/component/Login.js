@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -21,20 +21,46 @@ const provider = new GoogleAuthProvider();
 
 const Login = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  // Inicio de sesión con Google
+  const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      console.log("Usuario logueado:", user);
+      console.log("Usuario logueado con Google:", user);
 
       // Redirigir al dashboard después del login
       navigate("/dashboard");
     } catch (error) {
-      console.error("Error en el inicio de sesión:", error);
-      alert("Error al iniciar sesión. Por favor, intenta nuevamente.");
+      console.error("Error en el inicio de sesión con Google:", error);
+      alert("Error al iniciar sesión con Google. Por favor, intenta nuevamente.");
     }
+  };
+
+  // Inicio de sesión con correo y contraseña
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log("Usuario logueado con correo:", user);
+
+      // Redirigir al dashboard después del login
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error en el inicio de sesión con correo:", error);
+      alert("Usuario o contraseña incorrectos. Por favor, intenta nuevamente.");
+    }
+  };
+
+  // Redirigir al registro
+  const handleRegisterRedirect = () => {
+    navigate("/register");
   };
 
   return (
@@ -48,22 +74,79 @@ const Login = () => {
     >
       <h2>🌦️ App de Clima</h2>
       <h3>Iniciar Sesión</h3>
+      
+      {/* Formulario de inicio de sesión */}
+      <form onSubmit={handleLogin} style={{ marginBottom: "20px" }}>
+        <input
+          type="email"
+          placeholder="Correo Electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{
+            margin: "10px",
+            padding: "10px",
+            width: "80%",
+          }}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{
+            margin: "10px",
+            padding: "10px",
+            width: "80%",
+          }}
+          required
+        />
+        <button
+          type="submit"
+          style={{
+            margin: "10px",
+            padding: "10px 20px",
+            backgroundColor: "#007BFF",
+            color: "white",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Iniciar Sesión
+        </button>
+      </form>
+
+      {/* Botón de inicio de sesión con Google */}
       <button
         style={{
           margin: "10px",
           padding: "10px 20px",
-          backgroundColor: "#007BFF",
+          backgroundColor: "#FF5733",
           color: "white",
           border: "none",
           cursor: "pointer",
         }}
-        onClick={handleLogin}
+        onClick={handleGoogleLogin}
       >
         Iniciar sesión con Google
+      </button>
+
+      {/* Botón para redirigir al registro */}
+      <button
+        style={{
+          margin: "10px",
+          padding: "10px 20px",
+          backgroundColor: "#28a745",
+          color: "white",
+          border: "none",
+          cursor: "pointer",
+        }}
+        onClick={handleRegisterRedirect}
+      >
+        Registrarse
       </button>
     </div>
   );
 };
 
 export default Login;
-

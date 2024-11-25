@@ -4,8 +4,8 @@ import ScrollToTop from "./component/scrollToTop";
 import injectContext from "./store/appContext";
 
 import Login from "./component/Login"; // Página principal
+import Register from "./component/Register"; // Página de registro
 import Dashboard from "./pages/Dashboard";
-
 
 const Layout = () => {
 	const basename = process.env.BASENAME || "";
@@ -16,6 +16,8 @@ const Layout = () => {
 				<Routes>
 					{/* Ruta principal para el Login */}
 					<Route path="/" element={<Login />} />
+					{/* Ruta para el registro */}
+					<Route path="/register" element={<Register />} />
 					{/* Ruta del Dashboard */}
 					<Route path="/dashboard" element={<Dashboard />} />
 					{/* Ruta por defecto: Not Found */}
@@ -27,5 +29,6 @@ const Layout = () => {
 };
 
 export default injectContext(Layout);
+
 
 
