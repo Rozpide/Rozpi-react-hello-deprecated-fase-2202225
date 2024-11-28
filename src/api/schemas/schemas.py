@@ -1,7 +1,7 @@
 from marshmallow_sqlalchemy import SQLAlchemySchema, SQLAlchemyAutoSchema, auto_field
 from marshmallow_sqlalchemy.fields import Nested
 from marshmallow import Schema, fields, validate
-from .models import Calificacion, db, User, Estudiante, Docente, EmailAuthorized, Materias, Evaluacion, Grados, DocenteMaterias, Role
+from ..models import Calificacion, db, User, Estudiante, Docente, EmailAuthorized, Materias, Evaluacion, Grados, DocenteMaterias, Role
 from marshmallow import post_load
 
 class UserSchema(SQLAlchemyAutoSchema):
@@ -93,12 +93,13 @@ class DocenteMateriaSchema(SQLAlchemyAutoSchema):
         model = DocenteMaterias
         sqla_session = db.session
         dump_only = ('id',)
+        exclude = ('id',)
         
     id_docente = auto_field(required=True, load_only=True)
     id_materia = auto_field(required=True, load_only=True)
     
-    docente = Nested(TeacherSchema, dump_only=True, exclude=['id', 'role_id'])
-    materia = Nested(MateriasSchema, dump_only=True, exclude=['id'])
+    docente = Nested(TeacherSchema, dump_only=True, exclude=['role_id'])
+    materia = Nested(MateriasSchema, dump_only=True)
 
 class GradoSchema(SQLAlchemyAutoSchema):
     
