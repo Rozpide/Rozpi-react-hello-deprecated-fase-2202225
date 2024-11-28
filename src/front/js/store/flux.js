@@ -9,6 +9,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			usuarios: [],
 			grados: [],
 			materias: [],
+			asignaciones: []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -112,6 +113,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, /*courseOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('grados', method, { id, body, bluePrint: 'admin' })
 			}*/
+			setSubjects: async () => {
+				const response = await getActions().subjectsOperations('GET')
+				setStore({ materias: response })
+			},
 
 			//actions.subjectsOperations('GET', '', 2)
 			//actions.subjectsOperations('POST', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"})
