@@ -8,7 +8,7 @@ from api.models import db, User, EmailAuthorized, Estudiante, Role, Docente, Mat
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import get_jwt, verify_jwt_in_request
-from api.schemas import TeacherSchema, UserSchema, AuthorizedEmailSchema, StudentSchema, MateriasSchema, DocenteMateriaSchema, GradoSchema, RoleSchema
+from api.schemas.schemas import TeacherSchema, UserSchema, AuthorizedEmailSchema, StudentSchema, MateriasSchema, DocenteMateriaSchema, GradoSchema, RoleSchema
 from datetime import datetime
 from api.services.generic_services import create_instance, delete_instance, get_all_instances, update_instance, get_instance_by_id
 
@@ -259,9 +259,9 @@ def delete_grado(grado_id):
     return delete_instance(Grados,grado_id)
 
 # ///////////////////// Asociar Materias con docentes ///////////////
-@admin_routes.route('/docentes/<int:id>/materias', methods=['GET'])
-def get_materias_docente(id):
-    docente = Docente.query.get(id)
+@admin_routes.route('/docentes/<int:docente_id>/materias', methods=['GET'])
+def get_materias_docente(docente_id):
+    docente = Docente.query.get(docente_id)
     
     if not docente:
         return jsonify({"msg": "Teacher not found"}),404
@@ -271,6 +271,17 @@ def get_materias_docente(id):
     return jsonify({"Docente": docente.nombre,
                     "id": docente.id,
                     "materias": materias_schema.dump(materias)})
+    
+@admin_routes.route('/docentes/materias', methods=['GET'])
+def get_all_materias_docente():
+    asignaciones = DocenteMaterias.query.all()
+    schema = DocenteMateriaSchema(many=True)
+    if not asignaciones:
+        return jsonify({"msg": "Not Found"}),404
+
+    
+    return jsonify(schema.dump(asignaciones))
+
 
 @admin_routes.route('/docentes/materias', methods=['POST'])
 def add_materia_docente():
