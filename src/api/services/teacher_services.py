@@ -1,7 +1,7 @@
 from marshmallow import ValidationError
 from api.models import Estudiante, db, Docente, DocenteMaterias, Evaluacion, Calificacion, Materias
 from flask import jsonify
-from api.schemas import CalificacionRequestSchema
+from api.schemas.schemas import CalificacionRequestSchema
 from api.services.generic_services import create_instance
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
@@ -42,6 +42,9 @@ def post_update_califications(body, teacher_id):
     
     if not (docente and evaluacion):
         return jsonify({"msg":"teacher/test/student Not found"}),404
+    
+    if not evaluacion.finalizada:
+        evaluacion.finalizada = True
         
     try:
         
