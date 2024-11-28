@@ -22,7 +22,8 @@ const FormCommon = ({ type }) => {
         description: '',
         photo: null,
         classroomName: '',
-        subjectName: ''
+        subjectName: '',
+        subjectDescription: ''
     });
 
     useEffect(() => {
@@ -55,7 +56,7 @@ const FormCommon = ({ type }) => {
     const submitFormData = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        console.log(formData)
+        //console.log(formData)
 
         try {
             if (type === 'teacher') {
@@ -75,7 +76,7 @@ const FormCommon = ({ type }) => {
                 await actions.postCourse({ "nombre": classroom });
             }
             if (type === 'addSubject') {
-                await actions.createSubject({ "nombre": formBody.subjectName });
+                await actions.subjectsOperations('POST', { nombre: formBody.subjectName, "grado_id": formBody.grado_id, descripcion: formBody.subjectDescription })
             }
             if (type == 'assignSubject') {
                 const response = await actions.fetchRoute("docentes/materias", {
@@ -99,7 +100,8 @@ const FormCommon = ({ type }) => {
                 description: '',
                 photo: null,
                 classroomName: '',
-                subjectName: ''
+                subjectName: '',
+                subjectDescription: ''
             });
             setPhotoPreview(null);
 
@@ -252,10 +254,10 @@ const FormCommon = ({ type }) => {
                     < div className="mb-3">
                         <label className="form-label text-title">Selecciona el grado al que vas a asignar la materia:</label>
                         <div className="input-group" required>
-                            <select className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
+                            <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
                                 <option value="" disabled selected>Opciones...</option>
                                 {store.grados.map(grado =>
-                                    <option key={grado.id} value="grado.id">{grado.nombre}</option>
+                                    <option key={grado.id} value={grado.id}>{grado.nombre}</option>
 
                                 )}
                             </select>
@@ -269,7 +271,11 @@ const FormCommon = ({ type }) => {
                         <div className="mb-3">
                             <label className="form-label text-title">Ingresa un nombre para crear una nueva materia:</label>
                             <input type="text" name="subjectName" className="form-control rounded-pill" required value={formBody.subjectName} onChange={handleChange} />
+
+                            <label className="form-label text-title mt-3">Ingresa una descripción simple para la materia:</label>
+                            <textarea name="subjectDescription" className="form-control teacher-description" rows="5" required value={formBody.subjectDescription} onChange={(e) => handleChange(e)}></textarea>
                         </div>
+
                     )
                 }
 
@@ -374,10 +380,10 @@ export const LeftMenuAdmin = () => {
     };
 
     return (
-        <div className=" mt-3">
-            <div className="row flex-nowrap" >
+        <div className="mt-0">
+            <div className="row flex-nowrap " >
                 <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 rounded-start left-menu-background">
-                    <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                    <div className="d-flex flex-column mt-5 align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
                         <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span className="fs-5 d-none d-sm-inline ">Menú</span>
                         </Link>
@@ -442,7 +448,7 @@ export const LeftMenuAdmin = () => {
                                     </li>
                                     <li>
                                         <Link to="#" className="nav-link px-0 text-white">
-                                            <i className="fs-4 bi-journal-plus"></i>
+                                            <i className="fs-4 bi-pin-angle"></i>
                                             <span className="d-none d-sm-inline list-menu-item ms-2" onClick={handleAssignSubjectForm}>Asignar</span>
                                         </Link>
                                     </li>
@@ -452,7 +458,7 @@ export const LeftMenuAdmin = () => {
                         <hr />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center render-content col py-3 "
+                <div className="d-flex justify-content-center render-content col mt-3 py-3 "
                     style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
                     <div className="welcome-message mt-5">
                         {renderContent()}

@@ -8,7 +8,7 @@ from api.models import Docente, db, User, EmailAuthorized, BlockedTokenList, Rol
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt
-from api.schemas import UserSchema
+from api.schemas.schemas import UserSchema
 from api.services.email_services import send_recovery_email
 
 app = Flask(__name__)
