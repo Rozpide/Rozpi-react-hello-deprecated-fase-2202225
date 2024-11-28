@@ -160,7 +160,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			postTeacher: async (body) => {
 				const actions = getActions()
-				const data = await actions.fetchRoute("teacher", {
+				const data = await actions.fetchRoute("teachers", {
 					method: "POST",
 					body: body,
 					isPrivate: true,
@@ -171,7 +171,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			deleteTeacher: async (id) => {
 				const actions = getActions()
-				const data = await actions.fetchRoute(`teacher/${id}`, {
+				const data = await actions.fetchRoute(`teachers/${id}`, {
 					method: "DELETE",
 					isPrivate: true,
 					bluePrint: 'admin'

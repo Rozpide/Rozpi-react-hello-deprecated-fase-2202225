@@ -40,43 +40,44 @@ const FormCommon = ({ type }) => {
 
     return (
         <div className="container ms-2">
-            <h4 className="text-welcome">{`${type === 'crear' ? 'Crear' : 'Calificar'} evaluación`}</h4>
-            <form onSubmit={submitTestGradeCreation}>
+
+            <form onSubmit={(e) => submitTestGradeCreation(e)} className="container-welcome-teacher">
+                <h4 className="text-title d-flex justify-content-center mb-4">{`${type === 'crear' ? 'Crear' : 'Calificar'} evaluación`}</h4>
                 {type === 'crear' && <div className="mb-3">
-                    <label className="form-label text-welcome">Nombre:</label>
-                    <input type="text" name="name" className="form-control" required value={formData.name} onChange={handleChange} />
+                    <label className="form-label text-form">Nombre:</label>
+                    <input type="text" name="name" className="form-control rounded-pill" required value={formData.name} onChange={handleChange} />
                 </div>}
                 {type === 'crear' && (
                     <div className="mb-3">
-                        <label className="form-label text-welcome">Descripción:</label>
-                        <textarea type="text" name="description" className="form-control" required value={formData.description} onChange={handleChange}></textarea>
+                        <label className="form-label text-form">Descripción:</label>
+                        <textarea type="text" name="description" className="form-control rounded-pill" required value={formData.description} onChange={handleChange}></textarea>
 
                     </div>
                 )}
                 {type === 'crear' && <div className="mb-3">
-                    <label className="form-label text-welcome">Fecha de evaluación:</label> <br></br>
-                    <DatePicker selected={startDate} onChange={date => setStartDate(date)} dateFormat="yyyy/MM/dd" className="form-control" required />
+                    <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
+                    <DatePicker selected={startDate} onChange={date => setStartDate(date)} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
                 </div>}
 
                 {type === 'crear' && (
                     <div className="mb-3">
-                        <label className="form-label text-welcome">Estado:</label>
+                        <label className="form-label text-form">Estado:</label>
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="radio" name="status" id="active" value={formData.status} onChange={handleChange} />
-                            <label className="form-check-label" htmlFor="active">Pendiente</label>
+                            <label className="form-check-label text-form" htmlFor="active">Pendiente</label>
                         </div>
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="radio" name="status" id="finished" value={formData.status} onChange={handleChange} />
-                            <label className="form-check-label" htmlFor="finished">Finalizada</label>
+                            <label className="form-check-label text-form" htmlFor="finished">Finalizada</label>
                         </div>
                     </div>
                 )}
                 <div className="d-flex">
                     {type === 'calificar' && (
                         <div className="mb-3 me-5">
-                            <label className="form-label text-welcome">Elige un grado:</label> <br></br>
+                            <label className="form-label text-form">Elige un grado:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
-                                <select className="custom-select" id="inputGroupSelect04">
+                                <select className="custom-select rounded-pill" id="inputGroupSelect04">
                                     <option selected>Grado...</option>
                                     <option value="1">1er Grado</option>
                                     <option value="2">2do Grado</option>
@@ -87,9 +88,9 @@ const FormCommon = ({ type }) => {
                     )}
                     {type === 'calificar' && (
                         <div className="mb-3">
-                            <label className="form-label text-welcome">Selecciona una evaluación:</label> <br></br>
+                            <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
-                                <select className="custom-select" id="inputGroupSelect04">
+                                <select className="custom-select rounded-pill" id="inputGroupSelect04">
                                     <option selected>Pendientes...</option>
                                     <option value="1">Evaluación preparatoria</option>
                                     <option value="2">Evaluación Lenguaje</option>
@@ -194,7 +195,7 @@ export const LeftMenuTeacher = () => {
                                     <span className="ms-1 d-none d-sm-inline list-menu-item">Editar</span>
                                 </Link>
                             </li>
-                            {/*<li>
+                            <li>
                                 <Link to="#submenu2" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-calendar2-date"></i>
                                     <span className="ms-1 d-none d-sm-inline list-menu-item">Eventos</span>
@@ -217,14 +218,14 @@ export const LeftMenuTeacher = () => {
                                     <i className="fs-4 bi-chat-left-text"></i>
                                     <span className="ms-1 d-none d-sm-inline list-menu-item">Comunicados</span>
                                 </Link>
-                            </li>*/}
+                            </li>
                         </ul>
                         <hr />
                     </div>
                 </div>
-                <div className="render-content col py-3"
+                <div className="d-flex justify-content-center render-content col mt-3 py-3"
                     style={{ backgroundImage: `url(${backgroundForViews})` }}>
-                    <div className="welcome-message">
+                    <div className="welcome-message mt-5">
                         {renderContent()}
                     </div>
                 </div>
