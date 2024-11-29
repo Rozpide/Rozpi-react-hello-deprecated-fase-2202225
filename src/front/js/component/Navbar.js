@@ -29,28 +29,30 @@ const NavBar = () => {
         />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" className={`${styles["navbar-toggler"]}`} />
-      <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom}`}>
+      <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom} `}>
         {token ? (
           <Nav className="ms-auto text-center">
             <Nav.Link>
-              <i className="fas fa-bell" style={{ fontSize: "1.5rem" }}></i>
+              <i className={`${styles.campana} fas fa-bell`}></i> 
             </Nav.Link>
             <Dropdown align="end">
-              <Dropdown.Toggle as="div">
+              <Dropdown.Toggle as="div"
+              className={`${styles.Toggle}`}>
                 <Avatar
                   src={userAvatar || defaultAvatar}
                   alt="User Avatar"
                   size={40}
-                  onClick={(e) => e.stopPropagation()} // Evita cerrar al hacer clic en el avatar
+                  className={`${styles["navbar-avatar"]}`}
+                  // onClick={(e) => e.stopPropagation()} // Evita cerrar al hacer clic en el avatar
                 />
               </Dropdown.Toggle>
               <Dropdown.Menu className={`${styles.ItemAvatar}`}>
-                <Dropdown.Item as={Link} to="/preferences" className={`${styles.ItemAvatarButtom}`}>
-                  Preferencias
+                <Dropdown.Item as={Link} to="/profile" className={`${styles.ItemAvatarButtom}`}>
+                  Perfil
                 </Dropdown.Item>
-                <Dropdown.Divider />
+                {/* <Dropdown.Divider /> // linea divisora */}
                 <Dropdown.Item onClick={handleLogout} className={`${styles.ItemAvatarButtom}`}>
-                  Logout
+                  Cerrar Sesión
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
