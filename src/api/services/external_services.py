@@ -77,8 +77,11 @@ def upload_image(file, id):
 def get_image(public_id):
     if not public_id:
         return None
-    
-    image_info = cloudinary.api.resource(public_id)
-    image_url = image_info["secure_url"]
+    try:
+        image_info = cloudinary.api.resource(public_id)
+        image_url = image_info["secure_url"]
+    except Exception as e:
+        print(str(e))
+        return None
     
     return image_url

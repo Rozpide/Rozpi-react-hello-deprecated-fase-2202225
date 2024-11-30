@@ -2,6 +2,7 @@ import { clean_student_data } from "../functions/clean_parent_data";
 const backendURL = process.env.BACKEND_URL || ""
 
 
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -9,6 +10,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			usuarios: [],
 			grados: [],
 			materias: [],
+			asignaciones: [],
+			evaluaciones: [],
 			personalInfo: null,
 			contactos: null
 		},
@@ -32,8 +35,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw new Error(`Missing: Token: ${!token}, bluePrint: ${!bluePrint} for private route`)
 				}
 
-				const URL = isPrivate ? `${backendURL}api/${bluePrint}/${endpoint}` : `${backendURL}api/${endpoint}`
-
+				const URL = isPrivate ? `${backendURL}/${bluePrint}/${endpoint}` : `${backendURL}/${endpoint}`
 				const params = {
 					method,
 					headers
@@ -68,6 +70,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			}, loadSession: async () => {
+
 				let token = localStorage.getItem('token')
 				let role = localStorage.getItem('role')
 
@@ -111,9 +114,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error
 				}
 
+			}, studentsOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('student', method, { id, body, bluePrint: 'admin' })
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
+			}, setSubjects: async () => {
+				const response = await getActions().subjectsOperations('GET')
+				setStore({ materias: response })
+			}, testsOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('evaluaciones', method, { id, body, bluePrint: 'teacher' })
+			}, setTests: async () => {
+				const response = await getActions().testsOperations('GET')
+				setStore({ evaluaciones: response })
 			},
+
+			//actions.subjectsOperations('GET', '', 2)
+			//actions.subjectsOperations('POST', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"})
+			//actions.subjectsOperations('PUT', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"}, 2)
+			//actions.subjectsOperations('DELETE', '', 2)
 
 			// CRUD para usuarios autorizados
 
@@ -152,7 +170,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			postTeacher: async (body) => {
 				const actions = getActions()
-				const data = await actions.fetchRoute("teacher", {
+				const data = await actions.fetchRoute("teachers", {
 					method: "POST",
 					body: body,
 					isPrivate: true,
@@ -163,7 +181,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			deleteTeacher: async (id) => {
 				const actions = getActions()
-				const data = await actions.fetchRoute(`teacher/${id}`, {
+				const data = await actions.fetchRoute(`teachers/${id}`, {
 					method: "DELETE",
 					isPrivate: true,
 					bluePrint: 'admin'
@@ -179,6 +197,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					bluePrint: 'admin'
 				});
 				setStore({ profesores: data })
+
 			}, postCourse: async (grado) => {
 				const actions = getActions()
 				const data = await actions.fetchRoute("grados", {
