@@ -6,7 +6,7 @@ from flask import Flask, request, jsonify, Blueprint
 from api.models import Calificacion, Estudiante, Materias, db, Role, Docente, Evaluacion
 from flask_cors import CORS
 from flask_jwt_extended import get_jwt, verify_jwt_in_request, get_jwt_identity
-from api.schemas import TeacherSchema, MateriasSchema, EvaluacionSchema, GradoSchema, StudentSchema, CalificacionSchema
+from api.schemas.schemas import TeacherSchema, MateriasSchema, EvaluacionSchema, GradoSchema, StudentSchema, CalificacionSchema
 from api.services.generic_services import create_instance, update_instance, delete_instance
 from api.services.teacher_services import get_califications, post_update_califications
 
@@ -57,6 +57,8 @@ def get_personal_info():
                     "materias": materias_schema.dump(materias),
                     "grados": grados_schema.dump(grados),
                    })
+    
+    #Añadir evaluaciones
     
 
 @teacher_routes.route('/estudiantes/<int:grado_id>', methods=['GET'])

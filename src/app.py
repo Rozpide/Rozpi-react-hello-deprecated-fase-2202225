@@ -12,11 +12,12 @@ from api.models import db, BlockedTokenList
 from api.routes.routes import api
 from api.routes.admin_routes import admin_routes
 from api.routes.teacher_routes import teacher_routes
+from api.routes.parent_routes import parent_routes
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_cors import CORS
-
-
+from api.services.generic_services import create_role_and_admin
+import cloudinary   
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == 1 else "production"
@@ -34,9 +35,11 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=1)
 jwt = JWTManager(app)
 
 
-#cred = credentials.Certificate("firebase_key.json")
-#firebase_admin.initialize_app(cred)
-
+cloudinary.config(
+    cloud_name = os.getenv('CLOUDINARY_CLOUD'),
+    api_key= os.getenv('CLOUDINARY_KEY'),
+    api_secret = os.getenv('CLOUDINARY_SECRET'),
+    secure=True)
 #Check revoked Token
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
@@ -72,6 +75,7 @@ setup_commands(app)
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(admin_routes, url_prefix='/api/admin')
 app.register_blueprint(teacher_routes, url_prefix='/api/teacher')
+app.register_blueprint(parent_routes, url_prefix='/api/parent')
 
 # Handle/serialize errors like a JSON object
 
@@ -100,8 +104,14 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
+def initialize_app():
+    with app.app_context():
+        create_role_and_admin()
+
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
+    initialize_app()
     app.run(host='0.0.0.0', port=PORT, debug=True)

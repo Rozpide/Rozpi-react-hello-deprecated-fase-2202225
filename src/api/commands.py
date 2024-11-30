@@ -42,11 +42,12 @@ def setup_commands(app):
         
         print("Roles:")
         try:
-            admin_role = Role(nombre="Admin")
-            teacher_role = Role(nombre="Docente")
-            parent_role = Role(nombre="Representante")
-            db.session.add_all([admin_role, teacher_role, parent_role])
-            db.session.commit()
+            if Role.query.count() == 0:
+                admin_role = Role(nombre="Admin")
+                teacher_role = Role(nombre="Docente")
+                parent_role = Role(nombre="Representante")
+                db.session.add_all([admin_role, teacher_role, parent_role])
+                db.session.commit()
         except SQLAlchemyError as e:
             db.session.rollback()
             print({"error": str(e)})
@@ -60,23 +61,24 @@ def setup_commands(app):
             
         print("Creating admin User")
         try:
-            admin_data = {
-            "email": "administrador@test.com",
-            "nombre": "Juan",
-            "apellido": "Pérez",
-            "password": make_hashpwd("adminpass"),
-            "is_active": True,
-            "role_id": admin_role.id,
-            "direccion":"Calle Falsa 123, Ciudad falsa tambien"
-        }
-            auth = EmailAuthorized()
-            auth.email = "administrador@test.com"
-            auth.role_id = admin_role.id
-            auth.isRegistered = True
-            admin_user = User(**admin_data)
-            db.session.add(auth)
-            db.session.add(admin_user)
-            db.session.commit()
+            if User.query.count() == 0:
+                admin_data = {
+                "email": "administrador@test.com",
+                "nombre": "Director Miguel",
+                "apellido": "Pérez",
+                "password": make_hashpwd("adminpass"),
+                "is_active": True,
+                "role_id": admin_role.id,
+                "direccion":"Calle Falsa 123, Ciudad falsa tambien"
+            }
+                auth = EmailAuthorized()
+                auth.email = "administrador@test.com"
+                auth.role_id = admin_role.id
+                auth.isRegistered = True
+                admin_user = User(**admin_data)
+                db.session.add(auth)
+                db.session.add(admin_user)
+                db.session.commit()
             
         except IntegrityError as e:
             db.session.rollback()

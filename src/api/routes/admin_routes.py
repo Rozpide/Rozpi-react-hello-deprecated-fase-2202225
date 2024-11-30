@@ -84,8 +84,13 @@ def add_teacher():
     if not body:
         return jsonify({"msg":"Error"}),400
     
+    role = Role.query.filter_by(Role.nombre.ilike("docente")).first()
+    
+    if not role:
+        return jsonify({"msg":"Rol de docente no creado"})
+    
     email = body.get('email')
-    body["role_id"] = 2
+    body["role_id"] = role.id
     body['password'] = bcrypt.generate_password_hash(body['password']).decode('utf-8')
     user_exists = User.query.filter_by(email=email).first()
 
