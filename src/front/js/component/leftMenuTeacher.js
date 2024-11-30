@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,8 +9,9 @@ import "../../styles/components.css";
 import Swal from 'sweetalert2';
 
 const FormCommon = ({ type }) => {
+    const { store, actions } = useContext(Context)
     const [startDate, setStartDate] = useState(new Date());
-    const [formData, setFormData] = useState({
+    const [formBody, setFormBody] = useState({
         name: '',
         description: '',
         date: '',
@@ -19,64 +21,87 @@ const FormCommon = ({ type }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({ ...prevState, [name]: value }));
+        setFormBody(prevState => ({ ...prevState, [name]: value }));
     };
 
+    const handleDateChange = (date) => {
+        setStartDate(date);
+        setFormBody(prevState => ({ ...prevState, date: date ? date.toISOString().split('T')[0] : '' }));
+    };
 
-
-    const submitTestGradeCreation = (event) => {
+    const submitFormData = async (event) => {
         event.preventDefault();
-        const formDataToSend = new FormData();
-        for (const key in formData) {
-            formDataToSend.append(key, formData[key]);
-        }
-        console.log('Form submitted', formDataToSend);
-        Swal.fire({
-            title: "Datos registrados correctamente",
-            icon: "success"
-        });
 
+        try {
+            if (type === 'crear') {
+                await actions.testsOperations('POST', {
+                    nombre: formBody.name,
+                    descripcion: formBody.description,
+                    fecha: formBody.date,
+                    finalizada: formBody.status === 'finalizada'
+                })
+            }
+            Swal.fire({
+                title: "Datos registrados correctamente",
+                icon: "success"
+            });
+            setFormBody({
+                name: '',
+                description: '',
+                date: '',
+                status: '',
+                grade: ''
+            });
+            setStartDate(new Date());
+        } catch (error) {
+            console.error("Error submitting data", error)
+            Swal.fire({
+                title: "Error al registrar los datos",
+                icon: "error"
+            });
+        }
     };
 
     return (
         <div className="container ms-2">
-            <h4 className="text-welcome">{`${type === 'crear' ? 'Crear' : 'Calificar'} evaluación`}</h4>
-            <form onSubmit={submitTestGradeCreation}>
+
+            <form onSubmit={(e) => submitFormData(e)} className="container-welcome-teacher">
+                <h4 className="text-title d-flex justify-content-center mb-4">{`${type === 'crear' ? 'Crear' : 'Calificar'} evaluación`}</h4>
                 {type === 'crear' && <div className="mb-3">
-                    <label className="form-label text-welcome">Nombre:</label>
-                    <input type="text" name="name" className="form-control" required value={formData.name} onChange={handleChange} />
+                    <label className="form-label text-form">Nombre:</label>
+                    <input type="text" name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
                 </div>}
                 {type === 'crear' && (
                     <div className="mb-3">
-                        <label className="form-label text-welcome">Descripción:</label>
-                        <textarea type="text" name="description" className="form-control" required value={formData.description} onChange={handleChange}></textarea>
+                        <label className="form-label text-form">Descripción:</label>
+                        <textarea type="text" name="description" className="form-control rounded-pill" required value={formBody.description} onChange={handleChange}></textarea>
 
                     </div>
                 )}
                 {type === 'crear' && <div className="mb-3">
-                    <label className="form-label text-welcome">Fecha de evaluación:</label> <br></br>
-                    <DatePicker selected={startDate} onChange={date => setStartDate(date)} dateFormat="yyyy/MM/dd" className="form-control" required />
+                    <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
+                    <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
                 </div>}
 
                 {type === 'crear' && (
                     <div className="mb-3">
-                        <label className="form-label text-welcome">Estado:</label>
+                        <label className="form-label text-form me-3">Estado:</label>
                         <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="status" id="active" value={formData.status} onChange={handleChange} />
-                            <label className="form-check-label" htmlFor="active">Pendiente</label>
+                            <input className="form-check-input" type="radio" name="status" id="active" value="pendiente" onChange={handleChange} />
+                            <label className="form-check-label text-form" htmlFor="active">Pendiente</label>
                         </div>
                         <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="status" id="finished" value={formData.status} onChange={handleChange} />
-                            <label className="form-check-label" htmlFor="finished">Finalizada</label>
+                            <input className="form-check-input" type="radio" name="status" id="finished" value="finalizada" onChange={handleChange} />
+                            <label className="form-check-label text-form" htmlFor="finished">Finalizada</label>
                         </div>
                     </div>
                 )}
                 <div className="d-flex">
                     {type === 'calificar' && (
                         <div className="mb-3 me-5">
-                            <label className="form-label text-welcome">Elige un grado:</label> <br></br>
+                            <label className="form-label text-form">Elige un grado:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
-                                <select className="custom-select" id="inputGroupSelect04">
+                                <select className="custom-select rounded-pill" id="inputGroupSelect04">
                                     <option selected>Grado...</option>
                                     <option value="1">1er Grado</option>
                                     <option value="2">2do Grado</option>
@@ -87,9 +112,9 @@ const FormCommon = ({ type }) => {
                     )}
                     {type === 'calificar' && (
                         <div className="mb-3">
-                            <label className="form-label text-welcome">Selecciona una evaluación:</label> <br></br>
+                            <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
-                                <select className="custom-select" id="inputGroupSelect04">
+                                <select className="custom-select rounded-pill" id="inputGroupSelect04">
                                     <option selected>Pendientes...</option>
                                     <option value="1">Evaluación preparatoria</option>
                                     <option value="2">Evaluación Lenguaje</option>
@@ -113,7 +138,7 @@ const FormCommon = ({ type }) => {
                                 <td>John</td>
                                 <td>Doe</td>
                                 <td>
-                                    <input type="number" name="grade" className="form-control" required value={formData.grade} onChange={(e) => handleChange(e)} />
+                                    <input type="number" name="grade" className="form-control" required value={formBody.grade} onChange={(e) => handleChange(e)} />
                                 </td>
                             </tr>
                         </tbody>
@@ -145,7 +170,7 @@ export const LeftMenuTeacher = () => {
                 return <FormCommon type="calificar" />;
             default:
                 return (
-                    <div className="container-fluid container-welcome-parent mt-3">
+                    <div className="container-fluid container-welcome-parent mt-5">
                         <div className="container-welcome-teacher py-5 d-flex">
                             <img src={imgWelcome} alt="welcome image" className="welcome-icon" />
                             <div>
@@ -159,10 +184,10 @@ export const LeftMenuTeacher = () => {
     };
 
     return (
-        <div className="container-fluid mt-3">
+        <div className="mt-0">
             <div className="row flex-nowrap">
-                <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark rounded-start">
-                    <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 left-menu-background rounded-start">
+                    <div className="d-flex flex-column align-items-center align-items-sm-start mt-5 px-3 pt-4 text-white min-vh-100">
                         <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span className="fs-5 d-none d-sm-inline ">Menú</span>
                         </Link>
@@ -194,7 +219,7 @@ export const LeftMenuTeacher = () => {
                                     <span className="ms-1 d-none d-sm-inline list-menu-item">Editar</span>
                                 </Link>
                             </li>
-                            {/*<li>
+                            <li>
                                 <Link to="#submenu2" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-calendar2-date"></i>
                                     <span className="ms-1 d-none d-sm-inline list-menu-item">Eventos</span>
@@ -217,14 +242,14 @@ export const LeftMenuTeacher = () => {
                                     <i className="fs-4 bi-chat-left-text"></i>
                                     <span className="ms-1 d-none d-sm-inline list-menu-item">Comunicados</span>
                                 </Link>
-                            </li>*/}
+                            </li>
                         </ul>
                         <hr />
                     </div>
                 </div>
-                <div className="render-content col py-3"
+                <div className="d-flex justify-content-center render-content col mt-3 py-3"
                     style={{ backgroundImage: `url(${backgroundForViews})` }}>
-                    <div className="welcome-message">
+                    <div className="welcome-message mt-5">
                         {renderContent()}
                     </div>
                 </div>
