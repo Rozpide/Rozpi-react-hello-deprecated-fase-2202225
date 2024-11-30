@@ -10,7 +10,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			grados: [],
 			materias: [],
 			asignaciones: [],
-			evaluaciones: []
+			evaluaciones: [],
 			personalInfo: null,
 			contactos: null
 		},
