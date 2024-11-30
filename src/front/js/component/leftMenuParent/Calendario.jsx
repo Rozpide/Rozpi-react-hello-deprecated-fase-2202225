@@ -2,11 +2,27 @@ import React, { useState } from "react";
 import { Calendar } from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../../../styles/Calendar.css";
+import { formatDate } from "date-fns";
+
 const HandleChange = value =>
   alert(`New date is: ${value.toLocaleDateString()}`);
 
 const Calendario = ({ eventos }) => {
-  const [value, onChange] = useState(new Date());
+  const [value, setValue] = useState(new Date()); // Día seleccionado
+  const [activeStartDate, setActiveStartDate] = useState(new Date()); // Mes visible
+
+  const handleActiveStartDateChange = ({ activeStartDate }) => {
+    setActiveStartDate(activeStartDate);
+
+    // Si volvemos al mes actual, seleccionamos el día actual
+    const today = new Date();
+    if (
+      today.getFullYear() === activeStartDate.getFullYear() &&
+      today.getMonth() === activeStartDate.getMonth()
+    ) {
+      setValue(today);
+    }
+  };
 
   const tileClassName = ({ date, view }) => {
     // Asegúrate de que estamos en la vista mensual
@@ -33,7 +49,12 @@ const Calendario = ({ eventos }) => {
   return (
     <div className="calendar-container">
       <Calendar
-        onChange={onChange}
+        onActiveStartDateChange={handleActiveStartDateChange}
+        onClickDay={(value, e) => {
+          console.log(`Day pressed: ${value}`);
+          console.log(formatDate(value, "yyyy-mm-dd"));
+        }}
+        onChange={setValue}
         tileClassName={tileClassName}
         value={value}
       />

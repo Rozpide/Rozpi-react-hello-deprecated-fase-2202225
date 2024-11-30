@@ -58,6 +58,8 @@ def get_personal_info():
                     "grados": grados_schema.dump(grados),
                    })
     
+    #Añadir evaluaciones
+    
 
 @teacher_routes.route('/estudiantes/<int:grado_id>', methods=['GET'])
 def get_estudiantes_by_grado(grado_id):

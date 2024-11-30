@@ -45,9 +45,7 @@ const ListMenuItem = styled.span`
 `;
 
 const SidebarWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+  height: 100%;
   width: 20vw;
   min-width: 100px;
 
@@ -82,9 +80,9 @@ const StyledICon = styled.i`
 `;
 
 const StyledNav = styled(Nav)`
+  height: 100%;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   background: linear-gradient(
     180deg,
     rgba(43, 45, 66, 1) 0%,

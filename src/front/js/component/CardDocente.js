@@ -16,7 +16,7 @@ const CardDocente = () => {
     ];
 
     useEffect(() => {
-        fetch(`${process.env.BACKEND_URL}api/teachers`, {
+        fetch(`${process.env.BACKEND_URL}api/info/teachers`, {
             "method": "GET",
             "headers": {
                 'Content-Type': 'application/json',

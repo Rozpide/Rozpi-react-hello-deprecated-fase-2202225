@@ -18,7 +18,7 @@ const LoginForm = () => {
             navigate(redirect(store.role))
         }
 
-    }, [])
+    }, [store.role])
 
     const redirect = (role) => {
         let route = "/dashboard/"

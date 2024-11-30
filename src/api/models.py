@@ -35,8 +35,11 @@ class User(db.Model):
     password = db.Column(db.String(500), nullable=False)
     is_active = db.Column(db.Boolean(), default=True, nullable=False)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
+    foto = db.Column(db.String(250))
 
     role = db.relationship('Role', backref='users')
+    mensajes_enviados = db.relationship("Messages", back_populates="sender", foreign_keys='Messages.sender_id')
+    mensajes_recibidos = db.relationship("Messages", back_populates="receiver", foreign_keys='Messages.receiver_id')
 
     def __repr__(self):
         return f'{self.nombre} {self.apellido} - {self.role_id}'
@@ -46,7 +49,6 @@ class Docente(User):
     __tablename__ = "docente"
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)  
     descripcion = db.Column(db.String(300), nullable=False)
-    foto = db.Column(db.String(250))
 
     materias_enseñadas = db.relationship('DocenteMaterias', back_populates='docente')   
     evaluaciones = db.relationship('Evaluacion', back_populates='profesor')
@@ -149,3 +151,19 @@ class BlockedTokenList(db.Model):
     jti = db.Column(db.String(500))
 
 
+class Messages(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    subject = db.Column(db.String(50), nullable=False)
+    content = db.Column(db.String(500),  nullable=False)
+    read = db.Column(db.Boolean(), default=False)
+    
+    sender = db.relationship(User, back_populates="mensajes_enviados",
+        foreign_keys=[sender_id])
+    receiver = db.relationship(User, back_populates="mensajes_recibidos",
+        foreign_keys=[receiver_id])
+    
+
+## Clubes o Actividades Extracurriculares
