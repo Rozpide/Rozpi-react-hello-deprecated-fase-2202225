@@ -1,7 +1,7 @@
 from marshmallow_sqlalchemy import SQLAlchemySchema, SQLAlchemyAutoSchema, auto_field
 from marshmallow_sqlalchemy.fields import Nested
 from marshmallow import Schema, fields, validate
-from ..models import Calificacion, db, User, Estudiante, Docente, EmailAuthorized, Materias, Evaluacion, Grados, DocenteMaterias, Role
+from ..models import Calificacion, db, User, Estudiante, Docente, EmailAuthorized, Materias, Evaluacion, Grados, DocenteMaterias, Role, Messages
 from marshmallow import post_load
 
 class UserSchema(SQLAlchemyAutoSchema):
@@ -135,3 +135,13 @@ class CalificacionRequestSchema(Schema):
     evaluacion_id = fields.Integer(required=True, strict=True)
     materia_id = fields.Integer(required=True, strict=True)
     estudiantes_notas = fields.List(Nested(EstudianteNotaRequestSchema), required=True, strict=True)
+    
+    
+class MessagesSchema(SQLAlchemyAutoSchema):
+    
+    class Meta:
+        model = Messages
+        sqla_session = db.session
+        load_only = ('receiver_id','sender_id')
+        include_fk = True
+    

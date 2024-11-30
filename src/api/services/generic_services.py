@@ -1,10 +1,13 @@
+import cloudinary.api
+import cloudinary.uploader
 from flask import jsonify
 from sqlalchemy.exc import SQLAlchemyError
-from api.models import db, Evaluacion
+from api.models import db, Evaluacion, Role, User, EmailAuthorized
 from marshmallow import ValidationError
-from tempfile import NamedTemporaryFile
 from datetime import datetime, date as date_class
 import requests
+from api.commands import make_hashpwd
+from os import getenv
 
 def create_instance(model,body,schema):
     
@@ -81,26 +84,6 @@ def delete_instance(model,id):
     
     
 
-def allowed_file(filename):
-    allowed_extensions = {'png', 'jpg', 'jpeg'}
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_extensions
-
-# def upload_image(file, name):
-    
-#     if (not allowed_file(file.filename)):
-#         return jsonify({"msg": "Formato de archivo no admitido"}),400
-    
-    
-#     extension = file.filename.split(".")[1]
-#     temp=NamedTemporaryFile(delete=False)
-#     file.save(temp.name)
-    
-#     bucket = storage.bucket(name='schoolhub4geeks.firebasestorage.app')
-#     filename ='picturesschoolhub/' + name + "." + extension
-#     resource = bucket.blob(filename)
-#     resource.upload_from_filename(temp.name, content_type="image/"+extension)
-    
-#     return filename
 
 def get_feriadosAPI():
     API_URL ="https://api.argentinadatos.com/v1/feriados/2024"
@@ -134,7 +117,9 @@ def get_schedule():
         
         fechas_evaluaciones = [{"date": format_date(evaluacion.fecha),
                 "title": evaluacion.nombre,
-                "holiday": False} for evaluacion in evaluaciones]
+                "holiday": False,
+                "profesor": f"{evaluacion.profesor.nombre} {evaluacion.profesor.apellido}",
+                "materia": evaluacion.materia.nombre} for evaluacion in evaluaciones]
         
         feriados = get_feriadosAPI()
         
@@ -168,3 +153,33 @@ def format_date(date):
 
     formato_salida = "%Y-%m-%d"
     return fecha_objeto.strftime(formato_salida)
+
+
+def create_role_and_admin():
+    
+    if Role.query.count() == 0:
+        admin_role = Role(nombre="Admin")
+        teacher_role = Role(nombre="Docente")
+        parent_role = Role(nombre="Representante")
+        db.session.add_all([admin_role, teacher_role, parent_role])
+        db.session.commit()
+        
+    if User.query.count() == 0:
+                admin_data = {
+                "email": "administrador@test.com",
+                "nombre": "Director Miguel",
+                "apellido": "Pérez",
+                "password": make_hashpwd(getenv('ADMIN_USER_PASSWORD','adminpass')),
+                "is_active": True,
+                "role_id": admin_role.id,
+                "direccion":"Calle Falsa 123, Ciudad falsa tambien"
+            }
+                auth = EmailAuthorized()
+                auth.email = "administrador@test.com"
+                auth.role_id = admin_role.id
+                auth.isRegistered = True
+                admin_user = User(**admin_data)
+                db.session.add(auth)
+                db.session.add(admin_user)
+                db.session.commit()       
+    print("Roles y usuario administrador creados")

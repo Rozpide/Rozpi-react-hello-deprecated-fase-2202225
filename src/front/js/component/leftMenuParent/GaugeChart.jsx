@@ -1,7 +1,7 @@
 import React from "react";
 import GaugeComponent from "react-gauge-component";
 
-const GaugeChart = ({ value = 50, min = 0, max = 100 }) => {
+const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
   let subArcs =
     max == 20
       ? [
@@ -41,4 +41,4 @@ const GaugeChart = ({ value = 50, min = 0, max = 100 }) => {
   );
 };
 
-export default GaugeChart;
+export default ParentGaugeChart;
