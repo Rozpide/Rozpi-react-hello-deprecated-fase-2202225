@@ -2,6 +2,7 @@ import { clean_student_data } from "../functions/clean_parent_data";
 const backendURL = process.env.BACKEND_URL || ""
 
 
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -32,8 +33,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw new Error(`Missing: Token: ${!token}, bluePrint: ${!bluePrint} for private route`)
 				}
 
-				const URL = isPrivate ? `${backendURL}api/${bluePrint}/${endpoint}` : `${backendURL}api/${endpoint}`
-
+				const URL = isPrivate ? `${backendURL}/${bluePrint}/${endpoint}` : `${backendURL}/${endpoint}`
 				const params = {
 					method,
 					headers
@@ -68,6 +68,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			}, loadSession: async () => {
+
 				let token = localStorage.getItem('token')
 				let role = localStorage.getItem('role')
 
@@ -179,6 +180,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					bluePrint: 'admin'
 				});
 				setStore({ profesores: data })
+
 			}, postCourse: async (grado) => {
 				const actions = getActions()
 				const data = await actions.fetchRoute("grados", {
