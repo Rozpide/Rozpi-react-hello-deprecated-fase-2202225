@@ -107,3 +107,14 @@ class Breed (db.Model):
      name = db.Column (db.String(30))
      species = db.Column (db.Enum (Species), nullable=False)
      pets= db.relationship ("Pet", back_populates="breed_relationship")
+    
+    def __repr__(self):
+            return f'<Breed: {self.name, self.species, self.pets}>'
+
+    def serialize(self):
+            return{    
+                "breed_id": self.id,
+                "breed": self.name,
+                "specie" : self.longitude,
+                "pet" : self.pets
+            }
