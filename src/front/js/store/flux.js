@@ -9,7 +9,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			usuarios: [],
 			grados: [],
 			materias: [],
-			asignaciones: []
+			asignaciones: [],
+			evaluaciones: []
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -108,14 +109,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error
 				}
 
+			}, studentsOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('student', method, { id, body, bluePrint: 'admin' })
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
-			}, /*courseOperations: async (method, body = '', id = '') => {
-				return getActions().crudOperation('grados', method, { id, body, bluePrint: 'admin' })
-			}*/
-			setSubjects: async () => {
+			}, setSubjects: async () => {
 				const response = await getActions().subjectsOperations('GET')
 				setStore({ materias: response })
+			}, testsOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('evaluaciones', method, { id, body, bluePrint: 'teacher' })
+			}, setTests: async () => {
+				const response = await getActions().testsOperations('GET')
+				setStore({ evaluaciones: response })
 			},
 
 			//actions.subjectsOperations('GET', '', 2)

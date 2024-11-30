@@ -57,8 +57,15 @@ const FormCommon = ({ type }) => {
         event.preventDefault();
         const formData = new FormData(event.target);
         //console.log(formData)
-
         try {
+            if (type === 'student') {
+                await actions.studentsOperations('POST', {
+                    "nombre": formBody.name,
+                    "apellido": formBody.lastName,
+                    "direccion": formBody.address,
+                    "fecha_nacimiento": formBody.birthDate,
+                })
+            }
             if (type === 'teacher') {
                 await actions.postTeacher({
                     "nombre": formBody.name,
@@ -69,7 +76,6 @@ const FormCommon = ({ type }) => {
                     "direccion": formBody.address,
                     "foto": "abc"
                 });
-
             }
             if (type === 'addClassroom') {
                 let classroom = formBody.classroomName

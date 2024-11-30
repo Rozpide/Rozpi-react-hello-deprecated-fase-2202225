@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,8 +9,9 @@ import "../../styles/components.css";
 import Swal from 'sweetalert2';
 
 const FormCommon = ({ type }) => {
+    const { store, actions } = useContext(Context)
     const [startDate, setStartDate] = useState(new Date());
-    const [formData, setFormData] = useState({
+    const [formBody, setFormBody] = useState({
         name: '',
         description: '',
         date: '',
@@ -19,55 +21,77 @@ const FormCommon = ({ type }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({ ...prevState, [name]: value }));
+        setFormBody(prevState => ({ ...prevState, [name]: value }));
     };
 
+    const handleDateChange = (date) => {
+        setStartDate(date);
+        setFormBody(prevState => ({ ...prevState, date: date ? date.toISOString().split('T')[0] : '' }));
+    };
 
-
-    const submitTestGradeCreation = (event) => {
+    const submitFormData = async (event) => {
         event.preventDefault();
-        const formDataToSend = new FormData();
-        for (const key in formData) {
-            formDataToSend.append(key, formData[key]);
-        }
-        console.log('Form submitted', formDataToSend);
-        Swal.fire({
-            title: "Datos registrados correctamente",
-            icon: "success"
-        });
 
+        try {
+            if (type === 'crear') {
+                await actions.testsOperations('POST', {
+                    nombre: formBody.name,
+                    descripcion: formBody.description,
+                    fecha: formBody.date,
+                    finalizada: formBody.status === 'finalizada'
+                })
+            }
+            Swal.fire({
+                title: "Datos registrados correctamente",
+                icon: "success"
+            });
+            setFormBody({
+                name: '',
+                description: '',
+                date: '',
+                status: '',
+                grade: ''
+            });
+            setStartDate(new Date());
+        } catch (error) {
+            console.error("Error submitting data", error)
+            Swal.fire({
+                title: "Error al registrar los datos",
+                icon: "error"
+            });
+        }
     };
 
     return (
         <div className="container ms-2">
 
-            <form onSubmit={(e) => submitTestGradeCreation(e)} className="container-welcome-teacher">
+            <form onSubmit={(e) => submitFormData(e)} className="container-welcome-teacher">
                 <h4 className="text-title d-flex justify-content-center mb-4">{`${type === 'crear' ? 'Crear' : 'Calificar'} evaluación`}</h4>
                 {type === 'crear' && <div className="mb-3">
                     <label className="form-label text-form">Nombre:</label>
-                    <input type="text" name="name" className="form-control rounded-pill" required value={formData.name} onChange={handleChange} />
+                    <input type="text" name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
                 </div>}
                 {type === 'crear' && (
                     <div className="mb-3">
                         <label className="form-label text-form">Descripción:</label>
-                        <textarea type="text" name="description" className="form-control rounded-pill" required value={formData.description} onChange={handleChange}></textarea>
+                        <textarea type="text" name="description" className="form-control rounded-pill" required value={formBody.description} onChange={handleChange}></textarea>
 
                     </div>
                 )}
                 {type === 'crear' && <div className="mb-3">
                     <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
-                    <DatePicker selected={startDate} onChange={date => setStartDate(date)} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
+                    <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
                 </div>}
 
                 {type === 'crear' && (
                     <div className="mb-3">
-                        <label className="form-label text-form">Estado:</label>
+                        <label className="form-label text-form me-3">Estado:</label>
                         <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="status" id="active" value={formData.status} onChange={handleChange} />
+                            <input className="form-check-input" type="radio" name="status" id="active" value="pendiente" onChange={handleChange} />
                             <label className="form-check-label text-form" htmlFor="active">Pendiente</label>
                         </div>
                         <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="status" id="finished" value={formData.status} onChange={handleChange} />
+                            <input className="form-check-input" type="radio" name="status" id="finished" value="finalizada" onChange={handleChange} />
                             <label className="form-check-label text-form" htmlFor="finished">Finalizada</label>
                         </div>
                     </div>
@@ -114,7 +138,7 @@ const FormCommon = ({ type }) => {
                                 <td>John</td>
                                 <td>Doe</td>
                                 <td>
-                                    <input type="number" name="grade" className="form-control" required value={formData.grade} onChange={(e) => handleChange(e)} />
+                                    <input type="number" name="grade" className="form-control" required value={formBody.grade} onChange={(e) => handleChange(e)} />
                                 </td>
                             </tr>
                         </tbody>
