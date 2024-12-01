@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column,DateTime,func
 
 
 db = SQLAlchemy()
@@ -15,7 +16,7 @@ class User(db.Model):
     address = db.Column(db.String(30))
     phone = db.Column(db.String(10))
     ci_rut = db.Column(db.Integer)
-    #created_at = db.Column(DateTime(timezone=True), server_default=func.now())
+    created_at = db.Column(DateTime(timezone=True), server_default=func.now())
 
 
     vehicles = db.relationship('Vehicles',back_populates='user')
@@ -52,11 +53,10 @@ class Vehicles(db.Model):
     year = db.Column(db.Integer)
     mileage = db.Column(db.Integer)
     license_plate = db.Column(db.String(20))
-   # created_at = db.Column(DateTime(timezone=True), server_default=func.now())
+    created_at = db.Column(DateTime(timezone=True), server_default=func.now())
 
 
     user = db.relationship('User',back_populates='vehicles')
-    vehicle = db.relationship('Vehicles',back_populates='vehicles')
 
 
 
