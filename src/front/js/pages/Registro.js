@@ -1,14 +1,13 @@
 import React, { useContext } from "react";
-import { Context } from "../store/appContext";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Registro = () => {
-    const { store, actions } = useContext(Context);
+   
 
     return (
         <div className="container d-flex justify-content-center align-items-center vh-100">
             <div className="card p-4" style={{ width: '1130px', height: '777px', backgroundColor: '#312E2D' }}>
-                <div className="card-body">
+                <div className="card-body rounded">
                     <h2 className="text-white text-center mb-3">Registro</h2>
                     <form>
                         <div className="row">
@@ -25,6 +24,10 @@ const Registro = () => {
                                     <label htmlFor="registerEmail" className="form-label text-white">Email</label>
                                     <input type="email" className="form-control" id="registerEmail" style={{ backgroundColor: '#FFFFFF', height: '40px' }} />
                                 </div>
+                                <div className="mb-3 text-start">
+                                    <label htmlFor="registerCI" className="form-label text-white">Dirección</label>
+                                    <input type="text" className="form-control" id="registerCI" style={{ backgroundColor: '#FFFFFF', height: '40px' }} />
+                                </div>
                             </div>
                             <div className="col-md-6">
                                 <div className="mb-3 text-start">
@@ -39,11 +42,16 @@ const Registro = () => {
                                     <label htmlFor="registerCI" className="form-label text-white">CI/Rut</label>
                                     <input type="text" className="form-control" id="registerCI" style={{ backgroundColor: '#FFFFFF', height: '40px' }} />
                                 </div>
+                    
+                                <div className="mb-3 text-start">
+                                    <label htmlFor="registerCI" className="form-label text-white">Razón Social</label>
+                                    <input type="text" className="form-control" id="registerCI" style={{ backgroundColor: '#FFFFFF', height: '40px' }} />
+                                </div>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-12 d-flex justify-content-center mt-4">
-                                <button type="submit" className="btn" style={{ backgroundColor: '#7ED957' }}>Confirmar Registro</button>
+                                <button type="submit" className="btn fw-bold" style={{ backgroundColor: '#7ED957' }}>Confirmar Registro</button>
                             </div>
                         </div>
                     </form>
