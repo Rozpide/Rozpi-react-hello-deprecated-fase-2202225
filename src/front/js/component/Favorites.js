@@ -20,7 +20,10 @@ export const Favorites = () => {
                                 <h5 className="card-title">{favorite.name}</h5>
                                 <p className="card-text">{favorite.symbol}</p>
                                 <p className="card-text"><strong>Current Price:</strong> ${favorite.current_price}</p>
-                                <a href="#" className="favMoreInfoButton btn">More Information</a>
+                                <Link to={"/moreInfo" }>
+								<span className="favMoreInfoButton btn">More Information</span>
+							   </Link>
+                            
                             </div>
                         </div>
                     </div>

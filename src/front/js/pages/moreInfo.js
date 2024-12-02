@@ -5,16 +5,23 @@ import { Context } from "../store/appContext";
 
 
 export const MoreInfo = () => {
+    
 
 
     return (
+
         <div className="moreInfo">
+    
             <div className="backToList">
                 <button type="submit" id="submitBtn" style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "50", width: "90px", border: "1px solid black" }}>Back to list</button>
             </div>
 
             <div className="mainInfo">
-                <div className="coinName" style={{fontSize:"25px", marginLeft:"80px" }}>Coin name</div>
+                <div className="coinName" style={{fontSize:"25px", marginLeft:"80px" }}>
+                Graph
+
+
+                </div>
                 <div className="graphBox">
                     <div className="graph">
                         <div className="timeFrame">
@@ -43,7 +50,7 @@ export const MoreInfo = () => {
                     <p></p>
                 </div>
             </div>
-
+           
         </div>
     )
 }
