@@ -10,6 +10,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			grados: [],
 			materias: [],
 			userAvatar: null,
+			mensajes: [],
+			isChatVisible: false,
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -264,7 +266,37 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			handleUserAvatarUpdate: (avatarUrl) => {
 				setStore({ userAvatar: avatarUrl }); // Actualiza el avatar del usuario
-			}
+			},
+			toggleChat: () => {
+				const store = getStore();
+				setStore({ isChatVisible: !store.isChatVisible }); // Alterna el estado del chat
+			},
+			getMessages: async () => {
+				try {
+					const data = await getActions().fetchRoute("messages", {
+						method: "GET",
+						isPrivate: true,
+						bluePrint: "msg"
+					});
+					setStore({ mensajes: data });
+				} catch (error) {
+					console.error("Error al obtener mensajes:", error);
+				}
+			},
+			sendMessage: async (message) => {
+				try {
+					await getActions().fetchRoute("messages", {
+						method: "POST",
+						body: message,
+						isPrivate: true,
+						bluePrint: "msg"
+					});
+
+					await getActions().getMessages();
+				} catch (error) {
+					console.error("Error al enviar mensaje:", error);
+				}
+			},
 		}
 	}
 };

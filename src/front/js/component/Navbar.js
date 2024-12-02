@@ -3,20 +3,19 @@ import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Avatar from "../component/leftMenuParent/Avatar.jsx";
 import logo from "../../img/logo-blanco.png";
-import defaultAvatar from "../../img/avatar-de-perfil.png"; // Imagen predeterminada del avatar
+import defaultAvatar from "../../img/avatar-de-perfil.png";
 import styles from "../../styles/Navbar.module.css";
 import { Context } from "../store/appContext";
 
 const NavBar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const { token, userAvatar } = store;
+  const { token, userAvatar, isChatVisible } = store;
 
   const handleLogout = () => {
     actions.handleLogout();
     navigate("/home");
   };
-  
 
   return (
     <Navbar expand="lg" className={`${styles["navbar-custom"]} navbar-dark fixed-top`}>
@@ -29,28 +28,31 @@ const NavBar = () => {
         />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" className={`${styles["navbar-toggler"]}`} />
-      <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom} `}>
+      <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom}`}>
         {token ? (
           <Nav className="ms-auto text-center">
             <Nav.Link>
-              <i className={`${styles.campana} fas fa-bell`}></i> 
+              <i className={`${styles.campana} fas fa-bell`}></i>
             </Nav.Link>
             <Dropdown align="end">
-              <Dropdown.Toggle as="div"
-              className={`${styles.Toggle}`}>
+              <Dropdown.Toggle as="div" className={`${styles.Toggle}`}>
                 <Avatar
                   src={userAvatar || defaultAvatar}
                   alt="User Avatar"
                   size={40}
                   className={`${styles["navbar-avatar"]}`}
-                  // onClick={(e) => e.stopPropagation()} // Evita cerrar al hacer clic en el avatar
                 />
               </Dropdown.Toggle>
               <Dropdown.Menu className={`${styles.ItemAvatar}`}>
                 <Dropdown.Item as={Link} to="/profile" className={`${styles.ItemAvatarButtom}`}>
                   Perfil
                 </Dropdown.Item>
-                {/* <Dropdown.Divider /> // linea divisora */}
+                <Dropdown.Item
+                  onClick={actions.toggleChat}
+                  className={`${styles.ItemAvatarButtom}`}
+                >
+                  Mensajería
+                </Dropdown.Item>
                 <Dropdown.Item onClick={handleLogout} className={`${styles.ItemAvatarButtom}`}>
                   Cerrar Sesión
                 </Dropdown.Item>
@@ -88,4 +90,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-

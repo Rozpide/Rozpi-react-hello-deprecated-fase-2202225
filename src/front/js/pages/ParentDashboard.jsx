@@ -1,10 +1,11 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import ParentSideBar from "../component/leftMenuParent/ParentSideBar.jsx";
+import MainDashboard from "../component/leftMenuParent/MainDashboard.jsx";
+import ChatComponent from "../component/chatComponent";
 import styled from "styled-components";
 import img from "./../../img/background.jpg";
 import { Context } from "../store/appContext.js";
-import MainDashboard from "../component/leftMenuParent/MainDashboard.jsx";
-import ChatComponent from "../component/chatComponent";
+
 
 let Content = styled.div`
   background-image: url(${img});
@@ -15,7 +16,7 @@ let Content = styled.div`
 
 const ParentDashboard = () => {
   const [activeKey, setActiveKey] = useState("home");
-  const { actions } = useContext(Context);
+  const { store, actions } = useContext(Context);
   const [info, setInfo] = useState("");
 
   const menuItems = [
@@ -66,11 +67,7 @@ const ParentDashboard = () => {
 
       <Content>
         {handleContentRender(activeKey)}
-        <ChatComponent
-          userRole="Representante"
-          userName="Representante Nombre"
-          userAvatar={null} 
-        />
+        {store.isChatVisible && <ChatComponent />}
       </Content>
     </div>
   );

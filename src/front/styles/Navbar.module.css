@@ -1,5 +1,5 @@
 .dashboard-icon {
-  position:relative;
+  position: relative;
   top: 10px;
   left: 10px;
   cursor: pointer;
@@ -12,8 +12,10 @@
   border: none;
   padding: 10px;
   min-width: 10%;
-  position: absolute; /* Permite ajustar su posición */
-  right: -10px; /* Ajusta el menú para que aparezca en el costado derecho */
+  position: absolute;
+  /* Permite ajustar su posición */
+  right: -10px;
+  /* Ajusta el menú para que aparezca en el costado derecho */
 
 }
 
@@ -34,19 +36,24 @@
   border: "none";
   background: "transparent";
   cursor: "pointer";
-  padding: 10px 15px; 
+  padding: 10px 15px;
 }
 
-.Toggle::after{
-  display:none; /*asi no se ve el "triángulo invertido" */
+.Toggle::after {
+  display: none;
+  /*asi no se ve el "triángulo invertido" */
 }
+
 .navbar-avatar {
-  margin-right: 20px; /* Separa el avatar del borde derecho */
+  margin-right: 20px;
+  /* Separa el avatar del borde derecho */
 }
+
 .campana {
   font-size: 1.5rem;
   padding: 10px 15px;
 }
+
 .dashboard {
   position: fixed;
   top: 0;
@@ -173,4 +180,26 @@
 
 .NavButton:active::before {
   background-color: yellow;
+}
+
+/* styles del chatComponent */
+
+.CardChat {
+  /* align-items: center; */
+  color: white;
+  font-weight: bold;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+}
+
+.chatContainer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  opacity: 0;
+}
+
+.chatContainerVisible {
+  max-height: 500px;
+  opacity: 1;
+  overflow: visible;
 }

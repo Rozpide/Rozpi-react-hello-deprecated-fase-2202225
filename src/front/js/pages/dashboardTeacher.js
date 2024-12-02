@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link } from "react-router-dom";
+import NavBar from "../component/Navbar";
 import "../../styles/components.css";
 import { Context } from "../store/appContext";
 import { LeftMenuTeacher } from "../component/leftMenuTeacher";
@@ -10,16 +10,15 @@ export const DashboardTeacher = () => {
 
     return (
         <div className="container-fluid mt-5">
-            <div className="row" >
-                <div className="col mt-5" >
+            <NavBar />
+            <div className="row">
+                <div className="col mt-5">
                     <LeftMenuTeacher />
-                    {/* <ChatComponent
-                        userRole="Docente"
-                        userName="Docente Nombre"
-                        userAvatar={null}
-                    /> */}
+                    {store.isChatVisible && <ChatComponent />}
                 </div>
             </div>
         </div>
     );
-};
+}
+
+export default DashboardTeacher;
