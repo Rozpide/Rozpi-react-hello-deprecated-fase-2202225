@@ -305,7 +305,7 @@ h1 {
 }
 /*Individual coin */
 .moreInfo {
-  
+  background-color: black;
   display: flex;
 }
 
@@ -335,22 +335,23 @@ h1 {
 .graphBox {
   height: 80vh;
   width: 80vw;
-  background-color: #0056b3;
+  background-color: white;
   margin-left: 80px;
   margin-right: 60px;
 }
 
 .graph {
-  
+
   height: 40px;
-  
+  background-color:black;
   display: flex;
   justify-content: space-between;
 }
 
 .news {
   margin: 25px;
-  background-color: #39ff14;
+  color: #39ff14;
+  background-color:white;
   height: 50vh;
   width: 80vw;
   margin-left: 80px;
@@ -363,6 +364,27 @@ h1 {
 }
 
 /* Wallet CSS */
+
+.wallet-table tbody tr {
+  border-bottom: 5px solid #ddd; /* Adds a line between rows */
+  height: 180px;
+  text-align: center;
+}
+
+.wallet-image{
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+
+
+.wallet-table thead th {
+  background-color: #f4f4f4;
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 16px;
+}
 
 /* Overall Performance CSS */
 
