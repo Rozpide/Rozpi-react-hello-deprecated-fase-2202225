@@ -16,7 +16,7 @@ const StyledAvatar = styled.img`
 const Avatar = ({ src, alt = "Avatar", size = 60, name = "", onClick }) => {
   return (
     <div className="container-fluid d-flex flex-column align-items-center text-center"
-    onClick={onClick}>
+      onClick={onClick}>
       <AvatarWrapper style={{ width: `${size}px`, height: `${size}px` }}>
         <StyledAvatar src={src} alt={alt} />
       </AvatarWrapper>

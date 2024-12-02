@@ -12,7 +12,7 @@ const FormCommon = ({ type }) => {
     const { store, actions } = useContext(Context)
     const [startDate, setStartDate] = useState(new Date());
     const [photoPreview, setPhotoPreview] = useState(null)
-    const [formData, setFormData] = useState({
+    const [formBody, setFormBody] = useState({
         name: '',
         lastName: '',
         birthDate: '',
@@ -22,24 +22,29 @@ const FormCommon = ({ type }) => {
         description: '',
         photo: null,
         classroomName: '',
-        subjectName: ''
+        subjectName: '',
+        subjectDescription: ''
     });
 
     useEffect(() => {
         if (type === 'addSubject') {
             actions.getCourses();
         }
+        if (type === 'assignSubject') {
+            actions.setSubjects();
+            actions.getTeachers();
+        }
     }, [type]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prevState => ({ ...prevState, [name]: value }));
+        setFormBody(prevState => ({ ...prevState, [name]: value }));
     };
 
     const handleUploadPhoto = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setFormData(prevState => ({ ...prevState, photo: file }));
+            setFormBody(prevState => ({ ...prevState, photo: file }));
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPhotoPreview(reader.result);
@@ -50,32 +55,48 @@ const FormCommon = ({ type }) => {
 
     const submitFormData = async (event) => {
         event.preventDefault();
-
+        const formData = new FormData(event.target);
+        //console.log(formData)
         try {
+            if (type === 'student') {
+                await actions.studentsOperations('POST', {
+                    "nombre": formBody.name,
+                    "apellido": formBody.lastName,
+                    "direccion": formBody.address,
+                    "fecha_nacimiento": formBody.birthDate,
+                })
+            }
             if (type === 'teacher') {
                 await actions.postTeacher({
-                    "nombre": formData.name,
-                    "apellido": formData.lastName,
-                    "email": formData.email,
-                    "password": formData.password,
-                    "descripcion": formData.description,
-                    "direccion": formData.address,
+                    "nombre": formBody.name,
+                    "apellido": formBody.lastName,
+                    "email": formBody.email,
+                    "password": formBody.password,
+                    "descripcion": formBody.description,
+                    "direccion": formBody.address,
                     "foto": "abc"
                 });
-
             }
             if (type === 'addClassroom') {
-                let classroom = formData.classroomName
+                let classroom = formBody.classroomName
                 await actions.postCourse({ "nombre": classroom });
             }
             if (type === 'addSubject') {
-                await actions.createSubject({ "nombre": formData.subjectName });
+                await actions.subjectsOperations('POST', { nombre: formBody.subjectName, "grado_id": formBody.grado_id, descripcion: formBody.subjectDescription })
+            }
+            if (type == 'assignSubject') {
+                const response = await actions.fetchRoute("docentes/materias", {
+                    method: "POST",
+                    body: { "id_docente": formBody.id_docente, "id_materia": formBody.id_materia },
+                    isPrivate: true,
+                    bluePrint: 'admin'
+                })
             }
             Swal.fire({
                 title: "Datos registrados correctamente",
                 icon: "success"
             });
-            setFormData({
+            setFormBody({
                 name: '',
                 lastName: '',
                 birthDate: '',
@@ -85,7 +106,8 @@ const FormCommon = ({ type }) => {
                 description: '',
                 photo: null,
                 classroomName: '',
-                subjectName: ''
+                subjectName: '',
+                subjectDescription: ''
             });
             setPhotoPreview(null);
 
@@ -102,20 +124,20 @@ const FormCommon = ({ type }) => {
         <div className="container ms-2">
 
             <form onSubmit={(e) => submitFormData(e)} className="container-welcome-teacher">
-                <h4 className="text-title d-flex justify-content-center">{`Registrar ${type === 'student' ? 'estudiante nuevo' : type === 'teacher' ? 'profesor nuevo' : type === 'addClassroom' ? 'grado nuevo' : type === 'addSubject' ? 'materia nueva' : ''}`}</h4>
+                <h4 className="text-title d-flex justify-content-center mb-4">{`Registrar ${type === 'student' ? 'estudiante nuevo' : type === 'teacher' ? 'profesor nuevo' : type === 'addClassroom' ? 'grado nuevo' : type === 'addSubject' ? 'materia nueva' : type === 'assignSubject' ? 'asignación de materia' : ''}`}</h4>
                 {/* Formulario con elementos comunes para crear profesor y estudiante */}
 
                 {(type === 'student' || type === 'teacher') && <div className="mb-3">
                     <label className="form-label text-form">Nombre:</label>
-                    <input type="text" name="name" className="form-control rounded-pill" required value={formData.name} onChange={handleChange} />
+                    <input type="text" name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
                 </div>}
                 {(type === 'student' || type === 'teacher') && <div className="mb-3">
                     <label className="form-label text-form">Apellido:</label>
-                    <input type="text" name="lastName" className="form-control rounded-pill" required value={formData.lastName} onChange={handleChange} />
+                    <input type="text" name="lastName" className="form-control rounded-pill" required value={formBody.lastName} onChange={handleChange} />
                 </div>}
                 {(type === 'student' || type === 'teacher') && <div className="mb-3">
                     <label className="form-label text-form">Email:</label>
-                    <input type="email" name="email" className="form-control rounded-pill" required value={formData.email} onChange={handleChange} />
+                    <input type="email" name="email" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
                 </div>}
                 {type === 'student' && <div className="mb-3">
                     <label className="form-label text-form">Fecha de nacimiento:</label> <br></br>
@@ -123,7 +145,7 @@ const FormCommon = ({ type }) => {
                 </div>}
                 {(type === 'student' || type === 'teacher') && <div className="mb-3">
                     <label className="form-label text-form">Dirección:</label>
-                    <input type="text" name="address" className="form-control rounded-pill" required value={formData.address} onChange={handleChange} />
+                    <input type="text" name="address" className="form-control rounded-pill" required value={formBody.address} onChange={handleChange} />
                 </div>}
 
                 {/* Elementos específicos del formuario para crear profesor */}
@@ -131,13 +153,13 @@ const FormCommon = ({ type }) => {
                 {type === 'teacher' && (
                     <div className="mb-3">
                         <label className="form-label text-form">Contraseña:</label>
-                        <input type="password" name="password" className="form-control rounded-pill" required value={formData.password} onChange={handleChange} />
+                        <input type="password" name="password" className="form-control rounded-pill" required value={formBody.password} onChange={handleChange} />
                     </div>
                 )}
                 {type === 'teacher' && (
                     <div className="mb-3">
                         <label className="form-label text-form">Descripción:</label>
-                        <textarea name="description" className="form-control teacher-description" rows="3" required value={formData.description} onChange={handleChange}></textarea>
+                        <textarea name="description" className="form-control teacher-description" rows="3" required value={formBody.description} onChange={handleChange}></textarea>
                     </div>
                 )}
                 {type === 'teacher' && (
@@ -165,16 +187,16 @@ const FormCommon = ({ type }) => {
                         <tbody>
                             <tr>
                                 <td>
-                                    <input type="text" name="name" className="form-control" required value={formData.name} onChange={(e) => handleChange(e)} />
+                                    <input type="text" name="name" className="form-control" required value={formBody.name} onChange={(e) => handleChange(e)} />
                                 </td>
                                 <td>
-                                    <input type="text" name="lastName" className="form-control" required value={formData.lastName} onChange={(e) => handleChange(e)} />
+                                    <input type="text" name="lastName" className="form-control" required value={formBody.lastName} onChange={(e) => handleChange(e)} />
                                 </td>
                                 <td>
-                                    <input type="text" name="email" className="form-control" required value={formData.email} onChange={(e) => handleChange(e)} />
+                                    <input type="text" name="email" className="form-control" required value={formBody.email} onChange={(e) => handleChange(e)} />
                                 </td>
                                 <td>
-                                    <input type="date" name="date" className="form-control" required value={formData.date} onChange={(e) => handleChange(e)} />
+                                    <input type="date" name="date" className="form-control" required value={formBody.date} onChange={(e) => handleChange(e)} />
                                 </td>
                             </tr>
                         </tbody>
@@ -198,16 +220,16 @@ const FormCommon = ({ type }) => {
                         <tbody className="table-design">
                             <tr>
                                 <td>
-                                    <input type="text" name="name" className="form-control" required value={formData.name} onChange={(e) => handleChange(e)} />
+                                    <input type="text" name="name" className="form-control" required value={formBody.name} onChange={(e) => handleChange(e)} />
                                 </td>
                                 <td>
-                                    <input type="text" name="lastName" className="form-control" required value={formData.lastName} onChange={(e) => handleChange(e)} />
+                                    <input type="text" name="lastName" className="form-control" required value={formBody.lastName} onChange={(e) => handleChange(e)} />
                                 </td>
                                 <td>
-                                    <input type="text" name="email" className="form-control" required value={formData.email} onChange={(e) => handleChange(e)} />
+                                    <input type="text" name="email" className="form-control" required value={formBody.email} onChange={(e) => handleChange(e)} />
                                 </td>
                                 <td>
-                                    <textarea name="description" className="form-control" rows="3" required value={formData.description} onChange={(e) => handleChange(e)}></textarea>
+                                    <textarea name="description" className="form-control" rows="3" required value={formBody.description} onChange={(e) => handleChange(e)}></textarea>
                                 </td>
                                 <td>
                                     <input type="file" accept="image/*" className="form-control select-image" onChange={handleUploadPhoto} required />
@@ -225,7 +247,7 @@ const FormCommon = ({ type }) => {
                 {type === "addClassroom" && (
                     <div className="mb-3">
                         <label className="form-label text-title">Ingresa un nombre para crear un nuevo grado:</label>
-                        <input type="text" name="classroomName" className="form-control rounded-pill" required value={formData.classroomName} placeholder="1er Grado..." onChange={(e) => handleChange(e)} />
+                        <input type="text" name="classroomName" className="form-control rounded-pill" required value={formBody.classroomName} placeholder="1er Grado..." onChange={(e) => handleChange(e)} />
                     </div>
                 )}
 
@@ -238,10 +260,10 @@ const FormCommon = ({ type }) => {
                     < div className="mb-3">
                         <label className="form-label text-title">Selecciona el grado al que vas a asignar la materia:</label>
                         <div className="input-group" required>
-                            <select className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
+                            <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
                                 <option value="" disabled selected>Opciones...</option>
                                 {store.grados.map(grado =>
-                                    <option key={grado.id} value="grado.id">{grado.nombre}</option>
+                                    <option key={grado.id} value={grado.id}>{grado.nombre}</option>
 
                                 )}
                             </select>
@@ -254,12 +276,48 @@ const FormCommon = ({ type }) => {
                     type === "addSubject" && (
                         <div className="mb-3">
                             <label className="form-label text-title">Ingresa un nombre para crear una nueva materia:</label>
-                            <input type="text" name="subjectName" className="form-control rounded-pill" required value={formData.subjectName} onChange={handleChange} />
+                            <input type="text" name="subjectName" className="form-control rounded-pill" required value={formBody.subjectName} onChange={handleChange} />
+
+                            <label className="form-label text-title mt-3">Ingresa una descripción simple para la materia:</label>
+                            <textarea name="subjectDescription" className="form-control teacher-description" rows="5" required value={formBody.subjectDescription} onChange={(e) => handleChange(e)}></textarea>
                         </div>
+
                     )
                 }
 
-                <button type="submit" className="btn btn-outline-register">Registrar</button>
+                {/* Formulario para asignar materias a profesores */}
+
+                {type === "assignSubject" && (
+                    <div className="mb-3 d-flex justify-content-between mb-5">
+                        <div className="d-flex flex-column ms-4">
+                            <label className="form-label text-title">Selecciona un profesor:</label>
+                            <div className="input-group" required>
+                                <select name="id_docente" className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
+                                    <option value="" disabled selected>Opciones...</option>
+                                    {store.profesores.map(profesor =>
+                                        <option key={profesor.id} value={profesor.id}>{profesor.nombre + " " + profesor.apellido}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="d-flex flex-column me-4">
+                            <label className="form-label text-title">Selecciona una materia:</label>
+                            <div className="input-group" required>
+                                <select name="id_materia" className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
+                                    <option value="" disabled selected>Opciones...</option>
+                                    {store.materias.map(materia =>
+                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className="d-flex justify-content-center mt-5">
+                    <button type="submit" className="btn btn-outline-register">Registrar</button>
+                </div>
             </form >
         </div >
     );
@@ -292,6 +350,10 @@ export const LeftMenuAdmin = () => {
         setActiveContent("addSubject");
     };
 
+    const handleAssignSubjectForm = () => {
+        setActiveContent("assignSubject");
+    }
+
     const renderContent = () => {
         switch (activeContent) {
             case "estudiantes":
@@ -306,6 +368,8 @@ export const LeftMenuAdmin = () => {
                 return <FormCommon type="addClassroom" />;
             case "addSubject":
                 return <FormCommon type="addSubject" />;
+            case "assignSubject":
+                return <FormCommon type="assignSubject" />;
             default:
                 return (
                     <div className="container-fluid container-welcome-parent mt-3">
@@ -322,10 +386,10 @@ export const LeftMenuAdmin = () => {
     };
 
     return (
-        <div className="container-fluid mt-3">
-            <div className="row flex-nowrap" >
-                <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark rounded-start">
-                    <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+        <div className="mt-0">
+            <div className="row flex-nowrap " >
+                <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 rounded-start left-menu-background">
+                    <div className="d-flex flex-column mt-5 align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
                         <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span className="fs-5 d-none d-sm-inline ">Menú</span>
                         </Link>
@@ -388,15 +452,21 @@ export const LeftMenuAdmin = () => {
                                             <span className="d-none d-sm-inline list-menu-item ms-2" onClick={handleAddSubjectForm}>Materias</span>
                                         </Link>
                                     </li>
+                                    <li>
+                                        <Link to="#" className="nav-link px-0 text-white">
+                                            <i className="fs-4 bi-pin-angle"></i>
+                                            <span className="d-none d-sm-inline list-menu-item ms-2" onClick={handleAssignSubjectForm}>Asignar</span>
+                                        </Link>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
                         <hr />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center render-content col py-3 "
+                <div className="d-flex justify-content-center render-content col mt-3 py-3 "
                     style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
-                    <div className="welcome-message">
+                    <div className="welcome-message mt-5">
                         {renderContent()}
                     </div>
                 </div>

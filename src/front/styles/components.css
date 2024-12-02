@@ -1,5 +1,13 @@
-/* estilos para el renderizado del contenedor de los formularios */
+/* estilo para el contenedor del menú lateral */
 
+.left-menu-background {
+  background: linear-gradient(180deg,
+      rgba(43, 45, 66, 1) 0%,
+      rgba(28, 124, 153, 1) 63%,
+      rgba(0, 212, 255, 1) 100%)
+}
+
+/* estilos para el renderizado del contenedor de los formularios */
 
 .render-content {
   background-size: cover;
@@ -96,7 +104,17 @@
   transition: all 0.2s ease-out;
 }
 
+.btn-outline-register:hover {
+  background: rgb(231, 236, 255);
+  color: black;
+  box-shadow: 0 0 30px 5px rgba(0, 142, 236, 0.815);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
 .btn-outline-register:hover::before {
+  background-color: #fff;
   -webkit-animation: sh02 0.5s 0s linear;
   -moz-animation: sh02 0.5s 0s linear;
   animation: sh02 0.5s 0s linear;
@@ -154,6 +172,7 @@
 
 .teacher-description {
   border-radius: 1.5rem;
+  height: 6rem
 }
 
 /* Estilo para tablas en las secciones de edición de datos*/

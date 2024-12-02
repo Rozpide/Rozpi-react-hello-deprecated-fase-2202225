@@ -29,6 +29,10 @@ const injectContext = PassedComponent => {
              * store, instead use actions, like this:
              **/
             state.actions.loadSession() // <---- calling this function from the flux.js actions
+            if (state.store.token) {
+                state.actions.fetchRoute("check", { isPrivate: true, bluePrint: "session" })
+            }
+
         }, []);
 
         // The initial value for the context is not null anymore, but the current state of this component,

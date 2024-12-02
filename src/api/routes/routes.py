@@ -4,12 +4,12 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 import requests
 from flask import Flask, request, jsonify, Blueprint
 from marshmallow import ValidationError
-from api.models import Docente, db, User, EmailAuthorized, BlockedTokenList, Role
+from api.models import Docente, db, User, EmailAuthorized, BlockedTokenList, Role, Messages
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt
-from api.schemas import UserSchema
-from api.services.email_services import send_recovery_email
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity
+from api.schemas.schemas import UserSchema, MessagesSchema
+from api.services.external_services import send_recovery_email, get_image, upload_image
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -93,7 +93,8 @@ def handle_login():
     access_token = create_access_token(identity=str(user.id), additional_claims={"role":role.id})
 
     return jsonify({"token": access_token,
-                    "role": role.nombre})
+                    "role": role.nombre,
+                    "user_id": user.id})
 
 
 @api.route('/session/logout', methods=['POST'])
@@ -106,9 +107,35 @@ def handle_logout():
 
     return jsonify({"msg": "Logged Out"}),200
 
+@api.route('/profile/picture', methods=['PUT'])
+@jwt_required()
+def handle_profile_pic():
+    user = User.query.get(get_jwt_identity())
+    body = request.files["profilePicture"]
+    
+    if not user:
+        return jsonify({"msg": "User not found"}),404
+    
+    if not body:
+        return jsonify({"msg": "Missing Field"}),400
+    
+    return upload_image(body, user.id)
 
+@api.route('/profile/picture', methods=['GET'])
+@jwt_required()
+def get_profile_pic():
+    user = User.query.get(get_jwt_identity())
+    
+    if not user:
+        return jsonify({"msg": "User not found"}),404
 
-@api.route('/teachers/info', methods=['GET'])
+    
+    foto = get_image(user.foto)
+    
+    return jsonify({"url": foto})
+    
+
+@api.route('/info/teachers', methods=['GET'])
 def get_teachers_cards():
      teachers = Docente.query.all()
      
@@ -117,7 +144,7 @@ def get_teachers_cards():
      
      return jsonify({"docentes": [{"fullName": f"{teacher.nombre} {teacher.apellido}",
                                    "descripcion": teacher.descripcion,
-                                   "foto": teacher.foto} for teacher in teachers]}),200
+                                   "foto": get_image(teacher.foto) if teacher.foto else ""} for teacher in teachers]}),200
 
 @api.route('/recoverypassword', methods=['POST'])
 def handle_change_password_request():
@@ -140,4 +167,138 @@ def handle_change_password_request():
 @api.route('/resetpassword', methods=['PUT'])
 @jwt_required()
 def handle_password_change():
+    claims = get_jwt()
+    token_type = claims["type"]
+    body = request.get_json()
+    user = User.query.get(get_jwt_identity())
+    if not body:
+        return jsonify({"msg": "Missing body"}),400
+      
+    if not user:
+        return jsonify({"msg": "User not found"}),404
+    
+    newPassword = body.get("password")
+    
+    if not newPassword:
+        return jsonify({"msg":"Missing required field"}),400
+    
+    user.password = bcrypt.generate_password_hash(newPassword).decode('utf-8')
+    
+    if token_type == "password":
+        token = BlockedTokenList(jti=claims["jti"])
+        db.session.add(token)
+    
+    
+    db.session.commit()
+    return jsonify({"msg": "Password reset successfully"}),200
+
+
+
+@api.route("/session/schedule", methods=['GET'])
+@jwt_required()
+def get_calendar_info():
     pass
+
+@api.route("/session/check", methods=['GET'])
+@jwt_required()
+def check_token_expired():
+    return jsonify({"msg":"Valid session"}),200
+
+
+# Comunicacion
+@api.route("/messages/contacts")
+@jwt_required()
+def get_user_contacts():
+    user = User.query.get(get_jwt_identity())
+    user_role = user.role
+    if not user:
+        return jsonify({"msg":"User not found"}),404
+    
+    print(user_role.nombre)
+    
+    try:
+        if user_role.nombre.lower() == "representante":
+            contactos = User.query.filter(User.role_id !=  user_role.id).all()
+        else:
+            contactos = User.query.filter(User.id != user.id).all()
+        contactos_serializados = [
+            {
+                "nombre": f"{contacto.nombre} {contacto.apellido}",
+                "user_id": contacto.id,
+                "rol": contacto.role.nombre
+            }
+            for contacto in contactos
+        ]
+        
+        return jsonify(contactos_serializados),200
+    except Exception as e:
+        print(str(e))
+        return jsonify({"msg": "Something Happened"}),400
+
+
+@api.route("/messages/send", methods=['POST'])
+@jwt_required()
+def send_message():
+    schema = MessagesSchema()
+    body = request.get_json()
+    sender = User.query.get(get_jwt_identity())
+    
+    if not body:
+        return jsonify({"msg": "Missing Body"}),400
+    
+    if not sender:
+        return jsonify({"msg": "User not found"}),404
+    
+    body["sender_id"] = sender.id
+    
+    try:
+        data = schema.load(body)
+        message = Messages(**data)
+        db.session.add(message)
+        db.session.commit()
+    except ValidationError as e:
+        db.session.rollback()
+        return jsonify(e.messages),400
+    
+    return jsonify({"msg": "Message sent successfully"})
+    
+    
+@api.route("/messages/get", methods=['GET'])
+@jwt_required()
+def get_messages():
+    schema = MessagesSchema(many=True)
+    receiver_id = get_jwt_identity()
+    
+    user = User.query.get(receiver_id)
+    
+    if not user:
+        return jsonify({"msg": "User not found"}),404
+    
+    messages = Messages.query.filter_by(receiver_id=receiver_id).all()
+    
+    return jsonify(schema.dump(messages))
+    
+
+@api.route("/messages/read", methods=['PUT'])
+@jwt_required()
+def read_messages():
+    body = request.get_json()
+    
+    if not body:
+        return jsonify({"msg": "Missing body"}),400
+    
+    message_id = body.get("message_id", None)
+    
+    if not message_id:
+        return jsonify({"msg":"Id field not found"}),400
+    mensaje = Messages.query.get(message_id)
+    
+    if not mensaje:
+        return jsonify({"msg": "Message not found"}),404
+    
+    if  mensaje.read == False:
+        mensaje.read = True
+        db.session.commit()
+        return jsonify({"msg": "Ok"}),200
+    
+    return jsonify({"msg":"Already Read"}),200
