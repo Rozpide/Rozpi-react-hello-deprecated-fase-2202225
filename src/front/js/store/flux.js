@@ -1087,7 +1087,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             loadingCoins: true,
             currentCoinId: null,
             currency: "usd",
-            timeFrame: 7,
+            timeFrame: "7",
             currentCoinPriceData: [],
             showContactModal: false,
             showModal: false,
@@ -1096,6 +1096,15 @@ const getState = ({ getStore, getActions, setStore }) => {
             showFavorites: false,
         },
         actions: {
+            setCurrentCoinId: (id) => {
+                setStore({ currentCoinId: id })
+            },
+            setCurrency: (currency) => {
+                setStore({ currency: currency })
+            },
+            setTimeFrame: (days) => {
+                setStore({ timeFrame: days })
+            },
             setShowContactModal: () => {
                 setStore({ showContactModal: !getStore().showContactModal })
             },
@@ -1131,9 +1140,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getPriceData: () => {
                 fetch(`https://api.coingecko.com/api/v3/coins/${getStore.currentCoinId}/market_chart?vs_currency=${getStore.currency}days=${getStore.timeFrame}`)
-					.then((res) => res.json())
-					.then((response) => {setStore({currentCoinPriceData: response})})
-					.catch((err) => console.log(err))
+                    .then((res) => res.json())
+                    .then((response) => { setStore({ currentCoinPriceData: response.prices }) })
+                    .catch((err) => console.log(err))
             },
 
             signUp: (username, password) => {
