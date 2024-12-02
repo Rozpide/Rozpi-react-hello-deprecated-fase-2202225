@@ -4,12 +4,6 @@
 
 /* Navbar CSS */
 
-
-
-
-
-
-
 /* Footer CSS */
 .footer {
   border-top: 1px solid white;
@@ -47,7 +41,6 @@
   height: 600px;
 } */
 
-
 .contact {
   height: 85vh;
   width: 36%;
@@ -63,25 +56,13 @@
   width: 100%;
   height: 50vh;
   min-height: 20vh;
-  
 }
-.close{
+.close {
   font-size: 25px;
 }
-.mainModal{
+.mainModal {
   border-radius: 5px;
-  
 }
-
-
-
-
-
-
-
-
-
-
 
 /* Landing page CSS */
 
@@ -160,7 +141,6 @@
     animation-range-end: 50vh */
 }
 
-
 /* Listing page CSS */
 
 .listing-page {
@@ -192,19 +172,16 @@ h1 {
   border-bottom: 1px solid #eaeaea;
 }
 
-
 .coin-table tbody tr:hover {
   transform: translateY(-5px);
-  transition: transform ;
+  transition: transform;
 }
-
 
 .coin-info {
   display: flex;
   align-items: center;
-  gap: 10px; 
+  gap: 10px;
 }
-
 
 .coin-image {
   width: 50px;
@@ -240,7 +217,7 @@ h1 {
   background-color: #f9f9f9;
 }
 
-.coin-favorite{
+.coin-favorite {
   display: flex;
   padding: 8px 15px;
   background: none;
@@ -260,7 +237,7 @@ h1 {
   width: 11vw !important;
 }
 .nav-link {
-  color: #39ff14
+  color: #39ff14;
 }
 .nav-pills .nav-link.active {
   background-color: #39ff14;
@@ -271,7 +248,6 @@ h1 {
   /* width: 90vw; */
   width: fit-content;
 }
-
 
 /* Favorites CSS */
 
@@ -322,6 +298,65 @@ h1 {
 
 .favMoreInfoButton:hover {
   box-shadow: 0px 0px 35px 5px #39ff14;
+}
+
+/*Individual coin */
+.moreInfo {
+  
+  display: flex;
+}
+
+.mainInfo {
+  display: flex;
+  flex-direction: column;
+  width: 92vw;
+}
+
+.timeFrame {
+  display: flex;
+  background-color: #0056b3;
+}
+
+.currency {
+  display: flex;
+  justify-content: end;
+}
+
+.backToList {
+  display: block;
+  background-color: black;
+  color: #39ff14;
+  width: 8vw;
+}
+
+.graphBox {
+  height: 80vh;
+  width: 80vw;
+  background-color: #0056b3;
+  margin-left: 80px;
+  margin-right: 60px;
+}
+
+.graph {
+  
+  height: 40px;
+  
+  display: flex;
+  justify-content: space-between;
+}
+
+.news {
+  margin: 25px;
+  background-color: #39ff14;
+  height: 50vh;
+  width: 80vw;
+  margin-left: 80px;
+  margin-right: 60px;
+}
+
+.coinName {
+  display: flex;
+  flex-direction: row;
 }
 
 /* Wallet CSS */
