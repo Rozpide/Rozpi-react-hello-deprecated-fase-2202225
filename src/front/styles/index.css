@@ -256,12 +256,9 @@ h1 {
 } */
 
 #favoriteScreen {
-  /* display: flex;
-  flex-wrap: wrap; */
   background-color: black;
   justify-content: center;
   margin-left: 0;
-  
 }
 
 .favCardOut {
@@ -273,6 +270,13 @@ h1 {
   border: 2px solid #39ff14;
   background-color: #90978f;
   border-radius: 2%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 3px 1px #39ff14;
+}
+
+.favCardIn:hover {
+  transform: translateY(-6px); 
+  box-shadow: 0 0 10px 7px #39ff14; 
 }
 
 .favCardTop {
