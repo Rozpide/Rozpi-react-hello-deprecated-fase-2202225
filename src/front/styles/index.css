@@ -302,7 +302,7 @@ h1 {
 
 /*Individual coin */
 .moreInfo {
-  
+  background-color: black;
   display: flex;
 }
 
@@ -332,22 +332,23 @@ h1 {
 .graphBox {
   height: 80vh;
   width: 80vw;
-  background-color: #0056b3;
+  background-color: white;
   margin-left: 80px;
   margin-right: 60px;
 }
 
 .graph {
-  
+
   height: 40px;
-  
+  background-color:black;
   display: flex;
   justify-content: space-between;
 }
 
 .news {
   margin: 25px;
-  background-color: #39ff14;
+  color: #39ff14;
+  background-color:white;
   height: 50vh;
   width: 80vw;
   margin-left: 80px;
