@@ -43,13 +43,13 @@
   background-color: white;
   margin: auto;
 }
-.firstContactDiv {
+/* .firstContactDiv {
   height: 600px;
-}
+} */
 
 
 .contact {
-  height: 80%;
+  height: 85vh;
   width: 36%;
   color: black;
   background-color: silver;
@@ -61,8 +61,8 @@
 }
 .text {
   width: 100%;
-  max-height: 380px;
-  min-height: 380px;
+  height: 50vh;
+  min-height: 20vh;
   
 }
 .close{
@@ -100,10 +100,6 @@
   animation-timeline: view();
   animation-range-start: cover;
   animation-range-end: 85vh;
-}
-
-#listingPreview {
-  margin: 0;
 }
 
 .previewPhoto {
@@ -154,7 +150,7 @@
 
 .blurb {
   font-size: 30px;
-  width: 550px;
+  width: 35vw;
   margin-bottom: 2vh;
   color: #39ff14;
   /* scale: .1; opacity: 0;
@@ -258,10 +254,10 @@ h1 {
   display: flex;
 }
 #togglePages {
-  display:block;
+  /* display:block; */
   background-color: black;
   color: #39ff14;
-  height: 100vh;
+  width: 11vw !important;
 }
 .nav-link {
   color: #39ff14
@@ -272,26 +268,56 @@ h1 {
   text-decoration: black;
 }
 #dashboardContent {
+  /* width: 90vw; */
+  width: fit-content;
 }
 
 
 /* Favorites CSS */
-.fav{
+
+/* .fav{
   height: 85vh;
-}
+} */
 
 #favoriteScreen {
-  display: flex
+  /* display: flex;
+  flex-wrap: wrap; */
+  background-color: black;
+  justify-content: center;
+  margin-left: 0;
+  
 }
 
-.favCard {
+.favCardOut {
+  padding: 5vw;
+  background-color: black;
+}
 
+.favCardIn {
+  border: 2px solid #39ff14;
+  background-color: #90978f;
+  border-radius: 2%;
 }
 
 .favCardTop {
+  padding-top: 2vh;
   height: 25vh;
   width: 20vw;
-  border: 2px solid black;
+  border-bottom: 2px solid black; 
+}
+
+.favCardBody {
+  background-color: #90978f;
+}
+
+.favMoreInfoButton {
+  background-color: #39ff14;
+  border-color: black;
+  border-width: 1px;
+}
+
+.favMoreInfoButton:hover {
+  box-shadow: 0px 0px 35px 5px #39ff14;
 }
 
 /* Wallet CSS */
