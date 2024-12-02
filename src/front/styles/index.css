@@ -1,3 +1,18 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+.pet-form .form-label{
+    font-family: 'Aboreto';
+    font-weight: 400;
+    font-size: 16px;
+}
+.pet-form .form-control, .form-select{
+    font-family: 'Aboreto';
+    font-weight: 400;
+    font-size: 12px; 
+}
+
+.btn-publicar {
+    background-color: #003459;
+   font-family: 'ADLaM Display';
+}
