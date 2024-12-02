@@ -294,6 +294,7 @@ h1 {
   border: 2px solid #39ff14;
   background-color: #90978f;
   border-radius: 2%;
+  width: 20vw;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 0 3px 1px #39ff14;
 }
@@ -306,7 +307,6 @@ h1 {
 .favCardTop {
   padding-top: 2vh;
   height: 25vh;
-  width: 20vw;
   border-bottom: 2px solid black; 
 }
 
@@ -324,6 +324,9 @@ h1 {
   box-shadow: 0px 0px 35px 5px #39ff14;
 }
 
+.row {
+  margin-right: 0;
+}
 /* Wallet CSS */
 
 /* Overall Performance CSS */

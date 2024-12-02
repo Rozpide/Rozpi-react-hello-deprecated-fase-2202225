@@ -1085,6 +1085,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             wallet: [],
             coins: [],
             loadingCoins: true,
+            currentCoinId: null,
+            currency: "usd",
+            timeFrame: 7,
+            currentCoinPriceData: [],
             showContactModal: false,
             showModal: false,
             showOverallHoldings: false,
@@ -1124,6 +1128,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ loadingCoins: false });
                 }
             },
+
+            getPriceData: () => {
+                fetch(`https://api.coingecko.com/api/v3/coins/${getStore.currentCoinId}/market_chart?vs_currency=${getStore.currency}days=${getStore.timeFrame}`)
+					.then((res) => res.json())
+					.then((response) => {setStore({currentCoinPriceData: response})})
+					.catch((err) => console.log(err))
+            },
+
             signUp: (username, password) => {
                 console.log(`Sign-up request for: ${username}`);
                 // Implement API call or logic for user registration
