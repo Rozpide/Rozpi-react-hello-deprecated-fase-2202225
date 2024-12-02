@@ -14,13 +14,16 @@ export const Favorites = () => {
                     <div className="favCardOut card col-4" >  {/* style={{ width: "20vw"}} */}
                         <div className="favCardIn">
                             <div className="favCardTop card-img-top">
-                                <SparklineChart data={favorite.sparkline_in_7d.price} width={290} height={150} />
+                                <SparklineChart data={favorite.sparkline_in_7d.price} width={300} height={150} />
                             </div>
                             <div className="favCardBody card-body">
                                 <h5 className="card-title">{favorite.name}</h5>
                                 <p className="card-text">{favorite.symbol}</p>
                                 <p className="card-text"><strong>Current Price:</strong> ${favorite.current_price}</p>
-                                <a href="#" className="favMoreInfoButton btn">More Information</a>
+                                <Link to={"/moreInfo" }>
+								<span className="favMoreInfoButton btn">More Information</span>
+							   </Link>
+                            
                             </div>
                         </div>
                     </div>

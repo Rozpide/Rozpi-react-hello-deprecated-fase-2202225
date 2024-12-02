@@ -65,7 +65,7 @@ export const Navbar = () => {
                             <li><span className="dropdown-item-text">Hello, {username || "Guest"}</span></li>
                             <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
                             <li><Link className="dropdown-item" to="/userdashboard#favorites" onClick={() => actions.setShowFavorites()}> Favorites</Link></li>
-                            <li><Link className="dropdown-item" to="/userdashboard">Dashboard</Link></li>
+                            <li><Link className="dropdown-item" to="/userdashboard#overallHoldings" onClick={() => actions.setShowOverallHoldings()}>Dashboard</Link></li>
                             <li><hr className="dropdown-divider" /></li>
                             <li><button className="dropdown-item" onClick={() => actions.logout()}>Logout</button></li>
                         </ul>
