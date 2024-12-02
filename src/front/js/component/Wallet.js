@@ -37,6 +37,7 @@ export const Wallet = () => {
                     <th>Name:</th>
                     <th>Current Price:</th>
                     <th>Quantity:</th>
+                    <th>Total Spent:</th>
                     <th>Graph:</th>
                     <th>Options:</th>
                     <th>Favorite:</th>
@@ -57,6 +58,7 @@ export const Wallet = () => {
                             </div>
                         </td>
                         <td>${wallet.current_price.toLocaleString()}</td>
+                        <td>0</td>
                         <td>0</td>
                         <td>
                             <SparklineChart data={wallet.sparkline_in_7d.price} width={150} height={50} />
