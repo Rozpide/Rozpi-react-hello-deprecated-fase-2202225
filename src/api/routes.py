@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from api.models import db, User
 
 api = Blueprint('api', __name__)
@@ -38,7 +39,7 @@ def register_user():
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
-# Login a user
+# Login a user and return an access token
 @api.route('/login', methods=['POST'])
 def login_user():
     data = request.get_json()  # Parse JSON from the request
@@ -55,11 +56,28 @@ def login_user():
     if not user or not check_password_hash(user.password, password):
         return jsonify({"error": "Invalid email or password"}), 401
 
-    return jsonify({"message": "Login successful", "user": user.serialize()}), 200
+    # Create a token
+    access_token = create_access_token(identity=user.id)
+    return jsonify({"message": "Login successful", "access_token": access_token, "user": user.serialize()}), 200
 
-# Example endpoint to retrieve all users
+# Example of a protected route
+@api.route('/protected', methods=['GET'])
+@jwt_required()
+def protected_route():
+    current_user_id = get_jwt_identity()  # Get the user ID from the token
+    user = User.query.get(current_user_id)
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({"message": f"Welcome, {user.email}!", "user": user.serialize()}), 200
+
+# Get all users (admin functionality, protected)
 @api.route('/users', methods=['GET'])
+@jwt_required()
 def get_all_users():
+    current_user_id = get_jwt_identity()
+    # You can add logic here to restrict access to admin users only
     users = User.query.all()
     return jsonify([user.serialize() for user in users]), 200
 
