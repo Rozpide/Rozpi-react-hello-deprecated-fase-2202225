@@ -1,37 +1,28 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Context } from "../store/appContext"; 
+import React, { useContext, useEffect } from "react";
+import { Context } from "../store/appContext";
 import { SparklineChart } from "./sparklineChart";
 import "../../styles/index.css";
 
 export const Listing = () => {
-    const [coins, setCoins] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const { store, actions } = useContext(Context); 
+    const { store, actions } = useContext(Context);
 
-    useEffect(() => {
-        const fetchCoins = async () => {
-            try {
-                const response = await fetch(
-                    "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=30&page=1&sparkline=true"
-                );
-                const data = await response.json();
-                setCoins(data);
-            } catch (error) {
-                console.error("Error fetching coins:", error);
-            }
-            setLoading(false);
-        };
 
-        fetchCoins();
-    }, []);
+    if (!store.coins || store.coins.length === 0) {
+        console.log("Fetching coins data...");
+        actions.fetchCoins();
+    }
 
-    if (loading) {
+    if (store.loading) {
         return <div>Loading...</div>;
+    }
+
+    if (store.coins.length === 0) {
+        return <div>No coins available.</div>;
     }
 
     const handleFavoriteToggle = (coin) => {
         if (store.favorites.some((favCoin) => favCoin.id === coin.id)) {
-            actions.removeFromFavs(coin.id); 
+            actions.removeFromFavs(coin.id);
         } else {
             actions.addToFavs(coin.id, coin.name, coin.symbol, coin.current_price);
         }
@@ -52,7 +43,7 @@ export const Listing = () => {
                 </tr>
             </thead>
             <tbody>
-                {coins.map((coin) => (
+                {store.coins.map((coin) => (
                     <tr key={coin.id}>
                         <td>
                             <div className="coin-info">
@@ -65,7 +56,7 @@ export const Listing = () => {
                         </td>
                         <td>${coin.current_price.toLocaleString()}</td>
                         <td>
-                            <SparklineChart data={coin.sparkline_in_7d.price} width={150} height={50}/>
+                            <SparklineChart data={coin.sparkline_in_7d.price} width={150} height={50} />
                         </td>
                         <td>
                             <span
@@ -83,9 +74,8 @@ export const Listing = () => {
                         </td>
                         <td>
                             <button
-                                className={`star-button ${
-                                    store.favorites.some((favCoin) => favCoin.id === coin.id) ? "favorited" : ""
-                                }`}
+                                className={`star-button ${store.favorites.some((favCoin) => favCoin.id === coin.id) ? "favorited" : ""
+                                    }`}
                                 onClick={() => handleFavoriteToggle(coin)}
                             >
                                 {store.favorites.some((favCoin) => favCoin.id === coin.id) ? "★" : "☆"}

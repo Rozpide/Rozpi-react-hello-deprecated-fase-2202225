@@ -1,7 +1,7 @@
 import React from 'react';
 import { LineChart, Line, YAxis } from 'recharts';
 
-export const SparklineChart = ({ data, width, height}) => {
+export const SparklineChart = ({ data, width, height }) => {
     const chartData = data.map((price, index) => ({ index, price }));
 
     return (
