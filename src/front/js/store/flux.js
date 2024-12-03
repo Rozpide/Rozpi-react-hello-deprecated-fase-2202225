@@ -21,7 +21,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 		actions: {
 			// Use getActions to call a function within a fuction
 			fetchRoute: async (endpoint, { method = 'GET', body = '', isPrivate = false, bluePrint = '' } = {}) => {
-				if (isPrivate) getActions().loadSession();
+				if (isPrivate && !getStore().token) getActions().loadSession();
 
 				const headers = {
 					'Content-Type': 'application/json',
@@ -321,7 +321,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			}, getContacts: async () => {
 				try {
-					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "msg" })
+					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "messages" })
 					setStore({ "contactos": response })
 				} catch (error) {
 					console.error(error.message)
@@ -329,12 +329,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			}, getMessages: async () => {
 				try {
-					let response = await getActions().fetchRoute("get", { isPrivate: true, bluePrint: "msg" })
+					let response = await getActions().fetchRoute("get", { isPrivate: true, bluePrint: "messages" })
 					setStore({ "mensajes": response })
 				} catch (error) {
 					console.error(error.message)
 					return
 				}
+			}, changePassword: async (newPassword) => {
+				const actions = getActions()
+
+				try {
+					const response = await actions.fetchRoute("reset", { method: 'PUT', isPRivate: true, bluePrint: "password", body: newPassword })
+
+					return { "msg": "Contraseña Actualizada Correctamente" }
+				} catch (error) {
+					console.error(error.message)
+					return { "msg": "Error al actualizar la contraseña" }
+				}
+
 			},
 			handleUserAvatarUpdate: (avatarUrl) => {
 				setStore({ userAvatar: avatarUrl }); // Actualiza el avatar del usuario
@@ -343,25 +355,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const store = getStore();
 				setStore({ isChatVisible: !store.isChatVisible }); // Alterna el estado del chat
 			},
-			getMessages: async () => {
-				try {
-					const data = await getActions().fetchRoute("messages", {
-						method: "GET",
-						isPrivate: true,
-						bluePrint: "msg"
-					});
-					setStore({ mensajes: data });
-				} catch (error) {
-					console.error("Error al obtener mensajes:", error);
-				}
-			},
 			sendMessage: async (message) => {
 				try {
 					await getActions().fetchRoute("messages", {
 						method: "POST",
-						body: message,
+						body: {},
 						isPrivate: true,
-						bluePrint: "msg"
+						bluePrint: "messages"
 					});
 
 					await getActions().getMessages();

@@ -6,9 +6,11 @@ import { Home } from "./pages/home";
 import injectContext from "./store/appContext";
 import NavBar from "./component/Navbar";
 import { Footer } from "./component/footer";
+import { DashboardAdmin } from "./pages/dashboardAdmin";
+import { DashboardTeacher } from "./pages/dashboardTeacher";
 import RegistrationForm from './component/RegistrationForm';
 import LoginForm from './component/LoginForm';
-import { Dashboard } from "./pages/Dashboard.jsx"; // Importa el nuevo Dashboard unificado
+import ParentDashboard from "./pages/ParentDashboard.jsx";
 import ProtectedRoute from "./component/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";
 
@@ -34,17 +36,30 @@ const Layout = () => {
                         <Route element={<RegistrationForm />} path="/register" />
                         <Route element={<LoginForm />} path="/login" />
 
-                        {/* Ruta Unificada del Dashboard */}
                         <Route
-                            path="/dashboard"
+                            path="/dashboard/admin"
                             element={
-                                <ProtectedRoute roles={["admin", "docente", "representante"]}>
-                                    <Dashboard />
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardAdmin />
                                 </ProtectedRoute>
                             }
                         />
+                        <Route
+                            path="/dashboard/teacher"
+                            element={
+                                <ProtectedRoute roles={["docente"]}>
+                                    <DashboardTeacher />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/parent/*"
+                            element={
+                                <ProtectedRoute roles={["representante"]}>
+                                    <ParentDashboard />
+                                </ProtectedRoute>
+                            } />
 
-                        {/* Ruta para no autorizados */}
                         <Route element={<Unauthorized />} path="/unauthorized" />
                     </Routes>
                     <Footer />

@@ -35,6 +35,7 @@ const StyledRow = styled.div`
   justify-content: space-between;
   padding: 10px 20px;
   color: white;
+  backdrop-filter: blur(2.9px);
 `;
 
 const Column = styled.div`

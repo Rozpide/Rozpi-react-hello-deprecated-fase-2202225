@@ -13,11 +13,20 @@ const StyledAvatar = styled.img`
   height: 100%;
   objectfit: cover;
 `;
-const Avatar = ({ src, alt = "Avatar", size = 60, name = "", onClick }) => {
+const Avatar = ({
+  src,
+  alt = "Avatar",
+  size = 60,
+  name = "",
+  onClick = () => { },
+  className = "",
+}) => {
   return (
-    <div className="container-fluid d-flex flex-column align-items-center text-center"
-      onClick={onClick}>
-      <AvatarWrapper style={{ width: `${size}px`, height: `${size}px` }}>
+    <div className="container-fluid d-flex flex-column align-items-center text-center">
+      <AvatarWrapper
+        className={className}
+        style={{ width: `${size}px`, height: `${size}px` }}
+        onClick={onClick}>
         <StyledAvatar src={src} alt={alt} />
       </AvatarWrapper>
       <h6 className="text-light">{name}</h6>

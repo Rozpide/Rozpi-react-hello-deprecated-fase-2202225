@@ -32,3 +32,15 @@ const formatDate = (date) => {
 
     return `${year}-${month}-${day}`;
 }
+
+export const get_student_avg = (student) => {
+
+    let avg = student.materias.map((materia) => {
+        return materia.promedio
+    }).reduce((a, b) => a + b)
+
+    return {
+        "nombre": student.nombre,
+        "promedio": avg
+    }
+}
