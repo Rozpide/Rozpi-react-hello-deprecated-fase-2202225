@@ -21,17 +21,13 @@ const LoginForm = () => {
     }, [store.role])
 
     const redirect = (role) => {
-        let route = "/dashboard"
         switch (role) {
             case "admin":
-                // route += "admin"
-                break
-            case "docente":
-                // route += "teacher"
-                break
-            case "representante":
-                // route += "parent"
-                break
+                return "/dashboard/admin";
+            case "teacher":
+                return "/dashboard/teacher";
+            case "parent":
+                return "/dashboard/parent";
             default:
                 route = null
         }

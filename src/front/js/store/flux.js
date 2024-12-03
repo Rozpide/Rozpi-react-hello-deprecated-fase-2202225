@@ -1,5 +1,5 @@
 import { clean_student_data } from "../functions/clean_parent_data";
-const backendURL = process.env.BACKEND_URL || ""
+const backendURL = process.env.BACKEND_URL.replace(/\/$/, '') || "";
 
 
 
@@ -245,7 +245,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body
 					});
 
-
 					if (data.token && data.role) {
 						const rol = data.role.toLowerCase();
 						localStorage.setItem("token", data.token);
@@ -322,7 +321,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			}, getContacts: async () => {
 				try {
-					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "messages" })
+					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "msg" })
 					setStore({ "contactos": response })
 				} catch (error) {
 					console.error(error.message)
@@ -330,7 +329,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			}, getMessages: async () => {
 				try {
-					let response = await getActions().fetchRoute("get", { isPrivate: true, bluePrint: "messages" })
+					let response = await getActions().fetchRoute("get", { isPrivate: true, bluePrint: "msg" })
 					setStore({ "mensajes": response })
 				} catch (error) {
 					console.error(error.message)

@@ -10,11 +10,23 @@ import { Context } from "../store/appContext";
 const NavBar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const { token, userAvatar, isChatVisible } = store;
+  const { token, userAvatar, isChatVisible, role } = store;
 
   const handleLogout = () => {
     actions.handleLogout();
     navigate("/home");
+  };
+
+  const handleMessaging = () => {
+    const dashboardPath = role === "admin" ? "/dashboard/admin" :
+      role === "docente" ? "/dashboard/teacher" :
+        role === "representante" ? "/dashboard/parent" :
+          "/home";
+
+    if (window.location.pathname !== dashboardPath) {
+      navigate(dashboardPath);
+    }
+    actions.toggleChat();
   };
 
   return (
@@ -48,7 +60,7 @@ const NavBar = () => {
                   Perfil
                 </Dropdown.Item>
                 <Dropdown.Item
-                  onClick={actions.toggleChat}
+                  onClick={handleMessaging}
                   className={`${styles.ItemAvatarButtom}`}
                 >
                   Mensajería
