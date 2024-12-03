@@ -397,3 +397,70 @@ h1 {
 /* Contact us modal */
 
 /* about us page CSS */
+
+
+/* Main container for the news feed */
+.news {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #1c1c1c; /* Dark background */
+  border: 1px solid #39ff14; /* Green border */
+  border-radius: 10px; /* Rounded corners */
+  color: white;
+  max-height: 400px; /* Maximum height to make it scrollable */
+  overflow-y: auto; /* Enable vertical scrolling */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+}
+
+/* Individual news articles */
+.news ul {
+  padding: 0;
+  margin: 0;
+}
+
+.news li {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-bottom: 1px solid #39ff14; /* Divider between articles */
+  list-style-type: none; /* Remove bullet points */
+}
+
+.news li:last-child {
+  border-bottom: none; /* Remove the border for the last article */
+}
+
+/* Article title styling */
+.news h2 {
+  font-size: 18px;
+  color: #39ff14; /* Green for the title */
+  margin: 0;
+}
+
+.news a:hover h2 {
+  text-decoration: underline; /* Add underline effect on hover */
+}
+
+/* Article description and details */
+.news p {
+  font-size: 14px;
+  color: #b3b3b3; /* Light gray for descriptions */
+  margin: 5px 0 0 0;
+}
+
+/* Add scroll bar styling */
+.news::-webkit-scrollbar {
+  width: 10px; /* Scrollbar width */
+}
+
+.news::-webkit-scrollbar-thumb {
+  background: #39ff14; /* Green for the scrollbar thumb */
+  border-radius: 10px;
+}
+
+.news::-webkit-scrollbar-thumb:hover {
+  background: #2dc10d; /* Slightly darker green on hover */
+}
+
+.news::-webkit-scrollbar-track {
+  background: #2c2c2c; /* Dark gray for the track */
+}
