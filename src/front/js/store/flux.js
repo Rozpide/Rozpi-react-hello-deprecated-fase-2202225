@@ -130,14 +130,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, setTeachers: async () => {
 				const response = await getActions().teachersOperations('GET')
 				setStore({ profesores: response })
-			},
-			// teachersInfo: async () => {
-			// 	return getActions().crudOperation('info', method, { id, body, bluePrint: 'teacher' })
-			// }, setTeachersInfo: async () => {
-			// 	const response = await getActions().teachersInfo('GET')
-			// 	setStore({ profesoresPersonalInfo: response })
-			// },
-			testsOperations: async (method, body = '', id = '') => {
+			}, testsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('evaluaciones', method, { id, body, bluePrint: 'teacher' })
 			}, setTests: async () => {
 				const response = await getActions().testsOperations('GET')

@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 const FormCommon = ({ type }) => {
     const { store, actions } = useContext(Context)
     const [startDate, setStartDate] = useState(new Date());
+    const [selectedCourse, setSelectedCourse] = useState('');
     const [formBody, setFormBody] = useState({
         name: '',
         description: '',
@@ -40,6 +41,10 @@ const FormCommon = ({ type }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormBody(prevState => ({ ...prevState, [name]: value }));
+        if (name === 'grado_id') {
+            setSelectedCourse(value);
+            setFormBody(prevState => ({ ...prevState, materia_id: '' }));
+        }
     };
 
     const handleDateChange = (date) => {
@@ -55,6 +60,7 @@ const FormCommon = ({ type }) => {
                 await actions.testsOperations('POST', {
                     nombre: formBody.name,
                     descripcion: formBody.description,
+                    "materia_id": formBody.materia_id,
                     fecha: formBody.date,
                     finalizada: formBody.status === 'finalizada'
                 })
@@ -92,7 +98,7 @@ const FormCommon = ({ type }) => {
                 {type === 'crear' && (
                     <div className="mb-3">
                         <label className="form-label text-form">Descripción:</label>
-                        <textarea type="text" name="description" className="form-control rounded-pill" required value={formBody.description} onChange={handleChange}></textarea>
+                        <textarea type="text" name="description" rows="3" className="form-control teacher-description" required value={formBody.description} onChange={handleChange}></textarea>
 
                     </div>
                 )}
@@ -101,8 +107,14 @@ const FormCommon = ({ type }) => {
                         <div className="d-flex flex-column">
                             <label className="form-label text-form">Elige el curso:</label>
                             <div className="input-group" required>
-                                <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
+                                <select
+                                    className="custom-select rounded-pill"
+                                    name="grado_id"
+                                    id="inputGroupSelect04"
+                                    onChange={handleChange}>
+
                                     <option value="" disabled selected>Opciones...</option>
+
                                     {store.profesorPersonalInfo.grados.map(grado =>
                                         <option key={grado.id} value={grado.id}>{grado.nombre}</option>
                                     )}
@@ -113,11 +125,20 @@ const FormCommon = ({ type }) => {
                         <div className="d-flex flex-column">
                             <label className="form-label text-form">Elige la materia:</label>
                             <div className="input-group" required>
-                                <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
+                                <select
+                                    className="custom-select rounded-pill"
+                                    name="materia_id"
+                                    id="inputGroupSelect04"
+                                    onChange={handleChange}
+                                    disabled={!selectedCourse}>
+
                                     <option value="" disabled selected>Opciones...</option>
-                                    {store.profesorPersonalInfo.materias.map(materia =>
-                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
-                                    )}
+
+                                    {store.profesorPersonalInfo.materias
+                                        .filter(materia => materia.grado.id === parseInt(selectedCourse))
+                                        .map(materia =>
+                                            <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                        )}
                                 </select>
                             </div>
                         </div>
