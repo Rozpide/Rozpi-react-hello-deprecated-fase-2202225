@@ -11,7 +11,10 @@ import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import ScheduleVehicle from "./pages/ScheduleVehicle";
+
 import Vehicule from "./pages/Vehicule";
+
 
 //create your first component
 const Layout = () => {
@@ -29,8 +32,13 @@ const Layout = () => {
                         <Route element={<Login />} path="/" />
                         <Route element={<Registro />} path="/registro" />
                         <Route element={<Single />} path="/single/:theid" />
+
+                        <Route element={<ScheduleVehicle />} path="/ScheduleVehicle" />
+
+
                         <Route element={<ModalTesting />} path="/modaltesting" />
                         <Route element={<Vehicule/>} path="/vehicule"/>
+
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
