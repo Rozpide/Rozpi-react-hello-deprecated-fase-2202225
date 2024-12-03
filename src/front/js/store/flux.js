@@ -1856,9 +1856,14 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             getPriceData: () => {
-                fetch(`https://api.coingecko.com/api/v3/coins/${getStore.currentCoinId}/market_chart?vs_currency=${getStore.currency}days=${getStore.timeFrame}`)
+                fetch(`https://api.coingecko.com/api/v3/coins/${getStore().currentCoinId}/market_chart?vs_currency=${getStore().currency}&days=${getStore().timeFrame}`)
                     .then((res) => res.json())
-                    .then((response) => { setStore({ currentCoinPriceData: response.prices }) })
+                    .then((response) => { setStore({ currentCoinPriceData: 
+                        response.prices.map((price) => {
+                            return ({date: new Date(price[0]), price: price[1]})
+                            })
+                        })
+                    })
                     .catch((err) => console.log(err))
             },
 
