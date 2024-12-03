@@ -16,7 +16,6 @@ const Login = () => {
                 <Registro />
             ) : (
                 <div className="card p-4" style={{ maxWidth: '1130px', width: '100%', height: '777px', backgroundColor: '#312E2D' }}>
-                    <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowRegistro(false)} />
                     <div className="card-body text-white text-center mb-3 ">
                         <img src={logoapp} alt="logo" className="mb-3 img-fluid" style={{ width: '329px', height: '329px' }} />
                         <form className="d-flex flex-column align-items-center">
