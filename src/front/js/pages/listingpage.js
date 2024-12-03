@@ -34,7 +34,7 @@ export const Listing = () => {
                 <tr>
                     <th>Asset</th>
                     <th>Price</th>
-                    <th>Chart</th>
+                    <th>Chart (7d)</th>
                     <th>Change (24h)</th>
                     <th>Market Cap</th>
                     <th>Volume</th>
