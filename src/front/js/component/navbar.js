@@ -1,21 +1,25 @@
 import React, { useContext, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
-import { Modal } from "./Modal"; // Import the new Modal component
+import { Modal } from "./Modal"; // Import the Modal component
 import Logo from "../../img/Logo.png";
 import gear from "../../img/gear.png";
-import { useNavigate } from "react-router-dom";
 
 export const Navbar = () => {
-    const navigate = useNavigate()
     const { store, actions } = useContext(Context);
     const username = store.username;
     const [showModal, setShowModal] = useState(false); // Control modal visibility
+    const navigate = useNavigate();
 
     const switchToFavs = () => {
         navigate("/userdashboard#favorite");
-        actions.setShowFavorites()
-    }
+        actions.setShowFavorites();
+    };
+
+    const handleLoginSuccess = (user) => {
+        actions.login(user); // Update global store with logged-in user
+        setShowModal(false); // Close the modal
+    };
 
     return (
         <>
@@ -44,7 +48,7 @@ export const Navbar = () => {
                     {username ? (
                         <>
                             <span className="navbar-text text-light ms-3">Hello, {username}</span>
-                            <button className="btn btn-outline-danger ms-3" onClick={() => actions.logout()}>Logout</button>
+                            <button className="btn btn-outline-danger ms-3" onClick={actions.logout}>Logout</button>
                         </>
                     ) : (
                         <button className="btn btn-outline-primary ms-3" onClick={() => setShowModal(true)}>Login</button>
@@ -64,24 +68,38 @@ export const Navbar = () => {
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><span className="dropdown-item-text">Hello, {username || "Guest"}</span></li>
                             <li><Link className="dropdown-item" to="/profile">Profile</Link></li>
-                            <li><Link className="dropdown-item" to="/userdashboard#favorites" onClick={() => actions.setShowFavorites()}> Favorites</Link></li>
-                            <li><Link className="dropdown-item" to="/userdashboard#overallHoldings" onClick={() => actions.setShowOverallHoldings()}>Dashboard</Link></li>
+                            <li>
+                                <Link
+                                    className="dropdown-item"
+                                    to="/userdashboard#favorites"
+                                    onClick={() => actions.setShowFavorites()}
+                                >
+                                    Favorites
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="dropdown-item"
+                                    to="/userdashboard#overallHoldings"
+                                    onClick={() => actions.setShowOverallHoldings()}
+                                >
+                                    Dashboard
+                                </Link>
+                            </li>
                             <li><hr className="dropdown-divider" /></li>
-                            <li><button className="dropdown-item" onClick={() => actions.logout()}>Logout</button></li>
+                            <li><button className="dropdown-item" onClick={actions.logout}>Logout</button></li>
                         </ul>
                     </div>
                 </div>
-            </nav >
+            </nav>
 
             {showModal && (
                 <Modal
                     isLoginDefault={true}
                     onClose={() => setShowModal(false)}
-                    onLogin={(username, password) => actions.login(username, password)}
-                    onSignUp={(email, password) => actions.signUp(email, password)}
+                    onLoginSuccess={handleLoginSuccess}
                 />
-            )
-            }
+            )}
         </>
     );
 };
