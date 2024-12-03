@@ -1,7 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Logout from './GoogleLogout';
+import { useNavigate } from 'react-router-dom';
 
 export const Navbar = () => {
+	const navigate = useNavigate(); 
+
+	function handleSignOut() {
+		console.log("user sing out")
+		navigate('/')
+	  }
 	return (
 		<nav className="navbar navbar-light bg-light" style={{ padding: "10px 20px" }}>
 			<div className="container d-flex justify-content-between align-items-center">
@@ -14,13 +22,11 @@ export const Navbar = () => {
 						<button className="btn btn-info">Ver Clima</button>
 					</Link>
 					{/* Link al formulario */}
-					<Link to="/formulario" style={{ marginRight: "15px" }}>
+					<Link to="/dashboard" style={{ marginRight: "15px" }}>
 						<button className="btn btn-success">Agregar Actividad</button>
 					</Link>
 					{/* Botón para cerrar sesión */}
-					<Link to="/">
-						<button className="btn btn-danger">Cerrar Sesión</button>
-					</Link>
+					<Logout onSignOut={handleSignOut} />
 				</div>
 			</div>
 		</nav>
