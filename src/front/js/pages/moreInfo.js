@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
+import { LineChart, Line, YAxis, Tooltip, XAxis } from 'recharts';
 //import { useNavigate } from "react-router-dom";
 
 
@@ -10,9 +11,9 @@ export const MoreInfo = () => {
     const { store, actions, setStore } = useContext(Context);
 
     useEffect(() => {
-        // actions.setCurrentCoinId("bitcoin")
-        // actions.setCurrency("USD")
-        // actions.setTimeFrame("7")
+        actions.setCurrentCoinId("bitcoin")
+        actions.setCurrency("USD")
+        actions.setTimeFrame("7")
         actions.getPriceData()
     }, [])
 
@@ -31,7 +32,7 @@ export const MoreInfo = () => {
 
                 </div>
                 <div className="graphBox">
-                    <div className="graph">
+                    <div className="graphButtons">
                         <div className="timeFrame">
                             <button style={{backgroundColor:"blue", color:"white", border:"1px solid black"}}>1day</button>
                             <button style={{backgroundColor:"blue", color:"white", border:"1px solid black"}}>10days</button>
@@ -47,10 +48,12 @@ export const MoreInfo = () => {
                         </div>
                     </div>
                     <div>
-                        <div style={{ height: "70vh" }}>
-                            <LineChart width={300} height={200} data={store.currentCoinPriceData}>
+                        <div className="bigGraph">
+                            <LineChart width={900} height={520} data={store.currentCoinPriceData}>
                                 <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
                                 <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
+                                <XAxis dataKey="date" tick= {null} />
+                                <Tooltip />
                             </LineChart>
                         </div>
                         <div style={{ display: "flex", justifyContent: "end" }}>
