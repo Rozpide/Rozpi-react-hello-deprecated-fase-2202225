@@ -4,8 +4,10 @@ import styled from "styled-components";
 import img from "./../../img/background.jpg";
 import { Context } from "../store/appContext.js";
 import MainDashboard from "../component/leftMenuParent/MainDashboard.jsx";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import ProfileForm from "../component/ProfileForm.jsx";
 
-let Content = styled.div`
+const Content = styled.div`
   flex: 1;
   padding: 1rem;
   background-image: url(${img});
@@ -17,12 +19,12 @@ let Content = styled.div`
 const ParentDashboard = () => {
   const [activeKey, setActiveKey] = useState("home");
   const { store, actions } = useContext(Context);
-  const [info, setInfo] = useState("");
   const [infoEventos, setInfoEventos] = useState([]);
   const [infoEstudiantes, setInfoEstudiantes] = useState([]);
+  const navigate = useNavigate();
+
   const handleSelect = key => {
-    setActiveKey(key);
-    console.log("Selected:", key);
+    navigate(key);
   };
 
   useEffect(() => {
@@ -58,14 +60,35 @@ const ParentDashboard = () => {
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh", paddingTop: "100px" }}>
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        paddingTop: "100px",
+      }}>
       <ParentSideBar
         items={menuItems}
         activeKey={activeKey}
         onSelect={handleSelect}
       />
 
-      <Content>{handleContentRender(activeKey)}</Content>
+      <Content>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <MainDashboard
+                dataEvents={infoEventos}
+                estudiantes={infoEstudiantes}
+              />
+            }
+          />
+          <Route
+            path="/profile"
+            element={<ProfileForm user={store.personalInfo ?? {}} />}
+          />
+        </Routes>
+      </Content>
     </div>
   );
 };
@@ -74,23 +97,28 @@ export default ParentDashboard;
 
 const menuItems = [
   {
-    key: "main",
+    key: "/dashboard/parent",
     label: "Dashboard",
     icon: <i className="bi bi-speedometer2"></i>,
   },
   {
-    key: "review",
+    key: "/dashboard/parent/",
     label: "Revisar",
     icon: <i className="bi bi-journal-check"></i>,
   },
   {
-    key: "settings",
+    key: "/dashboard/parent/",
     label: "Settings",
     icon: <i className="bi bi-journal-text"></i>,
   },
   {
-    key: "messages",
+    key: "/dashboard/parent/",
     label: "Mensajes",
+    icon: <i className="bi bi-chat-left-text"></i>,
+  },
+  {
+    key: "/dashboard/parent/profile",
+    label: "Perfil",
     icon: <i className="bi bi-chat-left-text"></i>,
   },
 ];
