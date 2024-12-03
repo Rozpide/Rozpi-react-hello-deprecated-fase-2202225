@@ -6,10 +6,12 @@ import { BackendURL } from "./component/backendURL";
 import Login from "./pages/Login";
 import  Registro from "./pages/Registro";
 import { Single } from "./pages/single";
+import ModalTesting from "./pages/modalTesting";
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import Vehicule from "./pages/Vehicule";
 
 //create your first component
 const Layout = () => {
@@ -27,6 +29,8 @@ const Layout = () => {
                         <Route element={<Login />} path="/" />
                         <Route element={<Registro />} path="/registro" />
                         <Route element={<Single />} path="/single/:theid" />
+                        <Route element={<ModalTesting />} path="/modaltesting" />
+                        <Route element={<Vehicule/>} path="/vehicule"/>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
