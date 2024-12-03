@@ -1857,7 +1857,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             fetchWalletData: async (userId) => {
                 try {
-                    const response = await fetch(`/api/wallet/${userId}/balances`);
+                    const response = await fetch(`/api/wallet/${userId}`);
                     if (!response.ok) throw new Error("Failed to fetch wallet data");
         
                     const walletData = await response.json();
@@ -1866,7 +1866,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error fetching wallet data:", error);
                 }
             },
-
+        
+       
             getPriceData: () => {
                 fetch(`https://api.coingecko.com/api/v3/coins/${getStore().currentCoinId}/market_chart?vs_currency=${getStore().currency}&days=${getStore().timeFrame}`)
                     .then((res) => res.json())

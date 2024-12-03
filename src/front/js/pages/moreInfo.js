@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+//import ToggleButton from '@mui/material/ToggleButton';
+//import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 //import { useNavigate } from "react-router-dom";
 
 
@@ -139,18 +139,18 @@ export const MoreInfo = () => {
                     </div>
                     <div>
                         <div className="bigGraph">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={store.currentCoinPriceData}>
-                                        <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
-                                        <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
-                                        <XAxis dataKey="date" tick={null} />
-                                        <Tooltip />
-                                    </LineChart>
-                                </ResponsiveContainer>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={store.currentCoinPriceData}>
+                                    <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
+                                    <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
+                                    <XAxis dataKey="date" tick={null} />
+                                    <Tooltip />
+                                </LineChart>
+                            </ResponsiveContainer>
                         </div>
-                            <div style={{ display: "flex", justifyContent: "end" }}>
-                                <button type="submit" id="submitBtn" style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
-                            </div>   
+                        <div style={{ display: "flex", justifyContent: "end" }}>
+                            <button type="submit" id="submitBtn" style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
+                        </div>
                     </div>
                 </div>
                 {/* News Feed Section */}

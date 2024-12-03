@@ -7,16 +7,16 @@ import { SparklineChart } from "../pages/sparklineChart";
 
 export const Wallet = () => {
     const { store, actions } = useContext(Context);
-    const navigate = useNavigate();
 
+    // Fetch the logged-in user's ID
+    const userId = store.user?.id; // Assuming user data is stored in the store
 
     useEffect(() => {
-        if (!store.wallet || store.wallet.length === 0) {
-            actions.fetchWalletData(); 
+        if (userId && (!store.wallet || store.wallet.length === 0)) {
+            actions.fetchWalletData(userId); // Pass userId to fetchWalletData
         }
-    }, [store.wallet, actions]);
+    }, [userId, store.wallet, actions]);
 
-    
     if (!store.wallet || !Array.isArray(store.wallet)) {
         return <p>Loading wallet data...</p>;
     }
