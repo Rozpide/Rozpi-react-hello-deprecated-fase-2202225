@@ -54,7 +54,7 @@ const Layout = () => {
                             }
                         />
                         <Route
-                            path="/dashboard/parent"
+                            path="/dashboard/parent/*"
                             element={
                                 <ProtectedRoute roles={["representante"]}>
                                     <ParentDashboard />

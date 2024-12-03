@@ -29,7 +29,10 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
           type: "outer",
           defaultTickValueConfig: {
             formatTextValue: value => value,
-            style: { fontSize: 10 },
+            style: { fontSize: 8, fill: "#F0F6FC" },
+          },
+          defaultTickLineConfig: {
+            color: "#F0F6FC",
           },
         },
       }}
@@ -37,6 +40,12 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
       value={value}
       maxValue={max}
       minValue={min}
+      style={{
+        width: "100%",
+        height: "100%",
+        maxWidth: "333px",
+        maxHeight: "165px",
+      }}
     />
   );
 };

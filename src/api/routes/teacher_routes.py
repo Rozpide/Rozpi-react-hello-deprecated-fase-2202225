@@ -52,11 +52,10 @@ def get_personal_info():
     docente = Docente.query.get(docente_id)
     materias = [materia_asociada.materia for materia_asociada in docente.materias_enseñadas]
     grados = [materia.grado for materia in materias]
+    docente["materias"] = materias_schema.dump(materias)
+    docente["grados"] = grados_schema.dump(grados)
     
-    return jsonify({"docente": teacher_schema.dump(docente),
-                    "materias": materias_schema.dump(materias),
-                    "grados": grados_schema.dump(grados),
-                   })
+    return jsonify(teacher_schema.dump(docente)),200
     
     #Añadir evaluaciones
     

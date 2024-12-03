@@ -18,7 +18,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 		actions: {
 			// Use getActions to call a function within a fuction
 			fetchRoute: async (endpoint, { method = 'GET', body = '', isPrivate = false, bluePrint = '' } = {}) => {
-				if (isPrivate) getActions().loadSession();
+				if (isPrivate && !getStore().token) getActions().loadSession();
 
 				const headers = {
 					'Content-Type': 'application/json',
@@ -333,6 +333,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					return
 				}
+			}, changePassword: async (newPassword) => {
+				const actions = getActions()
+
+				try {
+					const response = await actions.fetchRoute("reset", { method: 'PUT', isPRivate: true, bluePrint: "password", body: newPassword })
+
+					return { "msg": "Contraseña Actualizada Correctamente" }
+				} catch (error) {
+					console.error(error.message)
+					return { "msg": "Error al actualizar la contraseña" }
+				}
+
 			}
 
 		}
