@@ -119,7 +119,9 @@ def get_schedule():
                 "title": evaluacion.nombre,
                 "holiday": False,
                 "profesor": f"{evaluacion.profesor.nombre} {evaluacion.profesor.apellido}",
-                "materia": evaluacion.materia.nombre} for evaluacion in evaluaciones]
+                "materia": evaluacion.materia.nombre,
+                "grado": evaluacion.materia.grado.nombre} for evaluacion in evaluaciones]
+                
         
         feriados = get_feriadosAPI()
         

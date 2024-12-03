@@ -146,7 +146,7 @@ def get_teachers_cards():
                                    "descripcion": teacher.descripcion,
                                    "foto": get_image(teacher.foto) if teacher.foto else ""} for teacher in teachers]}),200
 
-@api.route('/recoverypassword', methods=['POST'])
+@api.route('/password/recovery', methods=['POST'])
 def handle_change_password_request():
     body = request.get_json()
 
@@ -162,9 +162,9 @@ def handle_change_password_request():
     
     username = f"{user.nombre} {user.apellido}"
     
-    send_recovery_email(email, pwdToken, username)
+    return send_recovery_email(email, pwdToken, username)
     
-@api.route('/resetpassword', methods=['PUT'])
+@api.route('/password/reset', methods=['PUT'])
 @jwt_required()
 def handle_password_change():
     claims = get_jwt()
@@ -177,7 +177,7 @@ def handle_password_change():
     if not user:
         return jsonify({"msg": "User not found"}),404
     
-    newPassword = body.get("password")
+    newPassword = body.get("newpPassword")
     
     if not newPassword:
         return jsonify({"msg":"Missing required field"}),400
@@ -302,3 +302,4 @@ def read_messages():
         return jsonify({"msg": "Ok"}),200
     
     return jsonify({"msg":"Already Read"}),200
+
