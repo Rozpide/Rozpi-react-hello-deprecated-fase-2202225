@@ -9,6 +9,12 @@ export const Landing = () => {
 	const { store, actions } = useContext(Context);
 	const navigate = useNavigate()
 
+	useEffect(() => {
+        actions.setCurrentCoinId("bitcoin")
+        actions.setCurrency("USD")
+        actions.setTimeFrame("7")
+    }, [])
+
 	return (
 		<div id="landingPage">
 			
