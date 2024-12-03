@@ -340,16 +340,40 @@ h1 {
   margin-right: 60px;
 }
 
-.graphButtons {
-
+.graphButtonsBox {
   height: 40px;
-  background-color:black;
+  background-color:#90978f;
   display: flex;
   justify-content: space-between;
+  color: black
 }
+
+.graphButtons {
+  background-color: #39ff14;
+  border: 1px solid black;
+  border-top: none;
+  border-bottom: none;
+}
+
+/* .graphButtons .btn:checked {
+  background-color: #007bff;
+  box-shadow: none;
+} */
+
+.graphButtons2 {
+  background-color: #39ff14;
+  border: 1px solid black;
+  border-top: none;
+  border-bottom: none;
+}
+
+/* .graphButtons2:focus {
+  background-color: #007bff;
+} */
 
 .bigGraph {
   height: 70vh;
+  background-color:#90978f;
 }
 
 .news {
