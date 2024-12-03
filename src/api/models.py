@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column,DateTime,func
+from sqlalchemy import Column,DateTime,func,DECIMAL,Numeric
 
 
 db = SQLAlchemy()
@@ -20,6 +20,7 @@ class User(db.Model):
 
 
     vehicles = db.relationship('Vehicles',back_populates='user')
+    schedule = db.relationship('Schedule',back_populates='user')
 
 
 
@@ -57,7 +58,8 @@ class Vehicles(db.Model):
 
 
     user = db.relationship('User',back_populates='vehicles')
-
+    schedule = db.relationship('Schedule',back_populates='vehicle')
+    service = db.relationship('Services',back_populates='vehicle')
 
 
     def __repr__(self):
@@ -74,5 +76,197 @@ class Vehicles(db.Model):
             "license_plate": self.license_plate
 
 
-
         }    
+    
+
+class Service_Type(db.Model):
+    __tablename__ = 'service_type'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True, nullable=False)
+    description = db.Column(db.String(150))
+
+
+    services = db.relationship('Services', back_populates = 'service_type')
+
+
+    def __repr__(self):
+     return f'Service_Type {self.id}{self.name}{self.description}'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description
+            
+
+        }
+    
+
+class Service_status(db.Model):
+    __tablename__ = 'service_status'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True, nullable=False)
+    description = db.Column(db.String(150))
+
+
+    status = db.relationship('Services', back_populates = 'service_status')
+
+
+
+    def __repr__(self):
+     return f'Service_status {self.id}{self.name}{self.description}'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            
+
+        }
+    
+
+class Services(db.Model):
+    __tablename__ = 'services'
+    id = db.Column(db.Integer, primary_key=True)
+    vehicle_ID = db.Column(db.Integer, db.ForeignKey('vehicles.id'), unique=True, nullable=False)
+    Service_Type_ID = db.Column(db.Integer, db.ForeignKey('service_type.id'),unique=False, nullable=False)
+    Status_ID = db.Column(db.Integer, db.ForeignKey('service_status.id'), unique=False, nullable=False)
+    Start_Date = db.Column(db.String(30))
+    End_Date = db.Column(db.String(30))
+    Total_Cost = db.Column(db.String(50))
+    Payment_status = db.Column(db.String(30))
+    created_at = db.Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = db.Column(DateTime(timezone=True), server_default=func.now())
+
+    schedule = db.relationship('Schedule', back_populates = 'service')
+    notes = db.relationship('Notes', back_populates = 'service')
+    vehicle = db.relationship('Vehicles', back_populates = 'service')
+    service_type = db.relationship('Service_Type', back_populates = 'services')
+    service_status = db.relationship('Service_status', back_populates = 'status')
+    parts = db.relationship('Parts_Service',back_populates='service_id')
+
+
+
+
+    def __repr__(self):
+        return f'User {self.id}{self.vehicle_ID}{self.Service_Type_ID}{self.Status_ID}{self.Start_Date}{self.End_Date}{self.Total_Cost}{self.Payment_status}'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "vehicle_ID": self.vehicle_ID,
+            "Service_Type_ID": self.Service_Type_ID,
+            "Status_ID": self.Status_ID,
+            "Start_Date": self.Start_Date,
+            "End_Date": self.End_Date,
+            "Total_Cost": self.Total_Cost,
+            "Payment_Status": self.Payment_status
+
+            
+        }
+    
+
+class Parts(db.Model):
+    __tablename__= 'parts'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True, nullable=False)
+
+
+    parts_service = db.relationship('Parts_Service',back_populates='parts_id')
+
+
+
+    def __repr__(self):
+     return f'Parts {self.id}{self.name}'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            
+
+        }
+
+
+class Parts_Service(db.Model):
+    __tablename__ = 'parts_service'
+    id = db.Column(db.Integer, primary_key=True)
+    Service_ID = db.Column(db.Integer, db.ForeignKey('services.id'))
+    Parts_ID = db.Column(db.Integer, db.ForeignKey('parts.id') )
+    Quantity = db.Column(db.Integer)
+    Cost = db.Column(DECIMAL(10, 2), nullable=False)
+
+
+    service_id = db.relationship('Services',back_populates='parts')
+    parts_id = db.relationship('Parts',back_populates='parts_service')
+
+
+
+    def __repr__(self):
+     return f'Parts_Service{self.id}{self.Service_ID}{self.Parts_ID}{self.Quantity}{self.Cost}'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "Service_ID": self.Service_ID,
+            "Parts_ID": self.Parts_ID,
+            "Quantity": self.Quantity,
+            "Cost": self.Cost
+            
+
+        }
+    
+
+class Notes(db.Model):
+   __tablename__ = 'notes'
+   id = db.Column(db.Integer, primary_key=True)
+   Service_ID = db.Column(db.Integer, db.ForeignKey('services.id'))
+   Text = db.Column(db.String(300))
+
+
+   service = db.relationship('Services', back_populates = 'notes')
+
+
+   def __repr__(self):
+     return f'Notes {self.id}{self.Service_ID}{self.Text}'
+
+   def serialize(self):
+        return {
+            "id": self.id,
+            "Service_ID": self.Service_ID,
+            "Text": self.Text
+            
+
+        }
+   
+class Schedule(db.Model):
+   __tablename__ = 'schedule'
+   id = db.Column(db.Integer, primary_key=True)
+   User_ID = db.Column(db.Integer, db.ForeignKey('user.id'))
+   Vehicle_ID = db.Column(db.Integer, db.ForeignKey('vehicles.id'))
+   Date = db.Column(DateTime(timezone=True), server_default=func.now())
+   Service_ID = db.Column(db.Integer, db.ForeignKey('services.id'))
+   Status = db.Column(db.String(30))
+
+   user = db.relationship('User',back_populates='schedule')
+   vehicle = db.relationship('Vehicles',back_populates='schedule')
+   service = db.relationship('Services', back_populates = 'schedule')
+
+
+   def __repr__(self):
+        return f'Schedule {self.id}{self.User_ID}{self.Vehicle_ID}{self.Date}{self.Service_ID}{self.Status}'
+
+   def serialize(self):
+        return {
+            "id": self.id,
+            "User_id": self.User_ID,
+            "Vehicle_ID": self.Vehicle_ID,
+            "Date": self.Date,
+            "Service_ID": self.Service_ID,
+            "Status": self.Status,
+
+
+        }   
+
+
