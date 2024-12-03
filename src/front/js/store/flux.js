@@ -1,5 +1,5 @@
 import { clean_student_data } from "../functions/clean_parent_data";
-const backendURL = process.env.BACKEND_URL.replace(/\/$/, '') || "";
+const backendURL = process.env.BACKEND_URL || "";
 
 
 
