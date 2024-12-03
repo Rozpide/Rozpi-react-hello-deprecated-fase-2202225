@@ -19,6 +19,24 @@ const FormCommon = ({ type }) => {
         grade: ''
     });
 
+    useEffect(() => {
+        const fetchData = async () => {
+            await actions.getTeacherInfo();
+            console.log('Fetched teacher info:', store.profesorPersonalInfo);
+        };
+        fetchData();
+    }, []);
+
+    // useEffect(() => {
+    //     if (type === 'crear') {
+    //         store.profesoresPersonalInfo;
+    //     }
+    //     if (type === 'assignSubject') {
+    //         actions.setSubjects();
+    //         actions.getTeachers();
+    //     }
+    // }, [type]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormBody(prevState => ({ ...prevState, [name]: value }));
@@ -78,6 +96,34 @@ const FormCommon = ({ type }) => {
 
                     </div>
                 )}
+                {type === 'crear' && <div className="mb-3">
+                    <div className="d-flex justify-content-between">
+                        <div className="d-flex flex-column">
+                            <label className="form-label text-form">Elige el curso:</label>
+                            <div className="input-group" required>
+                                <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
+                                    <option value="" disabled selected>Opciones...</option>
+                                    {store.profesorPersonalInfo.grados.map(grado =>
+                                        <option key={grado.id} value={grado.id}>{grado.nombre}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="d-flex flex-column">
+                            <label className="form-label text-form">Elige la materia:</label>
+                            <div className="input-group" required>
+                                <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
+                                    <option value="" disabled selected>Opciones...</option>
+                                    {store.profesorPersonalInfo.materias.map(materia =>
+                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
+
                 {type === 'crear' && <div className="mb-3">
                     <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
                     <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />

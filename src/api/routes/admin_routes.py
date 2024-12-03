@@ -84,7 +84,7 @@ def add_teacher():
     if not body:
         return jsonify({"msg":"Error"}),400
     
-    role = Role.query.filter_by(Role.nombre.ilike("docente")).first()
+    role = Role.query.filter(Role.nombre.ilike("docente")).first()
     
     if not role:
         return jsonify({"msg":"Rol de docente no creado"})

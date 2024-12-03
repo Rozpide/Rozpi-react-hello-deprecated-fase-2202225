@@ -6,6 +6,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			profesores: [],
+			profesorPersonalInfo: {
+				docente: {},
+				grados: [],
+				materias: []
+			},
 			usuarios: [],
 			grados: [],
 			materias: [],
@@ -114,23 +119,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			}, studentsOperations: async (method, body = '', id = '') => {
-				return getActions().crudOperation('student', method, { id, body, bluePrint: 'admin' })
+				return getActions().crudOperation('students', method, { id, body, bluePrint: 'admin' })
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
 			}, setSubjects: async () => {
 				const response = await getActions().subjectsOperations('GET')
 				setStore({ materias: response })
-			}, testsOperations: async (method, body = '', id = '') => {
+			}, teachersOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('teachers', method, { id, body, bluePrint: 'admin' })
+			}, setTeachers: async () => {
+				const response = await getActions().teachersOperations('GET')
+				setStore({ profesores: response })
+			},
+			// teachersInfo: async () => {
+			// 	return getActions().crudOperation('info', method, { id, body, bluePrint: 'teacher' })
+			// }, setTeachersInfo: async () => {
+			// 	const response = await getActions().teachersInfo('GET')
+			// 	setStore({ profesoresPersonalInfo: response })
+			// },
+			testsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('evaluaciones', method, { id, body, bluePrint: 'teacher' })
 			}, setTests: async () => {
 				const response = await getActions().testsOperations('GET')
 				setStore({ evaluaciones: response })
 			},
 
-			//actions.subjectsOperations('GET', '', 2)
-			//actions.subjectsOperations('POST', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"})
-			//actions.subjectsOperations('PUT', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"}, 2)
-			//actions.subjectsOperations('DELETE', '', 2)
 
 			// CRUD para usuarios autorizados
 
@@ -165,38 +178,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				actions.getUsers()
 			},
 
-			// CRUD para profesores
-
-			postTeacher: async (body) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("teachers", {
-					method: "POST",
-					body: body,
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getTeachers()
-			},
-
-			deleteTeacher: async (id) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute(`teachers/${id}`, {
-					method: "DELETE",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getTeachers()
-			},
-
-			getTeachers: async () => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("teachers", {
-					method: "GET",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				setStore({ profesores: data })
-			}, postCourse: async (grado) => {
+			postCourse: async (grado) => {
 				const actions = getActions()
 				const data = await actions.fetchRoute("grados", {
 					method: "POST",
@@ -281,7 +263,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.error("Error al cerrar sesión:", error);
 				}
-			}, getParentInfo: async () => {
+			}, getTeacherInfo: async () => {
+
+				try {
+					let teacherData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "teacher" })
+					console.log('fetched teacher data:', teacherData)
+					if (!teacherData) {
+						console.log('El profesor no tiene materias asignadas')
+						return false
+					}
+					setStore({ profesorPersonalInfo: teacherData });
+				}
+				catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			},
+			getParentInfo: async () => {
 
 				try {
 					let parentData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "parent" })

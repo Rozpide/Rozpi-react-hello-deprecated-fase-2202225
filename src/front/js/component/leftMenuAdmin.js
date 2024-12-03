@@ -15,7 +15,7 @@ const FormCommon = ({ type }) => {
     const [formBody, setFormBody] = useState({
         name: '',
         lastName: '',
-        birthDate: '',
+        date: '',
         email: '',
         password: '',
         address: '',
@@ -32,7 +32,7 @@ const FormCommon = ({ type }) => {
         }
         if (type === 'assignSubject') {
             actions.setSubjects();
-            actions.getTeachers();
+            actions.setTeachers();
         }
     }, [type]);
 
@@ -53,21 +53,25 @@ const FormCommon = ({ type }) => {
         }
     };
 
+    const handleDateChange = (date) => {
+        setStartDate(date);
+        setFormBody(prevState => ({ ...prevState, date: date ? date.toISOString().split('T')[0] : '' }));
+    };
+
     const submitFormData = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.target);
-        //console.log(formData)
         try {
             if (type === 'student') {
                 await actions.studentsOperations('POST', {
                     "nombre": formBody.name,
                     "apellido": formBody.lastName,
                     "direccion": formBody.address,
-                    "fecha_nacimiento": formBody.birthDate,
+                    "fecha_nacimiento": formBody.date
                 })
             }
             if (type === 'teacher') {
-                await actions.postTeacher({
+                await actions.teachersOperations('POST', {
                     "nombre": formBody.name,
                     "apellido": formBody.lastName,
                     "email": formBody.email,
@@ -99,7 +103,7 @@ const FormCommon = ({ type }) => {
             setFormBody({
                 name: '',
                 lastName: '',
-                birthDate: '',
+                date: '',
                 email: '',
                 password: '',
                 address: '',
@@ -141,7 +145,7 @@ const FormCommon = ({ type }) => {
                 </div>}
                 {type === 'student' && <div className="mb-3">
                     <label className="form-label text-form">Fecha de nacimiento:</label> <br></br>
-                    <DatePicker selected={startDate} name="birthDate" onChange={date => setStartDate(date)} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
+                    <DatePicker selected={startDate} name="date" onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
                 </div>}
                 {(type === 'student' || type === 'teacher') && <div className="mb-3">
                     <label className="form-label text-form">Dirección:</label>
