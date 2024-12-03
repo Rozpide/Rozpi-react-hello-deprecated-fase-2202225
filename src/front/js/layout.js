@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
-import { Home } from "./pages/home";
-import { Demo } from "./pages/demo";
+import Login from "./pages/Login";
+import  Registro from "./pages/Registro";
 import { Single } from "./pages/single";
 import ModalTesting from "./pages/modalTesting";
 import injectContext from "./store/appContext";
@@ -25,10 +25,9 @@ const Layout = () => {
         <div>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    <Navbar />
                     <Routes>
-                        <Route element={<Home />} path="/" />
-                        <Route element={<Demo />} path="/demo" />
+                        <Route element={<Login />} path="/" />
+                        <Route element={<Registro />} path="/registro" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<ModalTesting />} path="/modaltesting" />
                         <Route element={<Vehicule/>} path="/vehicule"/>
