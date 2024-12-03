@@ -1,22 +1,70 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask import Flask, request, jsonify, Blueprint
+from werkzeug.security import generate_password_hash, check_password_hash
 from api.models import db, User
-from api.utils import generate_sitemap, APIException
-from flask_cors import CORS
 
 api = Blueprint('api', __name__)
 
-# Allow CORS requests to this API
-CORS(api)
+# Example endpoint: Replace or extend as needed
+@api.route('/hello', methods=['GET'])
+def hello_world():
+    return jsonify({"message": "Hello, World!"})
 
+# Register a new user
+@api.route('/users', methods=['POST'])
+def register_user():
+    data = request.get_json()  # Parse JSON from the request
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
+    # Validate input
+    email = data.get('email')
+    password = data.get('password')
 
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
 
-    return jsonify(response_body), 200
+    # Check if user already exists
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"error": "User already exists"}), 400
+
+    # Create new user
+    hashed_password = generate_password_hash(password)  # Hash the password
+    new_user = User(email=email, password=hashed_password)
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": "User created successfully"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+# Login a user
+@api.route('/login', methods=['POST'])
+def login_user():
+    data = request.get_json()  # Parse JSON from the request
+
+    # Validate input
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return jsonify({"error": "Email and password are required"}), 400
+
+    # Find user
+    user = User.query.filter_by(email=email).first()
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    return jsonify({"message": "Login successful", "user": user.serialize()}), 200
+
+# Example endpoint to retrieve all users
+@api.route('/users', methods=['GET'])
+def get_all_users():
+    users = User.query.all()
+    return jsonify([user.serialize() for user in users]), 200
+
+# Placeholder for additional routes
+# Add your other endpoints here
+@api.route('/example', methods=['GET'])
+def example_endpoint():
+    return jsonify({"message": "This is an example endpoint!"})

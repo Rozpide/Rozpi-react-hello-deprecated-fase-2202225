@@ -1,32 +1,78 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-export const Modal = ({ isLoginDefault, onClose, onLogin, onSignUp }) => {
+export const Modal = ({ isLoginDefault, onClose, onLoginSuccess }) => {
     const [isLogin, setIsLogin] = useState(isLoginDefault); // Control Login/Sign-Up toggle
+    const [error, setError] = useState(null); // Track errors
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         const { username, password } = e.target.elements;
-        onLogin(username.value, password.value); // Call parent-provided login handler
-        onClose(); // Close the modal
+
+        try {
+            const response = await fetch("https://legendary-space-fishstick-jj46p9x44p593qrpr-3001.app.github.dev/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    email: username.value,
+                    password: password.value,
+                }),
+            });
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                setError(responseData.error || "Login failed");
+                return;
+            }
+
+            onLoginSuccess(responseData.user); // Pass user data to parent component
+            onClose(); // Close the modal
+        } catch (err) {
+            console.error("Login error:", err);
+            setError("An error occurred while logging in.");
+        }
     };
 
-    const handleSignUp = (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
         const { email, confirmEmail, password, confirmPassword } = e.target.elements;
 
         // Validation checks
         if (email.value !== confirmEmail.value) {
-            alert("Emails do not match. Please try again.");
+            setError("Emails do not match.");
             return;
         }
         if (password.value !== confirmPassword.value) {
-            alert("Passwords do not match. Please try again.");
+            setError("Passwords do not match.");
             return;
         }
 
-        onSignUp(email.value, password.value); // Call parent-provided sign-up handler
-        onClose(); // Close the modal
+        try {
+            const payload = {
+                email: email.value,
+                password: password.value,
+            };
+
+            const response = await fetch("https://legendary-space-fishstick-jj46p9x44p593qrpr-3001.app.github.dev/api/users", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload), // Send email and password as JSON
+            });
+
+            const responseData = await response.json();
+
+            if (!response.ok) {
+                setError(responseData.error || "Sign-up failed"); // Handle backend errors
+                return;
+            }
+
+            alert("Registration successful! You can now log in."); // Notify success
+            setIsLogin(true); // Switch to login view
+        } catch (err) {
+            console.error("Sign-up error:", err);
+            setError("An error occurred while signing up."); // Catch unexpected errors
+        }
     };
 
     return (
@@ -45,17 +91,24 @@ export const Modal = ({ isLoginDefault, onClose, onLogin, onSignUp }) => {
                         <div className="d-flex justify-content-center mb-3">
                             <button
                                 className={`btn ${isLogin ? "btn-primary" : "btn-outline-primary"} me-2`}
-                                onClick={() => setIsLogin(true)} // Switch to Login
+                                onClick={() => {
+                                    setError(null);
+                                    setIsLogin(true);
+                                }}
                             >
                                 Login
                             </button>
                             <button
                                 className={`btn ${!isLogin ? "btn-primary" : "btn-outline-primary"}`}
-                                onClick={() => setIsLogin(false)} // Switch to Sign-Up
+                                onClick={() => {
+                                    setError(null);
+                                    setIsLogin(false);
+                                }}
                             >
                                 Sign Up
                             </button>
                         </div>
+                        {error && <div className="alert alert-danger">{error}</div>}
                         {isLogin ? (
                             <form onSubmit={handleLogin}>
                                 <div className="mb-3">
@@ -100,6 +153,5 @@ export const Modal = ({ isLoginDefault, onClose, onLogin, onSignUp }) => {
 Modal.propTypes = {
     isLoginDefault: PropTypes.bool, // Whether to default to the Login view
     onClose: PropTypes.func.isRequired, // Function to close the modal
-    onLogin: PropTypes.func.isRequired, // Function to handle login
-    onSignUp: PropTypes.func.isRequired, // Function to handle sign-up
+    onLoginSuccess: PropTypes.func.isRequired, // Function to handle login success
 };
