@@ -16,3 +16,20 @@
     background-color: #003459;
    font-family: 'ADLaM Display';
 }
+
+.post-title {
+    text-align: center;
+    font-family: 'ADLaM Display';
+    color: #003459; 
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 26px;
+}
+.fa-light {
+    font-size: 28px;
+}
+
+.image-preview img {
+    width: 100px;
+    margin-right: 15px;
+}
