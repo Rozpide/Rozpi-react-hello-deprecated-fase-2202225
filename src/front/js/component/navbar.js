@@ -4,50 +4,36 @@ import logotipo from "../../img/PatasperdidasPNG.png"
 export const Navbar = () => {
 	return (
 		<nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-			<div className="container">
-				<a className="navbar-brand " href="#">
-					<img src={logotipo} alt="logo" classname=""  />
-				</a>
-				<button
-					className="navbar-toggler"
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#navbarNav"
-					aria-controls="navbarNav"
-					aria-expanded="false"
-					aria-label="Toggle navigation"
-				>
-					<span className="navbar-toggler-icon"></span>
-				</button>
-				<div className="collapse navbar-collapse" id="navbarNav">
-					<ul className="navbar-nav ms-auto">
+			<div className="container ">
+				<img className="ms-5" width="50" height="50" src={logotipo} alt="logo" classname="" />
+				
+				<div className="collapse navbar-collapse d-flex justify-content-evenly" id="navbarNav">
+					<ul className="navbar-nav ms-auto ">
 						<li className="nav-item">
-							<a className="nav-link" href="#">
+							<a className="adlam-display-regular nav-link me-4" href="#">
 								Inicio
 							</a>
 						</li>
 						<li className="nav-item">
-							<a className="nav-link" href="#">
+							<a className="adlam-display-regular nav-link  me-4" href="#">
 								Mapa
 							</a>
 						</li>
 						<li className="nav-item">
-							<a className="nav-link" href="#">
+							<a className="adlam-display-regular nav-link  me-4" href="#">
 								¿Qué es?
 							</a>
 						</li>
 						<li className="nav-item">
-							<a className="nav-link" href="#">
+							<a className="adlam-display-regular nav-link  me-4" href="#">
 								Contacto
 							</a>
 						</li>
 						<li className="nav-item">
-							<form>
-								<input ClassName="" name="fsrch" id="fsrch" placeholder="Search" />
-							</form>
+							<input class="form-control border-0  me-4" type="text" placeholder="🔎 Search" ></input>
 						</li>
 					</ul>
-					<button className="btn btn-primary ms-3 rounded-pill ">Iniciar sesión</button>
+					<button className=" adlam-display-regular btn btn-primary ms-3 rounded-pill btnStart">Iniciar sesión</button>
 				</div>
 			</div>
 		</nav>

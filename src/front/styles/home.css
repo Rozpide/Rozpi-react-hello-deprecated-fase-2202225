@@ -6,7 +6,7 @@
     on that page only (the ones not reused in other pages).
 */
 .adlam-display-regular {
-    font-family: "ADLaM Display", system-ui;
+    font-family: "ADLaM Display";
     font-weight: 400;
     font-style: normal;
   }
@@ -17,3 +17,6 @@ body {
 
   background-size: cover;
   }
+.btnStart{
+  background-color: darkblue;
+}

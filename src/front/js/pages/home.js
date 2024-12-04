@@ -18,7 +18,7 @@ export const Home = () => {
 				}}
 			>
 				<div className="container  z-3" >
-					<h1 className=" display-1 fw-bolder fs-4 mb-3">
+					<h1 className=" adlam-display-regular fw-bolder fs-4 mb-3">
 						Una ayuda para encontrar mascotas perdidas en tu zona.
 					</h1>
 					<p className="text-muted fs-5 mb-4">
