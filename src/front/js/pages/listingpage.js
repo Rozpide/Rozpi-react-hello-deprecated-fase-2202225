@@ -2,23 +2,24 @@ import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { SparklineChart } from "./sparklineChart";
 import "../../styles/index.css";
+import { LineChart, Line, YAxis, ResponsiveContainer } from 'recharts';
 
 export const Listing = () => {
     const { store, actions } = useContext(Context);
 
 
-    if (!store.coins || store.coins.length === 0) {
-        console.log("Fetching coins data...");
-        actions.fetchCoins();
-    }
+    // if (!store.coins || store.coins.length === 0) {
+    //     console.log("Fetching coins data...");
+    //     actions.fetchCoins();
+    // }
 
-    if (store.loading) {
-        return <div>Loading...</div>;
-    }
+    // if (store.loading) {
+    //     return <div>Loading...</div>;
+    // }
 
-    if (store.coins.length === 0) {
-        return <div>No coins available.</div>;
-    }
+    // if (store.coins.length === 0) {
+    //     return <div>No coins available.</div>;
+    // }
 
     const handleFavoriteToggle = (coin) => {
         if (store.favorites.some((favCoin) => favCoin.id === coin.id)) {
@@ -56,7 +57,13 @@ export const Listing = () => {
                         </td>
                         <td>${coin.current_price.toLocaleString()}</td>
                         <td>
-                            <SparklineChart data={coin.sparkline_in_7d.price} width={150} height={50} />
+                            <div>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart width={width} height={height} data={coin.sparkline_in_7d.price.map((price, index) => ({ index, price }))}>
+                                        <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
+                                        <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
+                                    </LineChart>
+                            </div>
                         </td>
                         <td>
                             <span
