@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { SparklineChart } from "./sparklineChart";
+import { TradeModal } from "../component/tradeModal";
 import "../../styles/index.css";
 
 export const Listing = () => {
@@ -70,7 +71,7 @@ export const Listing = () => {
                         <td>${coin.market_cap.toLocaleString()}</td>
                         <td>${coin.total_volume.toLocaleString()}</td>
                         <td>
-                            <button className="trade-button">Trade</button>
+                            <TradeModal redirectPath="/trade" />
                         </td>
                         <td>
                             <button

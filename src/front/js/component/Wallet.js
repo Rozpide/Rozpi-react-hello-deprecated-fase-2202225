@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { SparklineChart } from "../pages/sparklineChart";
+import { TradeModal } from "./tradeModal";
 
 
 
@@ -61,12 +62,7 @@ export const Wallet = () => {
                                 />
                             </td>
                             <td>
-                                <button
-                                    className="trade-button"
-                                    onClick={() => handleTrade(wallet)}
-                                >
-                                    Trade
-                                </button>
+                                <TradeModal redirectPath="/trade" />
                             </td>
                             <td>
                                 <Link to={`/coin/${wallet.id}`} className="btn btn-secondary">

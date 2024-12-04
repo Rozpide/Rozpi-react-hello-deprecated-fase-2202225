@@ -15,7 +15,7 @@ import { SparklineChart } from "./pages/sparklineChart";
 import { Userdashboard } from "./pages/userdashboard";
 import { Favorites } from "./component/Favorites";
 import { MoreInfo } from "./pages/moreInfo";
-
+import { TradeModal } from "./component/tradeModal";
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -36,6 +36,7 @@ const Layout = () => {
                         <Route element={<Listing />} path="/listingpage" />
                         <Route element={<Userdashboard />} path="/userdashboard" />
                         <Route element={<SparklineChart />} path="/sparklineChart" />
+                        <Route element={<TradeModal />} path="/trade" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<MoreInfo />} path="/moreInfo" />
