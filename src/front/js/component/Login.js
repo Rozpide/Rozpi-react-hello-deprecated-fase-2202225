@@ -1,37 +1,32 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { Context } from "../store/appContext";
+import { useContext } from "react";
 
-export const Modal = ({ isLoginDefault, onClose, onLoginSuccess }) => {
+export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
     const [isLogin, setIsLogin] = useState(isLoginDefault); // Control Login/Sign-Up toggle
     const [error, setError] = useState(null); // Track errors
+    const { store, actions, setStore } = useContext(Context);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         const { username, password } = e.target.elements;
 
-        try {
-            const response = await fetch("https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: username.value,
-                    password: password.value,
-                }),
-            });
-
-            const responseData = await response.json();
-
-            if (!response.ok) {
-                setError(responseData.error || "Login failed");
-                return;
-            }
-
-            onLoginSuccess(responseData.user); // Pass user data to parent component
-            onClose(); // Close the modal
-        } catch (err) {
-            console.error("Login error:", err);
-            setError("An error occurred while logging in.");
-        }
+        await fetch("https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email: username.value,
+                password: password.value,
+            })
+        }).then(res => {
+            if (!res.ok) throw Error(res.statusText);
+            return res.json();
+        }).then((response) => {
+            actions.setUserId ( response.user.id );
+            actions.setUserName ( response.user.email);
+            onClose()
+        }).catch(error => console.error(error));
     };
 
     const handleSignUp = async (e) => {
@@ -150,7 +145,7 @@ export const Modal = ({ isLoginDefault, onClose, onLoginSuccess }) => {
 };
 
 // Define PropTypes for the component
-Modal.propTypes = {
+Login.propTypes = {
     isLoginDefault: PropTypes.bool, // Whether to default to the Login view
     onClose: PropTypes.func.isRequired, // Function to close the modal
     onLoginSuccess: PropTypes.func.isRequired, // Function to handle login success
