@@ -4,10 +4,10 @@ import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth
 import "react-datepicker/dist/react-datepicker.css";
 
 import Login from '../component/GoogleLogin';
-import EventCreation from '../component/CreateEvent';
+import Weather from '../component/Clima';
 import Navbar from '../component/navbar';
 
-function App() {
+function WeatherPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const session = useSession(); // tokens, when session exists we have a user
   const { isLoading } = useSessionContext();
@@ -27,7 +27,7 @@ function App() {
         {session ? (
           <div className='home'>
             <Navbar />
-            <EventCreation session={session} />
+            <Weather />
           </div>
         ) : (
           <>
@@ -39,4 +39,4 @@ function App() {
   );
 }
 
-export default App;
+export default WeatherPage;

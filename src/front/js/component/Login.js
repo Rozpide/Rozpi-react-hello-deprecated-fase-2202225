@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import GoogleLogin from './GoogleLogin'
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -38,7 +40,31 @@ const Login = () => {
     }
   };
 
+  const responseMessage = (response) => {
+
+    const decodedToken = jwtDecode(response.credential);
+
+    const email = decodedToken.email;
+    const name = decodedToken.name;
+
+    const userData = {
+      token: response.credential,
+      email: email,
+      name: name,
+  };
+
+  localStorage.setItem('userCredentials', JSON.stringify(userData));
+
+  navigate('/dashboard');
+};
+const errorMessage = (error) => {
+    console.log(error);
+};
+
   // Inicio de sesión con correo y contraseña
+  const handelSignIn = () => {
+    console.log('Sing In ')
+  }
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -134,23 +160,13 @@ const Login = () => {
             Iniciar Sesión
           </button>
         </form>
-
- <button
-          style={{
-            margin: "10px 0",
-            padding: "10px 20px",
-            backgroundColor: "#FF5733",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            width: "100%",
-            boxSizing: "border-box",
-          }}
-          onClick={handleGoogleLogin}
-        >
-          Iniciar sesión con Google
-        </button>
+        <GoogleLogin onSignIn={handelSignIn} />
+        {/* <GoogleLogin 
+        onSuccess={responseMessage} 
+        onError={errorMessage}
+        cookiePolicy='single_host_origin'
+        responseType='code'
+        scope="openid email profile https://www.googleapis.com/auth/calendar" /> */}
 
         <button
           style={{
