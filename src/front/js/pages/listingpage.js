@@ -57,13 +57,7 @@ export const Listing = () => {
                         </td>
                         <td>${coin.current_price.toLocaleString()}</td>
                         <td>
-                            <div>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart width={width} height={height} data={coin.sparkline_in_7d.price.map((price, index) => ({ index, price }))}>
-                                        <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
-                                        <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
-                                    </LineChart>
-                            </div>
+                            <SparklineChart data={coin.sparkline_in_7d.price} width={150} height={50} />    
                         </td>
                         <td>
                             <span
