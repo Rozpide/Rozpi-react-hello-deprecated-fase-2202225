@@ -10,7 +10,7 @@ export const Modal = ({ isLoginDefault, onClose, onLoginSuccess }) => {
         const { username, password } = e.target.elements;
 
         try {
-            const response = await fetch("https://legendary-space-fishstick-jj46p9x44p593qrpr-3001.app.github.dev/api/login", {
+            const response = await fetch("https://stunning-pancake-r4vqpg5pj4vhxjj4-3001.app.github.dev/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

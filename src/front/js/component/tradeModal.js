@@ -1,44 +1,34 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import React, { useState } from 'react';
 
-export const TradeModal = ({ redirectPath = "/trade" }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+export const TradeModal = ({ isOpen, onClose, onTrade, coinName }) => {
+  const [quantity, setQuantity] = useState(0);
 
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  if (!isOpen) return null;
 
-  const handleTrade = () => {
-    setIsOpen(false);
-    navigate(redirectPath); 
+  const handleTrade = (type) => {
+    onTrade(type, quantity);
+    setQuantity(0); 
+    onClose(); 
   };
 
   return (
-    <>
-      {/* Trade Button */}
-      <button onClick={openModal} className="trade-button">
-        Trade
-      </button>
-
-      {/* Modal */}
-      {isOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Confirm Trade</h2>
-            <p>Are you sure you want to proceed?</p>
-            <div className="modal-actions">
-              <button onClick={handleTrade} className="confirm-button">
-                Yes, Trade
-              </button>
-              <button onClick={closeModal} className="cancel-button">
-                Cancel
-              </button>
-            </div>
-          </div>
+    <div className="modal">
+      <div className="modal-content">
+        <h2>Trade {coinName}</h2>
+        <input
+          type="number"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          placeholder="Enter quantity"
+          min="0"
+        />
+        <div className="buttons">
+          <button onClick={() => handleTrade('buy')}>Buy</button>
+          <button onClick={() => handleTrade('sell')}>Sell</button>
         </div>
-      )}
-    </>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
   );
 };
-
 

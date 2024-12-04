@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { SparklineChart } from "../pages/sparklineChart";
 import { TradeModal } from "./tradeModal";
 
-
-
 export const Wallet = () => {
     const { store, actions } = useContext(Context);
+
+    // State for controlling the modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCoin, setSelectedCoin] = useState(null);
 
     // Fetch the logged-in user's ID
     const userId = store.user?.id; // Assuming user data is stored in the store
@@ -17,6 +19,18 @@ export const Wallet = () => {
             actions.fetchWalletData(userId); // Pass userId to fetchWalletData
         }
     }, [userId, store.wallet, actions]);
+
+    const handleOpenModal = (coin) => {
+        setSelectedCoin(coin);
+        setIsModalOpen(true);
+    };
+
+    const handleTrade = (type, quantity) => {
+        console.log(`${type.toUpperCase()} ${quantity} of ${selectedCoin.name}`);
+        // Call an action or API to execute the trade logic
+        actions.tradeCoin(selectedCoin.id, type, quantity);
+        setIsModalOpen(false); // Close the modal after trade
+    };
 
     if (!store.wallet || !Array.isArray(store.wallet)) {
         return <p>Loading wallet data...</p>;
@@ -62,7 +76,12 @@ export const Wallet = () => {
                                 />
                             </td>
                             <td>
-                                <TradeModal redirectPath="/trade" />
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => handleOpenModal(wallet)}
+                                >
+                                    Trade
+                                </button>
                             </td>
                             <td>
                                 <Link to={`/coin/${wallet.id}`} className="btn btn-secondary">
@@ -73,10 +92,16 @@ export const Wallet = () => {
                     ))}
                 </tbody>
             </table>
+
+            {/* Trade Modal */}
+            {isModalOpen && selectedCoin && (
+                <TradeModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onTrade={handleTrade}
+                    coinName={selectedCoin.name}
+                />
+            )}
         </div>
     );
 };
-
-
-
-

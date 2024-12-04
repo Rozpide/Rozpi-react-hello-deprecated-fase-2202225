@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
-//import ToggleButton from '@mui/material/ToggleButton';
-//import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-//import { useNavigate } from "react-router-dom";
-
+import { TradeModal } from "../component/tradeModal";
 
 export const MoreInfo = () => {
     const { store, actions } = useContext(Context);
     const [timeFrame, setTimeFrame] = React.useState('left');
+    const [isModalOpen, setIsModalOpen] = useState(false);  // State to control modal visibility
+    const [selectedCoin, setSelectedCoin] = useState({});
+    const [news, setNews] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const handleChange = (event, newAlignment) => {
         setTimeFrame(newAlignment);
     };
-    // State for news data and loading indicator
-    const [news, setNews] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     // Fetch price data on component mount
     useEffect(() => {
@@ -63,6 +61,11 @@ export const MoreInfo = () => {
     useEffect(() => {
         actions.getPriceData();
     }, [store.currency]);
+
+    // Function to open the modal
+    const handleTrade = () => {
+        setIsModalOpen(true);
+    };
 
     return (
         <div className="moreInfo">
@@ -148,8 +151,16 @@ export const MoreInfo = () => {
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
-                        <div style={{ display: "flex", justifyContent: "end" }}>
-                            <button type="submit" id="submitBtn" style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
+                        <div style={{ display: "flex", justifyContent: "end" }}>  
+                        <button type="submit" id="submitBtn" style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>   
+                        {isModalOpen && selectedCoin && (
+                            <TradeModal
+                                isOpen={isModalOpen}
+                                onClose={() => setIsModalOpen(false)}
+                                onTrade={handleTrade}
+                                coinName={selectedCoin.name}
+                            />
+                        )}
                         </div>
                     </div>
                 </div>
@@ -182,3 +193,8 @@ export const MoreInfo = () => {
         </div>
     );
 };
+
+
+
+
+
