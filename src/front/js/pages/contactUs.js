@@ -4,7 +4,7 @@ import { Context } from "../store/appContext";
 
 export const ContactUs = props => {
     const { store, actions } = useContext(Context);
-    
+
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
     const [status, setStatus] = useState(null);  // Success or error message
@@ -49,79 +49,62 @@ export const ContactUs = props => {
     };
 
     return (
-        <div id="modal" className="contact modal" style={{ display: store.showContactModal ? "block" : "none" }}>
-            <div className="abc modal-dialog">
-                <div className="modal-content" style={{ backgroundColor: "silver", border: "none" }}>
-                    <span type="submit" className="close" id="closeModal" onClick={() => actions.setShowContactModal()} style={{ height: "5px" }}>&times;</span>
-                    <h2 style={{ margin: "auto", marginTop: "0px", color: "#39ff14", backgroundColor: "silver" }}>Contact Us</h2>
+        <div
+    id="modal"
+    className="contact-modal"
+    style={{ display: store.showContactModal ? "block" : "none" }}
+>
+    <div className="modal-dialog">
+        <div className="modal-content" style={{backgroundColor:"silver", width:"40vw"}}>
+            <button
+                type="button"
+                className="close"
+                id="closeModal"
+                onClick={() => actions.setShowContactModal()}
+            >
+                &times;
+            </button>
+            <h2 className="modal-header">Contact Us</h2>
 
-                    {/* Display success or error message */}
-                    {status && (
-                        <div style={{
-                            backgroundColor: status.success ? '#d4edda' : '#f8d7da',
-                            color: status.success ? '#155724' : '#721c24',
-                            padding: '10px',
-                            borderRadius: '5px',
-                            marginBottom: '20px'
-                        }}>
-                            {status.message}
-                        </div>
-                    )}
-
-                    <form id="contactForm" onSubmit={handleSubmit} method="POST">
-                        <label htmlFor="email" style={{}}>Email:</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            style={{
-                                marginBottom: "10px",
-                                height: "40px",
-                                width: "100%",
-                                borderRadius: "10px",
-                                border: "none"
-                            }}
-                        />
-
-                        <label htmlFor="message">Message:</label>
-                        <textarea
-                            className="text"
-                            id="message"
-                            name="message"
-                            placeholder="Enter your message"
-                            rows="5"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            required
-                            style={{
-                                marginBottom: "10px",
-                                width: "100%",
-                                borderRadius: "10px",
-                                border: "none"
-                            }}
-                        ></textarea>
-
-                        <button
-                            type="submit"
-                            id="submitBtn"
-                            style={{
-                                backgroundColor: "#39ff14",
-                                borderRadius: "5px",
-                                height: "38px",
-                                width: "90px",
-                                border: "1px solid black"
-                            }}
-                            disabled={loading}
-                        >
-                            {loading ? 'Sending...' : 'Submit'}
-                        </button>
-                    </form>
+            {/* Display success or error message */}
+            {status && (
+                <div
+                    className={`alert ${status.success ? "alert-success" : "alert-error"}`}
+                >
+                    {status.message}
                 </div>
-            </div>
+            )}
+
+            <form id="contactForm" onSubmit={handleSubmit} method="POST">
+                <label htmlFor="email">Email:</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+
+                <label htmlFor="message">Message:</label>
+                <textarea
+                    id="message"
+                    name="message"
+                    placeholder="Enter your message"
+                    rows="7"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    required
+                ></textarea>
+
+                <button type="submit" id="submitBtn" disabled={loading}>
+                    {loading ? "Sending..." : "Submit"}
+                </button>
+            </form>
         </div>
-    );
+    </div>
+        </div>
+
+            );
 };
