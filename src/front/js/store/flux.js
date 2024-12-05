@@ -1234,6 +1234,29 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .then(response => getActions().getFavs(getStore().userID))
                     .catch(error => console.error(error));
             },
+
+
+            addToWallet: (coin) => {
+                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/wallet/${coin.id}`, {
+                    method: 'POST',
+                    body: JSON.stringify(
+                        {
+                            "name": coin.name,
+                            "user_id": getStore().userID,
+                            "coin_id": coin.id
+                        }
+                    ),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => getActions().getWallet(getStore().userID))
+                    .catch(error => console.error(error));
+            },
         },
     };
 };
