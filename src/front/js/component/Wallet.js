@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { SparklineChart } from "../pages/sparklineChart";
+import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
 export const Wallet = () => {
     const { store, actions } = useContext(Context);

@@ -27,12 +27,10 @@ class User(db.Model):
 
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    coin_id = db.Column(db.String(10), nullable=False)
-    name = db.Column(db.String(50), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    symbol = db.Column(db.String(20), nullable=False)
-
-    user = db.relationship('User', backref='favorites', lazy=True)
+    coin_id = db.Column(db.String(10))
+    name = db.Column(db.String(20))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    symbol = db.Column(db.String(20))
 
     def __repr__(self):
         return f'<Favorites {self.name}>'
@@ -43,20 +41,18 @@ class Favorites(db.Model):
             "coin_id": self.coin_id,
             "name": self.name,
             "user_id": self.user_id,
-            "symbol": self.symbol,
+            "symbol": self.symbol
         }
 
 
 class Wallet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    coin_id = db.Column(db.String(10), nullable=False)
-    name = db.Column(db.String(50), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    symbol = db.Column(db.String(20), nullable=False)
-    purchase_price = db.Column(db.Float, nullable=False)
-    purchase_quantity = db.Column(db.Float, nullable=False)
-
-    user = db.relationship('User', backref='wallet', lazy=True)
+    coin_id = db.Column(db.String(10))
+    name = db.Column(db.String(100))  # Corrected type from Integer to String for the name
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    symbol = db.Column(db.String(20))
+    purchase_price = db.Column(db.String(20))
+    purchase_quantity = db.Column(db.String(20))
 
     def __repr__(self):
         return f'<Wallet {self.name}>'
@@ -69,5 +65,5 @@ class Wallet(db.Model):
             "user_id": self.user_id,
             "symbol": self.symbol,
             "purchase_price": self.purchase_price,
-            "purchase_quantity": self.purchase_quantity,
+            "purchase_quantity": self.purchase_quantity
         }

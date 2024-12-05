@@ -10,7 +10,7 @@ export const Modal = ({ isLoginDefault, onClose, onLoginSuccess }) => {
         const { username, password } = e.target.elements;
 
         try {
-            const response = await fetch("https://legendary-space-fishstick-jj46p9x44p593qrpr-3001.app.github.dev/api/login", {
+            const response = await fetch("https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -54,7 +54,7 @@ export const Modal = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                 password: password.value,
             };
 
-            const response = await fetch("https://legendary-space-fishstick-jj46p9x44p593qrpr-3001.app.github.dev/api/users", {
+            const response = await fetch("https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/api/users", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload), // Send email and password as JSON
