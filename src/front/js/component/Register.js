@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-
+import "../../styles/home.css";
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

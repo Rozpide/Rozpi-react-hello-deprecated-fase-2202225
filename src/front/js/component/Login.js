@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import GoogleLogin from './GoogleLogin'
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
+import "../../styles/home.css";
 
 // Configuración de Firebase
 const firebaseConfig = {

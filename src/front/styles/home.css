@@ -1,7 +1,151 @@
-/*
-    home.css: This website contains selectors only used in home.css
-
-    All pages share the styles on index.css but you should create 
-    one more css for each page that will contain the selected used 
-    on that page only (the ones not reused in other pages).
-*/
+/* General styles for the registration container */
+.register-container {
+    background: linear-gradient(135deg, #f7cac9, #92a8d1);
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 400px;
+    margin: 50px auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #333;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Title styles */
+  .register-container h2 {
+    font-size: 24px;
+    color: #4a4a4a;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  /* Input field styles */
+  .register-container input {
+    width: calc(100% - 20px);
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border 0.3s;
+  }
+  
+  .register-container input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  /* Button styles */
+  .register-container button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .register-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Add some spacing for mobile */
+  @media (max-width: 600px) {
+    .register-container {
+      padding: 20px;
+      margin: 20px;
+    }
+  
+    .register-container h2 {
+      font-size: 20px;
+    }
+  }
+  /* Estilo general para el contenedor principal */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #f7cac9, #92a8d1);
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  /* Estilo para la caja del formulario */
+  .login-container > div {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  /* Títulos */
+  .login-container h2 {
+    font-size: 24px;
+    color: #4a4a4a;
+    margin-bottom: 10px;
+  }
+  
+  .login-container h3 {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilo de los campos de entrada */
+  .login-container input {
+    margin: 10px 0;
+    padding: 12px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  
+  .login-container input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  /* Botones */
+  .login-container button {
+    margin: 10px 0;
+    padding: 12px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.3s;
+  }
+  
+  /* Botón de inicio de sesión */
+  .login-container button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .login-container button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Botón de registro */
+  .login-container button:last-of-type {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .login-container button:last-of-type:hover {
+    background-color: #1e7e34;
+  }
+  
