@@ -48,7 +48,8 @@ export const Listing = () => {
         if (store.favorites.some((favCoin) => favCoin.id === coin.id)) {
             actions.removeFromFavs(coin.id);
         } else {
-            actions.addToFavs(coin.id, coin.name, coin.symbol, coin.current_price);
+            console.log('Here');
+            actions.addToFavs(coin);
         }
     };
 

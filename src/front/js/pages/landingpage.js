@@ -3,6 +3,11 @@ import PropTypes from "prop-types";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
+import Listing from "../../img/listing.png";
+import currency from "../../img/currency.png";
+import favorite from "../../img/Favorites.png";
+import wallet from "../../img/wallet.png";
+
 
 
 export const Landing = () => {
@@ -23,13 +28,13 @@ export const Landing = () => {
 					<div className="blurb">Effortlessly explore a database of over 15,000 cryptocurrencies</div>
 					<span id="switchToListing" className="btn" onClick={() => {navigate("/listingpage")}}>Explore Database</span>
 				</div>
-				<img className="previewPhoto" src="https://placehold.co/450x550"/>
+				<img src={Listing} alt="Listing" className="d-inline-block align-top" />
 			</div>
 			<div className="previewBox" id="perfPreview">
 				<img className="previewPhoto" src="https://placehold.co/450x550"/>
 				<div className="blurbContainer">
 					<div className="blurb">Upon logging in immediately see the most important thing: the overall performance of your holdings</div>
-					<span className="listingLogin btn" onClick={() => {}}>View performance</span>
+					<span className="listingLogin btn" onClick={() => {navigate("/userdashboard")}}>View performance</span>
 				</div>
 			</div>
 			<div className="previewBox" id="infoPreview">
@@ -40,18 +45,18 @@ export const Landing = () => {
 				<img className="previewPhoto" src="https://placehold.co/450x550"/>
 			</div>
 			<div className="previewBox" id="favPreview">
-				<img className="previewPhoto" src="https://placehold.co/450x550"/>
+			<img src={currency} alt="favorite" className="d-inline-block align-top" />
 				<div className="blurbContainer">
 					<div className="blurb">Add coins to your favorites list for easy access and tracking, and the ability to set price notification alerts via text</div>
-					<span className="listingLogin btn" onClick={() => {}}>Add Favorites</span>
+					<span className="listingLogin btn" onClick={() => {navigate("/userdashboard#favorites")}}>Add Favorites</span>
 				</div>
 			</div>
 			<div className="previewBox" id="walletPreview">
 				<div className="blurbContainer">
 					<div className="blurb">Track the coins you currently own in your wallet and access more info about them</div>
-					<span className="listingLogin btn" onClick={() => {}}>Open Wallet</span>
+					<span className="listingLogin btn" onClick={() => {navigate("/userdashboard#wallet")}}>Open Wallet</span>
 				</div>
-				<img className="previewPhoto" src="https://placehold.co/450x550"/>
+				<img src={wallet} alt="wallet" className="d-inline-block align-top" />
 			</div>
 		</div>
 	);

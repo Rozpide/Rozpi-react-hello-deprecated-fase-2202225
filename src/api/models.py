@@ -33,6 +33,7 @@ class Favorites(db.Model):
     name = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     symbol = db.Column(db.String(20))
+    user = db.relationship(User)
 
     def __repr__(self):
         return f'<Favorites {self.name}>'
@@ -55,6 +56,7 @@ class Wallet(db.Model):
     symbol = db.Column(db.String(20))
     purchase_price = db.Column(db.String(20))
     purchase_quantity = db.Column(db.String(20))
+    user = db.relationship(User)
 
     def __repr__(self):
         return f'<Wallet {self.name}>'
