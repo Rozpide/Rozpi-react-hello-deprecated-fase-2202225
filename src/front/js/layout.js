@@ -13,6 +13,7 @@ import ParentDashboard from "./pages/ParentDashboard.jsx";
 import ProtectedRoute from "./component/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";
 import { Context } from "./store/appContext";
+import PasswordRecovery from "./component/PasswordRecovery.jsx";
 
 const Layout = () => {
     const { store } = useContext(Context);
@@ -59,6 +60,7 @@ const Layout = () => {
                             } />
 
                         <Route element={<Unauthorized />} path="/unauthorized" />
+                        <Route path="/password/recovery/" element={<PasswordRecovery />} />
                     </Routes>
                     <Footer />
                 </ScrollToTop>

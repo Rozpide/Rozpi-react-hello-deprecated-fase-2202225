@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 from api.models import db, User, EmailAuthorized, Estudiante, Role, Docente, Materias, Grados, DocenteMaterias
 from flask_cors import CORS
-from flask_bcrypt import Bcrypt
+from api.utils import bcrypt
 from flask_jwt_extended import get_jwt, verify_jwt_in_request
 from api.schemas.schemas import TeacherSchema, UserSchema, AuthorizedEmailSchema, StudentSchema, MateriasSchema, DocenteMateriaSchema, GradoSchema, RoleSchema
 from datetime import datetime
@@ -14,7 +14,6 @@ from api.services.generic_services import create_instance, delete_instance, get_
 
 
 app = Flask(__name__)
-bcrypt = Bcrypt(app)
 
 admin_routes = Blueprint('admin_routes', __name__)
 # Allow CORS requests to this API
@@ -159,7 +158,7 @@ def add_student():
 
 @admin_routes.route('/students', methods=['GET'])
 def get_students():
-    return get_all_instances(Estudiante)
+    return get_all_instances(Estudiante, students_schema)
 
 @admin_routes.route('/students/<int:student_id>', methods=['GET'])
 def get_student_by_id(student_id):

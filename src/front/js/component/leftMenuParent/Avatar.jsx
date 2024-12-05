@@ -11,12 +11,12 @@ const AvatarWrapper = styled.div`
 const StyledAvatar = styled.img`
   width: 100%;
   height: 100%;
-  objectfit: cover;
+  object-fit: cover;
 `;
 const Avatar = ({
   src,
   alt = "Avatar",
-  size = 60,
+  height = "60px",
   name = "",
   onClick = () => { },
   className = "",
@@ -25,7 +25,7 @@ const Avatar = ({
     <div className="container-fluid d-flex flex-column align-items-center text-center">
       <AvatarWrapper
         className={className}
-        style={{ width: `${size}px`, height: `${size}px` }}
+        style={{ height: height }}
         onClick={onClick}>
         <StyledAvatar src={src} alt={alt} />
       </AvatarWrapper>
