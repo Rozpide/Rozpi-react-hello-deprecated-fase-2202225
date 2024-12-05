@@ -10,13 +10,12 @@
   color: white;
 }
 
-
 .formLog .form-control,
 .formLog .form-select {
   box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   transition: all 0.2s ease;
-} 
+}
 
 .formLog .formLog-control:focus,
 .formLog .formLog-select:focus {
@@ -24,20 +23,23 @@
   border-color: #0a3d62;
   transform: scale(1.03);
   z-index: 1;
-} 
+}
+
 h2 {
   margin-top: 50px;
 }
-.spanLog{
-  color:white;
+
+.spanLog {
+  color: white;
   text-decoration: none;
 }
+
 .spanLog:hover {
   text-decoration: underline white;
 }
 
 .LoginForm {
-  background: linear-gradient(180deg, #0a3d62, #3c6382);
+  background: linear-gradient(45deg, #0a3d62, #3c6382, #3cfa);
   min-height: 94vh;
   display: flex;
   flex-direction: column;
@@ -46,4 +48,20 @@ h2 {
   padding: 20px;
   margin: 0;
   color: white;
+  animation: linearGradient 5s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes linearGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
