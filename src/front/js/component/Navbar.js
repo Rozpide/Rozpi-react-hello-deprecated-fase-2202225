@@ -47,7 +47,7 @@ const NavBar = () => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" className={`${styles["navbar-toggler"]}`} />
       <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom}`}>
         {token ? (
-          <Nav className="ms-auto text-center">
+          <Nav className="ms-auto text-center align-items-center">
             <Nav.Link >
               <i className={`${styles.campana} fas fa-bell`}></i>
             </Nav.Link>
