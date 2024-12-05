@@ -7,19 +7,15 @@ import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
 export const Wallet = () => {
     const { store, actions } = useContext(Context);
-
-    // State for controlling the modal
+    const [wallet, setWallet] = useState([]); // State to store wallet coins
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCoin, setSelectedCoin] = useState(null);
 
-    // Fetch the logged-in user's ID
-    const userId = store.user?.id; // Assuming user data is stored in the store
-
     useEffect(() => {
-        if (userId && (!store.wallet || store.wallet.length === 0)) {
-            actions.fetchWalletData(userId); // Pass userId to fetchWalletData
-        }
-    }, [userId, store.wallet, actions]);
+        // Fetch wallet data from localStorage
+        const walletData = JSON.parse(localStorage.getItem('wallet')) || [];
+        setWallet(walletData); // Update local state with wallet data
+    }, []);
 
     const handleOpenModal = (coin) => {
         setSelectedCoin(coin);
@@ -28,12 +24,11 @@ export const Wallet = () => {
 
     const handleTrade = (type, quantity) => {
         console.log(`${type.toUpperCase()} ${quantity} of ${selectedCoin.name}`);
-        // Call an action or API to execute the trade logic
         actions.tradeCoin(selectedCoin.id, type, quantity);
-        setIsModalOpen(false); // Close the modal after trade
+        setIsModalOpen(false);
     };
 
-    if (!store.wallet || !Array.isArray(store.wallet)) {
+    if (!Array.isArray(wallet) || wallet.length === 0) {
         return <p>Loading wallet data...</p>;
     }
 
@@ -53,25 +48,25 @@ export const Wallet = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {store.wallet.map((wallet) => (
-                        <tr key={wallet.id}>
+                    {wallet.map((walletCoin) => (
+                        <tr key={walletCoin.id}>
                             <td>
                                 <div className="wallet-info">
-                                    <h5 className="wallet-name">{wallet.name}</h5>
-                                    <div className="wallet-symbol">{wallet.symbol.toUpperCase()}</div>
+                                    <h5 className="wallet-name">{walletCoin.name}</h5>
+                                    <div className="wallet-symbol">{walletCoin.symbol.toUpperCase()}</div>
                                     <img
-                                        src={wallet.image}
-                                        alt={wallet.name}
+                                        src={walletCoin.image}
+                                        alt={walletCoin.name}
                                         className="wallet-image"
                                     />
                                 </div>
                             </td>
-                            <td>${wallet.current_price.toLocaleString()}</td>
-                            <td>{wallet.quantity_owned || 0}</td>
-                            <td>${(wallet.quantity_owned * wallet.purchase_price || 0).toLocaleString()}</td>
+                            <td>${walletCoin.current_price.toLocaleString()}</td>
+                            <td>{walletCoin.quantity_owned || 0}</td>
+                            <td>${(walletCoin.quantity_owned * walletCoin.purchase_price || 0).toLocaleString()}</td>
                             <td>
                                 <SparklineChart
-                                    data={wallet.sparkline_in_7d?.price || []}
+                                    data={walletCoin.sparkline_in_7d?.price || []}
                                     width={150}
                                     height={50}
                                 />
@@ -79,13 +74,13 @@ export const Wallet = () => {
                             <td>
                                 <button
                                     className="btn btn-primary"
-                                    onClick={() => handleOpenModal(wallet)}
+                                    onClick={() => handleOpenModal(walletCoin)}
                                 >
                                     Trade
                                 </button>
                             </td>
                             <td>
-                                <Link to={`/coin/${wallet.id}`} className="btn btn-secondary">
+                                <Link to={`/coin/${walletCoin.id}`} className="btn btn-secondary">
                                     More Information
                                 </Link>
                             </td>
@@ -94,7 +89,6 @@ export const Wallet = () => {
                 </tbody>
             </table>
 
-            {/* Trade Modal */}
             {isModalOpen && selectedCoin && (
                 <TradeModal
                     isOpen={isModalOpen}

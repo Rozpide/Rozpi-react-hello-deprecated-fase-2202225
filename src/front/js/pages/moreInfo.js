@@ -3,11 +3,12 @@ import { Context } from "../store/appContext";
 import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
 import { TradeModal } from "../component/tradeModal";
 
-export const MoreInfo = () => {
+export const MoreInfo = (coin) => {
     const { store, actions } = useContext(Context);
+    ///const coin = coin
     const [timeFrame, setTimeFrame] = React.useState('left');
-    const [isModalOpen, setIsModalOpen] = useState(false);  // State to control modal visibility
-    const [selectedCoin, setSelectedCoin] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCoin, setSelectedCoin] = useState(null);
     const [news, setNews] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -16,8 +17,8 @@ export const MoreInfo = () => {
     };
 
     // Fetch price data on component mount
-    useEffect(() => {
-        actions.setCurrentCoinId("bitcoin");
+    useEffect((coin) => {
+        actions.setCurrentCoinId("coin.id");
         actions.setCurrency("USD");
         actions.setTimeFrame("7");
         actions.getPriceData();

@@ -16,6 +16,11 @@ import { Userdashboard } from "./pages/userdashboard";
 import { Favorites } from "./component/Favorites";
 import { MoreInfo } from "./pages/moreInfo";
 import { TradeModal } from "./component/tradeModal";
+import { Wallet } from "./component/Wallet";
+
+
+
+
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -40,6 +45,7 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<MoreInfo />} path="/moreInfo" />
+                        <Route element={<Wallet />} path="/wallet" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
