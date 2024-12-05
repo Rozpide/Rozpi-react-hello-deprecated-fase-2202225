@@ -64,7 +64,7 @@ const LoginForm = () => {
                 <Col xs={12} md={6} lg={4} className="mx-auto">
                     <h2 className="text-center mb-4"><strong>Iniciar Sesión</strong></h2>
                     {error && <Alert variant="danger">{error}</Alert>}
-                    <Form onSubmit={handleSubmit} className={`${styles.formLog} p-4 border shadow rounded-pil`}>
+                    <Form onSubmit={handleSubmit} className={`${styles.formLog} p-4 border shadow rounded-pill`}>
                         <Form.Group controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -75,7 +75,7 @@ const LoginForm = () => {
                                 required
                             />
                         </Form.Group>
-                        <Form.Group controlId="password" className="mt-3 rounded-pil">
+                        <Form.Group controlId="password" className="mt-3 rounded-pill">
                             <Form.Label>Contraseña</Form.Label>
                             <Form.Control
                                 type="password"
