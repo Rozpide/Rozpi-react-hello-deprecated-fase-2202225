@@ -2,12 +2,11 @@ import React, { useState, useContext } from 'react';
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
-import Background from "/workspaces/Rosas-Alonso-Rodriguez-Acu-a-y-Chaves-Proyecto-final/src/front/img/background.png";
+// import Background from "/workspaces/Rosas-Alonso-Rodriguez-Acu-a-y-Chaves-Proyecto-final/src/front/img/background.png";
 
 const Login = () => {
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="text-center" style={{backgroundImage: `url(${Background})`, backgroundSize: "contain", backgroundRepeat: "no-repeat"}}>
                 <div className="container p-5 bg-white shadow rounded" style={{ width: "550px" }}>
                     <h1 className="mb-4">Iniciar sesión</h1>
                     <div className="form-floating mb-3">
@@ -22,7 +21,6 @@ const Login = () => {
                     <button className="btn btn-primary" style={{ width: "100%" }}>Iniciar sesión</button>
                     <p className="mt-3">¿NO TIENES UNA CUENTA? <Link to="/signup">REGÍSTRATE</Link></p>
                 </div>
-            </div>
         </div>
     );
 };
