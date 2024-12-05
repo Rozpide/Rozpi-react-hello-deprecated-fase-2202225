@@ -41,7 +41,8 @@ class Species (Enum):
      gato = "2"
      ave= "3"
      conejo = "4"
-     otro = "5"
+     reptil = "5"
+     otro = "6"
      
 class Pet(db.Model):
     __tablename__ ="pet"
@@ -102,11 +103,11 @@ class Post_Description (db.Model):
             }
 
 class Breed (db.Model):
-     __tablename__="breed"
-     id = db.Column(db.Integer, primary_key=True)
-     name = db.Column (db.String(30))
-     species = db.Column (db.Enum (Species), nullable=False)
-     pets= db.relationship ("Pet", back_populates="breed_relationship")
+    __tablename__="breed"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column (db.String(30))
+    species = db.Column (db.Enum (Species), nullable=False)
+    pets= db.relationship ("Pet", back_populates="breed_relationship")
     
     def __repr__(self):
             return f'<Breed: {self.name, self.species, self.pets}>'
