@@ -17,6 +17,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			userAvatar: null,
 			mensajes: [],
 			isChatVisible: false,
+			successMessage: '',
+			errorMessage: '',
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -226,13 +228,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return data
 			}, handleRegister: async (body) => {
 				try {
+					const actions = getActions()
 					const data = await actions.fetchRoute('signup', { method: 'POST', body });
+					setStore({ successMessage: "¡Su usuario ha sido creado corectamente! Bienvenido a SchoolHub!" });
 					return true;
 				} catch (error) {
 					console.error("Error en handleRegister:", error);
+					setStore({ errorMessage: "Ocurrió un error al intentar registrarse" });
 					return 'Ocurrió un error al intentar registrarse';
 				}
-			}, handleLogin: async (body) => {
+			}, clearMessages: () => {
+				setStore({ successMessage: '', errorMessage: '' });
+			},
+			handleLogin: async (body) => {
 				try {
 					const data = await getActions().fetchRoute("login", {
 						method: "POST",

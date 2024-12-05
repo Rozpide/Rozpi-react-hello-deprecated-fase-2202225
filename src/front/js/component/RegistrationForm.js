@@ -1,7 +1,6 @@
-import React, { useState, useContext } from 'react';
-import { Form, Container } from 'react-bootstrap';
+import React, { useState, useContext, useEffect } from 'react';
+import { Form, Container, Modal, Button } from 'react-bootstrap';
 import styles from "../../styles/RegistrationForm.module.css";
-// import styles from "../../styles/LoginForm.module.css";
 import { Context } from '../store/appContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +8,7 @@ const RegistrationForm = () => {
     const { store, actions } = useContext(Context)
     const navigate = useNavigate()
     const [error, setError] = useState('')
+    const [showSuccessModal, setShowSuccessModal] = useState(false)
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -16,8 +16,12 @@ const RegistrationForm = () => {
         direccion: '',
         telefono: '',
         password: ''
-        // motivo: ''
     });
+    useEffect(() => {
+        if (store.successMessage) {
+            setShowSuccessModal(true);
+        }
+    }, [store.successMessage]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -31,16 +35,21 @@ const RegistrationForm = () => {
 
         if (response != true) {
             setError(response)
-            return 
+            return
         }
         navigate('/login');
     };
 
+    const handleModalClose = () => {
+        setShowSuccessModal(false);
+        actions.clearMessages();
+        navigate('/login');
+    };
     return (
         <div className={`${styles.ContainerF}`}>
             <Container className="mt-4">
                 <h2 className="text-center mb-4"><strong>Formulario de Inscripción</strong></h2>
-                {error != ''?<div className='alert alert-danger text-center'>{error}</div>:''}
+                {error != '' ? <div className='alert alert-danger text-center'>{error}</div> : ''}
                 <Form onSubmit={handleSubmit} className={`${styles.ContainerForm} border`}>
 
                     <Form.Group controlId="nombre">
@@ -103,7 +112,7 @@ const RegistrationForm = () => {
                     <Form.Group controlId="password">
                         <Form.Label><strong>Password</strong></Form.Label>
                         <Form.Control
-                            type="pass"
+                            type="password"
                             placeholder="******"
                             name="password"
                             value={formData.password}
@@ -132,6 +141,19 @@ const RegistrationForm = () => {
                         </button>
                     </div>
                 </Form>
+                <Modal show={showSuccessModal} onHide={handleModalClose} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>¡Registro Exitoso!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        ¡Su usuario se ha registrado correctamente! Bienvenido a SchoolHub.
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="success" onClick={handleModalClose}>
+                            Continuar
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </Container>
         </div>
     );
