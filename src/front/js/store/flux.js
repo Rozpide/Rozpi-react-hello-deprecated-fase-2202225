@@ -130,12 +130,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await getActions().testsOperations('GET')
 				setStore({ evaluaciones: response })
 			},
-
-			//actions.subjectsOperations('GET', '', 2)
-			//actions.subjectsOperations('POST', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"})
-			//actions.subjectsOperations('PUT', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"}, 2)
-			//actions.subjectsOperations('DELETE', '', 2)
-
 			// CRUD para usuarios autorizados
 
 			getUsers: async () => {
@@ -301,24 +295,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					throw error
 				}
-			}, setParentResume: () => {
-				const store = getStore()
-
-				if (!store.personalInfo) {
-					console.error("No hay informacion personal almacenada")
-					return false
-				}
-
-				if (!store.personalInfo.estudiantes) {
-					console.log("No se ha encontrado informacion de estudiantes")
-					return false
-				}
-
-				let resume = estudiantes.map(clean_student_data)
-				setStore({ "statusResume": resume })
-
-				return true
-
 			}, getContacts: async () => {
 				try {
 					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "messages" })
@@ -339,14 +315,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const actions = getActions()
 
 				try {
-					const response = await actions.fetchRoute("reset", { method: 'PUT', isPRivate: true, bluePrint: "password", body: newPassword })
+					const response = await actions.fetchRoute("reset", { method: 'PUT', isPrivate: true, bluePrint: "password", body: { "newPassword": newPassword } })
 
-					return { "msg": "Contraseña Actualizada Correctamente" }
+					return response
 				} catch (error) {
 					console.error(error.message)
-					return { "msg": "Error al actualizar la contraseña" }
+					throw error
 				}
-
 			},
 			handleUserAvatarUpdate: (avatarUrl) => {
 				setStore({ userAvatar: avatarUrl }); // Actualiza el avatar del usuario
@@ -369,6 +344,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error al enviar mensaje:", error);
 				}
 			},
+			postPicture: async (file) => {
+				const { token } = getStore()
+				try {
+					let formData = new FormData()
+					formData.append("profilePicture", file)
+
+					const response = await fetch(backendURL + "/profile/picture", {
+						method: "PUT",
+						headers: {
+							'Authorization': `Bearer ${token}`
+						},
+						body: formData
+					})
+
+					if (!response.ok) {
+						let error = await response.json()
+						throw new Error(error.msg || "Error al subir la imagen");
+					}
+					let data = await response.json()
+					await getActions().getParentInfo()
+					return data
+				} catch (error) {
+					console.error("Error al subir la imagen:", error.message);
+					return error
+				}
+			}, updateProfile: async (body) => {
+				try {
+					const response = await getActions().fetchRoute("update", { method: 'PUT', isPrivate: true, bluePrint: "profile", body: body })
+					await getActions().getParentInfo()
+					return response
+				} catch (error) {
+					console.error(error.message)
+					throw error
+
+				}
+			}, requestPasswordChange: async (email) => {
+				try {
+					const response = await getActions().fetchRoute("password/recovery", { method: 'POST', body: { "email": email } })
+					return response
+				} catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			}
 		}
 	}
 };

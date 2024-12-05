@@ -6,13 +6,14 @@ from flask import Flask, request, jsonify, Blueprint
 from marshmallow import ValidationError
 from api.models import Docente, db, User, EmailAuthorized, BlockedTokenList, Role, Messages
 from flask_cors import CORS
-from flask_bcrypt import Bcrypt
+from api.utils import bcrypt
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity
-from api.schemas.schemas import UserSchema, MessagesSchema
+from api.schemas.schemas import TeacherSchema, UserSchema, MessagesSchema
 from api.services.external_services import send_recovery_email, get_image, upload_image
+from api.services.generic_services import update_instance
 
 app = Flask(__name__)
-bcrypt = Bcrypt(app)
+
 
 api = Blueprint('api', __name__)
 # Allow CORS requests to this API
@@ -111,6 +112,7 @@ def handle_logout():
 @jwt_required()
 def handle_profile_pic():
     user = User.query.get(get_jwt_identity())
+    print(request.files)
     body = request.files["profilePicture"]
     
     if not user:
@@ -130,11 +132,34 @@ def get_profile_pic():
         return jsonify({"msg": "User not found"}),404
 
     
-    foto = get_image(user.foto)
+    foto = get_image(user.foto) if user.foto else None
     
     return jsonify({"url": foto})
-    
 
+@api.route('/profile/update', methods=['PUT'])
+@jwt_required()
+def handle_profile_update():
+    teacher_schema = TeacherSchema()
+    body = request.get_json()
+    
+    if not body:
+        return jsonify({"msg": "Body is required"}),400
+    
+    user = User.query.get(get_jwt_identity())
+    
+    if not user:
+        return jsonify({"msg": "User not found"}),404
+    
+    try:
+    
+        if user.role.nombre.lower() == "docente":
+            return update_instance(Docente, str(user.id),body, teacher_schema)
+        
+        return update_instance(User, str(user.id), body, user_schema)
+    except Exception as e:
+        print(str(e))
+        return jsonify({"msg": "An error occurred updating the data"}),500
+    
 @api.route('/info/teachers', methods=['GET'])
 def get_teachers_cards():
      teachers = Docente.query.all()
@@ -177,7 +202,7 @@ def handle_password_change():
     if not user:
         return jsonify({"msg": "User not found"}),404
     
-    newPassword = body.get("newpPassword")
+    newPassword = body.get("newPassword")
     
     if not newPassword:
         return jsonify({"msg":"Missing required field"}),400
