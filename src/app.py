@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS  # Add CORS support
 from flask_jwt_extended import JWTManager  # Add JWT support
 from api.utils import APIException, generate_sitemap
-from api.models import db
+from api.models import db, User, Favorites, Wallet
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -67,7 +67,23 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # Avoid cache memory
     return response
 
+@app.route('/favorites/<coin_id>', methods=['POST'])
+def add_fav(coin_id):
+    user_id = request.json['user_id']
+    name = request.json['name']
+    fav_crypto = Favorites(name=name, user_id=user_id, coin_id=coin_id)
+    db.session.add(fav_crypto)
+    db.session.commit()
+    return jsonify(get_favs(user_id))
+
+def get_favs (id):
+    favorites = Favorites.query.filter_by(user_id=id)
+    favorites = list(map(lambda x: x.serialize(), favorites))
+    return favorites
+
 # Run the application
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+
+

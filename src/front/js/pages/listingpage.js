@@ -25,7 +25,8 @@ export const Listing = () => {
         if (store.favorites.some((favCoin) => favCoin.id === coin.id)) {
             actions.removeFromFavs(coin.id);
         } else {
-            actions.addToFavs(coin.id, coin.name, coin.symbol, coin.current_price);
+            console.log('Here');
+            actions.addToFavs(coin);
         }
     };
 
@@ -57,7 +58,7 @@ export const Listing = () => {
                         </td>
                         <td>${coin.current_price.toLocaleString()}</td>
                         <td>
-                            <SparklineChart data={coin.sparkline_in_7d.price} width={150} height={50} />    
+                            <SparklineChart data={coin.sparkline_in_7d.price} width={150} height={50} />
                         </td>
                         <td>
                             <span

@@ -1819,7 +1819,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 setStore({ userID: id })
             },
             setUserName: (email) => {
-                setStore({ username: email})
+                setStore({ username: email })
             },
             setCurrentCoinId: (id) => {
                 setStore({ currentCoinId: id })
@@ -1865,10 +1865,12 @@ const getState = ({ getStore, getActions, setStore }) => {
             getPriceData: () => {
                 fetch(`https://api.coingecko.com/api/v3/coins/${getStore().currentCoinId}/market_chart?vs_currency=${getStore().currency}&days=${getStore().timeFrame}`)
                     .then((res) => res.json())
-                    .then((response) => { setStore({ currentCoinPriceData: 
-                        response.prices.map((price) => {
-                            return ({date: new Date(price[0]), price: price[1]})
-                            })
+                    .then((response) => {
+                        setStore({
+                            currentCoinPriceData:
+                                response.prices.map((price) => {
+                                    return ({ date: new Date(price[0]), price: price[1] })
+                                })
                         })
                     })
                     .catch((err) => console.log(err))
@@ -1907,36 +1909,36 @@ const getState = ({ getStore, getActions, setStore }) => {
                 });
                 setStore({ demo: demo });
             },
-            addToFavs: (id, name, symbol, current_price) => {
-                const exist = getStore().favorites.find((favorite) => favorite.name === name)
-                if (!exist) {
-                    let newFav = { name: name, id: id, symbol: symbol, current_price: current_price };
-                    let newArr = [...getStore().favorites, newFav];
-                    setStore({ favorites: newArr });
-                    console.log("favorites:" + getStore().favorites)
-                } else { console.log("favorite exists") }
-            },
+            // addToFavs: (id, name, symbol, current_price) => {
+            //     const exist = getStore().favorites.find((favorite) => favorite.name === name)
+            //     if (!exist) {
+            //         let newFav = { name: name, id: id, symbol: symbol, current_price: current_price };
+            //         let newArr = [...getStore().favorites, newFav];
+            //         setStore({ favorites: newArr });
+            //         console.log("favorites:" + getStore().favorites)
+            //     } else { console.log("favorite exists") }
+            // },
             addToFavs: (coin) => {
-				fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3000.app.github.dev/favorites/${coin.id}`, {
-					method: 'POST',
-					body: JSON.stringify(
-						{
-							"name": coin.name,
-							"user_id": getStore().userID,
+                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/favorites/${coin.id}`, {
+                    method: 'POST',
+                    body: JSON.stringify(
+                        {
+                            "name": coin.name,
+                            "user_id": getStore().userID,
                             "coin_id": coin.id
-						}
-					),
-					headers: {
-						'Content-type': 'application/json'
-					}
-				})
-					.then(res => {
-						if (!res.ok) throw Error(res.statusText);
-						return res.json();
-					})
-					.then(response => getActions().getFavs(getStore().userID))
-					.catch(error => console.error(error));
-			},
+                        }
+                    ),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => getActions().getFavs(getStore().userID))
+                    .catch(error => console.error(error));
+            },
         },
     };
 };
