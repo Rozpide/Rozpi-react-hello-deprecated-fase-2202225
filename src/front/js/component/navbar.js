@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
-import { Modal } from "./Modal"; // Import the Modal component
+import { Login } from "./Login"; // Import the Modal component
 import Logo from "../../img/Logo.png";
 import gear from "../../img/gear.png";
 
@@ -94,7 +94,7 @@ export const Navbar = () => {
             </nav>
 
             {showModal && (
-                <Modal
+                <Login
                     isLoginDefault={true}
                     onClose={() => setShowModal(false)}
                     onLoginSuccess={handleLoginSuccess}
