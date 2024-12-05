@@ -1,20 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export const TradeModal = ({ isOpen, onClose, onTrade, coinName }) => {
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState("");
 
   if (!isOpen) return null;
 
   const handleTrade = (type) => {
-    onTrade(type, quantity);
-    setQuantity(0); 
-    onClose(); 
+    if (quantity <= 0 || isNaN(quantity)) {
+      alert("Please enter a valid quantity greater than 0.");
+      return;
+    }
+    onTrade(type, parseFloat(quantity)); // Ensure quantity is passed as a number
+    setQuantity(""); // Reset quantity
+    onClose(); // Close the modal
   };
 
   return (
-    <div className="modal">
+    <div className="modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
       <div className="modal-content">
-        <h2>Trade {coinName}</h2>
+        <h2 id="modal-title">Trade {coinName}</h2>
         <input
           type="number"
           value={quantity}
@@ -23,12 +27,13 @@ export const TradeModal = ({ isOpen, onClose, onTrade, coinName }) => {
           min="0"
         />
         <div className="buttons">
-          <button onClick={() => handleTrade('buy')}>Buy</button>
-          <button onClick={() => handleTrade('sell')}>Sell</button>
+          <button onClick={() => handleTrade("buy")}>Buy</button>
+          <button onClick={() => handleTrade("sell")}>Sell</button>
         </div>
-        <button onClick={onClose}>Close</button>
+        <button className="close-button" onClick={onClose}>
+          Close
+        </button>
       </div>
     </div>
   );
 };
-
