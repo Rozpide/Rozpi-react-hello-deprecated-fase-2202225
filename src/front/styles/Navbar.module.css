@@ -1,46 +1,94 @@
 .dashboard-icon {
-  position: fixed;
+  position: relative;
   top: 10px;
   left: 10px;
   cursor: pointer;
   z-index: 1000;
 }
 
+.ItemAvatar {
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+  border-radius: 8px;
+  border: none;
+  padding: 10px;
+  min-width: 10%;
+  position: absolute;
+  /* Permite ajustar su posición */
+  right: -10px;
+  /* Ajusta el menú para que aparezca en el costado derecho */
+
+}
+
+.ItemAvatarButtom {
+  color: #ffffff;
+  font-weight: bold;
+  /* padding: 10px; */
+  min-width: 100px;
+}
+
+.ItemAvatarButtom:hover {
+  color: Black;
+  font-weight: bolder;
+  background-color: transparent;
+}
+
+.Toggle {
+  border: "none";
+  background: "transparent";
+  cursor: "pointer";
+  padding: 10px 15px;
+}
+
+.Toggle::after {
+  display: none;
+  /*asi no se ve el "triángulo invertido" */
+}
+
+.navbar-avatar {
+  margin-right: 20px;
+  /* Separa el avatar del borde derecho */
+}
+
+.campana {
+  font-size: 1.5rem;
+  padding: 10px 15px;
+}
+
 .dashboard {
   position: fixed;
   top: 0;
   left: 0;
-  /* padding-bottom: 5%; */
-  /* width: 250px; */
   height: 100vh;
   background-color: #060707;
   z-index: 999;
 }
 
 .navbar-custom {
+  /* este class modifica directamente la navbar */
   background-color: #2b2d42;
   font-weight: bold;
   justify-content: flex-start;
   color: white;
-  height: 100px
+  height: 100px;
+  overflow: visible;
 }
 
 #basic-navbar-nav {
   transition: max-height 1.5s ease;
   max-height: 0;
   color: white;
-  background-color: white;
 }
 
 .collapseCustom {
   background-color: #2b2d42;
-  padding: 1em;
   border-radius: 8px;
   display: flex;
   justify-content: flex-end;
   position: relative;
-  overflow: hidden;
-  width:fit-content;
+  overflow: visible;
+  width: fit-content;
+  gap: 20px;
+  justify-content: space-between;
 }
 
 .collapseCustom.show {
@@ -48,7 +96,7 @@
   right: 10px;
   max-width: 25%;
   background: none;
-  width:fit-content;
+  width: fit-content;
   text-align: center;
 }
 
@@ -132,4 +180,26 @@
 
 .NavButton:active::before {
   background-color: yellow;
+}
+
+/* styles del chatComponent */
+
+.CardChat {
+  /* align-items: center; */
+  color: white;
+  font-weight: bold;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+}
+
+.chatContainer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  opacity: 0;
+}
+
+.chatContainerVisible {
+  max-height: 500px;
+  opacity: 1;
+  overflow: visible;
 }

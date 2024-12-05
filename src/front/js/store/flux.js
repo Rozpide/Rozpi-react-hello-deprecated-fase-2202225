@@ -1,5 +1,6 @@
 import { clean_student_data } from "../functions/clean_parent_data";
-const backendURL = process.env.BACKEND_URL || ""
+const backendURL = process.env.BACKEND_URL || "";
+
 
 
 const getState = ({ getStore, getActions, setStore }) => {
@@ -17,12 +18,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			asignaciones: [],
 			evaluaciones: [],
 			personalInfo: null,
-			contactos: null
+			contactos: null,
+			userAvatar: null,
+			mensajes: [],
+			isChatVisible: false,
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
 			fetchRoute: async (endpoint, { method = 'GET', body = '', isPrivate = false, bluePrint = '' } = {}) => {
-				if (isPrivate) getActions().loadSession();
+				if (isPrivate && !getStore().token) getActions().loadSession();
 
 				const headers = {
 					'Content-Type': 'application/json',
@@ -39,8 +43,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw new Error(`Missing: Token: ${!token}, bluePrint: ${!bluePrint} for private route`)
 				}
 
-				const URL = isPrivate ? `${backendURL}api/${bluePrint}/${endpoint}` : `${backendURL}api/${endpoint}`
-
+				const URL = isPrivate ? `${backendURL}/${bluePrint}/${endpoint}` : `${backendURL}/${endpoint}`
 				const params = {
 					method,
 					headers
@@ -75,6 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 			}, loadSession: async () => {
+
 				let token = localStorage.getItem('token')
 				let role = localStorage.getItem('role')
 
@@ -186,7 +190,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body
 					});
 
-
 					if (data.token && data.role) {
 						const rol = data.role.toLowerCase();
 						localStorage.setItem("token", data.token);
@@ -210,7 +213,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, handleLogout: async () => {
 				const { fetchRoute } = getActions();
 				try {
-					const resp = await fetchRoute("/logout", {
+					const resp = await fetchRoute("logout", {
 						method: "POST",
 						isPrivate: true,
 						bluePrint: "session"
@@ -221,7 +224,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 
-					setStore({ token: null, role: null });
+					setStore({ token: null, role: null, userAvatar: null }); /// agregando el userAvatar acá
 					localStorage.removeItem("token");
 					localStorage.removeItem("role");
 				} catch (error) {
@@ -259,24 +262,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					throw error
 				}
-			}, setParentResume: () => {
-				const store = getStore()
-
-				if (!store.personalInfo) {
-					console.error("No hay informacion personal almacenada")
-					return false
-				}
-
-				if (!store.personalInfo.estudiantes) {
-					console.log("No se ha encontrado informacion de estudiantes")
-					return false
-				}
-
-				let resume = estudiantes.map(clean_student_data)
-				setStore({ "statusResume": resume })
-
-				return true
-
 			}, getContacts: async () => {
 				try {
 					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "messages" })
@@ -293,8 +278,83 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					return
 				}
-			}
+			}, changePassword: async (newPassword) => {
+				const actions = getActions()
 
+				try {
+					const response = await actions.fetchRoute("reset", { method: 'PUT', isPrivate: true, bluePrint: "password", body: { "newPassword": newPassword } })
+
+					return response
+				} catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			},
+			handleUserAvatarUpdate: (avatarUrl) => {
+				setStore({ userAvatar: avatarUrl }); // Actualiza el avatar del usuario
+			},
+			toggleChat: () => {
+				const store = getStore();
+				setStore({ isChatVisible: !store.isChatVisible }); // Alterna el estado del chat
+			},
+			sendMessage: async (message) => {
+				try {
+					await getActions().fetchRoute("messages", {
+						method: "POST",
+						body: {},
+						isPrivate: true,
+						bluePrint: "messages"
+					});
+
+					await getActions().getMessages();
+				} catch (error) {
+					console.error("Error al enviar mensaje:", error);
+				}
+			},
+			postPicture: async (file) => {
+				const { token } = getStore()
+				try {
+					let formData = new FormData()
+					formData.append("profilePicture", file)
+
+					const response = await fetch(backendURL + "/profile/picture", {
+						method: "PUT",
+						headers: {
+							'Authorization': `Bearer ${token}`
+						},
+						body: formData
+					})
+
+					if (!response.ok) {
+						let error = await response.json()
+						throw new Error(error.msg || "Error al subir la imagen");
+					}
+					let data = await response.json()
+					await getActions().getParentInfo()
+					return data
+				} catch (error) {
+					console.error("Error al subir la imagen:", error.message);
+					return error
+				}
+			}, updateProfile: async (body) => {
+				try {
+					const response = await getActions().fetchRoute("update", { method: 'PUT', isPrivate: true, bluePrint: "profile", body: body })
+					await getActions().getParentInfo()
+					return response
+				} catch (error) {
+					console.error(error.message)
+					throw error
+
+				}
+			}, requestPasswordChange: async (email) => {
+				try {
+					const response = await getActions().fetchRoute("password/recovery", { method: 'POST', body: { "email": email } })
+					return response
+				} catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			}
 		}
 	}
 };
