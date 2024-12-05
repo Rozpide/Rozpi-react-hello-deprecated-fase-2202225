@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
-//import { useNavigate } from "react-router-dom";
+import { TradeModal } from "../component/tradeModal";
 
-
-export const MoreInfo = () => {
+export const MoreInfo = (coin) => {
     const { store, actions } = useContext(Context);
+    ///const coin = coin
     const [timeFrame, setTimeFrame] = React.useState('left');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCoin, setSelectedCoin] = useState(null);
+    const [news, setNews] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const handleChange = (event, newAlignment) => {
         setTimeFrame(newAlignment);
     };
-    // State for news data and loading indicator
-    const [news, setNews] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     // Fetch price data on component mount
-    useEffect(() => {
-        actions.setCurrentCoinId("bitcoin");
+    useEffect((coin) => {
+        actions.setCurrentCoinId("coin.id");
         actions.setCurrency("USD");
         actions.setTimeFrame("7");
         actions.getPriceData();
@@ -61,6 +62,11 @@ export const MoreInfo = () => {
     useEffect(() => {
         actions.getPriceData();
     }, [store.currency]);
+
+    // Function to open the modal
+    const handleTrade = () => {
+        setIsModalOpen(true);
+    };
 
     return (
         <div className="moreInfo">
@@ -137,18 +143,26 @@ export const MoreInfo = () => {
                     </div>
                     <div>
                         <div className="bigGraph">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={store.currentCoinPriceData}>
-                                        <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
-                                        <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
-                                        <XAxis dataKey="date" tick={null} />
-                                        <Tooltip />
-                                    </LineChart>
-                                </ResponsiveContainer>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={store.currentCoinPriceData}>
+                                    <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
+                                    <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
+                                    <XAxis dataKey="date" tick={null} />
+                                    <Tooltip />
+                                </LineChart>
+                            </ResponsiveContainer>
                         </div>
-                            <div style={{ display: "flex", justifyContent: "end" }}>
-                                <button type="submit" id="submitBtn" style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
-                            </div>   
+                        <div style={{ display: "flex", justifyContent: "end" }}>  
+                        <button type="submit" id="submitBtn" style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>   
+                        {isModalOpen && selectedCoin && (
+                            <TradeModal
+                                isOpen={isModalOpen}
+                                onClose={() => setIsModalOpen(false)}
+                                onTrade={handleTrade}
+                                coinName={selectedCoin.name}
+                            />
+                        )}
+                        </div>
                     </div>
                 </div>
                 {/* News Feed Section */}
@@ -180,3 +194,8 @@ export const MoreInfo = () => {
         </div>
     );
 };
+
+
+
+
+
