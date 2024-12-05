@@ -7,6 +7,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			profesores: [],
+			profesorPersonalInfo: {
+				docente: {},
+				grados: [],
+				materias: []
+			},
 			usuarios: [],
 			grados: [],
 			materias: [],
@@ -117,85 +122,31 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error
 				}
 
+			}, userOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('user/auth', method, { id, body, bluePrint: 'admin' })
+			}, setUsers: async () => {
+				const response = await getActions().userOperations('GET')
+				setStore({ usuarios: response })
 			}, studentsOperations: async (method, body = '', id = '') => {
-				return getActions().crudOperation('student', method, { id, body, bluePrint: 'admin' })
+				return getActions().crudOperation('students', method, { id, body, bluePrint: 'admin' })
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
 			}, setSubjects: async () => {
 				const response = await getActions().subjectsOperations('GET')
 				setStore({ materias: response })
+			}, teachersOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('teachers', method, { id, body, bluePrint: 'admin' })
+			}, setTeachers: async () => {
+				const response = await getActions().teachersOperations('GET')
+				setStore({ profesores: response })
 			}, testsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('evaluaciones', method, { id, body, bluePrint: 'teacher' })
 			}, setTests: async () => {
 				const response = await getActions().testsOperations('GET')
 				setStore({ evaluaciones: response })
 			},
-			// CRUD para usuarios autorizados
 
-			getUsers: async () => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("user/auth", {
-					method: "GET",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				setStore({ usuarios: data })
-			},
-
-			postUser: async (body) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("user/auth", {
-					method: "POST",
-					body: body,
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getUsers()
-			},
-
-			deleteUser: async (id) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute(`user/auth/${id}`, {
-					method: "DELETE",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getUsers()
-			},
-
-			// CRUD para profesores
-
-			postTeacher: async (body) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("teachers", {
-					method: "POST",
-					body: body,
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getTeachers()
-			},
-
-			deleteTeacher: async (id) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute(`teachers/${id}`, {
-					method: "DELETE",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getTeachers()
-			},
-
-			getTeachers: async () => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("teachers", {
-					method: "GET",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				setStore({ profesores: data })
-
-			}, postCourse: async (grado) => {
+			postCourse: async (grado) => {
 				const actions = getActions()
 				const data = await actions.fetchRoute("grados", {
 					method: "POST",
@@ -279,7 +230,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.error("Error al cerrar sesión:", error);
 				}
-			}, getParentInfo: async () => {
+			}, getTeacherInfo: async () => {
+
+				try {
+					let teacherData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "teacher" })
+					console.log('fetched teacher data:', teacherData)
+					if (!teacherData) {
+						console.log('El profesor no tiene materias asignadas')
+						return false
+					}
+					setStore({ profesorPersonalInfo: teacherData });
+				}
+				catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			},
+			getParentInfo: async () => {
 
 				try {
 					let parentData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "parent" })
