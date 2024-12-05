@@ -1,7 +1,7 @@
 
 import click
 from api.models import DocenteMaterias, Estudiante, Evaluacion, Grados, Materias, db, User, Role, EmailAuthorized, Docente
-from api.routes.routes import bcrypt
+from api.utils import bcrypt
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 import json
 import random

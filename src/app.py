@@ -16,7 +16,6 @@ from api.routes.parent_routes import parent_routes
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_cors import CORS
-from api.services.generic_services import create_role_and_admin
 import cloudinary   
 # from models import Person
 
@@ -104,14 +103,9 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
-def initialize_app():
-    with app.app_context():
-        create_role_and_admin()
-
 
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
-    initialize_app()
     app.run(host='0.0.0.0', port=PORT, debug=True)
