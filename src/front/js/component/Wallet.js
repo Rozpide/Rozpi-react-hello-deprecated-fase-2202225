@@ -1,92 +1,102 @@
 import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { SparklineChart } from "../pages/sparklineChart";
+import { TradeModal } from "./tradeModal";
 import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
 export const Wallet = () => {
     const { store, actions } = useContext(Context);
+    const [wallet, setWallet] = useState([]); // State to store wallet coins
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCoin, setSelectedCoin] = useState(null);
 
-    // Define the handleFavoriteToggle function
-    const handleFavoriteToggle = (wallet) => {
-        if (store.favorites.some((favCoin) => favCoin.id === wallet.id)) {
-            actions.removeFavorite(wallet.id); // Assuming you have this action
-        } else {
-            actions.addFavorite(wallet); // Assuming you have this action
-        }
+    useEffect(() => {
+        // Fetch wallet data from localStorage
+        const walletData = JSON.parse(localStorage.getItem('wallet')) || [];
+        setWallet(walletData); // Update local state with wallet data
+    }, []);
+
+    const handleOpenModal = (coin) => {
+        setSelectedCoin(coin);
+        setIsModalOpen(true);
     };
 
-    // Optional: Handle navigation if "More Information" is needed
-    const navigate = useNavigate();
-
-    // Optional: Handle Trade button click
-    const handleTrade = (wallet) => {
-        // Implement your trade logic here
-        console.log(`Trade clicked for ${wallet.name}`);
+    const handleTrade = (type, quantity) => {
+        console.log(`${type.toUpperCase()} ${quantity} of ${selectedCoin.name}`);
+        actions.tradeCoin(selectedCoin.id, type, quantity);
+        setIsModalOpen(false);
     };
 
-    // Ensure store.wallet is defined and is an array
-    if (!store.wallet || !Array.isArray(store.wallet)) {
+    if (!Array.isArray(wallet) || wallet.length === 0) {
         return <p>Loading wallet data...</p>;
     }
 
     return (
-        <table className="wallet-table" style={{ width: "90vw"}}>
-            <thead>
-                <tr>
-                    <th>Name:</th>
-                    <th>Current Price:</th>
-                    <th>Quantity:</th>
-                    <th>Total Spent:</th>
-                    <th>Graph:</th>
-                    <th>Options:</th>
-                    <th>Favorite:</th>
-                    <th>Data:</th>
-                </tr>
-            </thead>
-            <tbody>
-                {store.wallet.map((wallet) => (
-                    <tr key={wallet.id}>
-                        <td>
-                            <div className="wallet-info">
-                                
-                                <div>
-                                    <h5 className="wallet-name">{wallet.name}</h5>
-                                    <div className="wallet-symbol">{wallet.symbol.toUpperCase()}</div>
-                                    <img src={wallet.image} alt={wallet.name} className="wallet-image" />
-                                </div>
-                            </div>
-                        </td>
-                        <td>${wallet.current_price.toLocaleString()}</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>
-                            <SparklineChart data={wallet.sparkline_in_7d.price} width={150} height={50} />
-                        </td>
-                        <td>
-                            <button className="trade-button" onClick={() => handleTrade(wallet)}>
-                                Trade
-                            </button>
-                        </td>
-                        <td>
-                            <button
-                                className={`star-button ${
-                                    store.favorites.some((favCoin) => favCoin.id === wallet.id) ? "favorited" : ""
-                                }`}
-                                onClick={() => handleFavoriteToggle(wallet)}
-                            >
-                                {store.favorites.some((favCoin) => favCoin.id === wallet.id) ? "★" : "☆"}
-                            </button>
-                        </td>
-                        <td>
-                            <Link to={`/coin/${wallet.id}`} className="btn btn-secondary">
-                                More Information
-                            </Link>
-                        </td>
+        <div className="wallet-page">
+            <h2>Your Wallet</h2>
+            <table className="wallet-table" style={{ width: "90vw" }}>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Current Price</th>
+                        <th>Quantity Owned</th>
+                        <th>Total Spent</th>
+                        <th>Graph (7d)</th>
+                        <th>Quick Actions</th>
+                        <th>Market Details</th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {wallet.map((walletCoin) => (
+                        <tr key={walletCoin.id}>
+                            <td>
+                                <div className="wallet-info">
+                                    <h5 className="wallet-name">{walletCoin.name}</h5>
+                                    <div className="wallet-symbol">{walletCoin.symbol.toUpperCase()}</div>
+                                    <img
+                                        src={walletCoin.image}
+                                        alt={walletCoin.name}
+                                        className="wallet-image"
+                                    />
+                                </div>
+                            </td>
+                            <td>${walletCoin.current_price.toLocaleString()}</td>
+                            <td>{walletCoin.quantity_owned || 0}</td>
+                            <td>${(walletCoin.quantity_owned * walletCoin.purchase_price || 0).toLocaleString()}</td>
+                            <td>
+                                <SparklineChart
+                                    data={walletCoin.sparkline_in_7d?.price || []}
+                                    width={150}
+                                    height={50}
+                                />
+                            </td>
+                            <td>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => handleOpenModal(walletCoin)}
+                                >
+                                    Trade
+                                </button>
+                            </td>
+                            <td>
+                                <Link to={`/coin/${walletCoin.id}`} className="btn btn-secondary">
+                                    More Information
+                                </Link>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+
+            {isModalOpen && selectedCoin && (
+                <TradeModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onTrade={handleTrade}
+                    coinName={selectedCoin.name}
+                />
+            )}
+        </div>
     );
 };

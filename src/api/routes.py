@@ -1,19 +1,21 @@
 from flask import Flask, request, jsonify, Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from api.models import db, User, Favorites, Wallet
+from .models import db, User, Favorites, Wallet
+from flask_cors import CORS
 
 api = Blueprint('api', __name__)
+
 
 # Example endpoint: Replace or extend as needed
 @api.route('/hello', methods=['GET'])
 def hello_world():
     return jsonify({"message": "Hello, World!"})
 
-def get_favs (id):
-    favorites = Favorites.query.filter_by(user_id=id)
-    favorites = list(map(lambda x: x.serialize(), favorites))
-    return favorites
+# def get_favs (id):
+#     favorites = Favorites.query.filter_by(user_id=id)
+#     favorites = list(map(lambda x: x.serialize(), favorites))
+#     return favorites
 
 # Register a new user
 @api.route('/users', methods=['POST'])
@@ -87,6 +89,24 @@ def get_all_users():
     users = User.query.all()
     return jsonify([user.serialize() for user in users]), 200
 
+
+
+# Get wallet data for the logged-in user
+@api.route('/wallet', methods=['GET'])
+@jwt_required()
+def get_wallet():
+    current_user_id = get_jwt_identity()  
+    try:
+        wallet = wallet.query.filter_by(user_id=current_user_id).all()
+        if not wallet:
+            return jsonify({"error": "No wallet data found for the user"}), 404
+
+        return jsonify([w.serialize() for w in wallet]), 200
+    except Exception as e:
+        return jsonify({"error": f"Failed to fetch wallet data: {str(e)}"}), 500
+
+
+
 # Placeholder for additional routes
 # Add your other endpoints here
 @api.route('/example', methods=['GET'])
@@ -94,12 +114,12 @@ def example_endpoint():
     return jsonify({"message": "This is an example endpoint!"})
 
 
-@api.route('/favorites/<coin_id>', methods=['POST'])
-def add_fav(coin_id):
-    user_id = request.json['user_id']
-    name = request.json['name']
-    fav_crypto = Favorites(name=name, user_id=user_id, coin_id=coin_id)
-    db.session.add(fav_crypto)
-    db.session.commit()
-    return jsonify(get_favs(user_id))
+# @api.route('/favorites/<coin_id>', methods=['POST'])
+# def add_fav(coin_id):
+#     user_id = request.json['user_id']
+#     name = request.json['name']
+#     fav_crypto = Favorites(name=name, user_id=user_id, coin_id=coin_id)
+#     db.session.add(fav_crypto)
+#     db.session.commit()
+#     return jsonify(get_favs(user_id))
 
