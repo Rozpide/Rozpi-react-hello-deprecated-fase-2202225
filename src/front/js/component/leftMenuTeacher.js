@@ -12,6 +12,7 @@ const FormCommon = ({ type }) => {
     const { store, actions } = useContext(Context)
     const [startDate, setStartDate] = useState(new Date());
     const [selectedCourse, setSelectedCourse] = useState('');
+    const [selectedSubject, setSelectedSubject] = useState('');
     const [formBody, setFormBody] = useState({
         name: '',
         description: '',
@@ -28,24 +29,30 @@ const FormCommon = ({ type }) => {
         fetchData();
     }, []);
 
-    // useEffect(() => {
-    //     if (type === 'crear') {
-    //         store.profesoresPersonalInfo;
-    //     }
-    //     if (type === 'assignSubject') {
-    //         actions.setSubjects();
-    //         actions.getTeachers();
-    //     }
-    // }, [type]);
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormBody(prevState => ({ ...prevState, [name]: value }));
+
         if (name === 'grado_id') {
             setSelectedCourse(value);
+            setSelectedSubject('');
             setFormBody(prevState => ({ ...prevState, materia_id: '' }));
         }
+        if (name === 'materia_id') {
+            setSelectedSubject(value);
+        }
     };
+
+    useEffect(() => {
+        if (type === 'calificar') {
+            actions.setTests();
+        }
+    }, [type]);
+
+    // useEffect(() => {          
+    //     console.log('Selected Subject:', selectedSubject);  
+    //     console.log('Filtered Evaluaciones:', filteredEvaluaciones);  
+    // }, [selectedSubject]);  
 
     const handleDateChange = (date) => {
         setStartDate(date);
@@ -65,6 +72,34 @@ const FormCommon = ({ type }) => {
                     finalizada: formBody.status === 'finalizada'
                 })
             }
+            if (type === 'calificar') {
+                await actions.testsOperations('POSTT', {
+
+                    // { 
+                    //     "materia_id" : id,
+                    //     "evaluacion_id": id,
+                    //     "estudiantes_notas": [
+                    //     {
+                    //     "estudiante_id": id,
+                    //     "nota": nota}
+                    //     ]
+                    // }
+
+
+                    nombre: formBody.name,
+                    descripcion: formBody.description,
+                    "materia_id": formBody.materia_id,
+                    fecha: formBody.date,
+                    finalizada: formBody.status === 'finalizada',
+                    calificaciones: filteredEvaluaciones.map(evaluacion => ({
+                        calificacion: evaluacion.calificacion,
+                        calificacion_id: evaluacion.id
+                    }))
+                })
+            }
+
+
+
             Swal.fire({
                 title: "Datos registrados correctamente",
                 icon: "success"
@@ -86,11 +121,18 @@ const FormCommon = ({ type }) => {
         }
     };
 
+    const filteredEvaluaciones = store.evaluaciones.filter(
+        evaluacion => evaluacion.materia.id === parseInt(selectedSubject)
+    );
+
     return (
         <div className="container ms-2">
 
             <form onSubmit={(e) => submitFormData(e)} className="container-welcome-teacher">
                 <h4 className="text-title d-flex justify-content-center mb-4">{`${type === 'crear' ? 'Crear' : 'Calificar'} evaluación`}</h4>
+
+                {/* Formulario para crear evaluaciones */}
+
                 {type === 'crear' && <div className="mb-3">
                     <label className="form-label text-form">Nombre:</label>
                     <input type="text" name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
@@ -163,36 +205,46 @@ const FormCommon = ({ type }) => {
                         </div>
                     </div>
                 )}
-                <div className="d-flex">
-                    {type === 'calificar' && (
+
+                {/* Formulario para calificar las evaluaciones */}
+
+                {type === 'calificar' && (
+                    <div className="d-flex">
                         <div className="mb-3 me-5">
-                            <label className="form-label text-form">Elige un grado:</label> <br></br>
+                            <label className="form-label text-form">Elige una materia:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
-                                <select className="custom-select rounded-pill" id="inputGroupSelect04">
-                                    <option selected>Grado...</option>
-                                    <option value="1">1er Grado</option>
-                                    <option value="2">2do Grado</option>
-                                    <option value="3">3er Grado</option>
+                                <select
+                                    className="custom-select rounded-pill"
+                                    name="materia_id"
+                                    id="inputGroupSelect04">
+                                    <option selected>Materia...</option>
+                                    {store.profesorPersonalInfo.materias.map(materia =>
+                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                    )}
                                 </select>
                             </div>
                         </div>
-                    )}
-                    {type === 'calificar' && (
+
                         <div className="mb-3">
                             <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
-                                <select className="custom-select rounded-pill" id="inputGroupSelect04">
+                                <select
+                                    className="custom-select rounded-pill"
+                                    name="evaluacion_id"
+                                    id="inputGroupSelect04"
+                                    disabled={!selectedSubject}>
                                     <option selected>Pendientes...</option>
-                                    <option value="1">Evaluación preparatoria</option>
-                                    <option value="2">Evaluación Lenguaje</option>
-                                    <option value="3">Evaluación Matemáticas</option>
+                                    {filteredEvaluaciones.map(evaluacion =>
+                                        <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
+                                    )}
                                 </select>
                             </div>
                         </div>
-                    )}
-                </div>
+
+                    </div>
+                )}
                 {type === 'calificar' && (
-                    <table class="table table-hover">
+                    <table className="table table-hover">
                         <thead>
                             <tr>
                                 <th>Nombre</th>

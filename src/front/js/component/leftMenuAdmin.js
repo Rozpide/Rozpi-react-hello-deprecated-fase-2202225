@@ -86,7 +86,11 @@ const FormCommon = ({ type }) => {
                 await actions.postCourse({ "nombre": classroom });
             }
             if (type === 'addSubject') {
-                await actions.subjectsOperations('POST', { nombre: formBody.subjectName, "grado_id": formBody.grado_id, descripcion: formBody.subjectDescription })
+                await actions.subjectsOperations('POST', {
+                    nombre: formBody.subjectName,
+                    "grado_id": formBody.grado_id,
+                    descripcion: formBody.subjectDescription
+                })
             }
             if (type == 'assignSubject') {
                 const response = await actions.fetchRoute("docentes/materias", {
@@ -95,6 +99,9 @@ const FormCommon = ({ type }) => {
                     isPrivate: true,
                     bluePrint: 'admin'
                 })
+            }
+            if (type == 'authorizeUser') {
+                await actions.userOperations('POST', { "email": formBody.email, "role_id": formBody.role_id })
             }
             Swal.fire({
                 title: "Datos registrados correctamente",
@@ -128,7 +135,7 @@ const FormCommon = ({ type }) => {
         <div className="container ms-2">
 
             <form onSubmit={(e) => submitFormData(e)} className="container-welcome-teacher">
-                <h4 className="text-title d-flex justify-content-center mb-4">{`Registrar ${type === 'student' ? 'estudiante nuevo' : type === 'teacher' ? 'profesor nuevo' : type === 'addClassroom' ? 'grado nuevo' : type === 'addSubject' ? 'materia nueva' : type === 'assignSubject' ? 'asignación de materia' : ''}`}</h4>
+                <h4 className="text-title d-flex justify-content-center mb-4">{`Registrar ${type === 'student' ? 'estudiante nuevo' : type === 'teacher' ? 'profesor nuevo' : type === 'addClassroom' ? 'grado nuevo' : type === 'addSubject' ? 'materia nueva' : type === 'assignSubject' ? 'asignación de materia' : type === 'authorizeUser' ? 'autorización de usuario' : ''}`}</h4>
                 {/* Formulario con elementos comunes para crear profesor y estudiante */}
 
                 {(type === 'student' || type === 'teacher') && <div className="mb-3">
@@ -319,6 +326,17 @@ const FormCommon = ({ type }) => {
                     </div>
                 )}
 
+                {/* Formulario para autorizar usuarios */}
+
+                {type === "authorizeUser" && (
+                    <div className="mb-3">
+                        <div className="d-flex flex-column ms-4">
+                            <label className="form-label text-title">Ingresa el correo del usuario:</label>
+                            <input type="email" name="email" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
+                        </div>
+                    </div>
+                )}
+
                 <div className="d-flex justify-content-center mt-5">
                     <button type="submit" className="btn btn-outline-register">Registrar</button>
                 </div>
@@ -358,6 +376,10 @@ export const LeftMenuAdmin = () => {
         setActiveContent("assignSubject");
     }
 
+    const handleAuthorizeUser = () => {
+        setActiveContent("authorizeUser");
+    }
+
     const renderContent = () => {
         switch (activeContent) {
             case "estudiantes":
@@ -374,6 +396,8 @@ export const LeftMenuAdmin = () => {
                 return <FormCommon type="addSubject" />;
             case "assignSubject":
                 return <FormCommon type="assignSubject" />;
+            case "authorizeUser":
+                return <FormCommon type="authorizeUser" />;
             default:
                 return (
                     <div className="container-fluid container-welcome-parent mt-3">
@@ -398,10 +422,10 @@ export const LeftMenuAdmin = () => {
                             <span className="fs-5 d-none d-sm-inline ">Menú</span>
                         </Link>
                         <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                            <li>
+                            <li className="list-menu-item">
                                 <Link to="#submenu1" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-save2"></i>
-                                    <span className="ms-1 d-none d-sm-inline list-menu-item">Crear</span>
+                                    <span className="ms-1 d-none d-sm-inline ">Crear</span>
                                 </Link>
                                 <ul className="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
                                     <li className="w-100">
@@ -418,51 +442,57 @@ export const LeftMenuAdmin = () => {
                                     </li>
                                 </ul>
                             </li>
-                            <li>
+                            <li className="list-menu-item">
                                 <Link to="#submenuEditar" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-pen"></i>
-                                    <span className="ms-1 d-none d-sm-inline list-menu-item">Editar</span>
+                                    <span className="ms-1 d-none d-sm-inline ">Editar</span>
                                 </Link>
                                 <ul className="collapse nav flex-column ms-1" id="submenuEditar" data-bs-parent="#menu">
                                     <li className="w-100">
-                                        <Link to="#" className="nav-link px-0 text-white">
-                                            <i className="fs-4 bi-mortarboard"></i>
-                                            <span className="d-none d-sm-inline list-menu-item ms-2" onClick={handleUpdateStudentForm}>Estudiantes</span>
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleUpdateStudentForm}>
+                                            <i className="fs-4 bi-mortarboard" ></i>
+                                            <span className="d-none d-sm-inline list-menu-item ms-2" >Estudiantes</span>
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="#" className="nav-link px-0 text-white">
-                                            <i className="fs-4 bi-person-add"></i>
-                                            <span className="d-none d-sm-inline list-menu-item ms-2" onClick={handleUpdateTeacherForm}>Profesores</span>
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleUpdateTeacherForm}>
+                                            <i className="fs-4 bi-person-add" ></i>
+                                            <span className="d-none d-sm-inline list-menu-item ms-2">Profesores</span>
                                         </Link>
                                     </li>
                                 </ul>
                             </li>
-                            <li>
+                            <li className="list-menu-item">
                                 <Link to="#submenu2" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-book"></i>
-                                    <span className="ms-1 d-none d-sm-inline list-menu-item">Grados</span>
+                                    <span className="ms-1 d-none d-sm-inline ">Grados</span>
                                 </Link>
                                 <ul className="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
                                     <li className="w-100">
-                                        <Link to="#" className="nav-link px-0 text-white">
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleAddClassroomForm}>
                                             <i className="fs-4 bi-plus-square"></i>
-                                            <span className="d-none d-sm-inline list-menu-item ms-2" onClick={handleAddClassroomForm}>Añadir</span>
+                                            <span className="d-none d-sm-inline list-menu-item ms-2">Añadir</span>
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="#" className="nav-link px-0 text-white">
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleAddSubjectForm}>
                                             <i className="fs-4 bi-journal-plus"></i>
-                                            <span className="d-none d-sm-inline list-menu-item ms-2" onClick={handleAddSubjectForm}>Materias</span>
+                                            <span className="d-none d-sm-inline list-menu-item ms-2">Materias</span>
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link to="#" className="nav-link px-0 text-white">
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleAssignSubjectForm}>
                                             <i className="fs-4 bi-pin-angle"></i>
-                                            <span className="d-none d-sm-inline list-menu-item ms-2" onClick={handleAssignSubjectForm}>Asignar</span>
+                                            <span className="d-none d-sm-inline list-menu-item ms-2">Asignar</span>
                                         </Link>
                                     </li>
                                 </ul>
+                            </li>
+                            <li className="list-menu-item">
+                                <Link to="#" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white" onClick={handleAuthorizeUser}>
+                                    <i className="fs-4 bi-person-check"></i>
+                                    <span className="ms-1 d-none d-sm-inline" >Validar</span>
+                                </Link>
                             </li>
                         </ul>
                         <hr />

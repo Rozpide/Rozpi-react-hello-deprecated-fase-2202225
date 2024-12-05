@@ -66,10 +66,11 @@ def email_authorization():
     if not body:
         return jsonify({"msg": "Missig info"}),400
     
-    role_exists = Role.query.get(body["role_id"])
+    role_exists = Role.query.filter(Role.nombre.ilike('docente')).first()
     if not role_exists:
         return jsonify({"msg": "Role not found"}), 404
-        
+    
+    body['role_id'] = role_exists.id
     return create_instance(EmailAuthorized,body,authorized_email_schema)
 
 @admin_routes.route('/user/auth', methods=['GET'])
@@ -159,7 +160,7 @@ def add_student():
 
 @admin_routes.route('/students', methods=['GET'])
 def get_students():
-    return get_all_instances(Estudiante)
+    return get_all_instances(Estudiante, students_schema)
 
 @admin_routes.route('/students/<int:student_id>', methods=['GET'])
 def get_student_by_id(student_id):

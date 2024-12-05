@@ -118,6 +118,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error
 				}
 
+			}, userOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('user/auth', method, { id, body, bluePrint: 'admin' })
+			}, setUsers: async () => {
+				const response = await getActions().userOperations('GET')
+				setStore({ usuarios: response })
 			}, studentsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('students', method, { id, body, bluePrint: 'admin' })
 			}, subjectsOperations: async (method, body = '', id = '') => {
@@ -135,40 +140,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, setTests: async () => {
 				const response = await getActions().testsOperations('GET')
 				setStore({ evaluaciones: response })
-			},
-
-
-			// CRUD para usuarios autorizados
-
-			getUsers: async () => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("user/auth", {
-					method: "GET",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				setStore({ usuarios: data })
-			},
-
-			postUser: async (body) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("user/auth", {
-					method: "POST",
-					body: body,
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getUsers()
-			},
-
-			deleteUser: async (id) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute(`user/auth/${id}`, {
-					method: "DELETE",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getUsers()
 			},
 
 			postCourse: async (grado) => {
