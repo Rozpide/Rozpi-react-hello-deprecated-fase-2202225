@@ -17,6 +17,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             ],
             username: null, // Initially no user is logged in
+            userID: null,
             favorites: [
                 {
                     id: "uniswap",
@@ -1814,6 +1815,12 @@ const getState = ({ getStore, getActions, setStore }) => {
             showFavorites: false,
         },
         actions: {
+            setUserId: (id) => {
+                setStore({ userID: id })
+            },
+            setUserName: (email) => {
+                setStore({ username: email})
+            },
             setCurrentCoinId: (id) => {
                 setStore({ currentCoinId: id })
             },
@@ -1922,6 +1929,27 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("favorites:" + getStore().favorites)
                 } else { console.log("favorite exists") }
             },
+            addToFavs: (coin) => {
+				fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3000.app.github.dev/favorites/${coin.id}`, {
+					method: 'POST',
+					body: JSON.stringify(
+						{
+							"name": coin.name,
+							"user_id": getStore().userID,
+                            "coin_id": coin.id
+						}
+					),
+					headers: {
+						'Content-type': 'application/json'
+					}
+				})
+					.then(res => {
+						if (!res.ok) throw Error(res.statusText);
+						return res.json();
+					})
+					.then(response => getActions().getFavs(getStore().userID))
+					.catch(error => console.error(error));
+			},
         },
     };
 };

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from api.models import db, User
+from api.models import db, User, Favorites, Wallet
 
 api = Blueprint('api', __name__)
 
@@ -9,6 +9,11 @@ api = Blueprint('api', __name__)
 @api.route('/hello', methods=['GET'])
 def hello_world():
     return jsonify({"message": "Hello, World!"})
+
+def get_favs (id):
+    favorites = Favorites.query.filter_by(user_id=id)
+    favorites = list(map(lambda x: x.serialize(), favorites))
+    return favorites
 
 # Register a new user
 @api.route('/users', methods=['POST'])
@@ -18,9 +23,10 @@ def register_user():
     # Validate input
     email = data.get('email')
     password = data.get('password')
+    username = data.get('username')
 
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+    if not email or not password or not username:
+        return jsonify({"error": "Email, password and username are required"}), 400
 
     # Check if user already exists
     existing_user = User.query.filter_by(email=email).first()
@@ -29,7 +35,7 @@ def register_user():
 
     # Create new user
     hashed_password = generate_password_hash(password)  # Hash the password
-    new_user = User(email=email, password=hashed_password)
+    new_user = User(email=email, password=hashed_password, username=username)
 
     try:
         db.session.add(new_user)
@@ -104,3 +110,14 @@ def get_wallet():
 @api.route('/example', methods=['GET'])
 def example_endpoint():
     return jsonify({"message": "This is an example endpoint!"})
+
+
+@api.route('/favorites/<coin_id>', methods=['POST'])
+def add_fav(coin_id):
+    user_id = request.json['user_id']
+    name = request.json['name']
+    fav_crypto = Favorites(name=name, user_id=user_id, coin_id=coin_id)
+    db.session.add(fav_crypto)
+    db.session.commit()
+    return jsonify(get_favs(user_id))
+
