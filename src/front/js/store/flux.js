@@ -1,5 +1,5 @@
 import { clean_student_data } from "../functions/clean_parent_data";
-const backendURL = process.env.BACKEND_URL || ""
+const backendURL = process.env.BACKEND_URL || "";
 
 
 
@@ -13,7 +13,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			asignaciones: [],
 			evaluaciones: [],
 			personalInfo: null,
-			contactos: null
+			contactos: null,
+			userAvatar: null,
+			mensajes: [],
+			isChatVisible: false,
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -236,7 +239,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body
 					});
 
-
 					if (data.token && data.role) {
 						const rol = data.role.toLowerCase();
 						localStorage.setItem("token", data.token);
@@ -260,7 +262,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, handleLogout: async () => {
 				const { fetchRoute } = getActions();
 				try {
-					const resp = await fetchRoute("/logout", {
+					const resp = await fetchRoute("logout", {
 						method: "POST",
 						isPrivate: true,
 						bluePrint: "session"
@@ -271,7 +273,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 
-					setStore({ token: null, role: null });
+					setStore({ token: null, role: null, userAvatar: null }); /// agregando el userAvatar acá
 					localStorage.removeItem("token");
 					localStorage.removeItem("role");
 				} catch (error) {
@@ -320,7 +322,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					throw error
 				}
-			}, postPicture: async (file) => {
+			},
+			handleUserAvatarUpdate: (avatarUrl) => {
+				setStore({ userAvatar: avatarUrl }); // Actualiza el avatar del usuario
+			},
+			toggleChat: () => {
+				const store = getStore();
+				setStore({ isChatVisible: !store.isChatVisible }); // Alterna el estado del chat
+			},
+			sendMessage: async (message) => {
+				try {
+					await getActions().fetchRoute("messages", {
+						method: "POST",
+						body: {},
+						isPrivate: true,
+						bluePrint: "messages"
+					});
+
+					await getActions().getMessages();
+				} catch (error) {
+					console.error("Error al enviar mensaje:", error);
+				}
+			},
+			postPicture: async (file) => {
 				const { token } = getStore()
 				try {
 					let formData = new FormData()
