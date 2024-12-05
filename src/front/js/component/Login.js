@@ -24,14 +24,14 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
             return res.json();
         }).then((response) => {
             actions.setUserId ( response.user.id );
-            actions.setUserName ( response.user.email);
+            actions.setUserName ( response.user.username);
             onClose()
         }).catch(error => console.error(error));
     };
 
     const handleSignUp = async (e) => {
         e.preventDefault();
-        const { email, confirmEmail, password, confirmPassword } = e.target.elements;
+        const { username, email, confirmEmail, password, confirmPassword } = e.target.elements;
 
         // Validation checks
         if (email.value !== confirmEmail.value) {
@@ -47,6 +47,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
             const payload = {
                 email: email.value,
                 password: password.value,
+                username: username.value
             };
 
             const response = await fetch("https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/api/users", {
@@ -118,6 +119,10 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                             </form>
                         ) : (
                             <form onSubmit={handleSignUp}>
+                                <div className="mb-3">
+                                    <label htmlFor="username" className="form-label">Username</label>
+                                    <input type="text" className="form-control" id="username" name="username" required />
+                                </div>
                                 <div className="mb-3">
                                     <label htmlFor="email" className="form-label">Email</label>
                                     <input type="email" className="form-control" id="email" name="email" required />

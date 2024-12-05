@@ -23,9 +23,10 @@ def register_user():
     # Validate input
     email = data.get('email')
     password = data.get('password')
+    username = data.get('username')
 
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+    if not email or not password or not username:
+        return jsonify({"error": "Email, password and username are required"}), 400
 
     # Check if user already exists
     existing_user = User.query.filter_by(email=email).first()
@@ -34,7 +35,7 @@ def register_user():
 
     # Create new user
     hashed_password = generate_password_hash(password)  # Hash the password
-    new_user = User(email=email, password=hashed_password)
+    new_user = User(email=email, password=hashed_password, username=username)
 
     try:
         db.session.add(new_user)
