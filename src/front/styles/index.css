@@ -453,6 +453,34 @@ h1 {
   border-bottom: none; /* Remove the border for the last article */
 }
 
+/*whitepapre */
+.description {
+  padding: 15px;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  background-color: #222; /* Dark background */
+  border-radius: 5px; /* Rounded corners */
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  width: 100%; /* Full width */
+  max-width: 80vw; /* Remove any limit on width */
+  margin-left: auto;
+  margin-right: auto; /* Center the description box */
+}
+
+.description h2 {
+  color: #39ff14; /* Green title color */
+  margin-bottom: 10px;
+}
+
+.description p {
+  margin: 10px 0;
+  line-height: 1.6;
+  word-wrap: break-word; /* Ensure text doesn't overflow */
+}
+
+
+
 /* Article title styling */
 .news h2 {
   font-size: 18px;
