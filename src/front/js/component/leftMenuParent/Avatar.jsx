@@ -5,7 +5,7 @@ const AvatarWrapper = styled.div`
   border-radius: 50%;
   overflow: hidden;
   display: inline-block;
-  margin: 20px auto;
+  margin: auto;
   aspect-ratio: 1/1;
 `;
 const StyledAvatar = styled.img`
@@ -18,7 +18,7 @@ const Avatar = ({
   alt = "Avatar",
   size = 60,
   name = "",
-  onClick = () => {},
+  onClick = () => { },
   className = "",
 }) => {
   return (
