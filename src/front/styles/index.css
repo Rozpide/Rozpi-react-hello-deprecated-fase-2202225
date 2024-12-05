@@ -1,6 +1,7 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+
 .pet-form .form-label{
     font-family: 'Aboreto';
     font-weight: 400;
@@ -33,3 +34,10 @@
     width: 100px;
     margin-right: 15px;
 }
+
+.adlam-display-regular {
+    font-family: "ADLaM Display", system-ui;
+    font-weight: 400;
+    font-style: normal;
+  }
+
