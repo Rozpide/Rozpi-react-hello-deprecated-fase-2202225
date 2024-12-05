@@ -5,10 +5,10 @@ import { Context } from '../store/appContext';
 import { useNavigate } from 'react-router-dom';
 
 const RegistrationForm = () => {
-    const { store, actions } = useContext(Context)
-    const navigate = useNavigate()
-    const [error, setError] = useState('')
-    const [showSuccessModal, setShowSuccessModal] = useState(false)
+    const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
+    const [error, setError] = useState('');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -17,6 +17,7 @@ const RegistrationForm = () => {
         telefono: '',
         password: ''
     });
+
     useEffect(() => {
         if (store.successMessage) {
             setShowSuccessModal(true);
@@ -31,13 +32,14 @@ const RegistrationForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-        const response = await actions.handleRegister(formData)
+        const response = await actions.handleRegister(formData);
 
-        if (response != true) {
-            setError(response)
-            return
+        if (response !== true) {
+            setError(response);
+            return;
         }
-        navigate('/login');
+
+        setShowSuccessModal(true);
     };
 
     const handleModalClose = () => {
@@ -45,13 +47,13 @@ const RegistrationForm = () => {
         actions.clearMessages();
         navigate('/login');
     };
+
     return (
         <div className={`${styles.ContainerF}`}>
             <Container className="mt-4">
                 <h2 className="text-center mb-4"><strong>Formulario de Inscripción</strong></h2>
-                {error != '' ? <div className='alert alert-danger text-center'>{error}</div> : ''}
+                {error && <div className='alert alert-danger text-center'>{error}</div>}
                 <Form onSubmit={handleSubmit} className={`${styles.ContainerForm} border`}>
-
                     <Form.Group controlId="nombre">
                         <Form.Label><strong>Nombre</strong></Form.Label>
                         <Form.Control
@@ -120,18 +122,6 @@ const RegistrationForm = () => {
                         />
                     </Form.Group>
 
-                    {/* <Form.Group controlId="motivo">
-                        <Form.Label id='textarea'><strong>¿Por qué inscribe a su hijo en la institución?</strong></Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            rows={3}
-                            placeholder="Escribe el motivo de inscripción"
-                            name="motivo"
-                            value={formData.motivo}
-                            onChange={handleChange}
-                        />
-                    </Form.Group> */}
-
                     <div className="d-flex justify-content-center mt-3">
                         <button
                             type="submit"
@@ -141,6 +131,7 @@ const RegistrationForm = () => {
                         </button>
                     </div>
                 </Form>
+
                 <Modal show={showSuccessModal} onHide={handleModalClose} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>¡Registro Exitoso!</Modal.Title>
