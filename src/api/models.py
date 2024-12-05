@@ -29,7 +29,7 @@ class User(db.Model):
 
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    coin_id = db.Column(db.String(10))
+    coin_id = db.Column(db.String(30))
     name = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     symbol = db.Column(db.String(20))

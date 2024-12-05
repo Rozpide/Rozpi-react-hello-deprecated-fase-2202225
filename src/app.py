@@ -81,6 +81,12 @@ def get_favs (id):
     favorites = list(map(lambda x: x.serialize(), favorites))
     return favorites
 
+@app.route('/users/<int:id>/favorites', methods=['GET'])
+def get_favorites(id):
+    favorites = Favorites.query.filter_by(user_id=id)
+    favorites = list(map(lambda x: x.serialize(), favorites))
+    return jsonify(favorites)
+
 # Run the application
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
