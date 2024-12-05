@@ -5,9 +5,9 @@ import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from 'rec
 export const MoreInfo = () => {
     const { store, actions } = useContext(Context);
 
-    // States for the news feed and description
+    // States for the news feed and whitepaper
     const [news, setNews] = useState([]);
-    const [description, setDescription] = useState("");
+    const [whitepaper, setWhitepaper] = useState("");
     const [loadingNews, setLoadingNews] = useState(true);
 
     // Fetch price data on component mount
@@ -45,27 +45,33 @@ export const MoreInfo = () => {
         fetchNews();
     }, []);
 
-    // Fetch description from CoinGecko API
+    // Fetch whitepaper from CoinGecko API
     useEffect(() => {
-        const fetchDescription = async () => {
+        const fetchWhitepaper = async () => {
             try {
                 const response = await fetch("https://api.coingecko.com/api/v3/coins/bitcoin");
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.description && data.description.en) {
-                        setDescription(data.description.en); // English description
+                    if (data.links && data.links.blockchain_site && data.links.blockchain_site.length > 0) {
+                        const whitepaperUrl = data.links.blockchain_site.find((url) =>
+                            url.toLowerCase().includes("bitcoin.pdf")
+                        );
+                        setWhitepaper(whitepaperUrl || null); // Set whitepaper URL or null if not found
                     } else {
-                        console.warn("No description found in the response.");
+                        console.warn("Whitepaper URL not found in the response.");
+                        setWhitepaper(null); // No whitepaper available
                     }
                 } else {
-                    console.error("Error fetching description:", response.statusText);
+                    console.error("Error fetching whitepaper:", response.statusText);
+                    setWhitepaper(null);
                 }
             } catch (error) {
-                console.error("Network or server error while fetching description:", error);
+                console.error("Network or server error while fetching whitepaper:", error);
+                setWhitepaper(null);
             }
         };
 
-        fetchDescription();
+        fetchWhitepaper();
     }, []);
 
     // Update price data based on timeframe or currency changes
@@ -156,15 +162,20 @@ export const MoreInfo = () => {
                     )}
                 </div>
 
-                {/* Description Section */}
+                {/* Whitepaper Section */}
                 <div className="description">
-                    <h2>About</h2>
-                    {description ? (
-                        <p style={{ color: "white", lineHeight: "1.6", padding: "10px" }}>
-                            {description.length > 1000 ? `${description.substring(0, 1000)}...` : description}
-                        </p>
+                    <h2>Whitepaper</h2>
+                    {whitepaper ? (
+                        <a
+                            href={whitepaper}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: "#39ff14", textDecoration: "none" }}
+                        >
+                            View the Bitcoin Whitepaper
+                        </a>
                     ) : (
-                        <p style={{ color: "white" }}>Loading description...</p>
+                        <p style={{ color: "white" }}>Whitepaper not available.</p>
                     )}
                 </div>
 

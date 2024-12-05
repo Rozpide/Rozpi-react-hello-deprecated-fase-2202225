@@ -1,26 +1,40 @@
-"""
-This module takes care of starting the API Server, Loading the DB, and Adding the endpoints
-"""
 import os
-from flask import Flask, request, jsonify, url_for, send_from_directory
+from dotenv import load_dotenv
+load_dotenv()
+from flask import Flask, request, jsonify, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
-from flask_cors import CORS  # Add CORS support
-from flask_jwt_extended import JWTManager  # Add JWT support
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from api.utils import APIException, generate_sitemap
 from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_mail import Mail, Message
 
 # Determine environment
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
+
+# Initialize Flask app first
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Enable CORS for frontend-backend communication
 CORS(app)
+
+# Configure Flask-Mail (after app initialization)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # For Gmail. Replace with your provider's SMTP
+app.config['MAIL_PORT'] = 587  # Use 465 for SSL, 587 for TLS
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Set this in your .env or system variables
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Set this in your .env or system variables
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')  # Default sender email address
+
+# Initialize Flask-Mail
+mail = Mail(app)
 
 # JWT Configuration
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY", "super-secret-key")  # Replace with your own secret key
@@ -67,8 +81,33 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # Avoid cache memory
     return response
 
+# Route for sending emails
+@app.route('/send-email', methods=['POST'])
+def send_email():
+    data = request.get_json()
+
+    email = data.get('email')  # Get the email from the frontend form submission
+    message = data.get('message')
+
+    if not email or not message:
+        return jsonify({'success': False, 'message': 'Email and message are required'}), 400
+    
+    try:
+        # Send the email from the user's email address
+        msg = Message(
+            subject="New Contact Us Message",
+            recipients=[os.getenv('RECIPIENT_EMAIL')],  # The recipient's email address
+            body=f"Message from {email}:\n\n{message}",
+            sender=email  # The sender's email will be the user's email address
+        )
+        mail.send(msg)
+
+        return jsonify({'success': True, 'message': 'Email sent successfully!'}), 200
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return jsonify({'success': False, 'message': 'Failed to send email.'}), 500
+
 # Run the application
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
-
