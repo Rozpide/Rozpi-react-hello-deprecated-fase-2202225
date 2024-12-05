@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Navbar, Nav, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Avatar from "../component/leftMenuParent/Avatar.jsx";
@@ -11,6 +11,11 @@ const NavBar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const { token, userAvatar, isChatVisible, role } = store;
+  // const [hasNotification, setHasNotification] = useState(false);
+
+  // useEffect(() => {
+  //   actions.getNotifications();
+  // }, []);
 
   const handleLogout = () => {
     actions.handleLogout();
@@ -43,9 +48,15 @@ const NavBar = () => {
       <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom}`}>
         {token ? (
           <Nav className="ms-auto text-center">
-            <Nav.Link>
+            <Nav.Link >
               <i className={`${styles.campana} fas fa-bell`}></i>
             </Nav.Link>
+            {/* <Nav.Link 
+            onClick={() => setHasNotification(false)}>
+              <i className={`${styles.campana} fas fa-bell
+              ${hasNotification ? "text-warning" : "text-white"}`}
+                style={{ cursor: "pointer", fontSize: "24px" }}></i>
+            </Nav.Link> */}
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className={`${styles.Toggle}`}>
                 <Avatar
@@ -56,7 +67,12 @@ const NavBar = () => {
                 />
               </Dropdown.Toggle>
               <Dropdown.Menu className={`${styles.ItemAvatar}`}>
-                <Dropdown.Item as={Link} to="/profile" className={`${styles.ItemAvatarButtom}`}>
+                <Dropdown.Item as={Link} to={
+                  role === "admin" ? "/dashboard/admin/profile" :
+                    role === "docente" ? "/dashboard/teacher/profile" :
+                      role === "representante" ? "/dashboard/parent/profile" :
+                        "/profile"
+                } className={`${styles.ItemAvatarButtom}`}>
                   Perfil
                 </Dropdown.Item>
                 <Dropdown.Item

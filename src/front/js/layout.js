@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
-
 import { Home } from "./pages/home";
 import injectContext from "./store/appContext";
 import NavBar from "./component/Navbar";
@@ -13,7 +12,6 @@ import LoginForm from './component/LoginForm';
 import ParentDashboard from "./pages/ParentDashboard.jsx";
 import ProtectedRoute from "./component/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";
-
 import { Context } from "./store/appContext";
 
 const Layout = () => {

@@ -1,12 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import ParentSideBar from "../component/leftMenuParent/ParentSideBar.jsx";
 import MainDashboard from "../component/leftMenuParent/MainDashboard.jsx";
-import ChatComponent from "../component/chatComponent";
 import styled from "styled-components";
 import img from "./../../img/background.jpg";
 import { Context } from "../store/appContext.js";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import ProfileForm from "../component/ProfileForm.jsx";
+import ChatComponent from "../component/chatComponent";
+
 
 const Content = styled.div`
   flex: 1;
@@ -23,10 +24,16 @@ const ParentDashboard = () => {
   const [infoEventos, setInfoEventos] = useState([]);
   const [infoEstudiantes, setInfoEstudiantes] = useState([]);
   const navigate = useNavigate();
+  const [isChatVisible, setIsChatVisible] = useState(false);
+
+  const toggleChat = () => {
+    setIsChatVisible(!isChatVisible);
+  };
 
   const handleSelect = key => {
     navigate(key);
   };
+
 
   useEffect(() => {
     const fetchPersonalInfo = async () => {
@@ -73,6 +80,7 @@ const ParentDashboard = () => {
         onSelect={handleSelect}
       />
 
+
       <Content>
         <Routes>
           <Route
@@ -89,6 +97,7 @@ const ParentDashboard = () => {
             element={<ProfileForm user={store.personalInfo ?? {}} />}
           />
         </Routes>
+        <div>{store.isChatVisible && <ChatComponent />}</div>
       </Content>
     </div>
   );

@@ -1,4 +1,4 @@
-.CardChat{
+.CardChat {
     /* align-items: center; */
     color: white;
     font-weight: bold;
@@ -8,12 +8,13 @@
 .chatContainer {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    transition: max-height 1.5s ease-in-out, opacity 1.5s ease-in-out;
     opacity: 0;
 }
 
 .chatContainerVisible {
-    max-height: 500px; 
+    max-height: 500px;
     opacity: 1;
-    overflow: visible; 
+    overflow: visible;
+
 }
