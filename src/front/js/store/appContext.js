@@ -35,6 +35,8 @@ const injectContext = PassedComponent => {
 		useEffect( () => {
 			if(localStorage.token) {
 				state.actions.setToken()
+				state.actions.setUserName(localStorage.username)
+				state.actions.setUserId(localStorage.userID)
 			}
 		}, [] )
 

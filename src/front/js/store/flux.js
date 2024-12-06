@@ -1101,8 +1101,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             setUserId: (id) => {
                 setStore({ userID: id })
             },
-            setUserName: (email) => {
-                setStore({ username: email })
+            setUserName: (username) => {
+                setStore({ username: username })
             },
             setCurrentCoinId: (id) => {
                 setStore({ currentCoinId: id })
@@ -1245,7 +1245,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					.then(response => {
 						console.log("response", response);
-						localStorage.setItem('userToken', response.access_token);
+						localStorage.setItem('token', response.access_token);
+                        localStorage.setItem('username', response.username);
+                        localStorage.setItem('userID', response.userID);
+                        // localStorage.setItem('userToken', response.access_token);
 						
 						setStore({ userToken: response.access_token, userEmail: response.user.email, userID:response.userID, username:response.username })
 					})
