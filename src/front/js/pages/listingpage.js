@@ -45,10 +45,12 @@ export const Listing = () => {
     };
 
     const handleFavoriteToggle = (coin) => {
-        if (store.favoriteIds.some((favCoin) => favCoin.id === coin.id)) {
-            actions.removeFromFavs(coin.id);
+        actions.setFavoriteData();
+        actions.setFavoritePriceData();
+        const existingFav = store.favoriteIds.find((favCoin) => favCoin.coin_id === coin.id)
+        if (existingFav) {
+            actions.removeFromFavs(existingFav.id);
         } else {
-            console.log('Here');
             actions.addToFavs(coin);
         }
     };
