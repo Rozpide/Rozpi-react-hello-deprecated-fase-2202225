@@ -7,6 +7,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			profesores: [],
+			estudiantes: [],
 			profesorPersonalInfo: {
 				docente: {},
 				grados: [],
@@ -17,6 +18,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			materias: [],
 			asignaciones: [],
 			evaluaciones: [],
+			calificaciones: [],
 			personalInfo: null,
 			contactos: null,
 			userAvatar: null,
@@ -129,6 +131,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ usuarios: response })
 			}, studentsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('students', method, { id, body, bluePrint: 'admin' })
+			}, gradeStudentsOperations: async (method, body = null, id = '') => {
+				return getActions().crudOperation('estudiantes', method, { id, body, bluePrint: 'teacher' })
+			}, setGradeStudents: async (grado_id) => {
+				const response = await getActions().gradeStudentsOperations('GET', null, grado_id)
+				setStore({ estudiantes: response })
+			}, setStudents: async () => {
+				const response = await getActions().studentsOperations('GET')
+				setStore({ estudiantes: response })
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
 			}, setSubjects: async () => {
@@ -144,6 +154,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, setTests: async () => {
 				const response = await getActions().testsOperations('GET')
 				setStore({ evaluaciones: response })
+			}, scoreOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('calificaciones', method, { id, body, bluePrint: 'teacher' })
+			}, setScores: async () => {
+				const response = await getActions().scoreOperations('GET')
+				setStore({ calificaciones: response })
 			},
 
 			postCourse: async (grado) => {
@@ -177,11 +192,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return data
 			}, handleRegister: async (body) => {
 				try {
-					const data = await actions.fetchRoute('signup', { method: 'POST', body });
+					const data = await getActions().fetchRoute('signup', { method: 'POST', body });
 					return true;
 				} catch (error) {
 					console.error("Error en handleRegister:", error);
-					return 'Ocurrió un error al intentar registrarse';
+					return 'Ocurrio un error al intentar registrarse';
 				}
 			}, handleLogin: async (body) => {
 				try {

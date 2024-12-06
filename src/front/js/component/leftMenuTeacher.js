@@ -13,6 +13,7 @@ const FormCommon = ({ type }) => {
     const [startDate, setStartDate] = useState(new Date());
     const [selectedCourse, setSelectedCourse] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('');
+    const [grades, setGrades] = useState({});
     const [formBody, setFormBody] = useState({
         name: '',
         description: '',
@@ -29,9 +30,15 @@ const FormCommon = ({ type }) => {
         fetchData();
     }, []);
 
-    const handleChange = (e) => {
+    const handleChange = (e, studentId) => {
         const { name, value } = e.target;
         setFormBody(prevState => ({ ...prevState, [name]: value }));
+        if (name.startsWith('grade-')) {
+            setGrades(prevGrades => ({
+                ...prevGrades,
+                [studentId]: value
+            }))
+        }
 
         if (name === 'grado_id') {
             setSelectedCourse(value);
@@ -46,13 +53,12 @@ const FormCommon = ({ type }) => {
     useEffect(() => {
         if (type === 'calificar') {
             actions.setTests();
+            console.log('Selected Course:', selectedCourse);
+            if (selectedCourse) {
+                actions.setGradeStudents(selectedCourse);
+            }
         }
-    }, [type]);
-
-    // useEffect(() => {          
-    //     console.log('Selected Subject:', selectedSubject);  
-    //     console.log('Filtered Evaluaciones:', filteredEvaluaciones);  
-    // }, [selectedSubject]);  
+    }, [type, selectedCourse]);
 
     const handleDateChange = (date) => {
         setStartDate(date);
@@ -73,33 +79,16 @@ const FormCommon = ({ type }) => {
                 })
             }
             if (type === 'calificar') {
-                await actions.testsOperations('POSTT', {
-
-                    // { 
-                    //     "materia_id" : id,
-                    //     "evaluacion_id": id,
-                    //     "estudiantes_notas": [
-                    //     {
-                    //     "estudiante_id": id,
-                    //     "nota": nota}
-                    //     ]
-                    // }
-
-
-                    nombre: formBody.name,
-                    descripcion: formBody.description,
-                    "materia_id": formBody.materia_id,
-                    fecha: formBody.date,
-                    finalizada: formBody.status === 'finalizada',
-                    calificaciones: filteredEvaluaciones.map(evaluacion => ({
-                        calificacion: evaluacion.calificacion,
-                        calificacion_id: evaluacion.id
-                    }))
+                const estudiantes_notas = store.estudiantes.map(student => ({
+                    estudiante_id: parseInt(student.id, 10),
+                    nota: parseFloat(grades[student.id]) || 0
+                }));
+                await actions.scoreOperations('POST', {
+                    "materia_id": parseInt(formBody.materia_id, 10),
+                    "evaluacion_id": parseInt(formBody.evaluacion_id, 10),
+                    "estudiantes_notas": estudiantes_notas
                 })
             }
-
-
-
             Swal.fire({
                 title: "Datos registrados correctamente",
                 icon: "success"
@@ -109,8 +98,11 @@ const FormCommon = ({ type }) => {
                 description: '',
                 date: '',
                 status: '',
-                grade: ''
+                grade: '',
+                evaluacion_id: '',
+                materia_id: ''
             });
+            setGrades({});
             setStartDate(new Date());
         } catch (error) {
             console.error("Error submitting data", error)
@@ -209,13 +201,34 @@ const FormCommon = ({ type }) => {
                 {/* Formulario para calificar las evaluaciones */}
 
                 {type === 'calificar' && (
-                    <div className="d-flex">
+                    <div className="d-flex justify-content-between">
+                        <div className="d-flex flex-column">
+                            <label className="form-label text-form">Elige el curso:</label>
+                            <div className="input-group" required>
+                                <select
+                                    className="custom-select rounded-pill"
+                                    name="grado_id"
+                                    id="inputGroupSelect04"
+                                    required
+                                    onChange={handleChange}>
+
+                                    <option value="" disabled selected>Opciones...</option>
+
+                                    {store.profesorPersonalInfo.grados.map(grado =>
+                                        <option key={grado.id} value={grado.id}>{grado.nombre}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+
                         <div className="mb-3 me-5">
                             <label className="form-label text-form">Elige una materia:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
                                 <select
                                     className="custom-select rounded-pill"
                                     name="materia_id"
+                                    required
+                                    disabled={!selectedCourse}
                                     id="inputGroupSelect04">
                                     <option selected>Materia...</option>
                                     {store.profesorPersonalInfo.materias.map(materia =>
@@ -232,6 +245,7 @@ const FormCommon = ({ type }) => {
                                     className="custom-select rounded-pill"
                                     name="evaluacion_id"
                                     id="inputGroupSelect04"
+                                    required
                                     disabled={!selectedSubject}>
                                     <option selected>Pendientes...</option>
                                     {filteredEvaluaciones.map(evaluacion =>
@@ -253,13 +267,22 @@ const FormCommon = ({ type }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>John</td>
-                                <td>Doe</td>
-                                <td>
-                                    <input type="number" name="grade" className="form-control" required value={formBody.grade} onChange={(e) => handleChange(e)} />
-                                </td>
-                            </tr>
+                            {store.estudiantes.map((student) => (
+                                <tr key={student.id}>
+                                    <td>{student.nombre}</td>
+                                    <td>{student.apellido}</td>
+                                    <td>
+                                        <input
+                                            required
+                                            type="number"
+                                            name={`grade-${student.id}`}
+                                            className="form-control"
+                                            value={grades[student.id] || ''}
+                                            onChange={(e) => handleChange(e, student.id)}
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 )}
@@ -289,8 +312,8 @@ export const LeftMenuTeacher = () => {
                 return <FormCommon type="calificar" />;
             default:
                 return (
-                    <div className="container-fluid container-welcome-parent mt-5">
-                        <div className="container-welcome-teacher py-5 d-flex">
+                    <div className="container-fluid container-welcome-parent mt-3">
+                        <div className="container-welcome-teacher d-flex">
                             <img src={imgWelcome} alt="welcome image" className="welcome-icon" />
                             <div>
                                 <h1 className="text-title display-4">¡Siempre es un gusto tenerte de vuelta!</h1>
@@ -311,55 +334,55 @@ export const LeftMenuTeacher = () => {
                             <span className="fs-5 d-none d-sm-inline ">Menú</span>
                         </Link>
                         <ul className="nav nav-pills list-group flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                            <li >
+                            <li className="list-menu-item">
                                 <Link to="#submenu1" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-card-checklist"></i>
-                                    <span className="ms-1 d-none d-sm-inline list-menu-item">Evaluaciones</span>
+                                    <span className="ms-1 d-none d-sm-inline">Pruebas</span>
                                 </Link>
                                 <ul className="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                                    <li className="w-100">
-                                        <Link to="#" className="nav-link px-0 text-white">
+                                    <li className="w-100 list-menu-item">
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleCreateEvaluation}>
                                             <i className="fs-4 bi-file-earmark-plus"></i>
-                                            <span className="ms-2 d-none d-sm-inline list-menu-item" onClick={handleCreateEvaluation}>Crear</span>
+                                            <span className="ms-2 d-none d-sm-inline" >Crear</span>
                                         </Link>
                                     </li>
-                                    <li>
-                                        <Link to="#" className="nav-link px-0 text-white">
+                                    <li className="list-menu-item">
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleGradeEvaluation}>
                                             <i className="fs-4 bi-file-earmark-check"></i>
-                                            <span className="ms-2 d-none d-sm-inline list-menu-item" onClick={handleGradeEvaluation}>Calificar</span>
+                                            <span className="ms-2 d-none d-sm-inline" >Calificar</span>
                                         </Link>
                                     </li>
                                 </ul>
 
                             </li>
-                            <li>
+                            <li className="list-menu-item">
                                 <Link to="#submenuEditar" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-pen"></i>
-                                    <span className="ms-1 d-none d-sm-inline list-menu-item">Editar</span>
+                                    <span className="ms-1 d-none d-sm-inline ">Editar</span>
                                 </Link>
                             </li>
-                            <li>
+                            <li className="list-menu-item">
                                 <Link to="#submenu2" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-calendar2-date"></i>
-                                    <span className="ms-1 d-none d-sm-inline list-menu-item">Eventos</span>
+                                    <span className="ms-1 d-none d-sm-inline">Eventos</span>
                                 </Link>
                                 <ul className="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
-                                    <li className="w-100">
+                                    <li className="w-100 list-menu-item">
                                         <Link to="#" className="nav-link px-0 text-white">
-                                            <span className="ms-2 d-none d-sm-inline list-menu-item">Reuniones</span>
+                                            <span className="ms-2 d-none d-sm-inline ">Reuniones</span>
                                         </Link>
                                     </li>
-                                    <li>
+                                    <li className="list-menu-item">
                                         <Link to="#" className="nav-link px-0 text-white">
-                                            <span className="ms-2 d-none d-sm-inline list-menu-item">Salidas</span>
+                                            <span className="ms-2 d-none d-sm-inline ">Salidas</span>
                                         </Link>
                                     </li>
                                 </ul>
                             </li>
-                            <li>
+                            <li className="list-menu-item">
                                 <Link to="#submenu3" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-chat-left-text"></i>
-                                    <span className="ms-1 d-none d-sm-inline list-menu-item">Comunicados</span>
+                                    <span className="ms-1 d-none d-sm-inline ">Chat</span>
                                 </Link>
                             </li>
                         </ul>
