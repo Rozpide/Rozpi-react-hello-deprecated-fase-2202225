@@ -12,12 +12,12 @@ export const Listing = () => {
     const [selectedCoin, setSelectedCoin] = useState(null);
     const [modalAction, setModalAction] = useState(null);
 
-    useEffect(() => {
-        if (!store.coins || store.coins.length === 0) {
-            console.log("Fetching coins data...");
-            actions.fetchCoins();
-        }
-    }, [store.coins, actions]);
+    // useEffect(() => {
+    //     if (!store.coins || store.coins.length === 0) {
+    //         console.log("Fetching coins data...");
+    //         actions.fetchCoins();
+    //     }
+    // }, [store.coins, actions]);
 
     const handleOpenModal = (coin, action) => {
         setSelectedCoin(coin);
@@ -45,10 +45,12 @@ export const Listing = () => {
     };
 
     const handleFavoriteToggle = (coin) => {
-        if (store.favorites.some((favCoin) => favCoin.id === coin.id)) {
-            actions.removeFromFavs(coin.id);
+        actions.setFavoriteData();
+        actions.setFavoritePriceData();
+        const existingFav = store.favoriteIds.find((favCoin) => favCoin.coin_id === coin.id)
+        if (existingFav) {
+            actions.removeFromFavs(existingFav.id);
         } else {
-            console.log('Here');
             actions.addToFavs(coin);
         }
     };
@@ -123,13 +125,13 @@ export const Listing = () => {
                         
                                 <button
                                     className={`star-button ${
-                                        store.favorites.some((favCoin) => favCoin.id === coin.id)
+                                        store.favoriteIds.some((favCoin) => favCoin.id === coin.id)
                                             ? "favorited"
                                             : ""
                                     }`}
                                     onClick={() => handleFavoriteToggle(coin)}
                                 >
-                                    {store.favorites.some((favCoin) => favCoin.id === coin.id)
+                                    {store.favoriteIds.some((favCoin) => favCoin.id === coin.id)
                                         ? "★"
                                         : "☆"}
                                 </button>
