@@ -4,7 +4,7 @@ db = SQLAlchemy()
 class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
     def __repr__(self):
@@ -25,3 +25,16 @@ class Evento(db.Model):
     fecha = db.Column(db.DateTime, nullable=False)
     clima = db.Column(db.String(50), nullable=False)
     usuario = db.relationship('Usuario', backref='eventos')
+
+    def serialize(self):
+        # Convert the 'fecha' datetime object to ISO format for JSON compatibility
+        return {
+            'id': self.id,
+            'usuario_id': self.usuario_id,
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'fecha': self.fecha.isoformat(),  # Convert datetime to ISO format string
+            'clima': self.clima,
+            # Assuming 'Usuario' model has its own 'serialize' method
+            'usuario': self.usuario.serialize() if self.usuario else None
+        }

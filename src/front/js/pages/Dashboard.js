@@ -8,17 +8,18 @@ import EventCreation from '../component/CreateEvent';
 import Navbar from '../component/navbar';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const session = useSession(); // tokens, when session exists we have a user
-  const { isLoading } = useSessionContext();
+  const session = true
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const session = useSession(); // tokens, when session exists we have a user
+  // const { isLoading } = useSessionContext();
 
-  if (isLoading) {
-    return <>Loading....</>;
-  }
+  // if (isLoading) {
+  //   return <>Loading....</>;
+  // }
 
-  function handleSignIn() {
-    setIsLoggedIn(true);
-  }
+  // function handleSignIn() {
+  //   setIsLoggedIn(true);
+  // }
 
 
   return (
