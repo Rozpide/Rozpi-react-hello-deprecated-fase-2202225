@@ -97,7 +97,7 @@ def add_test():
     
     materia = body.get('materia_id')
     
-    if not materia.query.get(materia):
+    if not Materias.query.get(materia):
         return jsonify({"msg": "Materia no encontrada"}),404
     
     body['profesor_id'] = get_jwt_identity()
