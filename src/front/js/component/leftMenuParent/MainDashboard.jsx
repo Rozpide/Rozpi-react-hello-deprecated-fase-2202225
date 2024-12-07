@@ -71,23 +71,23 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                   activeIndex={avgSlide}>
                   {avgInfo
                     ? avgInfo.map((student, index) => {
-                        return (
-                          <Carousel.Item
-                            className="text-light text-center"
-                            key={index}
-                            style={{ width: "100%", height: "100%" }}>
-                            <ParentGaugeChart
-                              max={20}
-                              value={student.promedio}
-                            />
-                            <h5 className=" mb-2">
-                              {" "}
-                              <i className="bi bi-mortarboard-fill me-3"></i>
-                              {student.nombre}
-                            </h5>
-                          </Carousel.Item>
-                        );
-                      })
+                      return (
+                        <Carousel.Item
+                          className="text-light text-center"
+                          key={index}
+                          style={{ width: "100%", height: "100%" }}>
+                          <ParentGaugeChart
+                            max={20}
+                            value={student.promedio}
+                          />
+                          <h5 className=" mb-2">
+                            {" "}
+                            <i className="bi bi-mortarboard-fill me-3"></i>
+                            {student.nombre}
+                          </h5>
+                        </Carousel.Item>
+                      );
+                    })
                     : ""}
                 </Carousel>
                 <div className="d-flex gap-2 mb-2 w-100 justify-content-around">
@@ -114,7 +114,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
       </div>
       <div className="row">
         <div className="col-12 d-flex justify-content-center align-items-center">
-          <BoxDisplay classname="align-items-center" flex="row" aspect="16/9">
+          <BoxDisplay classname="align-items-center pt-3" flex="row" aspect="16/9">
             {estudiantes.length == 0 ? (
               <div className="w-100 h-100 d-flex justify-content-center align-items-center">
                 <Spinner animation="border" variant="light" />
@@ -146,10 +146,11 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                           <TableWrapper>
                             <div className={"d-flex gap-3 text-light"}>
                               <h1 className="mb-5">{estudiante.nombre}</h1>
-                              <i className="bi bi-list-check fs-1"></i>
                             </div>
                             <ParentDashboardTable
+
                               materias={estudiante.materias}
+                              studentId={estudiante.id}
                             />
                           </TableWrapper>
                         </Carousel.Item>
