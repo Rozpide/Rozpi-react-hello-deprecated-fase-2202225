@@ -65,7 +65,7 @@ def email_authorization():
     if not body:
         return jsonify({"msg": "Missig info"}),400
     
-    role_exists = Role.query.filter(Role.nombre.ilike('docente')).first()
+    role_exists = Role.query.filter(Role.nombre.ilike('representante')).first()
     if not role_exists:
         return jsonify({"msg": "Role not found"}), 404
     

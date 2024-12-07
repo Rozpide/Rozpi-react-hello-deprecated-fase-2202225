@@ -225,7 +225,7 @@
   font-size: 20px;
   text-decoration: none;
   padding-top: .1rem;
-  padding-bottom: .1rem;
+  padding-bottom: .2rem;
   margin: 0 5px;
   position: relative;
   overflow: hidden;
@@ -279,4 +279,14 @@
 .custom-select:hover {
   background-color: #e1e1e1;
   color: rgb(0, 0, 0);
+}
+
+/* Estilos para tablas */
+
+.table-styles {
+  border-radius: 2rem;
+  background: #fff;
+  width: 100%;
+  height: auto;
+  padding: 2rem;
 }
