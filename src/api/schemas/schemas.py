@@ -46,6 +46,7 @@ class StudentSchema(SQLAlchemyAutoSchema):
     representante_id = auto_field(load_only=True)
     fecha_ingreso = auto_field(dump_only=True)
     is_active= auto_field(missing=True)
+    grado_id = auto_field(required=True)
     
     
     representante = Nested(UserSchema, dump_only=True, exclude=['role_id','id', 'is_active'])

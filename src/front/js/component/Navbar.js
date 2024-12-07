@@ -10,7 +10,7 @@ import { Context } from "../store/appContext";
 const NavBar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const { token, userAvatar, isChatVisible, role } = store;
+  const { token, isChatVisible, role, personalInfo } = store;
   // const [hasNotification, setHasNotification] = useState(false);
 
   // useEffect(() => {
@@ -47,7 +47,7 @@ const NavBar = () => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" className={`${styles["navbar-toggler"]}`} />
       <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom}`}>
         {token ? (
-          <Nav className="ms-auto text-center">
+          <Nav className="ms-auto text-center align-items-center">
             <Nav.Link >
               <i className={`${styles.campana} fas fa-bell`}></i>
             </Nav.Link>
@@ -60,7 +60,7 @@ const NavBar = () => {
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className={`${styles.Toggle}`}>
                 <Avatar
-                  src={userAvatar || defaultAvatar}
+                  src={personalInfo?.foto || defaultAvatar}
                   alt="User Avatar"
                   size={40}
                   className={`${styles["navbar-avatar"]}`}

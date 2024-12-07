@@ -64,7 +64,7 @@ const LoginForm = () => {
                 <Col xs={12} md={6} lg={4} className="mx-auto">
                     <h2 className="text-center mb-4"><strong>Iniciar Sesión</strong></h2>
                     {error && <Alert variant="danger">{error}</Alert>}
-                    <Form onSubmit={handleSubmit} className={`${styles.formLog} p-4 border shadow rounded-pill`}>
+                    <Form onSubmit={handleSubmit} className={`${styles.formLog} p-4 border shadow`}>
                         <Form.Group controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -73,9 +73,10 @@ const LoginForm = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
+                                className='rounded-pill'
                             />
                         </Form.Group>
-                        <Form.Group controlId="password" className="mt-3 rounded-pill">
+                        <Form.Group controlId="password" className="mt-3">
                             <Form.Label>Contraseña</Form.Label>
                             <Form.Control
                                 type="password"
@@ -83,11 +84,12 @@ const LoginForm = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
+                                className='rounded-pill'
                             />
                         </Form.Group>
-                        <Button variant="primary" type="submit" className="w-100 mt-4">
+                        <button type="submit" className="btn-outline-register w-100 mt-4 rounded-pill">
                             Iniciar Sesión
-                        </Button>
+                        </button>
                         <Button
                             variant="link"
                             onClick={() => navigate('/register')}

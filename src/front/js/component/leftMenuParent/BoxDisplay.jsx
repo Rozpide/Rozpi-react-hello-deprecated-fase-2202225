@@ -12,8 +12,7 @@ const StyledDiv = styled.div`
     rgba(67, 56, 135, 0.8)
   );
   box-shadow: 5px 5px 10px #c1ced7, -5px -5px 10px #ffffff;
-  height: 100%;
-  max-height: 350px;
+  height: 90%;
 `;
 
 const BoxDisplay = ({
@@ -26,7 +25,7 @@ const BoxDisplay = ({
   return (
     <StyledDiv
       className={classname}
-      style={{ width: width, aspectRatio: aspect, flexDirection: flex }}>
+      style={{ width: width, flexDirection: flex }}>
       {children}
     </StyledDiv>
   );
