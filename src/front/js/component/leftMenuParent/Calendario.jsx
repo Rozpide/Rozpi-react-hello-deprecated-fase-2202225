@@ -4,6 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import "../../../styles/Calendar.css";
 import Overlay from "react-bootstrap/Overlay";
 import Popover from "react-bootstrap/Popover";
+import BoxDisplay from "./BoxDisplay.jsx";
 
 const Calendario = ({ eventos }) => {
   const [value, setValue] = useState(new Date()); // Día seleccionado
@@ -70,12 +71,12 @@ const Calendario = ({ eventos }) => {
     const handleClickOutside = event => {
       if (
         calendarRef.current &&
-        !calendarRef.current.contains(event.target) &&
+        !calendarRef.current.contains(event.target) && // Fuera del calendario
         popoverInfo.target &&
-        !popoverInfo.target.contains(event.target)
+        !popoverInfo.target.contains(event.target) // Fuera del target del Popover
       ) {
-        setPopoverInfo({ show: false, target: null, event: null });
-        setValue(new Date());
+        setPopoverInfo({ show: false, target: null, event: null }); // Ocultar Popover
+        setValue(new Date())
       }
     };
 
@@ -89,44 +90,47 @@ const Calendario = ({ eventos }) => {
   }, [popoverInfo]);
 
   return (
-    <div className="calendar-container" ref={calendarRef}>
-      <Calendar
-        onActiveStartDateChange={handleActiveStartDateChange}
-        onClickDay={handleDayClick}
-        onChange={setValue}
-        tileClassName={tileClassName}
-        value={value}
-      />
+    <div ref={calendarRef} className="p-0 m-0">
 
-      <Overlay
-        show={popoverInfo.show}
-        target={popoverInfo.target}
-        placement="right"
-        containerPadding={20}>
-        <Popover id="popover-basic">
-          <Popover.Header as="h3">
-            {popoverInfo.event?.map(e => e.title + " ") ||
-              "Información del Evento"}
-          </Popover.Header>
-          <Popover.Body>
-            {popoverInfo.event?.map(e => {
-              if (e.holiday) {
+      <BoxDisplay flex="row" >
+        <Calendar
+          onActiveStartDateChange={handleActiveStartDateChange}
+          onClickDay={handleDayClick}
+          onChange={setValue}
+          tileClassName={tileClassName}
+          value={value}
+        />
+
+        <Overlay
+          show={popoverInfo.show}
+          target={popoverInfo.target}
+          placement="right"
+          containerPadding={20}>
+          <Popover id="popover-basic">
+            <Popover.Header as="h3">
+              {popoverInfo.event?.map(e => e.title + " ") ||
+                "Información del Evento"}
+            </Popover.Header>
+            <Popover.Body>
+              {popoverInfo.event?.map(e => {
+                if (e.holiday) {
+                  return (
+                    <div>
+                      {e.title} <br /> {e.date}
+                    </div>
+                  );
+                }
+
                 return (
-                  <div>
-                    {e.title} <br /> {e.date}
-                  </div>
+                  <p>
+                    {e.materia} - Grado: {e.grado} <br /> {e.profesor}
+                  </p>
                 );
-              }
-
-              return (
-                <p>
-                  {e.materia} - Grado: {e.grado} <br /> {e.profesor}
-                </p>
-              );
-            })}
-          </Popover.Body>
-        </Popover>
-      </Overlay>
+              })}
+            </Popover.Body>
+          </Popover>
+        </Overlay>
+      </BoxDisplay>
     </div>
   );
 };
