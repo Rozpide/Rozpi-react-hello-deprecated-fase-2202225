@@ -58,6 +58,9 @@ const FormCommon = ({ type }) => {
                 actions.setGradeStudents(selectedCourse);
             }
         }
+        if (type === 'editar') {
+            actions.setScores();
+        }
     }, [type, selectedCourse]);
 
     const handleDateChange = (date) => {
@@ -121,7 +124,7 @@ const FormCommon = ({ type }) => {
         <div className="container ms-2">
 
             <form onSubmit={(e) => submitFormData(e)} className="container-welcome-teacher">
-                <h4 className="text-title d-flex justify-content-center mb-4">{`${type === 'crear' ? 'Crear' : 'Calificar'} evaluación`}</h4>
+                <h4 className="text-title d-flex justify-content-center mb-4">{`${type === 'crear' ? 'Crear' : type === 'calificar' ? 'Calificar' : type === 'editar' ? 'Editar' : ''} evaluación`}</h4>
 
                 {/* Formulario para crear evaluaciones */}
 
@@ -258,36 +261,151 @@ const FormCommon = ({ type }) => {
                     </div>
                 )}
                 {type === 'calificar' && (
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Calificación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {store.estudiantes.map((student) => (
-                                <tr key={student.id}>
-                                    <td>{student.nombre}</td>
-                                    <td>{student.apellido}</td>
-                                    <td>
-                                        <input
-                                            required
-                                            type="number"
-                                            name={`grade-${student.id}`}
-                                            className="form-control"
-                                            value={grades[student.id] || ''}
-                                            onChange={(e) => handleChange(e, student.id)}
-                                        />
-                                    </td>
+                    <div className="table-styles mt-3">
+                        <table className="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Calificación</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {store.estudiantes.map((student) => (
+                                    <tr key={student.id}>
+                                        <td>{student.nombre}</td>
+                                        <td>{student.apellido}</td>
+                                        <td>
+                                            <input
+                                                required
+                                                type="number"
+                                                name={`grade-${student.id}`}
+                                                className="form-control"
+                                                value={grades[student.id] || ''}
+                                                onChange={(e) => handleChange(e, student.id)}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
 
-                <button type="submit" className="btn btn-outline-register">Registrar</button>
+                {/* Formulario para editar las evaluaciones */}
+
+                {type === 'editar' && (
+                    <div>
+                        {/*<div className="d-flex justify-content-between">
+                            <div className="d-flex flex-column">
+                                <label className="form-label text-form">Elige el curso:</label>
+                                <div className="input-group" required>
+                                    <select
+                                        className="custom-select rounded-pill"
+                                        name="grado_id"
+                                        id="inputGroupSelect04"
+                                        required
+                                        onChange={handleChange}>
+
+                                        <option value="" disabled selected>Opciones...</option>
+
+                                        {store.profesorPersonalInfo.grados.map(grado =>
+                                            <option key={grado.id} value={grado.id}>{grado.nombre}</option>
+                                        )}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="mb-3 me-5">
+                                <label className="form-label text-form">Elige una materia:</label> <br></br>
+                                <div className="input-group" onChange={handleChange}>
+                                    <select
+                                        className="custom-select rounded-pill"
+                                        name="materia_id"
+                                        required
+                                        disabled={!selectedCourse}
+                                        id="inputGroupSelect04">
+                                        <option selected>Materia...</option>
+                                        {store.profesorPersonalInfo.materias.map(materia =>
+                                            <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                        )}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
+                                <div className="input-group" onChange={handleChange}>
+                                    <select
+                                        className="custom-select rounded-pill"
+                                        name="evaluacion_id"
+                                        id="inputGroupSelect04"
+                                        required
+                                        disabled={!selectedSubject}>
+                                        <option selected>Pendientes...</option>
+                                        {filteredEvaluaciones.map(evaluacion =>
+                                            <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
+                                        )}
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>*/}
+
+                        <div className="mb-3">
+                            <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
+                            <div className="input-group" onChange={handleChange}>
+                                <select
+                                    className="custom-select rounded-pill"
+                                    name="evaluacion_id"
+                                    id="inputGroupSelect04"
+                                    required
+                                >
+                                    <option selected>Pendientes...</option>
+                                    {store.calificaciones.map(score =>
+                                        <option key={score.id} value={score.id}>{score.evaluacion.nombre}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="table-styles mt-3">
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Calificación</th>
+                                        <th>Nueva nota</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {store.calificaciones.map((score) => (
+                                        <tr key={score.id}>
+                                            <td>{score.estudiante.nombre}</td>
+                                            <td>{score.estudiante.apellido}</td>
+                                            <td>{score.nota}</td>
+                                            <td>
+                                                <input
+                                                    required
+                                                    type="number"
+                                                    name={`grade-${score.id}`}
+                                                    className="form-control"
+                                                    value={grades[score.estudiante.id] || ''}
+                                                    onChange={(e) => handleChange(e, score.estudiante.id)}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
+                <div className="d-flex justify-content-center mt-5">
+                    <button type="submit" className="btn btn-outline-register">Registrar</button>
+                </div>
             </form>
         </div>
     );
@@ -304,12 +422,18 @@ export const LeftMenuTeacher = () => {
         setActiveContent("calificar");
     };
 
+    const handleEditGrades = () => {
+        setActiveContent("editar");
+    };
+
     const renderContent = () => {
         switch (activeContent) {
             case "crear":
                 return <FormCommon type="crear" />;
             case "calificar":
                 return <FormCommon type="calificar" />;
+            case "editar":
+                return <FormCommon type="editar" />;
             default:
                 return (
                     <div className="container-fluid container-welcome-parent mt-3">
@@ -356,7 +480,7 @@ export const LeftMenuTeacher = () => {
 
                             </li>
                             <li className="list-menu-item">
-                                <Link to="#submenuEditar" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
+                                <Link to="#submenuEditar" data-bs-toggle="collapse" onClick={handleEditGrades} className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-pen"></i>
                                     <span className="ms-1 d-none d-sm-inline ">Editar</span>
                                 </Link>

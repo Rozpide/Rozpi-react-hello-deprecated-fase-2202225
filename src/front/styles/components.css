@@ -280,3 +280,13 @@
   background-color: #e1e1e1;
   color: rgb(0, 0, 0);
 }
+
+/* Estilos para tablas */
+
+.table-styles {
+  border-radius: 2rem;
+  background: #fff;
+  width: 100%;
+  height: auto;
+  padding: 2rem;
+}
