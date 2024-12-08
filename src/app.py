@@ -67,12 +67,20 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # Avoid cache memory
     return response
 
-@app.route('/favorites/<coin_id>', methods=['POST'])
-def add_fav(coin_id):
+@app.route('/favorites/<coin_id>', methods=['POST','DELETE'])
+def toggle_fav(coin_id):
     user_id = request.json['user_id']
     name = request.json['name']
     fav_crypto = Favorites(name=name, user_id=user_id, coin_id=coin_id)
     db.session.add(fav_crypto)
+    db.session.commit()
+    return jsonify(get_favs(user_id))
+ 
+
+@app.route('/favorites/<int:user_id>/<int:favorite_id>', methods=['DELETE'])
+def delete_fav(favorite_id, user_id):
+    fav_crypto = Favorites.query.get(favorite_id)
+    db.session.delete(fav_crypto)
     db.session.commit()
     return jsonify(get_favs(user_id))
 
@@ -81,23 +89,11 @@ def get_favs (id):
     favorites = list(map(lambda x: x.serialize(), favorites))
     return favorites
 
-@app.route('/wallet/<coin_id>', methods=['POST'])
-def add_to_wallet(coin_id):
-    user_id = request.json['user_id']
-    name = request.json['name']
-    wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
-    db.session.add(wallet_crypto)
-    db.session.commit()
-    return jsonify(get_wallet(user_id))
-
-def get_wallet(id):
-    wallet_items = Wallet.query.filter_by(user_id=id)
-    wallet_items = list(map(lambda x: x.serialize(), wallet_items))
-    return wallet_items
-
-
-
-
+@app.route('/users/<int:id>/favorites', methods=['GET']) 
+def get_favorites(id):
+    favorites = Favorites.query.filter_by(user_id=id)
+    favorites = list(map(lambda x: x.serialize(), favorites))
+    return jsonify(favorites)
 
 # Run the application
 if __name__ == '__main__':

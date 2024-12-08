@@ -18,7 +18,7 @@ export const MoreInfo = (coin) => {
 
     // Fetch price data on component mount
     useEffect((coin) => {
-        actions.setCurrentCoinId("coin.id");
+        actions.setCurrentCoinId("bitcoin");
         actions.setCurrency("USD");
         actions.setTimeFrame("7");
         actions.getPriceData();
