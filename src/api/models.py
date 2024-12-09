@@ -60,7 +60,6 @@ class Product(db.Model):
             "imagen_url": self.imagen_url,
         }
 
-
 # Clase Cart
 class Cart(db.Model):
     __tablename__ = 'cart'

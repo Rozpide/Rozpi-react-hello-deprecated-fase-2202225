@@ -83,6 +83,7 @@ def get_product(id):
         return jsonify({"message": "Producto no encontrado"}), 404
     return jsonify(product.serialize()), 200
 
+
 # Carrito de compras
 @api.route('/cart', methods=['GET'])
 def get_cart():
