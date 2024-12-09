@@ -30,6 +30,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             currency: "usd",
             timeFrame: "7",
             currentCoinPriceData: [],
+            currentCoinData: [],
             showContactModal: false,
             showModal: false,
             showOverallHoldings: false,
@@ -115,7 +116,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 
-            getPriceData: () => {
+            getCurrentCoinPriceData: () => {
                 const options = {
                     method: 'GET',
                     headers: {
@@ -133,6 +134,20 @@ const getState = ({ getStore, getActions, setStore }) => {
                                 })
                         })
                     })
+                    .catch((err) => console.log(err))
+            },
+
+            getCurrentCoinData: () => {
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                    }
+                };
+                fetch(`https://pro-api.coingecko.com/api/v3/coins/${getStore().currentCoinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, options)
+                    .then((res) => res.json())
+                    .then((response) => setStore({ currentCoinData: response }))
                     .catch((err) => console.log(err))
             },
 
