@@ -44,6 +44,9 @@ export const Listing = () => {
         window.location.href = '/wallet'; // Update to your wallet page URL
     };
 
+
+
+
     const handleFavoriteToggle = (coin) => {
         actions.setFavoriteData();
         actions.setFavoritePriceData();

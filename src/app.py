@@ -127,6 +127,36 @@ def get_favorites(id):
     favorites = list(map(lambda x: x.serialize(), favorites))
     return jsonify(favorites)
 
+
+
+@app.route('/wallet/<coin_id>', methods=['POST'])
+def add_to_wallet(coin_id):
+    user_id = request.json['user_id']
+    name = request.json['name']
+    fav_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
+    db.session.add(fav_crypto)
+    db.session.commit()
+    return jsonify(get_wallet(user_id))
+ 
+
+@app.route('/wallet/<int:user_id>/<int:wallet_id>', methods=['DELETE'])
+def delete_wallet(wallet_id, user_id):
+    fav_crypto = Wallet.query.get(wallet_id)
+    db.session.delete(fav_crypto)
+    db.session.commit()
+    return jsonify(get_wallet(user_id))
+
+def get_wallet(id):
+    Wallet = Wallet.query.filter_by(user_id=id)
+    Wallet = list(map(lambda x: x.serialize(), Wallet))
+    return Wallet
+
+@app.route('/users/<int:id>/wallet', methods=['GET']) 
+def get_wallet(id):
+    Wallet = Wallet.query.filter_by(user_id=id)
+    Wallet = list(map(lambda x: x.serialize(), Wallet))
+    return jsonify(Wallet)
+
 # Run the application
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))

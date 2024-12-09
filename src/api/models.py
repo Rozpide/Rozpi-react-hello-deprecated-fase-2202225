@@ -50,24 +50,16 @@ class Favorites(db.Model):
 
 class Wallet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    coin_id = db.Column(db.String(10))
-    name = db.Column(db.String(100))  # Corrected type from Integer to String for the name
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    name = db.Column(db.String(80), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    coin_id = db.Column(db.String(120), nullable=False)
     symbol = db.Column(db.String(20))
-    purchase_price = db.Column(db.String(20))
-    purchase_quantity = db.Column(db.String(20))
-    user = db.relationship(User)
-
-    def __repr__(self):
-        return f'<Wallet {self.name}>'
 
     def serialize(self):
         return {
             "id": self.id,
-            "coin_id": self.coin_id,
             "name": self.name,
             "user_id": self.user_id,
-            "symbol": self.symbol,
-            "purchase_price": self.purchase_price,
-            "purchase_quantity": self.purchase_quantity
+            "coin_id": self.coin_id,
+            
         }
