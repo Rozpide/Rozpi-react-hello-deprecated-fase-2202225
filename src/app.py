@@ -106,8 +106,9 @@ def send_email():
     except Exception as e:
         print(f"Error sending email: {e}")
         return jsonify({'success': False, 'message': 'Failed to send email.'}), 500
-@app.route('/favorites/<coin_id>', methods=['POST'])
-def add_fav(coin_id):
+    
+
+
 @app.route('/favorites/<coin_id>', methods=['POST','DELETE'])
 def toggle_fav(coin_id):
     user_id = request.json['user_id']
