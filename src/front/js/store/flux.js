@@ -137,6 +137,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             getFavPriceData: (id) => {
+                const currentData = getStore().favoritePriceData
                 const options = {
                     method: 'GET',
                     headers: {
@@ -147,12 +148,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
                     .then((res) => res.json())
                     .then((response) => {
-                        setStore({
-                            favoritePriceData: [...getStore().favoritePriceData,
-                            response.prices.map((price) => {
-                                return ({ id: id, date: new Date(price[0]), price: price[1] })
-                            })]
-                        })
+                        if (!currentData.some((entry) => entry[0]?.id === coin_id)) {
+                            setStore({
+                                favoritePriceData: [...getStore().favoritePriceData,
+                                response.prices.map((price) => {
+                                    return ({ id: id, date: new Date(price[0]), price: price[1] })
+                                })]
+                            })}
                     })
                     .catch((err) => console.log(err))
             },
@@ -375,6 +377,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err))
             },
             getFavoriteData: (coin_id) => {
+                const currentData = getStore().favoriteData
                 const options = {
                     method: 'GET',
                     headers: {
@@ -384,7 +387,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 };
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, options)
                     .then((res) => res.json())
-                    .then((response) => setStore({ favoriteData: [...getStore().favoriteData, response] }))
+                    .then((response) => {
+                        if (!currentData.some((fav) => fav.id === data.id)) {
+                            setStore({ favoriteData: [...getStore().favoriteData, response] })}})
                     .catch((err) => console.log(err))
             }
 
