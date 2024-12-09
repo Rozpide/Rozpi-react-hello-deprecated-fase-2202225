@@ -214,7 +214,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch(error => console.error(error));
             },
 
-<<<<<<< HEAD
 
             addToWallet: (coin) => {
                 fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/wallet/${coin.id}`, {
@@ -237,42 +236,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .then(response => getActions().getWallet(getStore().userID))
                     .catch(error => console.error(error));
             },
-=======
-            removeFromFavs: (fav_id) => {
-                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/favorites/${getStore().userID}/${fav_id}`, {
-					method: 'DELETE'
-				})
-					.then(res => {
-						if (!res.ok) throw Error(res.statusText);
-                        return res.json();
-					})
-                    .then(response => setStore({ favoriteIds: response }))
-					.catch(error => console.error(error));
-            },
-
-            getFavoriteIds: (id) => {
-                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/users/${id}/favorites`)
-                    .then((res) => res.json())
-                    .then((response) => {
-                        setStore({ favoriteIds: response });
-                    })
-                    .catch((err) => console.log(err))
-            },
-            getFavoriteData: (coin_id) => {
-                const options = {
-                    method: 'GET',
-                    headers: {
-                        accept: 'application/json',
-                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
-                    }
-                };
-                fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, options)
-                    .then((res) => res.json())
-                    .then((response) => setStore({ favoriteData: [...getStore().favoriteData, response] }))
-                    .catch((err) => console.log(err))
-            }
-
->>>>>>> d1dab542c92303f5cab5f08ea829ca8a1266468d
         },
     };
 };
