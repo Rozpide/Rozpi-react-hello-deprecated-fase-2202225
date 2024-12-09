@@ -29,7 +29,7 @@ export const Favorites = () => {
                                     <LineChart data={chartdata[0]}>
                                         <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
                                         <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
-                                        <XAxis dataKey="date" tick={null} />
+                                        <XAxis dataKey="date" tick={renderCustomAxisTick} />
                                         <Tooltip />
                                     </LineChart>
                                 </ResponsiveContainer>

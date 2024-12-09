@@ -232,7 +232,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         localStorage.setItem('userID', response.userID);
                         // localStorage.setItem('userToken', response.access_token);
 						
-						setStore({ userToken: response.access_token, userEmail: response.user.email, userID:response.userID, username:response.username })
+						setStore({ userToken: response.access_token, userEmail: response.user.email, userID:response.userID, username:response.username });
+                        getActions().getFavoriteIds(response.userID)
 					})
 					.catch(error => console.error(error));
 			},
