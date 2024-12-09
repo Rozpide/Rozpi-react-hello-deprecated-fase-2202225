@@ -37,6 +37,7 @@
   background-color: white;
   margin: auto;
 }
+
 /* .firstContactDiv {
   height: 600px;
 } */
@@ -279,6 +280,7 @@ h1 {
   background-color: black;
   justify-content: center;
   margin-left: 0;
+  overflow-x: hidden;
 }
 
 .favCardOut {
@@ -323,6 +325,9 @@ h1 {
 .row {
   margin-right: 0;
 }
+
+
+
 /*Individual coin */
 .moreInfo {
   background-color: black;

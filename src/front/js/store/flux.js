@@ -232,7 +232,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         localStorage.setItem('userID', response.userID);
                         // localStorage.setItem('userToken', response.access_token);
 						
-						setStore({ userToken: response.access_token, userEmail: response.user.email, userID:response.userID, username:response.username })
+						setStore({ userToken: response.access_token, userEmail: response.user.email, userID:response.userID, username:response.username });
+                        getActions().getFavoriteIds(response.userID)
 					})
 					.catch(error => console.error(error));
 			},
@@ -287,7 +288,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             //     } else { console.log("favorite exists") }
             // },
             addToFavs: (coin) => {
-                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/favorites/${coin.id}`, {
+                fetch(process.env.BACKEND_URL + `favorites/${coin.id}`, {
                     method: 'POST',
                     body: JSON.stringify(
                         {
@@ -309,7 +310,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             removeFromFavs: (fav_id) => {
-                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/favorites/${getStore().userID}/${fav_id}`, {
+                fetch(process.env.BACKEND_URL + `favorites/${getStore().userID}/${fav_id}`, {
 					method: 'DELETE'
 				})
 					.then(res => {
@@ -321,7 +322,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             getFavoriteIds: (id) => {
-                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/users/${id}/favorites`)
+                fetch(process.env.BACKEND_URL + `users/${id}/favorites`)
                     .then((res) => res.json())
                     .then((response) => {
                         setStore({ favoriteIds: response });
