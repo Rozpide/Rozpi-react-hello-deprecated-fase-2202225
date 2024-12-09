@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { Login } from "./Login"; // Import the Modal component
 import Logo from "../../img/Logo.png";
-import gear from "../../img/gear.png";
+import gear_colored from "../../img/gear_colored.png";
 
 export const Navbar = () => {
     const { store, actions } = useContext(Context);
@@ -32,7 +32,7 @@ export const Navbar = () => {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link className="btn btn-outline-success" to="/listingpage">List of Coins</Link>
+                                <Link className="listButton btn" to="/listingpage">List of Coins</Link>
                             </li>
                         </ul>
                         <form className="d-flex" onSubmit={(e) => e.preventDefault()}>
@@ -43,20 +43,20 @@ export const Navbar = () => {
                                 aria-label="Search"
                                 name="search"
                             />
-                            <button className="btn btn-outline-success" type="submit">Search</button>
+                            <button className="searchButton btn" type="submit">Search</button>
                         </form>
                     </div>
                     {token ? (
                         <>
                             <span className="navbar-text text-light ms-3">Hello, {username}</span>
-                            <button className="btn btn-outline-danger ms-3" onClick={actions.logout}>Logout</button>
+                            <button className="logoutButton btn ms-3" onClick={actions.logout}>Logout</button>
                         </>
                     ) : (
-                        <button className="btn btn-outline-primary ms-3" onClick={() => setShowModal(true)}>Login</button>
+                        <button className="loginButton btn ms-3" onClick={() => setShowModal(true)}>Login</button>
                     )}
-                    <div className="dropdown ms-3">
+                    <div className="navGear dropdown ms-3">
                         <img
-                            src={gear}
+                            src={gear_colored}
                             alt="Profile"
                             width="60"
                             height="60"

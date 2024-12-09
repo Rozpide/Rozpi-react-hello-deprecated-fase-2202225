@@ -4,9 +4,11 @@ import { SparklineChart } from "./sparklineChart";
 import { TradeModal } from "../component/tradeModal";
 import { Wallet } from "../component/Wallet";
 import "../../styles/index.css";
+import { useNavigate } from "react-router-dom";
 
 export const Listing = () => {
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate()
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCoin, setSelectedCoin] = useState(null);
@@ -79,7 +81,10 @@ export const Listing = () => {
                 </thead>
                 <tbody>
                     {store.coins.map((coin) => (
-                        <tr key={coin.id}>
+                        <tr key={coin.id} onClick={()=> {
+                            console.log("Row clicked:", coin.id);
+                            navigate('/moreinfo/' + coin.id)}}
+                            >
                             <td>
                                 <div className="coin-info">
                                     <img src={coin.image} alt={coin.name} className="coin-image" />
@@ -111,14 +116,20 @@ export const Listing = () => {
                             <td>
                                 <button
                                     className="btn btn-primary"
-                                    onClick={() => handleOpenModal(coin, "trade")}  
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleOpenModal(coin, "trade")}
+                                    }  
                                 >
                                     Trade
                                 </button>
                         
                                 <button
                                     className="btn btn-primary"
-                                    onClick={() => handleAddToWallet(coin)}  // Add coin to wallet
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleAddToWallet(coin)}
+                                    }  // Add coin to wallet
                                 >
                                     Add to Wallet
                                 </button>
@@ -129,7 +140,10 @@ export const Listing = () => {
                                             ? "favorited"
                                             : ""
                                     }`}
-                                    onClick={() => handleFavoriteToggle(coin)}
+                                    onClick={(e) => {
+                                        e.stopPropagation(); 
+                                        handleFavoriteToggle(coin)}
+                                    }
                                 >
                                     {store.favoriteIds.some((favCoin) => favCoin.id === coin.id)
                                         ? "★"
