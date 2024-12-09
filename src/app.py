@@ -67,6 +67,7 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # Avoid cache memory
     return response
 
+
 # Create a route to authenticate your users and return JWT Token
 @app.route("/token", methods=["POST"])
 def create_token():
@@ -106,11 +107,25 @@ def add_fav(coin_id):
     db.session.add(fav_crypto)
     db.session.commit()
     return jsonify(get_favs(user_id))
+ 
+
+@app.route('/favorites/<int:user_id>/<int:favorite_id>', methods=['DELETE'])
+def delete_fav(favorite_id, user_id):
+    fav_crypto = Favorites.query.get(favorite_id)
+    db.session.delete(fav_crypto)
+    db.session.commit()
+    return jsonify(get_favs(user_id))
 
 def get_favs(id):
     favorites = Favorites.query.filter_by(user_id=id)
     favorites = list(map(lambda x: x.serialize(), favorites))
     return favorites
+
+@app.route('/users/<int:id>/favorites', methods=['GET']) 
+def get_favorites(id):
+    favorites = Favorites.query.filter_by(user_id=id)
+    favorites = list(map(lambda x: x.serialize(), favorites))
+    return jsonify(favorites)
 
 # Run the application
 if __name__ == '__main__':

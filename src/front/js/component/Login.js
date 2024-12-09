@@ -27,10 +27,31 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
     //     }).then((response) => {
     //         actions.setUserId ( response.user.id );
     //         actions.setUserName ( response.user.username);
-
+    //         actions.getFavoriteIds( response.user.id )
     //         onClose()
+
+
     //     }).catch(error => console.error(error));
     // };
+
+//         await fetch("https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/api/login", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({
+//                 email: username.value,
+//                 password: password.value,
+//             })
+//         }).then(res => {
+//             if (!res.ok) throw Error(res.statusText);
+//             return res.json();
+//         }).then((response) => {
+//             actions.setUserId ( response.user.id );
+//             actions.setUserName ( response.user.username);
+//             actions.getFavoriteIds( response.user.id )
+//             onClose()
+//         }).catch(error => console.error(error));
+//     };
+
 
     const handleSignUp = async (e) => {
         e.preventDefault();
