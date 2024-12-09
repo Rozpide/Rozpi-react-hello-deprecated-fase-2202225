@@ -18,6 +18,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             ],
             username: null, // Initially no user is logged in
             userID: null,
+            token: null,
+            favorites: [],
             favoriteIds: [],
             favoriteData: [],
             favoritePriceData: [],
@@ -28,6 +30,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             currency: "usd",
             timeFrame: "7",
             currentCoinPriceData: [],
+            currentCoinData: [],
             showContactModal: false,
             showModal: false,
             showOverallHoldings: false,
@@ -44,8 +47,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             setUserId: (id) => {
                 setStore({ userID: id })
             },
-            setUserName: (email) => {
-                setStore({ username: email })
+            setUserName: (username) => {
+                setStore({ username: username })
             },
             setCurrentCoinId: (id) => {
                 setStore({ currentCoinId: id })
@@ -107,8 +110,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+            setToken: () => {
+                setStore({userToken:localStorage.token})
+            },
 
-            getPriceData: () => {
+
+
+            getCurrentCoinPriceData: () => {
                 const options = {
                     method: 'GET',
                     headers: {
@@ -129,7 +137,22 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err))
             },
 
+            getCurrentCoinData: () => {
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                    }
+                };
+                fetch(`https://pro-api.coingecko.com/api/v3/coins/${getStore().currentCoinId}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, options)
+                    .then((res) => res.json())
+                    .then((response) => setStore({ currentCoinData: response }))
+                    .catch((err) => console.log(err))
+            },
+
             getFavPriceData: (id) => {
+                const currentData = getStore().favoritePriceData
                 const options = {
                     method: 'GET',
                     headers: {
@@ -140,12 +163,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
                     .then((res) => res.json())
                     .then((response) => {
-                        setStore({
-                            favoritePriceData: [...getStore().favoritePriceData,
-                            response.prices.map((price) => {
-                                return ({ id: id, date: new Date(price[0]), price: price[1] })
-                            })]
-                        })
+                        if (!currentData.some((entry) => entry[0]?.id === coin_id)) {
+                            setStore({
+                                favoritePriceData: [...getStore().favoritePriceData,
+                                response.prices.map((price) => {
+                                    return ({ id: id, date: new Date(price[0]), price: price[1] })
+                                })]
+                            })}
                     })
                     .catch((err) => console.log(err))
             },
@@ -154,13 +178,101 @@ const getState = ({ getStore, getActions, setStore }) => {
                 console.log(`Sign-up request for: ${username}`);
                 // Implement API call or logic for user registration
             },
-            login: () => {
-                setStore({ username: "JohnDoe" }); // Replace with actual login logic
-                console.log("User logged in"); // Optional: Debugging message
+            // login: async (username, password) => {
+            //     try {
+            //         const resp = await fetch(process.env.BACKEND_URL + "api/login", {
+            //             method: "POST",
+            //             headers: { "Content-Type": "application/json" },
+            //             body: JSON.stringify({ 
+            //                 username: username, 
+            //                 password: password }),
+            //         });
+
+            //         if (!resp.ok) throw Error("There was a problem in the login request");
+
+            //         if (resp.status === 401) {
+            //             throw new Error("Invalid credentials");
+            //         } else if (resp.status === 400) {
+            //             throw new Error("Invalid email or password format");
+            //         }
+
+            //         const data = await resp.json();
+
+            //         // Save the token in localStorage
+            //         localStorage.setItem("jwt-token", data.token);
+
+            //         // Update the store with user details and token
+            //         setStore({
+            //             username: username,
+            //             userID: data.user_id,
+            //             token: data.token,
+            //         });
+
+            //         console.log("Login successful", data);
+            //         return data;
+            //     } catch (error) {
+            //         console.error("Login error:", error);
+            //         throw error;
+            //     }
+            // },
+
+            // Function to restore the session on app load
+            
+            login: (email, password) => {
+				fetch(process.env.BACKEND_URL + "api/login", {
+					method: 'POST',
+					body: JSON.stringify(
+						{
+							"email": email,
+							"password": password
+						}
+					),
+					headers: {
+						'Content-type': 'application/json'
+					}
+				})
+					.then(res => {
+						if(!res.ok) throw Error("There was a problem in the login request")
+
+						if(res.status === 401){
+							 throw("Invalid credentials")
+						}
+						if(res.status === 400){
+								throw ("Invalid email or password format")
+						}
+						return res.json()
+					})
+					.then(response => {
+						console.log("response", response);
+						localStorage.setItem('token', response.access_token);
+                        localStorage.setItem('username', response.username);
+                        localStorage.setItem('userID', response.userID);
+                        // localStorage.setItem('userToken', response.access_token);
+						
+						setStore({ userToken: response.access_token, userEmail: response.user.email, userID:response.userID, username:response.username });
+                        getActions().getFavoriteIds(response.userID)
+					})
+					.catch(error => console.error(error));
+			},
+            
+            
+            initSession: () => {
+                const token = localStorage.getItem("jwt-token");
+
+                if (token) {
+                    // Decode or validate the token if needed
+                    setStore({ token });
+                    console.log("Session restored");
+                } else {
+                    console.log("No token found");
+                }
             },
+
+            // Logout action to clear token and user data
             logout: () => {
-                setStore({ username: null }); // Clear the username
-                console.log("User logged out"); // Optional: Debugging message
+                localStorage.removeItem("token"); // Clear the token
+                setStore({ username: null, userID: null, userToken: null }); // Clear store data
+                console.log("User logged out");
             },
             search: (query) => {
                 console.log("Search query:", query); // Implement actual search logic
@@ -193,7 +305,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             //     } else { console.log("favorite exists") }
             // },
             addToFavs: (coin) => {
-                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/favorites/${coin.id}`, {
+                fetch(process.env.BACKEND_URL + `favorites/${coin.id}`, {
                     method: 'POST',
                     body: JSON.stringify(
                         {
@@ -215,7 +327,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             removeFromFavs: (fav_id) => {
-                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/favorites/${getStore().userID}/${fav_id}`, {
+                fetch(process.env.BACKEND_URL + `favorites/${getStore().userID}/${fav_id}`, {
 					method: 'DELETE'
 				})
 					.then(res => {
@@ -227,7 +339,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             getFavoriteIds: (id) => {
-                fetch(`https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/users/${id}/favorites`)
+                fetch(process.env.BACKEND_URL + `users/${id}/favorites`)
                     .then((res) => res.json())
                     .then((response) => {
                         setStore({ favoriteIds: response });
@@ -235,6 +347,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err))
             },
             getFavoriteData: (coin_id) => {
+                const currentData = getStore().favoriteData
                 const options = {
                     method: 'GET',
                     headers: {
@@ -244,7 +357,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 };
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, options)
                     .then((res) => res.json())
-                    .then((response) => setStore({ favoriteData: [...getStore().favoriteData, response] }))
+                    .then((response) => {
+                        if (!currentData.some((fav) => fav.id === data.id)) {
+                            setStore({ favoriteData: [...getStore().favoriteData, response] })}})
                     .catch((err) => console.log(err))
             }
 
