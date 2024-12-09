@@ -108,10 +108,20 @@ def send_email():
         return jsonify({'success': False, 'message': 'Failed to send email.'}), 500
 @app.route('/favorites/<coin_id>', methods=['POST'])
 def add_fav(coin_id):
+@app.route('/favorites/<coin_id>', methods=['POST','DELETE'])
+def toggle_fav(coin_id):
     user_id = request.json['user_id']
     name = request.json['name']
     fav_crypto = Favorites(name=name, user_id=user_id, coin_id=coin_id)
     db.session.add(fav_crypto)
+    db.session.commit()
+    return jsonify(get_favs(user_id))
+ 
+
+@app.route('/favorites/<int:user_id>/<int:favorite_id>', methods=['DELETE'])
+def delete_fav(favorite_id, user_id):
+    fav_crypto = Favorites.query.get(favorite_id)
+    db.session.delete(fav_crypto)
     db.session.commit()
     return jsonify(get_favs(user_id))
 
@@ -119,6 +129,12 @@ def get_favs (id):
     favorites = Favorites.query.filter_by(user_id=id)
     favorites = list(map(lambda x: x.serialize(), favorites))
     return favorites
+
+@app.route('/users/<int:id>/favorites', methods=['GET']) 
+def get_favorites(id):
+    favorites = Favorites.query.filter_by(user_id=id)
+    favorites = list(map(lambda x: x.serialize(), favorites))
+    return jsonify(favorites)
 
 # Run the application
 if __name__ == '__main__':

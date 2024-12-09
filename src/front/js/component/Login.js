@@ -25,6 +25,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
         }).then((response) => {
             actions.setUserId ( response.user.id );
             actions.setUserName ( response.user.username);
+            actions.getFavoriteIds( response.user.id )
             onClose()
         }).catch(error => console.error(error));
     };
