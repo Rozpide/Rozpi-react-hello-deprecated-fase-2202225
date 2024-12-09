@@ -37,6 +37,7 @@ const injectContext = PassedComponent => {
 				state.actions.setToken()
 				state.actions.setUserName(localStorage.username)
 				state.actions.setUserId(localStorage.userID)
+				state.actions.getFavoriteIds(localStorage.userID)
 			}
 		}, [] )
 
