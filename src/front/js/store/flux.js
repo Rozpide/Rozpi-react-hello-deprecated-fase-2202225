@@ -157,6 +157,51 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err))
             },
 
+
+
+
+            handleSignUp: async (e) => {
+                e.preventDefault();
+                const { username, email, confirmEmail, password, confirmPassword } = e.target.elements;
+        
+                // Validation checks
+                if (email.value !== confirmEmail.value) {
+                    setError("Emails do not match.");
+                    return;
+                }
+                if (password.value !== confirmPassword.value) {
+                    setError("Passwords do not match.");
+                    return;
+                }
+        
+                try {
+                    const payload = {
+                        email: email.value,
+                        password: password.value,
+                        username: username.value
+                    };
+        
+                    const response = await fetch(process.env.BACKEND_URL + "api/users", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload), // Send email and password as JSON
+                    });
+        
+                    const responseData = await response.json();
+        
+                    if (!response.ok) {
+                        setError(responseData.error || "Sign-up failed"); // Handle backend errors
+                        return;
+                    }
+        
+                    alert("Registration successful! You can now log in."); // Notify success
+                    setIsLogin(true); // Switch to login view
+                } catch (err) {
+                    console.error("Sign-up error:", err);
+                    setError("An error occurred while signing up."); // Catch unexpected errors
+                }
+            },
+
             signUp: (username, password) => {
                 console.log(`Sign-up request for: ${username}`);
                 // Implement API call or logic for user registration
