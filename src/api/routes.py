@@ -7,6 +7,8 @@ from sqlalchemy.exc import IntegrityError  # Import IntegrityError
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from functools import wraps
+import hashlib
+import datetime
 
 api = Blueprint('api', __name__)
 
@@ -50,6 +52,25 @@ def jwt_required(f):
 
     return decorated_function
 
+import hashlib
+
+# Function to generate a custom hash (SHA-512, truncated to 80 characters)
+def generate_custom_hash(password):
+    """
+    Generate a custom hash for the password using SHA-512 and truncate it to 80 characters.
+    """
+    sha512_hash = hashlib.sha512(password.encode()).hexdigest()
+    return sha512_hash[:80]  # Truncate to 80 characters
+
+# Function to check if the provided password matches the stored hash
+def check_password(stored_hash, password):
+    """
+    Check if the provided password matches the stored hashed password.
+    """
+    print("stored hasf", stored_hash),
+    print("password", generate_custom_hash(password))
+    # Generate the hash of the provided password and compare with the stored hash
+    return stored_hash == generate_custom_hash(password)
 
 # POST login - authenticate user and return JWT
 @api.route('/login', methods=['POST'])
@@ -61,8 +82,9 @@ def login():
 
     user = Usuario.query.filter_by(email=data['email']).first()
 
-    if user and check_password_hash(user.password, data['password']):
-        # Generate JWT token
+
+    if user and check_password(user.password, data['password']):
+        # Generate JWT token if the password matches
         token = generate_jwt(user)
         return jsonify({"token": token}), 200
     else:
@@ -88,7 +110,7 @@ def create_user():
     data = request.get_json()
 
     # Hash the password before storing it in the database
-    hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha256')
+    hashed_password = generate_custom_hash(data['password'])
 
     try:
         new_user = Usuario(
@@ -193,3 +215,13 @@ def delete_event(event_id):
     db.session.delete(event)
     db.session.commit()
     return jsonify({"message": "Event deleted"}), 200
+
+# GET events by user ID
+@api.route('/events/user/<int:user_id>', methods=['GET'])
+def get_events_by_user(user_id):
+    events = Evento.query.filter_by(usuario_id=user_id).all()  # Query events by user_id
+    
+    if not events:
+        return jsonify({"message": "No events found for this user"}), 404
+    
+    return jsonify([event.serialize() for event in events]), 200

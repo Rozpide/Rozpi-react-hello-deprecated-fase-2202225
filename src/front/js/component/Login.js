@@ -16,6 +16,45 @@ const firebaseConfig = {
   measurementId: "G-TRHDBC0V03",
 };
 
+function saveTokenAndUserInfo(token) {
+  // Decode the token (JWT) to extract user info
+  const decoded = decodeJwt(token);
+
+  // Check if decoding was successful
+  if (decoded) {
+      // Save the token in localStorage
+      localStorage.setItem('auth_token', token);
+
+      // Save user info in localStorage
+      localStorage.setItem('user_info', JSON.stringify({
+          id: decoded.sub,
+          email: decoded.email,
+          exp: decoded.exp
+      }));
+
+      console.log('Token and user info saved successfully!');
+  } else {
+      console.error('Invalid token or unable to decode.');
+  }
+}
+
+// Function to decode JWT token
+function decodeJwt(token) {
+  try {
+      // JWTs are composed of three parts: header, payload, and signature
+      const payload = token.split('.')[1];
+
+      // Decode the base64-encoded payload and parse as JSON
+      const decodedPayload = JSON.parse(atob(payload));
+
+      return decodedPayload;
+  } catch (error) {
+      console.error('Error decoding JWT:', error);
+      return null;
+  }
+}
+
+
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -65,14 +104,51 @@ const errorMessage = (error) => {
   const handelSignIn = () => {
     console.log('Sing In ')
   }
+
+   const loginUser = async (email, password) => {
+    const url = 'https://effective-space-trout-vgvrqw54744fw95p-3001.app.github.dev/api/login';
+    
+    const body = JSON.stringify({
+      email: email,
+      password: password
+    });
+  
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+  
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: body
+      });
+  
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+  
+      // Assuming the response is JSON
+      const data = await response.json();
+      return data;
+  
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;  // Re-throw error for handling by the caller
+    }
+  };
   const handleLogin = async (e) => {
     e.preventDefault();
+    
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+     // const userCredential = await signInWithEmailAndPassword(auth, email, password);
+     // const user = userCredential.user;
+      const userDB = await  loginUser(email, password)
+      console.log("userDB", userDB)
+      saveTokenAndUserInfo(userDB.token);
 
-      console.log("Usuario logueado con correo:", user);
+      console.log("Usuario logueado con correo:", userDB);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error en el inicio de sesión con correo:", error);

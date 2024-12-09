@@ -8,6 +8,7 @@ import Register from "./component/Register"; // Página de registro
 import Dashboard from "./pages/Dashboard";
 import AuthCallback from "./pages/AuthCallback"
 import WeatherPage from "./pages/weather";
+import UsersPage from './pages/userListpage'
 
 const Layout = () => {
 	const basename = process.env.BASENAME || "";
@@ -24,6 +25,7 @@ const Layout = () => {
 					<Route path="/dashboard" element={<Dashboard />} />
 					<Route path="/auth/callback" element={<AuthCallback />} />
 					<Route path="/clima" element={<WeatherPage />} />
+					<Route path ="/users" element= {<UsersPage />} />
 					{/* Ruta por defecto: Not Found */}
 					<Route path="*" element={<h1>Not found!</h1>} />
 				</Routes>

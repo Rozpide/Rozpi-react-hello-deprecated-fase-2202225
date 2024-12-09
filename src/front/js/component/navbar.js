@@ -18,6 +18,9 @@ export const Navbar = () => {
 				</Link>
 				<div className="d-flex align-items-center">
 					{/* Link al clima actual */}
+					<Link to="/users" style={{ marginRight: "15px" }}>
+						<button className="btn btn-info">Ver Usuarios</button>
+					</Link>
 					<Link to="/clima" style={{ marginRight: "15px" }}>
 						<button className="btn btn-info">Ver Clima</button>
 					</Link>

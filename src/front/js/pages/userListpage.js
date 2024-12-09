@@ -3,11 +3,10 @@ import React,{ useState } from 'react';
 import { useSession, useSupabaseClient, useSessionContext } from '@supabase/auth-helpers-react';
 import "react-datepicker/dist/react-datepicker.css";
 
-import Login from '../component/GoogleLogin';
-import EventCreation from '../component/CreateEvent';
+import UserList from '../component/userList';
 import Navbar from '../component/navbar';
 
-function Dashboard() {
+function UserPage() {
   const session = true
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const session = useSession(); // tokens, when session exists we have a user
@@ -28,16 +27,15 @@ function Dashboard() {
         {session ? (
           <div className='home'>
             <Navbar />
-            <EventCreation session={session} />
+           <UserList />
           </div>
         ) : (
           <>
-           you need to login with google to 
-          <Login onSignIn={handleSignIn} />
+          
           </>
         )}
       </div>
   );
 }
 
-export default Dashboard;
+export default UserPage;
