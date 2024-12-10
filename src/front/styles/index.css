@@ -156,8 +156,8 @@
 
 .modal_dialog_div {
   border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
+  max-width: 40vw;
+  width: 40vw;
   position: relative;
   
 }
