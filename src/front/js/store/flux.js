@@ -254,7 +254,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 // Filter the coins based on the query
                 const filtered = store.coins.filter((coin) =>
                     coin.name.toLowerCase().includes(query.toLowerCase()) || 
-                    coin.symbol.toLowerCase().includes(query.toLowerCase())
+                    coin.symbol.toLowerCase().includes(query.toLowerCase()) || 
+                    coin.id.toLowerCase().includes(query.toLowerCase())
+
                 );
 
                 // Update filteredCoins in the store
