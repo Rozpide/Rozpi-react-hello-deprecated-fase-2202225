@@ -1,27 +1,30 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 
 export const SearchResults = () => {
     const { store } = useContext(Context);
+    const navigate = useNavigate()
 
     return (
-        <div className="container">
-            <h1>Search Results</h1>
-            <div className="row">
+        <div className="search-results-container" >
+            <h1 className="search-title">Search Results</h1>
+            <div className="search-results-grid">
                 {store.filteredCoins && store.filteredCoins.length > 0 ? (
                     store.filteredCoins.map((coin) => (
-                        <div key={coin.id} className="col-md-4 mb-4">
-                            <div className="card">
-                                <div className="card-body">
-                                    <h5 className="card-title">{coin.name}</h5>
-                                    <p className="card-text">Symbol: {coin.symbol}</p>
-                                    <p className="card-text">Price: ${coin.current_price}</p>
-                                </div>
+                        <div key={coin.id} className="search-card" onClick={()=> {
+                            console.log("Row clicked:", coin.id);
+                            navigate('/moreinfo/' + coin.id)}}>
+                            <div className="search-card-body">
+                                <h5 className="search-card-title">{coin.name}</h5>
+                                <p className="search-card-text">Symbol: {coin.symbol}</p>
+                                <p className="search-card-text">Price: ${coin.current_price}</p>
+                            
                             </div>
                         </div>
                     ))
                 ) : (
-                    <p>No results found.</p>
+                    <p className="no-results">No results found.</p>
                 )}
             </div>
         </div>

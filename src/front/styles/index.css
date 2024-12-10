@@ -2,6 +2,13 @@
     General Styles used on every website (Don't Repeat Yourself)
 */
 
+#layout {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: black;
+}
+
 /* Navbar CSS */
 
 .listButton {
@@ -348,6 +355,7 @@
 .listing-page {
   padding: 0px;
   font-family: Arial, sans-serif;
+  background: white;
 }
 
 h1 {
@@ -457,6 +465,7 @@ h1 {
   background-color: black;
   color: #39ff14;
   width: 11vw !important;
+  height: 100%
 }
 .nav-link {
   color: #39ff14;
@@ -467,8 +476,8 @@ h1 {
   text-decoration: black;
 }
 #dashboardContent {
-  /* width: 90vw; */
-  width: fit-content;
+  width: 90vw;
+  height: 100%;
 }
 
 /* Favorites CSS */
@@ -482,6 +491,7 @@ h1 {
   justify-content: center;
   margin-left: 0;
   overflow-x: hidden;
+  height: 100%;
 }
 
 .favCardOut {
@@ -809,4 +819,69 @@ button.btn-success {
 }
 
 
+/* SEARCH */
 
+/* Container styling for the search results page */
+.search-results-container {
+  background-color: black;
+  color: #39ff14;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Title styling */
+.search-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #39ff14;
+  text-shadow: 0 0 10px #39ff14;
+}
+
+/* Grid styling for the search results */
+.search-results-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+/* Card styling */
+.search-card {
+  background-color: #1c1c1c;
+  border: 2px solid #39ff14;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #39ff14;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 300px;
+  padding: 1rem;
+}
+
+.search-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px #39ff14;
+}
+
+/* Card body styling */
+.search-card-body {
+  color: white;
+}
+
+.search-card-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 5px #39ff14;
+}
+
+.search-card-text {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Styling for when no results are found */
+.no-results {
+  color: #ff4141;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  text-shadow: 0 0 5px #ff4141;
+}
