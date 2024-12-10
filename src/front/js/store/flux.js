@@ -16,6 +16,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     initial: "white"
                 }
             ],
+            searchSuggestions: [], // Initialize as an empty array
             username: null, // Initially no user is logged in
             userID: null,
             token: null,
@@ -259,8 +260,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                 );
 
+                   // Filter the coins based on the query
+                   const suggestions = store.coins.filter((coin) =>
+                    coin.name.toLowerCase().includes(query.toLowerCase()) || 
+                    coin.symbol.toLowerCase().includes(query.toLowerCase()) || 
+                    coin.id.toLowerCase().includes(query.toLowerCase())
+
+                );
+
                 // Update filteredCoins in the store
-                setStore({ filteredCoins: filtered });
+                setStore({ filteredCoins: filtered, searchSuggestions: suggestions  });
             },
             getMessage: async () => {
                 try {
