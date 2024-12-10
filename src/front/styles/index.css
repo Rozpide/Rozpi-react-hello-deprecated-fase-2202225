@@ -341,10 +341,47 @@ h1 {
 }
 #dashboardContent {
   /* width: 90vw; */
-  width: fit-content;
+  width: 90vw;
 }
 
 /* Favorites CSS */
+
+.favorites-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* Adjust based on your parent container */
+  min-height: 400px; /* Ensures adequate height */
+}
+
+.no-favorites-message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  color: #666;
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+}
+
+.no-favorites-message h4 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.no-favorites-message p {
+  font-size: 16px;
+  color: #555;
+}
+
 
 /* .fav{
   height: 85vh;
