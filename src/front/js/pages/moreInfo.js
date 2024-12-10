@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
-import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from "recharts";
 import { TradeModal } from "../component/tradeModal";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-export const MoreInfo = (coin) => {
+export const MoreInfo = () => {
     const { store, actions } = useContext(Context);
-    ///const coin = coin
-    const [timeFrame, setTimeFrame] = React.useState('left');
+    const [timeFrame, setTimeFrame] = React.useState("left");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCoin, setSelectedCoin] = useState(null);
     const [news, setNews] = useState([]);
     const [loading, setLoading] = useState(true);
     const params = useParams();
+    const navigate = useNavigate(); // Hook for navigation
 
     const handleChange = (event, newAlignment) => {
         setTimeFrame(newAlignment);
     };
 
     // Fetch price data on component mount
-    useEffect((coin) => {
+    useEffect(() => {
         actions.setCurrentCoinId(params.id);
         actions.setCurrency("usd");
         actions.setTimeFrame("7");
@@ -31,25 +31,17 @@ export const MoreInfo = (coin) => {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                console.log("Fetching news from The Guardian...");
                 const response = await fetch(
                     `https://content.guardianapis.com/search?api-key=611e5bde-dc1e-455b-9137-5f6caf90eda7&q=${params.id}`
                 );
-                console.log("Response status:", response.status);
-
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("Fetched articles:", data.response.results);
                     if (data.response && data.response.results) {
                         setNews(data.response.results); // Populate the news state
-                    } else {
-                        console.warn("No articles found in the response.");
                     }
-                } else {
-                    console.error("Error fetching news:", response.statusText);
                 }
             } catch (error) {
-                console.error("Network or server error:", error);
+                console.error("Error fetching news:", error);
             } finally {
                 setLoading(false); // Stop the loading spinner
             }
@@ -71,13 +63,18 @@ export const MoreInfo = (coin) => {
         setIsModalOpen(true);
     };
 
+    
+    const handleBackToList = () => {
+        navigate("/listingpage"); 
+    };
+
     return (
         <div className="moreInfo">
             {/* Back to List Button */}
             <div className="backToList">
                 <button
-                    type="submit"
-                    id="submitBtn"
+                    type="button"
+                    onClick={handleBackToList} 
                     style={{
                         backgroundColor: "#39ff14",
                         borderRadius: "5px",

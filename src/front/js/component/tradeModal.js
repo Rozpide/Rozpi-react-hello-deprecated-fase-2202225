@@ -1,8 +1,8 @@
 import React from "react";
-import "../../styles/index.css"; // Adjust the path to your CSS file
+import "../../styles/index.css"; 
 
 export const TradeModal = ({ isOpen, onClose, onTrade, coinName }) => {
-    if (!isOpen) return null; // Render nothing if `isOpen` is false
+    if (!isOpen) return null; 
 
     const handleTrade = () => {
         const tradeType = document.getElementById("tradeType").value;

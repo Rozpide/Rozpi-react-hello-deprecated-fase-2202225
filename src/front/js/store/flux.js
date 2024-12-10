@@ -91,11 +91,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         "https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=30&page=1&sparkline=true", options
                     );
                     const data = await response.json();
-                    
-                    setStore({ 
+
+                    setStore({
                         coins: data, // Populate coins
                         filteredCoins: data, // Initialize filteredCoins with all coins
-                        loading: false 
+                        loading: false
                     });
                 } catch (error) {
                     console.error("Error fetching coins:", error);
@@ -116,7 +116,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             setToken: () => {
-                setStore({userToken:localStorage.token})
+                setStore({ userToken: localStorage.token })
             },
 
 
@@ -174,7 +174,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                                 response.prices.map((price) => {
                                     return ({ id: id, date: new Date(price[0]), price: price[1] })
                                 })]
-                            })}
+                            })
+                        }
                     })
                     .catch((err) => console.log(err))
             },
@@ -185,7 +186,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             handleSignUp: async (e) => {
                 e.preventDefault();
                 const { username, email, confirmEmail, password, confirmPassword } = e.target.elements;
-        
+
                 // Validation checks
                 if (email.value !== confirmEmail.value) {
                     setError("Emails do not match.");
@@ -195,27 +196,27 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setError("Passwords do not match.");
                     return;
                 }
-        
+
                 try {
                     const payload = {
                         email: email.value,
                         password: password.value,
                         username: username.value
                     };
-        
+
                     const response = await fetch(process.env.BACKEND_URL + "api/users", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(payload), // Send email and password as JSON
                     });
-        
+
                     const responseData = await response.json();
-        
+
                     if (!response.ok) {
                         setError(responseData.error || "Sign-up failed"); // Handle backend errors
                         return;
                     }
-        
+
                     alert("Registration successful! You can now log in."); // Notify success
                     setIsLogin(true); // Switch to login view
                 } catch (err) {
@@ -228,47 +229,47 @@ const getState = ({ getStore, getActions, setStore }) => {
                 console.log(`Sign-up request for: ${username}`);
                 // Implement API call or logic for user registration
             },
-            
-            // Function to restore the session on app load
-            
-            login: (email, password) => {
-				fetch(process.env.BACKEND_URL + "api/login", {
-					method: 'POST',
-					body: JSON.stringify(
-						{
-							"email": email,
-							"password": password
-						}
-					),
-					headers: {
-						'Content-type': 'application/json'
-					}
-				})
-					.then(res => {
-						if(!res.ok) throw Error("There was a problem in the login request")
 
-						if(res.status === 401){
-							 throw("Invalid credentials")
-						}
-						if(res.status === 400){
-								throw ("Invalid email or password format")
-						}
-						return res.json()
-					})
-					.then(response => {
-						console.log("response", response);
-						localStorage.setItem('token', response.access_token);
+            // Function to restore the session on app load
+
+            login: (email, password) => {
+                fetch(process.env.BACKEND_URL + "api/login", {
+                    method: 'POST',
+                    body: JSON.stringify(
+                        {
+                            "email": email,
+                            "password": password
+                        }
+                    ),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        if (!res.ok) throw Error("There was a problem in the login request")
+
+                        if (res.status === 401) {
+                            throw ("Invalid credentials")
+                        }
+                        if (res.status === 400) {
+                            throw ("Invalid email or password format")
+                        }
+                        return res.json()
+                    })
+                    .then(response => {
+                        console.log("response", response);
+                        localStorage.setItem('token', response.access_token);
                         localStorage.setItem('username', response.username);
                         localStorage.setItem('userID', response.userID);
                         // localStorage.setItem('userToken', response.access_token);
-						
-						setStore({ userToken: response.access_token, userEmail: response.user.email, userID:response.userID, username:response.username });
+
+                        setStore({ userToken: response.access_token, userEmail: response.user.email, userID: response.userID, username: response.username });
                         getActions().getFavoriteIds(response.userID)
-					})
-					.catch(error => console.error(error));
-			},
-            
-            
+                    })
+                    .catch(error => console.error(error));
+            },
+
+
             initSession: () => {
                 const token = localStorage.getItem("jwt-token");
 
@@ -292,13 +293,13 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             searchCoins: (query) => {
                 const store = getStore();
-                
+
                 // Update the search query in the store
                 setStore({ searchQuery: query });
 
                 // Filter the coins based on the query
                 const filtered = store.coins.filter((coin) =>
-                    coin.name.toLowerCase().includes(query.toLowerCase()) || 
+                    coin.name.toLowerCase().includes(query.toLowerCase()) ||
                     coin.symbol.toLowerCase().includes(query.toLowerCase())
                 );
 
@@ -348,13 +349,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             removeFromFavs: (fav_id) => {
                 fetch(process.env.BACKEND_URL + `favorites/${getStore().userID}/${fav_id}`, {
-					method: 'DELETE'
-				})
-					.then(res => {
-						if (!res.ok) throw Error(res.statusText);
+                    method: 'DELETE'
+                })
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
                         return res.json();
                     })
-                    .then(response => getActions().getWallet(getStore().userID))
+                    .then(response => {
+                        setStore({ favoriteIds: response })
+                        response.forEach(element => {
+                            getActions().getFavoriteData(element.coin_id)
+                            getActions().getFavPriceData(element.coin_id)
+                        });
+                    })
                     .catch(error => console.error(error));
             },
 
@@ -379,7 +386,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .then((res) => res.json())
                     .then((response) => {
                         if (!currentData.some((fav) => fav.id === data.id)) {
-                            setStore({ favoriteData: [...getStore().favoriteData, response] })}})
+                            setStore({ favoriteData: [...getStore().favoriteData, response] })
+                        }
+                    })
                     .catch((err) => console.log(err))
             }
 
