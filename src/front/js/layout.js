@@ -45,6 +45,7 @@ const Layout = () => {
                         <Route element={<Userdashboard />} path="/userdashboard" />
                         <Route element={<SparklineChart />} path="/sparklineChart" />
                         <Route element={<TradeModal />} path="/tradeModal" />
+                        <Route element={<SearchResults />} path="/searchresults" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<MoreInfo />} path="/moreInfo/:id" />
