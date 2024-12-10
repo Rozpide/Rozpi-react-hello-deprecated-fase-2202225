@@ -141,6 +141,35 @@ def get_favorites(id):
     favorites = list(map(lambda x: x.serialize(), favorites))
     return jsonify(favorites)
 
+
+
+
+@app.route('/send-email', methods=['POST'])
+def send_email():
+    data = request.get_json()
+    email = data.get('email')  # Get the email from the frontend form submission
+    message = data.get('message')
+
+    if not email or not message:
+        return jsonify({'success': False, 'message': 'Email and message are required'}), 400
+    try:
+        # Send the email from the user's email address
+        msg = Message(
+            subject="New Contact Us Message",
+            recipients=[os.getenv('RECIPIENT_EMAIL')],  # The recipient's email address
+            body=f"Message from {email}:\n\n{message}",
+            sender=email  # The sender's email will be the user's email address
+        )
+        mail.send(msg)
+        return jsonify({'success': True, 'message': 'Email sent successfully!'}), 200
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return jsonify({'success': False, 'message': 'Failed to send email.'}), 500
+
+
+
+
+
 # Run the application
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
