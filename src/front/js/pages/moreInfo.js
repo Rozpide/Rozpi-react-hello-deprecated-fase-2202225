@@ -13,12 +13,9 @@ export const MoreInfo = (coin) => {
     const [selectedCoin, setSelectedCoin] = useState(null);
     const [news, setNews] = useState([]);
     const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
     const [whitepaper, setWhitepaper] = useState("");
     const [loadingNews, setLoadingNews] = useState(true);
-=======
     const params = useParams();
->>>>>>> 0c98bb78b6eef2ff46c6c820ad730271bb08c0b6
 
     const handleChange = (event, newAlignment) => {
         setTimeFrame(newAlignment);
@@ -62,7 +59,6 @@ export const MoreInfo = (coin) => {
 
     // Fetch whitepaper from CoinGecko API
     useEffect(() => {
-<<<<<<< HEAD
         const fetchWhitepaper = async () => {
             try {
                 const response = await fetch("https://api.coingecko.com/api/v3/coins/bitcoin");
@@ -86,23 +82,16 @@ export const MoreInfo = (coin) => {
                 setWhitepaper(null);
             }
         };
-=======
         actions.getCurrentCoinPriceData();
     }, [store.timeFrame]);
->>>>>>> 0c98bb78b6eef2ff46c6c820ad730271bb08c0b6
 
         fetchWhitepaper();
     }, []);
 
     // Update price data based on timeframe or currency changes
     useEffect(() => {
-<<<<<<< HEAD
-        actions.getPriceData();
-    }, [store.timeFrame, store.currency]);
-=======
         actions.getCurrentCoinPriceData();
     }, [store.currency]);
->>>>>>> 0c98bb78b6eef2ff46c6c820ad730271bb08c0b6
 
     // Function to open the modal
     const handleTrade = () => {
@@ -131,26 +120,6 @@ export const MoreInfo = (coin) => {
             <div className="mainInfo">
                 {/* Coin Name */}
                 <div className="coinName" style={{ fontSize: "25px", marginLeft: "80px", color: "white" }}>
-<<<<<<< HEAD
-                    {store.currentCoinName || "Bitcoin"}
-                </div>
-
-                {/* Graph Box */}
-                <div className="graphBox">
-                    <div className="graphButtonsBox">
-                        <div className="timeFrame" role="group">
-                            <button className="graphButtons" onClick={() => actions.setTimeFrame("1")}>1D</button>
-                            <button className="graphButtons" onClick={() => actions.setTimeFrame("7")}>7D</button>
-                            <button className="graphButtons" onClick={() => actions.setTimeFrame("30")}>30D</button>
-                            <button className="graphButtons" onClick={() => actions.setTimeFrame("365")}>1Y</button>
-                        </div>
-                        <div className="currency" role="group">
-                            <button className="graphButtons2" onClick={() => actions.setCurrency("USD")}>USD</button>
-                            <button className="graphButtons2" onClick={() => actions.setCurrency("CAD")}>CAD</button>
-                            <button className="graphButtons2" onClick={() => actions.setCurrency("EUR")}>EUR</button>
-                            <button className="graphButtons2" onClick={() => actions.setCurrency("GBP")}>GBP</button>
-                            <button className="graphButtons2" onClick={() => actions.setCurrency("JPY")}>JPY</button>
-=======
                     {store.currentCoinData.name}
                 </div>
 
@@ -224,7 +193,6 @@ export const MoreInfo = (coin) => {
                                     />
                                 )}
                             </div>
->>>>>>> 0c98bb78b6eef2ff46c6c820ad730271bb08c0b6
                         </div>
                     </div>
                     <div id="marketData">
