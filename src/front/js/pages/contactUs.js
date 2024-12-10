@@ -51,33 +51,34 @@ export const ContactUs = props => {
     return (
         <div
     id="modal"
-    className="contact-modal"
+    className="contact-modal contact-main-div  "
     style={{ display: store.showContactModal ? "block" : "none" }}
 >
-    <div className="modal-dialog">
-        <div className="modal-content" style={{backgroundColor:"silver", width:"40vw"}}>
+    <div className="modal-dialog modal_dialog_div ">
+        <div className="modal-content modal_content_div_btn" style={{backgroundColor:"silver", width:"40vw"}}>
             <button
                 type="button"
-                className="close"
+                className="close close_contact_us_btn"
                 id="closeModal"
                 onClick={() => actions.setShowContactModal()}
             >
                 &times;
             </button>
-            <h2 className="modal-header">Contact Us</h2>
+            <h2 className="modal-header modal_header_name">Contact Us</h2>
 
             {/* Display success or error message */}
             {status && (
                 <div
-                    className={`alert ${status.success ? "alert-success" : "alert-error"}`}
+                    className={`alert_main_div ${status.success ? "alert_if_success_div" : "alert_if_not_success_div"}`}
                 >
                     {status.message}
                 </div>
             )}
 
-            <form id="contactForm" onSubmit={handleSubmit} method="POST">
-                <label htmlFor="email">Email:</label>
-                <input
+            <form  id="contactForm" onSubmit={handleSubmit} method="POST">
+                <label className="lable_for_contact_us" htmlFor="email">Email:</label>
+                <input 
+                    className="form_input_information"
                     type="email"
                     id="email"
                     name="email"
@@ -87,8 +88,9 @@ export const ContactUs = props => {
                     required
                 />
 
-                <label htmlFor="message">Message:</label>
+                <label className="lable_for_contact_us" htmlFor="message">Message:</label>
                 <textarea
+                    className="form_text_message_information"
                     id="message"
                     name="message"
                     placeholder="Enter your message"

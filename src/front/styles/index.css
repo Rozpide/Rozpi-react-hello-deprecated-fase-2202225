@@ -132,7 +132,9 @@
   height: 50vh;
   min-height: 20vh;
 } */
-.contact-modal {
+
+
+.contact-main-div {
   position: fixed;
   top: 0;
   left: 0;
@@ -145,7 +147,7 @@
   z-index: 1000;
 }
 
-.modal-dialog {
+.modal_dialog_div {
   border-radius: 10px;
   max-width: 500px;
   width: 90%;
@@ -153,14 +155,14 @@
   
 }
 
-.modal-content {
+.modal_content_div_btn {
   height: 80vh;
   width: 80vw;
   padding: 20px;
   background-color: silver;
 }
 
-.close {
+.close_contact_us_btn {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -170,38 +172,46 @@
   cursor: pointer;
 }
 
-.modal-header {
+.modal_header_name {
   font-size: 24px;
   color: #39ff14;
   text-align: center;
   margin-bottom: 20px;
 }
 
-.alert {
+.alert_main_div {
   margin-bottom: 20px;
   padding: 10px;
   border-radius: 5px;
   font-size: 14px;
 }
 
-.alert-success {
+.alert_if_success_div {
   background-color: #d4edda;
   color: #155724;
 }
 
-.alert-error {
+.alert_if_not_success_div {
   background-color: #f8d7da;
   color: #721c24;
 }
 
-form label {
+.lable_for_contact_us {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
 }
 
-form input,
-form textarea {
+.form_input_information{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form_text_message_information {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -211,10 +221,13 @@ form textarea {
   
 }
 
-form textarea {
+
+.form_text_message_information {
   resize: none;
   height: 42vh;
 }
+
+
 
 #submitBtn {
   width: 100%;
@@ -238,12 +251,20 @@ form textarea {
   background-color: #33e112;
 }
 
-.close {
+.close_contact_us_btn {
   font-size: 25px;
 }
+
+
 .mainModal {
   border-radius: 5px;
 }
+
+
+
+
+
+
 
 /* Landing page CSS */
 
