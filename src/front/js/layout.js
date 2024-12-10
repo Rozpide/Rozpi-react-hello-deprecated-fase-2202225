@@ -17,6 +17,9 @@ import { Favorites } from "./component/Favorites";
 import { MoreInfo } from "./pages/moreInfo";
 import { TradeModal } from "./component/tradeModal";
 import { Wallet } from "./component/Wallet";
+import { SearchResults } from "./component/searchresults";
+
+
 
 
 
@@ -54,5 +57,7 @@ const Layout = () => {
         </div>
     );
 };
+
+//comment
 
 export default injectContext(Layout);
