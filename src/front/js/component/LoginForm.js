@@ -64,7 +64,7 @@ const LoginForm = () => {
                 <Col xs={12} md={6} lg={4} className="mx-auto">
                     <h2 className="text-center mb-4"><strong>Iniciar Sesión</strong></h2>
                     {error && <Alert variant="danger">{error}</Alert>}
-                    <Form onSubmit={handleSubmit} className={`${styles.formLog} p-4 border shadow`}>
+                    <Form onSubmit={handleSubmit} className={`${styles.formLog} p-3 border shadow`}>
                         <Form.Group controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -73,7 +73,7 @@ const LoginForm = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className='rounded-pill'
+                                className={`${styles.inputFormLog} rounded-pill`}
                             />
                         </Form.Group>
                         <Form.Group controlId="password" className="mt-3">
@@ -84,7 +84,7 @@ const LoginForm = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className='rounded-pill'
+                                className={`${styles.inputFormLog} rounded-pill`}
                             />
                         </Form.Group>
                         <button type="submit" className="btn-outline-register w-100 mt-4 rounded-pill">

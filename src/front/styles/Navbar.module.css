@@ -13,10 +13,7 @@
   padding: 10px;
   min-width: 10%;
   position: absolute;
-  /* Permite ajustar su posición */
   right: -10px;
-  /* Ajusta el menú para que aparezca en el costado derecho */
-
 }
 
 .ItemAvatarButtom {
@@ -49,11 +46,37 @@
   /* Separa el avatar del borde derecho */
 }
 
-.campana {
-  font-size: 1.5rem;
-  padding: 10px 15px;
+/* estilos para la campana de notificaciones */
+.campana-container {
+  position: relative;
+  display: inline-block;
 }
 
+.campana {
+  font-size: 30px;
+  color: white;
+  position: relative;
+  display: inline-block;
+}
+
+.campanaConNotificacion {
+  color: #ffc107 !important;
+  font-size: 30px;
+}
+
+.notificacionDot {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  transform: translate(50%, -50%);
+  width: 12px;
+  height: 12px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* --------------------*/
 .dashboard {
   position: fixed;
   top: 0;
@@ -184,22 +207,109 @@
 
 /* styles del chatComponent */
 
-.CardChat {
-  /* align-items: center; */
-  color: white;
-  font-weight: bold;
-  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
-}
-
+/* Contenedor principal del chat */
 .chatContainer {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-  opacity: 0;
+  display: flex;
+  height: 450px;
+  width: 100%;
 }
 
-.chatContainerVisible {
-  max-height: 500px;
-  opacity: 1;
-  overflow: visible;
+/* Sección de Contactos (35%) */
+.chatContacts {
+  width: 35%;
+  border-right: 1px solid #ccc;
+  background-color: #f4f4f9;
+  overflow-y: scroll;
+  padding: 10px;
+}
+
+/* Sección de Mensajes (65%) */
+.chatMessages {
+  width: 65%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #f8f9fa;
+  position: absolute;
+  top: 45px;
+  right: 0;
+}
+
+/* CardHeader para la parte superior */
+.CardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  position: relative;
+}
+
+.CardHeader h5 {
+  font-size: 20px;
+}
+
+.chatContacts h6 {
+  font-size: 16px;
+}
+
+.chatContacts select {
+  margin-bottom: 10px;
+}
+
+.chatContacts div {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.chatContacts div.bg-info {
+  background-color: #17a2b8 !important;
+  color: white !important;
+}
+
+.card-footer {
+  /* display: flex; */
+  flex-direction: column;
+  gap: 10px;
+  position: absolute;
+  right: 0;
+  width: 65%;
+  top: 82%;
+  background-color: #f8f9fa;
+}
+
+.card-footer input {
+  width: 100%;
+}
+
+.card-footer button {
+  width: 100%;
+}
+
+/* Botón de cerrar */
+.closeChat {
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s ease;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.closeChat:hover {
+  transform: scale(1.2) translateY(-50%) rotate(0.5turn);
+  color: yellow;
+}
+
+.closing {
+  opacity: 0;
+  transform: scale(0.95);
+  /* Hace que el chat se contraiga ligeramente */
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  /* Duración de la transición */
 }
