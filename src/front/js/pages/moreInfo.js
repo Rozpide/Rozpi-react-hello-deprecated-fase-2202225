@@ -53,6 +53,7 @@ export const MoreInfo = (coin) => {
                 setLoadingNews(false); // Stop the loading spinner
             }
         };
+        
 
         fetchNews();
     }, []);
@@ -85,8 +86,7 @@ export const MoreInfo = (coin) => {
         actions.getCurrentCoinPriceData();
     }, [store.timeFrame]);
 
-        fetchWhitepaper();
-    }, []);
+   
 
     // Update price data based on timeframe or currency changes
     useEffect(() => {
