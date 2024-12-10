@@ -69,6 +69,7 @@ const NewPetLost = () => {
           </div>
           <div className="mb-3">
             <label htmlFor="species" className="form-label">ESPECIE</label>
+
             <select className="form-select" id="species" aria-label="Default select example" value={newPet.species} required onChange={handleChange} >
               <option value="" disabled>Selecciona</option>
               <option value="perro">Perro</option>
@@ -77,6 +78,7 @@ const NewPetLost = () => {
               <option value="ave">Ave</option>
               <option value="reptil">Reptil</option>
               <option value="otro">Otro</option>
+
             </select>
           </div>
           <div className="mb-3">
@@ -86,6 +88,7 @@ const NewPetLost = () => {
           <div className="row g-3 mb-3 ">
             <div className="col-md-6">
               <label htmlFor="gender" className="form-label">GENERO</label>
+
               <select className="form-select" id="gender" aria-label="Selecionar genero" value={newPet.gender} required onChange={handleChange} >
                 <option value="" disabled>Selecciona</option>
                 <option value="male">Macho</option>
