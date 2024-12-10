@@ -145,7 +145,7 @@ export const Listing = () => {
                                         handleFavoriteToggle(coin)}
                                     }
                                 >
-                                    {store.favoriteIds.some((favCoin) => favCoin.id === coin.id)
+                                    {store.favoriteIds.some((favCoin) => favCoin.coin_id === coin.id)
                                         ? "★"
                                         : "☆"}
                                 </button>
