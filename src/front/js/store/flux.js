@@ -80,8 +80,15 @@ const getState = ({ getStore, getActions, setStore }) => {
             fetchCoins: async () => {
                 setStore({ loading: true });
                 try {
+                    const options = {
+                        method: 'GET',
+                        headers: {
+                            accept: 'application/json',
+                            'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                        }
+                    };
                     const response = await fetch(
-                        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=30&page=1&sparkline=true"
+                        "https://pro-api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=30&page=1&sparkline=true", options
                     );
                     const data = await response.json();
                     
