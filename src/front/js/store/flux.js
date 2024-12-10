@@ -1,8 +1,8 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			
-			
+
+
 
 			message: null,
 			demo: [
@@ -22,24 +22,34 @@ const getState = ({ getStore, getActions, setStore }) => {
 			]
 		},
 		actions: {
+
 			// Use getActions to call a function within a fuction
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
 
-			addNewLostPet:(newPet) => {
+			// Función para establecer el mensaje en el estado global
+			setMessage: (msg) => {
+				const store = getStore(); // Accede al estado global
+				setStore({
+					...store, // Mantén el estado previo
+					message: msg // Actualiza el mensaje
+				});
+			},
+
+			addNewLostPet: (newPet) => {
 
 			},
 
 			getMessage: async () => {
-				try{
+				try {
 					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
+					//const resp = await fetch(process.env.BACKEND_URL + "/api/hello")
 					const data = await resp.json()
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves
 					return data;
-				}catch(error){
+				} catch (error) {
 					console.log("Error loading message from backend", error)
 				}
 			},
