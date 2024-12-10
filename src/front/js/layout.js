@@ -17,6 +17,9 @@ import { Favorites } from "./component/Favorites";
 import { MoreInfo } from "./pages/moreInfo";
 import { TradeModal } from "./component/tradeModal";
 import { Wallet } from "./component/Wallet";
+import { SearchResults } from "./component/searchresults";
+
+
 
 
 
@@ -44,7 +47,7 @@ const Layout = () => {
                         <Route element={<TradeModal />} path="/tradeModal" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<MoreInfo />} path="/moreInfo" />
+                        <Route element={<MoreInfo />} path="/moreInfo/:id" />
                         <Route element={<Wallet />} path="/wallet" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
@@ -54,5 +57,7 @@ const Layout = () => {
         </div>
     );
 };
+
+//comment
 
 export default injectContext(Layout);

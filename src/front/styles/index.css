@@ -4,6 +4,80 @@
 
 /* Navbar CSS */
 
+.listButton {
+  background-color: black;
+  border-color: #39ff14;
+  border-width: 1px;
+  color:#39ff14
+}
+
+.listButton:hover {
+  box-shadow: 0px 0px 35px 5px #39ff14;
+  background-color: #39ff14;
+  color: black
+}
+
+.searchButton {
+  background-color: black;
+  border-color: #39ff14;
+  border-width: 1px;
+  color: #39ff14
+}
+
+.searchButton:hover {
+  box-shadow: 0px 0px 35px 5px #39ff14;
+  background-color: #39ff14;
+  color: black
+}
+
+.logoutButton {
+  background-color: black;
+  border-color: #f40707;
+  border-width: 1px;
+  color: #f40707
+}
+
+.logoutButton:hover {
+  box-shadow: 0px 0px 35px 5px #f40707;
+  background-color: #f40707;
+  color: black
+}
+
+.loginButton {
+  background-color: black;
+  border-color: #1244fb;
+  border-width: 1px;
+  color: #1244fb
+}
+
+.loginButton:hover {
+  box-shadow: 0px 0px 35px 5px #1244fb;
+  background-color: #1244fb;
+  color: black
+}
+
+.navGear {
+  background-color: black;
+  border-color: #39ff14;
+  border-width: 1px;
+  color: #39ff14;
+  font-size: 35px;
+  border-radius: 50%
+}
+
+.navGear .dropdown-toggle::after {
+  display: none;
+}
+
+.navGear:hover {
+  box-shadow: 0px 0px 35px 5px #39ff14;
+  background-color: black;
+  color: #39ff14
+}
+
+
+
+
 /* Footer CSS */
 .footer {
   border-top: 1px solid white;
@@ -328,7 +402,7 @@ h1 {
 
 
 
-/*Individual coin */
+/* more info screen */
 .moreInfo {
   background-color: black;
   display: flex;
@@ -338,6 +412,14 @@ h1 {
   display: flex;
   flex-direction: column;
   width: 92vw;
+}
+
+.topHalf {
+  display: flex;
+}
+
+#marketData {
+  color: white;
 }
 
 .timeFrame {
@@ -359,7 +441,7 @@ h1 {
 
 .graphBox {
   height: 80vh;
-  width: 60vw;
+  width: 50vw;
   background-color: white;
   margin-left: 80px;
   margin-right: 60px;
@@ -570,3 +652,6 @@ button.btn-success {
   cursor: pointer;
   border-radius: 5px;
 }
+
+
+

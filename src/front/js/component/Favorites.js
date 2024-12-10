@@ -7,7 +7,10 @@ import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip, XAxis } from 'rec
 
 export const Favorites = () => {
     const { store, actions } = useContext(Context);
+    let navigate = useNavigate();
 
+
+    
     useEffect(() => {
         store.favoriteIds.map((favorite) => {
             actions.getFavPriceData(favorite.coin_id)
@@ -29,7 +32,7 @@ export const Favorites = () => {
                                     <LineChart data={chartdata[0]}>
                                         <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
                                         <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
-                                        <XAxis dataKey="date" tick={null} />
+                                        <XAxis dataKey="date" />
                                         <Tooltip />
                                     </LineChart>
                                 </ResponsiveContainer>
@@ -38,10 +41,9 @@ export const Favorites = () => {
                                 <h5 className="card-title">{favorite.name}</h5>
                                 <p className="card-text">{favorite.symbol}</p>
                                 <p className="card-text"><strong>Current Price:</strong> ${favorite.current_price}</p>
-                                <Link to={"/moreInfo" }>
+                                <Link to={"/moreInfo/" + favorite.id }>
 								<span className="favMoreInfoButton btn">More Information</span>
-							   </Link>
-                            
+							    </Link>
                             </div>
                         </div>
                     </div>
