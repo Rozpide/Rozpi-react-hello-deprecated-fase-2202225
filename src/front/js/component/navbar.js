@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
-import { Login } from "./Login";
+import { Login } from "./Login"; // Import the Modal component
 import Logo from "../../img/Logo.png";
 import gear_colored from "../../img/gear_colored.png";
 
@@ -9,31 +9,43 @@ export const Navbar = () => {
     const { store, actions } = useContext(Context);
     const username = store.username;
     const token = store.userToken;
-    const [showModal, setShowModal] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [showModal, setShowModal] = useState(false); // Control modal visibility
+    const [searchQuery, setSearchQuery] = useState(""); // State for search query
+    const [showSuggestions, setShowSuggestions] = useState(false); // State to control dropdown visibility
     const navigate = useNavigate();
-
-    const handleLoginSuccess = (username, password) => {
-        actions.login(username, password);
-        setShowModal(false);
-    };
 
     const handleInputChange = (e) => {
         const query = e.target.value;
-        setSearchQuery(query); // Update the local state
-        actions.searchCoins(query); // Fetch autocomplete suggestions
+        setSearchQuery(query);
+
+        if (query.trim()) {
+            actions.searchCoins(query); // Trigger search action with the query
+            setShowSuggestions(true); // Show suggestions when query is not empty
+        } else {
+            setShowSuggestions(false); // Hide suggestions when query is empty
+        }
     };
 
-    const handleSearchSubmit = (e) => {
+    const handleSearch = (e) => {
         e.preventDefault();
-        actions.searchCoins(searchQuery); // Perform the full search
-        navigate("/searchresults"); // Navigate to results page
+        if (searchQuery.trim()) {
+            actions.searchCoins(searchQuery); // Trigger search action with the query
+            navigate("/searchresults"); // Navigate to the search results page
+            setShowSuggestions(false); // Hide suggestions on search
+        }
+    };
+
+    const handleBlur = () => {
+        setTimeout(() => {
+            setShowSuggestions(false); // Delay to allow clicks on suggestions before hiding
+        }, 150);
     };
 
     const handleSuggestionClick = (coinName) => {
-        setSearchQuery(coinName); // Update input with the selected suggestion
-        actions.searchCoins(coinName); // Perform the search
-        navigate("/searchresults");
+        setSearchQuery(coinName); // Update the input with the selected suggestion
+        actions.searchCoins(coinName); // Trigger search
+        navigate("/searchresults"); // Navigate to the search results page
+        setShowSuggestions(false); // Hide suggestions after selecting
     };
 
     return (
@@ -49,19 +61,25 @@ export const Navbar = () => {
                                 <Link className="listButton btn" to="/listingpage">List of Coins</Link>
                             </li>
                         </ul>
-                        <form className="d-flex" onSubmit={handleSearchSubmit} style={{ position: "relative" }}>
+                        <form
+                            className="d-flex"
+                            onSubmit={handleSearch}
+                            style={{ position: "relative" }}
+                        >
                             <input
                                 className="form-control me-2"
                                 type="search"
                                 placeholder="Crypto: Name/Symbol"
                                 aria-label="Search"
                                 value={searchQuery}
-                                onChange={handleInputChange}
+                                onChange={handleInputChange} // Update search query
+                                onBlur={handleBlur} // Hide suggestions when input loses focus
+                                onFocus={() => searchQuery && setShowSuggestions(true)} // Show suggestions on focus if query exists
                             />
                             <button className="searchButton btn" type="submit">Search</button>
 
-                            {/* Autocomplete Suggestions */}
-                            {store.searchSuggestions.length > 0 && (
+                            {/* Search Suggestions Dropdown */}
+                            {showSuggestions && store.searchSuggestions.length > 0 && (
                                 <ul
                                     className="dropdown-menu show"
                                     style={{
