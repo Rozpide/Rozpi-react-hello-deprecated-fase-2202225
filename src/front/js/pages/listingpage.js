@@ -118,7 +118,7 @@ export const Listing = () => {
                                     className="btn listTradeBtn"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleOpenModal(coin, "trade")}
+                                        actions.setShowTradeModal(coin)}
                                     }  
                                 >
                                     Trade
@@ -155,14 +155,14 @@ export const Listing = () => {
                 </tbody>
             </table>
 
-            {isModalOpen && selectedCoin && modalAction === "trade" && (
+            {/* {isModalOpen && selectedCoin && modalAction === "trade" && (
                 <TradeModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     onTrade={handleTrade}
                     coinName={selectedCoin.name}
                 />
-            )}
+            )} */}
         </div>
     );
 };

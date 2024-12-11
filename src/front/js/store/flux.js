@@ -33,6 +33,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             currentCoinPriceData: [],
             currentCoinData: [],
             showContactModal: false,
+            showTradeModal: false,
+            tradeCoin: [],
             showModal: false,
             showOverallHoldings: false,
             showWallet: false,
@@ -62,6 +64,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             setShowContactModal: () => {
                 setStore({ showContactModal: !getStore().showContactModal })
+            },
+            setShowTradeModal: (coin) => {
+                setStore({ showTradeModal: !getStore().showTradeModal })
+                setStore({ tradeCoin: coin})
             },
             setShowOverallHoldings: () => {
                 setStore({ showOverallHoldings: true })

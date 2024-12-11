@@ -83,8 +83,8 @@ export const MoreInfo = (coin) => {
                 setWhitepaper(null);
             }
         };
-        actions.getCurrentCoinPriceData();
-    }, [store.timeFrame]);
+        fetchWhitepaper();
+    }, []);
 
    
 
@@ -163,36 +163,6 @@ export const MoreInfo = (coin) => {
                                 <button id="gb3" className="graphButtons" onClick={() => {actions.setTimeFrame("30"); graphOptions("gb3")}}>30D</button>
                                 <button id="gb4" className="graphButtons" onClick={() => {actions.setTimeFrame("365"); graphOptions("gb4")}}>1Y</button>
                             </div>
-                            {/* <ToggleButtonGroup
-                            color="primary"
-                            value={timeFrame}
-                            exclusive
-                            onChange={handleChange}
-                            aria-label="text alignment"
-                        >
-                            <ToggleButton className="graphButtons" value="left" aria-label="left aligned">
-                                1D
-                            </ToggleButton>
-                            <ToggleButton className="graphButtons" value="center" aria-label="centered">
-                                7D
-                            </ToggleButton>
-                            <ToggleButton className="graphButtons" value="right" aria-label="right aligned">
-                                30D
-                            </ToggleButton>
-                            <ToggleButton className="graphButtons" value="year" aria-label="justified">
-                                1Y
-                            </ToggleButton>
-                        </ToggleButtonGroup> */}
-                            {/* <div className="timeFrame btn-group" role="group">
-                            <input type='radio' id='p1' name='primary' className="graphButtons btn-check" onClick={() => actions.setTimeFrame("1")} />
-                            <label className="graphButtons btn" for='p1'>1D</label>
-                            <input type='radio' id='p2' name='primary' className="graphButtons btn-check" onClick={() => actions.setTimeFrame("7")} />
-                            <label className="graphButtons btn" for='p2'>7D</label>
-                            <input type='radio' id='p3' name='primary' className="graphButtons btn-check" onClick={() => actions.setTimeFrame("30")} />
-                            <label className="graphButtons btn" for='p3'>30D</label>
-                            <input type='radio' id='p4' name='primary' className="graphButtons btn-check" onClick={() => actions.setTimeFrame("365")} />
-                            <label className="graphButtons btn" for='p4'>1Y</label>
-                        </div> */}
                             <div className="currency" role="group" >
                                 <button id="gb11" className="graphButtons2" onClick={() => {actions.setCurrency("usd"); graphOptions2("gb11")}}>USD</button>
                                 <button id="gb12" className="graphButtons2" onClick={() => {actions.setCurrency("cad"); graphOptions2("gb12")}}>CAD</button>
@@ -229,15 +199,8 @@ export const MoreInfo = (coin) => {
                             color: store.currentCoinData.market_data?.price_change_percentage_1y < 0 ? 'red' : '#39ff14',
                         }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_1y.toFixed(2) : null}%</div></h4>
                         <h4>Market Cap rank: {store.currentCoinData.market_data ? store.currentCoinData.market_data.market_cap_rank : null}</h4>
-                            <button type="submit" id="submitBtn" style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
-                            {isModalOpen && selectedCoin && (
-                                <TradeModal
-                                    isOpen={isModalOpen}
-                                    onClose={() => setIsModalOpen(false)}
-                                    onTrade={handleTrade}
-                                    coinName={selectedCoin.name}
-                                />
-                            )}
+                        <button type="submit" id="submitBtn" onClick={() => actions.setShowTradeModal(store.currentCoinData)} style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
+                            
                     </div>
                 </div>
 

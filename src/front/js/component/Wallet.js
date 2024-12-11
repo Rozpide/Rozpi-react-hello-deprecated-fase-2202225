@@ -74,13 +74,13 @@ export const Wallet = () => {
                             <td>
                                 <button
                                     className="btn btn-primary"
-                                    onClick={() => handleOpenModal(walletCoin)}
+                                    onClick={() => actions.setShowTradeModal(walletCoin)}
                                 >
                                     Trade
                                 </button>
                             </td>
                             <td>
-                                <Link to={`/coin/${walletCoin.id}`} className="btn btn-secondary">
+                                <Link to={`/moreinfo/${walletCoin.id}`} className="btn btn-secondary">
                                     More Information
                                 </Link>
                             </td>
