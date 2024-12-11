@@ -139,7 +139,7 @@
   height: 600px;
 } */
 
-.contact {
+/*.contact {
   height: 85vh;
   width: 36%;
   color: black;
@@ -154,13 +154,140 @@
   width: 100%;
   height: 50vh;
   min-height: 20vh;
+} */
+
+
+.contact-main-div {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
-.close {
+
+.modal_dialog_div {
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  
+}
+
+.modal_content_div_btn {
+  height: 80vh;
+  width: 80vw;
+  padding: 20px;
+  background-color: silver;
+}
+
+.close_contact_us_btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal_header_name {
+  font-size: 24px;
+  color: #39ff14;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.alert_main_div {
+  margin-bottom: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.alert_if_success_div {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert_if_not_success_div {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.lable_for_contact_us {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form_input_information{
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form_text_message_information {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  
+}
+
+
+.form_text_message_information {
+  resize: none;
+  height: 42vh;
+}
+
+
+
+#submitBtn {
+  width: 100%;
+  background-color: #39ff14;
+  border: none;
+  color: black;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+#submitBtn:disabled {
+  background-color: #b0e57c;
+  cursor: not-allowed;
+}
+
+#submitBtn:hover:enabled {
+  background-color: #33e112;
+}
+
+.close_contact_us_btn {
   font-size: 25px;
 }
+
+
 .mainModal {
   border-radius: 5px;
 }
+
+
+
+
+
+
 
 /* Landing page CSS */
 
@@ -608,6 +735,34 @@ h1 {
   border-bottom: none; /* Remove the border for the last article */
 }
 
+/*whitepapre */
+.description {
+  padding: 15px;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  background-color: #222; /* Dark background */
+  border-radius: 5px; /* Rounded corners */
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  width: 100%; /* Full width */
+  max-width: 80vw; /* Remove any limit on width */
+  margin-left: auto;
+  margin-right: auto; /* Center the description box */
+}
+
+.description h2 {
+  color: #39ff14; /* Green title color */
+  margin-bottom: 10px;
+}
+
+.description p {
+  margin: 10px 0;
+  line-height: 1.6;
+  word-wrap: break-word; /* Ensure text doesn't overflow */
+}
+
+
+
 /* Article title styling */
 .news h2 {
   font-size: 18px;
@@ -743,6 +898,7 @@ button.btn-success {
 .search-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 0 20px #39ff14;
+  cursor: pointer;
 }
 
 /* Card body styling */
@@ -767,4 +923,102 @@ button.btn-success {
   font-size: 1.5rem;
   margin-top: 2rem;
   text-shadow: 0 0 5px #ff4141;
+}
+
+
+
+/* WALLET */
+/* Wallet Page Container */
+.wallet-page {
+  background-color: black; /* Matches dark theme */
+  color: #39ff14; /* Green text */
+  padding: 20px;
+  min-height: 100vh; /* Ensure it spans the full height */
+}
+
+/* Wallet Table Styling */
+.wallet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  color: white; /* Ensure text is readable */
+}
+
+.wallet-table thead th {
+  background-color: #1c1c1c; /* Dark header background */
+  color: #39ff14; /* Green header text */
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 16px;
+  border: 1px solid #39ff14; /* Green border */
+}
+
+.wallet-table tbody td {
+  padding: 10px 15px;
+  text-align: center;
+  border-bottom: 1px solid #39ff14; /* Green divider */
+}
+
+/* Wallet Info Section */
+.wallet-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.wallet-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.wallet-symbol {
+  font-size: 12px;
+  color: #90978f; /* Light gray for subtle text */
+}
+
+.wallet-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #39ff14; /* Green border */
+  box-shadow: 0 0 10px #39ff14; /* Glow effect */
+}
+
+/* Sparkline Chart Cell */
+td canvas {
+  display: block;
+  margin: 0 auto;
+}
+
+
+/* Table Rows Hover Effect */
+.wallet-table tbody tr:hover {
+  background-color: #1c1c1c; /* Slightly darker row highlight */
+  transition: background-color 0.3s ease;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .wallet-table {
+      font-size: 12px;
+  }
+
+  .wallet-image {
+      width: 40px;
+      height: 40px;
+  }
+
+  .btn {
+      font-size: 12px;
+      padding: 5px 10px;
+  }
+}
+
+/* Heading */
+.wallet-page h2 {
+  text-align: center;
+  font-size: 24px;
+  color: #39ff14;
+  margin-bottom: 20px;
 }
