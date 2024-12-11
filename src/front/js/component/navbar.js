@@ -46,13 +46,13 @@ export const Navbar = () => {
         }, 150);
     };
 
-    // const handleSuggestionClick = (coin) => {
-    //     setSearchQuery(coin.name); // Update the input with the selected suggestion
-    //     setShowSuggestions(false); // Hide suggestions after selecting
-    //     console.log(coin.id);
-    //     navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
+    const handleSuggestionClick = (coin) => {
+        setSearchQuery(coin.name); // Update the input with the selected suggestion
+        setShowSuggestions(false); // Hide suggestions after selecting
+        console.log(coin.id);
+        navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
 
-    // };
+    };
     return (
         <>
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "black" }}>
@@ -79,7 +79,7 @@ export const Navbar = () => {
                                 value={searchQuery}
                                 onChange={handleInputChange} // Update search query
                                 onBlur={handleBlur} // Hide suggestions when input loses focus
-                                onFocus={() => && setShowSuggestions(true)} // Show suggestions on focus if query exists
+                                onFocus={() => searchQuery && setShowSuggestions(true)} // Show suggestions on focus if query exists
                             />
                             <button className="searchButton btn" type="submit">Search</button>
 
@@ -102,7 +102,7 @@ export const Navbar = () => {
                                             key={coin.id}
                                             className="dropdown-item"
                                             style={{ cursor: "pointer", color: "white" }}
-                                            onClick={() => {
+                                            onMouseDown={() => {
                                                 navigate(`/moreinfo/${coin.id}`);
                                             }}
                                         >
