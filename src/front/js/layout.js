@@ -51,6 +51,7 @@ const Layout = () => {
                         <Route element={<MoreInfo />} path="/moreInfo/:id" />
                         <Route element={<Wallet />} path="/wallet" />
                         <Route element={<h1>Not found!</h1>} />
+                        <Route element={<SearchResults />} path="/searchresults" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
