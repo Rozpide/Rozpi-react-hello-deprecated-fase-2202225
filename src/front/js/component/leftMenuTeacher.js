@@ -13,6 +13,7 @@ const FormCommon = ({ type }) => {
     const [startDate, setStartDate] = useState(new Date());
     const [selectedCourse, setSelectedCourse] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('');
+    const [selectedTest, setSelectedTest] = useState('');
     const [grades, setGrades] = useState({});
     const [formBody, setFormBody] = useState({
         name: '',
@@ -21,6 +22,14 @@ const FormCommon = ({ type }) => {
         status: '',
         grade: ''
     });
+
+    useEffect(() => {
+        const initialGrades = {};
+        store.calificaciones.forEach(score => {
+            initialGrades[score.estudiante.id] = score.nota;
+        });
+        setGrades(initialGrades);
+    }, [store.calificaciones]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,6 +49,11 @@ const FormCommon = ({ type }) => {
             }))
         }
 
+        if (name === 'evaluacion_id') {
+            setSelectedTest(value);
+            updateGradesForSelectedEvaluation(value);
+        }
+
         if (name === 'grado_id') {
             setSelectedCourse(value);
             setSelectedSubject('');
@@ -48,6 +62,24 @@ const FormCommon = ({ type }) => {
         if (name === 'materia_id') {
             setSelectedSubject(value);
         }
+        if (name === 'evaluacion_id') {
+            setSelectedTest(value);
+        }
+    };
+
+    const filteredEvaluaciones = store.evaluaciones.filter(
+        evaluacion => evaluacion.materia.id === parseInt(selectedSubject)
+    );
+
+    const updateGradesForSelectedEvaluation = (evaluacionId) => {
+        const updatedGrades = {};
+        store.calificaciones
+            .filter(score => score.evaluacion.id === parseInt(evaluacionId))
+            .forEach(score => {
+                updatedGrades[score.estudiante.id] = score.nota;
+            });
+
+        setGrades(updatedGrades);
     };
 
     useEffect(() => {
@@ -62,6 +94,11 @@ const FormCommon = ({ type }) => {
             actions.setScores();
         }
     }, [type, selectedCourse]);
+
+    const handleDeleteScore = async (scoreId) => {
+        await actions.scoreOperations('DELETE', ' ', scoreId);
+        actions.setScores();
+    };
 
     const handleDateChange = (date) => {
         setStartDate(date);
@@ -92,6 +129,19 @@ const FormCommon = ({ type }) => {
                     "estudiantes_notas": estudiantes_notas
                 })
             }
+            if (type === 'editar') {
+                const updateScores = store.calificaciones.map(score => ({
+                    estudiante_id: parseInt(score.estudiante.id, 10),
+                    nota: parseFloat(grades[score.estudiante.id])
+                }))
+                await actions.scoreOperations('PUT', {
+                    "materia_id": parseInt(formBody.materia_id, 10),
+                    "evaluacion_id": parseInt(formBody.evaluacion_id, 10),
+                    "estudiantes_notas": updateScores
+                }, ' ');
+
+            }
+            await actions.setScores();
             Swal.fire({
                 title: "Datos registrados correctamente",
                 icon: "success"
@@ -115,10 +165,6 @@ const FormCommon = ({ type }) => {
             });
         }
     };
-
-    const filteredEvaluaciones = store.evaluaciones.filter(
-        evaluacion => evaluacion.materia.id === parseInt(selectedSubject)
-    );
 
     return (
         <div className="container ms-2">
@@ -296,26 +342,7 @@ const FormCommon = ({ type }) => {
 
                 {type === 'editar' && (
                     <div>
-                        {/*<div className="d-flex justify-content-between">
-                            <div className="d-flex flex-column">
-                                <label className="form-label text-form">Elige el curso:</label>
-                                <div className="input-group" required>
-                                    <select
-                                        className="custom-select rounded-pill"
-                                        name="grado_id"
-                                        id="inputGroupSelect04"
-                                        required
-                                        onChange={handleChange}>
-
-                                        <option value="" disabled selected>Opciones...</option>
-
-                                        {store.profesorPersonalInfo.grados.map(grado =>
-                                            <option key={grado.id} value={grado.id}>{grado.nombre}</option>
-                                        )}
-                                    </select>
-                                </div>
-                            </div>
-
+                        <div className="d-flex justify-content-between">
                             <div className="mb-3 me-5">
                                 <label className="form-label text-form">Elige una materia:</label> <br></br>
                                 <div className="input-group" onChange={handleChange}>
@@ -323,8 +350,8 @@ const FormCommon = ({ type }) => {
                                         className="custom-select rounded-pill"
                                         name="materia_id"
                                         required
-                                        disabled={!selectedCourse}
                                         id="inputGroupSelect04">
+                                        onChange={(e) => handleChange(e)}
                                         <option selected>Materia...</option>
                                         {store.profesorPersonalInfo.materias.map(materia =>
                                             <option key={materia.id} value={materia.id}>{materia.nombre}</option>
@@ -334,38 +361,25 @@ const FormCommon = ({ type }) => {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
-                                <div className="input-group" onChange={handleChange}>
+                                <label className="form-label text-form me-3">Selecciona una evaluación:</label> <br></br>
+                                <div className="input-groupjustify-content-center" onChange={handleChange}>
                                     <select
                                         className="custom-select rounded-pill"
                                         name="evaluacion_id"
                                         id="inputGroupSelect04"
                                         required
-                                        disabled={!selectedSubject}>
+                                        disabled={!selectedSubject}
+                                    >
                                         <option selected>Pendientes...</option>
-                                        {filteredEvaluaciones.map(evaluacion =>
-                                            <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
-                                        )}
+                                        {store.calificaciones
+                                            .filter((score) => score.evaluacion.materia.id === parseInt(selectedSubject))
+                                            .map(score => score.evaluacion)
+                                            .filter((evaluacion, index, self) => index === self.findIndex(e => e.nombre === evaluacion.nombre))
+                                            .map(evaluacion =>
+                                                <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
+                                            )}
                                     </select>
                                 </div>
-                            </div>
-
-                        </div>*/}
-
-                        <div className="mb-3">
-                            <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
-                            <div className="input-group" onChange={handleChange}>
-                                <select
-                                    className="custom-select rounded-pill"
-                                    name="evaluacion_id"
-                                    id="inputGroupSelect04"
-                                    required
-                                >
-                                    <option selected>Pendientes...</option>
-                                    {store.calificaciones.map(score =>
-                                        <option key={score.id} value={score.id}>{score.evaluacion.nombre}</option>
-                                    )}
-                                </select>
                             </div>
                         </div>
 
@@ -376,27 +390,38 @@ const FormCommon = ({ type }) => {
                                         <th>Nombre</th>
                                         <th>Apellido</th>
                                         <th>Calificación</th>
-                                        <th>Nueva nota</th>
+                                        <th>Editar</th>
+                                        <th>Eliminar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {store.calificaciones.map((score) => (
-                                        <tr key={score.id}>
-                                            <td>{score.estudiante.nombre}</td>
-                                            <td>{score.estudiante.apellido}</td>
-                                            <td>{score.nota}</td>
-                                            <td>
-                                                <input
-                                                    required
-                                                    type="number"
-                                                    name={`grade-${score.id}`}
-                                                    className="form-control"
-                                                    value={grades[score.estudiante.id] || ''}
-                                                    onChange={(e) => handleChange(e, score.estudiante.id)}
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {store.calificaciones
+                                        .filter((score) => score.evaluacion.id === parseInt(selectedTest))
+                                        .map((score) => (
+                                            <tr key={score.id}>
+                                                <td>{score.estudiante.nombre}</td>
+                                                <td>{score.estudiante.apellido}</td>
+                                                <td>{score.nota}</td>
+                                                <td>
+                                                    <input
+                                                        required
+                                                        type="number"
+                                                        name={`grade-${score.id}`}
+                                                        className="form-control"
+                                                        value={grades[score.estudiante.id] !== undefined ? grades[score.estudiante.id] : score.nota}
+                                                        onChange={(e) => handleChange(e, score.estudiante.id)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-outline-danger"
+                                                        onClick={() => handleDeleteScore(score.id)}>
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>
@@ -451,9 +476,9 @@ export const LeftMenuTeacher = () => {
 
     return (
         <div className="mt-0">
-            <div className="row flex-nowrap">
-                <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 left-menu-background rounded-start">
-                    <div className="d-flex flex-column align-items-center align-items-sm-start mt-5 px-3 pt-4 text-white min-vh-100">
+            <div className="row flex-nowrap mt-5">
+                <div className="col-auto col-md-3 col-xl-2 px-sm-2 mt-1 px-0 left-menu-background">
+                    <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
                         <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span className="fs-5 d-none d-sm-inline ">Menú</span>
                         </Link>
@@ -513,9 +538,9 @@ export const LeftMenuTeacher = () => {
                         <hr />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center render-content col mt-3 py-3"
+                <div className="d-flex justify-content-center render-content col py-3"
                     style={{ backgroundImage: `url(${backgroundForViews})` }}>
-                    <div className="welcome-message mt-5">
+                    <div className="welcome-message mt-3">
                         {renderContent()}
                     </div>
                 </div>
