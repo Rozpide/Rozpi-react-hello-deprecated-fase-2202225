@@ -74,7 +74,7 @@ export const Wallet = () => {
                             <td>
                                 <button
                                     className="btn btn-primary"
-                                    onClick={() => handleOpenModal(walletCoin)}
+                                    onClick={() => actions.setShowTradeModal(walletCoin)}
                                 >
                                     Trade
                                 </button>
