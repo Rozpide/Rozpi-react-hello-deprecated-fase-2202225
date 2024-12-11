@@ -9,6 +9,22 @@
   background: black;
 }
 
+/* Add scroll bar styling */
+::-webkit-scrollbar {
+  width: 10px; /* Scrollbar width */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #39ff14; /* Green for the scrollbar thumb */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px black;
+  background-color: black;
+  border-radius: 10px;
+}
+
 /* Navbar CSS */
 
 .listButton {
@@ -228,13 +244,36 @@
 .listing-page {
   padding: 0px;
   font-family: Arial, sans-serif;
-  background: white;
+  background: #90978f;
 }
+
+.listCoin {
+  background-color: #90978f;
+}
+
+/* .listRowHeaders {
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #39ff14;
+  font-size: 30px;
+} */
 
 h1 {
   text-align: center;
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+.listTradeBtn {
+  background-color: black;
+  border-color: #39ff14;
+  border-width: 1px;
+  color:#39ff14
+}
+
+.listTradeBtn:hover {
+  box-shadow: 0px 0px 10px 3px #39ff14;
+  background-color: #39ff14;
+  color: black
 }
 
 .coin-table {
@@ -244,20 +283,24 @@ h1 {
 }
 
 .coin-table thead th {
-  background-color: #f4f4f4;
+  background-color: #90978f;
   padding: 10px 15px;
   text-align: left;
-  font-size: 16px;
+  font-size: larger;
+  border-bottom: 2px solid #39ff14;
+  /* -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #39ff14; */
 }
 
 .coin-table tbody td {
   padding: 10px 15px;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid #39ff14;
 }
 
 .coin-table tbody tr:hover {
   transform: translateY(-5px);
   transition: transform;
+  background-color: #90978f;
 }
 
 .coin-table th:nth-child(7) {
@@ -273,8 +316,7 @@ h1 {
   padding: 5px 10px;          
   font-size: 14px;            
   border-radius: 5px;         
-  cursor: pointer;            
-  border: 1px solid #ccc;     
+  cursor: pointer;              
 }
 
 
@@ -314,10 +356,6 @@ h1 {
 
 .trade-button:hover {
   background-color: #0056b3;
-}
-
-.coin-table tbody tr:hover {
-  background-color: #f9f9f9;
 }
 
 .coin-favorite {
@@ -450,7 +488,7 @@ h1 {
 }
 
 .graphBox {
-  height: 80vh;
+  height: 75vh;
   width: 50vw;
   background-color: white;
   margin-left: 80px;

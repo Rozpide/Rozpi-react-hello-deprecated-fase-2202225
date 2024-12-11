@@ -135,7 +135,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         setStore({
                             currentCoinPriceData:
                                 response.prices.map((price) => {
-                                    return ({ date: new Date(price[0]), price: price[1] })
+                                    const formattedPrice = Number(price[1] > 1 ? price[1].toFixed(2) : price[1])
+                                    return ({ date: new Date(price[0]), price: formattedPrice })
                                 })
                         })
                     })
