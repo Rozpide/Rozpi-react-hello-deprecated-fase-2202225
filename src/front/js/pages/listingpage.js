@@ -34,17 +34,16 @@ export const Listing = () => {
     };
 
     const handleAddToWallet = (coin) => {
-        let wallet = JSON.parse(localStorage.getItem('wallet')) || [];
-
-        // Check if the coin is already in the wallet
-        if (!wallet.find(w => w.id === coin.id)) {
-            wallet.push(coin);
-            localStorage.setItem('wallet', JSON.stringify(wallet));
+        actions.setWalletNormalData();
+        actions.setWalletPriceData();
+        const existingWallet = store.walletIds.find((walletCoin) => walletCoin.coin_id === coin.id)
+        if (existingWallet) {
+            actions.removeFromWallet(existingWallet.id);
+        } else {
+            actions.addToWallet(coin);
         }
-
-        // Redirect to wallet page
-        window.location.href = '/wallet'; // Update to your wallet page URL
     };
+
 
     const handleFavoriteToggle = (coin) => {
         actions.setFavoriteData();

@@ -56,6 +56,7 @@ class Wallet(db.Model):
     symbol = db.Column(db.String(20))
     purchase_price = db.Column(db.String(20))
     purchase_quantity = db.Column(db.String(20))
+    purchase_date = db.Column(db.String(20))
     user = db.relationship(User)
 
     def __repr__(self):
@@ -69,5 +70,6 @@ class Wallet(db.Model):
             "user_id": self.user_id,
             "symbol": self.symbol,
             "purchase_price": self.purchase_price,
-            "purchase_quantity": self.purchase_quantity
+            "purchase_quantity": self.purchase_quantity,
+            "purchase_date": self.purchase_date,
         }

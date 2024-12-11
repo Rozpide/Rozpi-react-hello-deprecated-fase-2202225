@@ -4,7 +4,6 @@ import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from "rec
 import { TradeModal } from "../component/tradeModal";
 import { useParams, useNavigate } from "react-router-dom";
 
-    
 export const MoreInfo = () => {
     const { store, actions } = useContext(Context);
     const [timeFrame, setTimeFrame] = React.useState("left");
@@ -12,8 +11,6 @@ export const MoreInfo = () => {
     const [selectedCoin, setSelectedCoin] = useState(null);
     const [news, setNews] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [whitepaper, setWhitepaper] = useState("");
-    const [loadingNews, setLoadingNews] = useState(true);
     const params = useParams();
     const navigate = useNavigate(); // Hook for navigation
 
@@ -46,45 +43,17 @@ export const MoreInfo = () => {
             } catch (error) {
                 console.error("Error fetching news:", error);
             } finally {
-                setLoadingNews(false); // Stop the loading spinner
+                setLoading(false); // Stop the loading spinner
             }
         };
-        
 
         fetchNews();
     }, []);
 
-    // Fetch whitepaper from CoinGecko API
     useEffect(() => {
-        const fetchWhitepaper = async () => {
-            try {
-                const response = await fetch("https://api.coingecko.com/api/v3/coins/bitcoin");
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.links && data.links.blockchain_site && data.links.blockchain_site.length > 0) {
-                        const whitepaperUrl = data.links.blockchain_site.find((url) =>
-                            url.toLowerCase().includes("bitcoin.pdf")
-                        );
-                        setWhitepaper(whitepaperUrl || null); // Set whitepaper URL or null if not found
-                    } else {
-                        console.warn("Whitepaper URL not found in the response.");
-                        setWhitepaper(null); // No whitepaper available
-                    }
-                } else {
-                    console.error("Error fetching whitepaper:", response.statusText);
-                    setWhitepaper(null);
-                }
-            } catch (error) {
-                console.error("Network or server error while fetching whitepaper:", error);
-                setWhitepaper(null);
-            }
-        };
         actions.getCurrentCoinPriceData();
     }, [store.timeFrame]);
 
-   
-
-    // Update price data based on timeframe or currency changes
     useEffect(() => {
         actions.getCurrentCoinPriceData();
     }, [store.currency]);
@@ -105,6 +74,7 @@ export const MoreInfo = () => {
             <div className="backToList">
                 <button
                     type="button"
+                    onClick={handleBackToList} 
                     style={{
                         backgroundColor: "#39ff14",
                         borderRadius: "5px",
@@ -212,11 +182,10 @@ export const MoreInfo = () => {
                         <h4>Market Cap rank: {store.currentCoinData.market_data ? store.currentCoinData.market_data.market_cap_rank : null}</h4>
                     </div>
                 </div>
-
                 {/* News Feed Section */}
                 <div className="news">
                     <h1>News feed for this crypto</h1>
-                    {loadingNews ? (
+                    {loading ? (
                         <p>Loading news...</p>
                     ) : news.length > 0 ? (
                         <ul style={{ listStyle: "none", padding: 0 }}>
@@ -238,30 +207,7 @@ export const MoreInfo = () => {
                         <p>No news articles found for Bitcoin.</p>
                     )}
                 </div>
-
-                {/* Whitepaper Section */}
-                <div className="description">
-                    <h2>Whitepaper</h2>
-                    {whitepaper ? (
-                        <a
-                            href={whitepaper}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: "#39ff14", textDecoration: "none" }}
-                        >
-                            View the Bitcoin Whitepaper
-                        </a>
-                    ) : (
-                        <p style={{ color: "white" }}>Whitepaper not available.</p>
-                    )}
-                </div>
-
             </div>
         </div>
     );
 };
-
-
-
-
-
