@@ -57,51 +57,57 @@ export const Wallet = () => {
               // Make sure walletArray is an array
               //if (!Array.isArray(walletArray)) return null;
 
-              return (
-                <tr key={walletArray.id}>
-                  <td>
-                    <div className="wallet-info">
-                      <h5 className="wallet-name">{walletArray.name}</h5>
-                      <div className="wallet-symbol">
-                        {walletArray.symbol.toUpperCase()}
+              return walletArray.map((walletCoin) => {
+                const chartData = store.walletPriceData.filter(
+                  (array) => array[0]?.id === walletCoin.id
+                );
+
+                return (
+                  <tr key={walletArray.id}>
+                    <td>
+                      <div className="wallet-info">
+                        <h5 className="wallet-name">{walletCoin.name}</h5>
+                        <div className="wallet-symbol">
+                          {walletCoin.symbol.toUpperCase()}
+                        </div>
+                        <img
+                          src={walletCoin.image}
+                          alt={walletCoin.name}
+                          className="wallet-image"
+                        />
                       </div>
-                      <img
-                        src={walletArray.image}
-                        alt={walletArray.name}
-                        className="wallet-image"
+                    </td>
+                    <td>${walletCoin.current_price?.toLocaleString() || "N/A"}</td>
+                    <td>{walletCoin.quantity_owned || 0}</td>
+                    <td>
+                      ${(
+                        walletCoin.quantity_owned * walletCoin.purchase_price ||
+                        0
+                      ).toLocaleString()}
+                    </td>
+                    <td>
+                      <SparklineChart
+                        data={walletCoin.sparkline_in_7d?.price || []}
+                        width={150}
+                        height={50}
                       />
-                    </div>
-                  </td>
-                  <td>${walletArray.current_price?.toLocaleString() || "N/A"}</td>
-                  <td>{walletArray.quantity_owned || 0}</td>
-                  <td>
-                    ${(
-                      walletArray.quantity_owned * walletArray.purchase_price ||
-                      0
-                    ).toLocaleString()}
-                  </td>
-                  <td>
-                    <SparklineChart
-                      data={walletArray.sparkline_in_7d?.price || []}
-                      width={150}
-                      height={50}
-                    />
-                  </td>
-                  <td>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => handleOpenModal(walletArray)}
-                    >
-                      Trade
-                    </button>
-                  </td>
-                  <td>
-                    <Link to={`/coin/${walletArray.id}`} className="btn btn-secondary">
-                      More Information
-                    </Link>
-                  </td>
-                </tr>
-              );
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleOpenModal(walletCoin)}
+                      >
+                        Trade
+                      </button>
+                    </td>
+                    <td>
+                      <Link to={`/coin/${walletCoin.id}`} className="btn btn-secondary">
+                        More Information
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              });
             })
           )}
         </tbody>

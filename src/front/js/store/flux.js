@@ -16,6 +16,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     initial: "white"
                 }
             ],
+            searchSuggestions: [], // Initialize as an empty array
             username: null, // Initially no user is logged in
             userID: null,
             token: null,
@@ -36,6 +37,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             currentCoinPriceData: [],
             currentCoinData: [],
             showContactModal: false,
+            showTradeModal: false,
+            tradeCoin: [],
             showModal: false,
             showOverallHoldings: false,
             showWallet: false,
@@ -73,6 +76,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             setShowContactModal: () => {
                 setStore({ showContactModal: !getStore().showContactModal })
+            },
+            setShowTradeModal: (coin) => {
+                setStore({ showTradeModal: !getStore().showTradeModal })
+                setStore({ tradeCoin: coin})
             },
             setShowOverallHoldings: () => {
                 setStore({ showOverallHoldings: true })
@@ -147,7 +154,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         setStore({
                             currentCoinPriceData:
                                 response.prices.map((price) => {
-                                    return ({ date: new Date(price[0]), price: price[1] })
+                                    const formattedPrice = Number(price[1] > 1 ? price[1].toFixed(2) : price[1])
+                                    return ({ date: new Date(price[0]), price: formattedPrice })
                                 })
                         })
                     })
@@ -344,10 +352,23 @@ const getState = ({ getStore, getActions, setStore }) => {
                 const filtered = store.coins.filter((coin) =>
                     coin.name.toLowerCase().includes(query.toLowerCase()) ||
                     coin.symbol.toLowerCase().includes(query.toLowerCase())
+
                 );
 
+                // Filter the coins based on the query
+                const suggestions = store.coins
+                    .filter((coin) =>
+                        coin.name.toLowerCase().includes(query.toLowerCase()) ||
+                        coin.symbol.toLowerCase().includes(query.toLowerCase()) ||
+                        coin.id.toLowerCase().includes(query.toLowerCase())
+                    )
+                    .slice(0, 5); // Limit the results to 5 items
+
+
+
+
                 // Update filteredCoins in the store
-                setStore({ filteredCoins: filtered });
+                setStore({ filteredCoins: filtered, searchSuggestions: suggestions });
             },
             getMessage: async () => {
                 try {
@@ -398,13 +419,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         if (!res.ok) throw Error(res.statusText);
                         return res.json();
                     })
-                    .then(response => {
-                        setStore({ favoriteIds: response })
-                        response.forEach(element => {
-                            getActions().getFavoriteData(element.coin_id)
-                            getActions().getFavPriceData(element.coin_id)
-                        });
-                    })
+                    .then(response => setStore({ favoriteIds: response }))
                     .catch(error => console.error(error));
             },
 
