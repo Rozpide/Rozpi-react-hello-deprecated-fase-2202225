@@ -35,6 +35,11 @@ export const Navbar = () => {
         }
     };
 
+    const handleLoginSuccess = (username, password) => {
+        actions.login(username, password); // Update global store with logged-in user
+        setShowModal(false); // Close the modal
+    };
+
     const handleBlur = () => {
         setTimeout(() => {
             setShowSuggestions(false); // Delay to allow clicks on suggestions before hiding
