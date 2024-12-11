@@ -80,7 +80,7 @@ export const Wallet = () => {
                                 </button>
                             </td>
                             <td>
-                                <Link to={`/coin/${walletCoin.id}`} className="btn btn-secondary">
+                                <Link to={`/moreinfo/${walletCoin.id}`} className="btn btn-secondary">
                                     More Information
                                 </Link>
                             </td>
