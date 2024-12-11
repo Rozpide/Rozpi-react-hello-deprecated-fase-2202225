@@ -2,9 +2,9 @@ import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
 import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
 import { TradeModal } from "../component/tradeModal";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
-    
+
 export const MoreInfo = (coin) => {
     const { store, actions } = useContext(Context);
     ///const coin = coin
@@ -16,19 +16,28 @@ export const MoreInfo = (coin) => {
     const [whitepaper, setWhitepaper] = useState("");
     const [loadingNews, setLoadingNews] = useState(true);
     const params = useParams();
+    const location = useLocation();
 
-    const handleChange = (event, newAlignment) => {
-        setTimeFrame(newAlignment);
-    };
-
-    // Fetch price data on component mount
-    useEffect((coin) => {
+    useEffect(() => {
         actions.setCurrentCoinId(params.id);
         actions.setCurrency("usd");
         actions.setTimeFrame("7");
         actions.getCurrentCoinPriceData();
         actions.getCurrentCoinData();
-    }, []);
+    }, [location]);
+
+    const handleChange = (event, newAlignment) => {
+        setTimeFrame(newAlignment);
+    };
+    //const params = useParams();
+    // Fetch price data on component mount
+    // useEffect(() => {
+    //     actions.setCurrentCoinId(params.id);
+    //     actions.setCurrency("usd");
+    //     actions.setTimeFrame("7");
+    //     actions.getCurrentCoinPriceData();
+    //     actions.getCurrentCoinData();
+    // }, []);
 
     // Fetch news data from The Guardian API
     useEffect(() => {
@@ -53,7 +62,7 @@ export const MoreInfo = (coin) => {
                 setLoadingNews(false); // Stop the loading spinner
             }
         };
-        
+
 
         fetchNews();
     }, []);
@@ -86,7 +95,7 @@ export const MoreInfo = (coin) => {
         fetchWhitepaper();
     }, []);
 
-   
+
 
     // Update price data based on timeframe or currency changes
     useEffect(() => {
@@ -94,12 +103,12 @@ export const MoreInfo = (coin) => {
     }, [store.currency]);
 
     useEffect(() => {
-        document.getElementById("gb2").style.backgroundColor= "black";
-        document.getElementById("gb2").style.color= "#39ff14";
-        document.getElementById("gb11").style.backgroundColor= "black";
-        document.getElementById("gb11").style.color= "#39ff14";
+        document.getElementById("gb2").style.backgroundColor = "black";
+        document.getElementById("gb2").style.color = "#39ff14";
+        document.getElementById("gb11").style.backgroundColor = "black";
+        document.getElementById("gb11").style.color = "#39ff14";
     }, []);
-    
+
     const handleTrade = () => {
         setIsModalOpen(true);
     };
@@ -150,7 +159,7 @@ export const MoreInfo = (coin) => {
             <div className="mainInfo">
                 {/* Coin Name */}
                 <div className="coinName" style={{ fontSize: "25px", marginLeft: "80px", color: "white" }}>
-                    {store.currentCoinData.name}
+                    {store.currentCoinData.name + " " + params.id}
                 </div>
 
                 {/* Graph Box */}
@@ -158,17 +167,17 @@ export const MoreInfo = (coin) => {
                     <div className="graphBox">
                         <div className="graphButtonsBox">
                             <div className="timeFrame" role="group" >
-                                <button id="gb1" className="graphButtons" onClick={() => {actions.setTimeFrame("1"); graphOptions("gb1")}}>1D</button>
-                                <button id="gb2" className="graphButtons" onClick={() => {actions.setTimeFrame("7"); graphOptions("gb2")}}>7D</button>
-                                <button id="gb3" className="graphButtons" onClick={() => {actions.setTimeFrame("30"); graphOptions("gb3")}}>30D</button>
-                                <button id="gb4" className="graphButtons" onClick={() => {actions.setTimeFrame("365"); graphOptions("gb4")}}>1Y</button>
+                                <button id="gb1" className="graphButtons" onClick={() => { actions.setTimeFrame("1"); graphOptions("gb1") }}>1D</button>
+                                <button id="gb2" className="graphButtons" onClick={() => { actions.setTimeFrame("7"); graphOptions("gb2") }}>7D</button>
+                                <button id="gb3" className="graphButtons" onClick={() => { actions.setTimeFrame("30"); graphOptions("gb3") }}>30D</button>
+                                <button id="gb4" className="graphButtons" onClick={() => { actions.setTimeFrame("365"); graphOptions("gb4") }}>1Y</button>
                             </div>
                             <div className="currency" role="group" >
-                                <button id="gb11" className="graphButtons2" onClick={() => {actions.setCurrency("usd"); graphOptions2("gb11")}}>USD</button>
-                                <button id="gb12" className="graphButtons2" onClick={() => {actions.setCurrency("cad"); graphOptions2("gb12")}}>CAD</button>
-                                <button id="gb13" className="graphButtons2" onClick={() => {actions.setCurrency("eur"); graphOptions2("gb13")}}>EUR</button>
-                                <button id="gb14" className="graphButtons2" onClick={() => {actions.setCurrency("gbp"); graphOptions2("gb14")}}>GBP</button>
-                                <button id="gb15" className="graphButtons2" onClick={() => {actions.setCurrency("jpy"); graphOptions2("gb15")}}>JPY</button>
+                                <button id="gb11" className="graphButtons2" onClick={() => { actions.setCurrency("usd"); graphOptions2("gb11") }}>USD</button>
+                                <button id="gb12" className="graphButtons2" onClick={() => { actions.setCurrency("cad"); graphOptions2("gb12") }}>CAD</button>
+                                <button id="gb13" className="graphButtons2" onClick={() => { actions.setCurrency("eur"); graphOptions2("gb13") }}>EUR</button>
+                                <button id="gb14" className="graphButtons2" onClick={() => { actions.setCurrency("gbp"); graphOptions2("gb14") }}>GBP</button>
+                                <button id="gb15" className="graphButtons2" onClick={() => { actions.setCurrency("jpy"); graphOptions2("gb15") }}>JPY</button>
                             </div>
                         </div>
                         <div className="bigGraph">
@@ -180,7 +189,7 @@ export const MoreInfo = (coin) => {
                                     <Tooltip />
                                 </LineChart>
                             </ResponsiveContainer>
-                        </div>                        
+                        </div>
                     </div>
                     <div id="marketData">
                         <h4>Current Price: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.current_price[store.currency].toLocaleString() : null}</h4>
@@ -200,7 +209,7 @@ export const MoreInfo = (coin) => {
                         }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_1y.toFixed(2) : null}%</div></h4>
                         <h4>Market Cap rank: {store.currentCoinData.market_data ? store.currentCoinData.market_data.market_cap_rank : null}</h4>
                         <button type="submit" id="submitBtn" onClick={() => actions.setShowTradeModal(store.currentCoinData)} style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
-                            
+
                     </div>
                 </div>
 
