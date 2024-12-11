@@ -16,6 +16,7 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import NewPetLost from "./pages/newPetLost.js";
 import NewFoundPet from "./pages/newFoundPet.js"; 
+import UbicationMap from "./component/ubication_map.js";
 
 //create your first component
 const Layout = () => {
@@ -34,6 +35,7 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element ={<NewPetLost />} path="/newpetlost" />
                         <Route element = {<NewFoundPet/>} path = "/newpetfound"/>
+                        <Route element = {<UbicationMap/>} path = "/ubicationmap"/>
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<User />} path="/user" />
