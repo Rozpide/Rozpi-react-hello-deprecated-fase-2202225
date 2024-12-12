@@ -94,18 +94,7 @@ def get_all_users():
 
 
 # Get wallet data for the logged-in user
-@api.route('/wallet', methods=['GET'])
-@jwt_required()
-def get_wallet():
-    current_user_id = get_jwt_identity()  
-    try:
-        wallet = wallet.query.filter_by(user_id=current_user_id).all()
-        if not wallet:
-            return jsonify({"error": "No wallet data found for the user"}), 404
 
-        return jsonify([w.serialize() for w in wallet]), 200
-    except Exception as e:
-        return jsonify({"error": f"Failed to fetch wallet data: {str(e)}"}), 500
 
 
 

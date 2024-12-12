@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
-import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip, XAxis } from "recharts";
+import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 
 export const Favorites = () => {
     const { store, actions } = useContext(Context);
@@ -12,15 +12,6 @@ export const Favorites = () => {
             actions.getFavoriteData(favorite.coin_id);
         });
     }, []);
-
-    const handleFavoriteToggle = (coin) => {
-        const existingFav = store.favoriteIds.find((favCoin) => favCoin.coin_id === coin.id);
-        if (existingFav) {
-            actions.setFavoriteData();
-            actions.setFavoritePriceData();
-            actions.removeFromFavs(existingFav.id);
-        }
-    };
 
     return (
         <div className="row" id="favoriteScreen">
