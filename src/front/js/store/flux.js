@@ -460,7 +460,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
                 };
             
-                fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, options)
+                fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true`, options)
                     .then((res) => res.json())
                     .then((response) => {
                         // Fix: check if currentData already contains the coin with the same id as response.id

@@ -10,7 +10,7 @@ export const MoreInfo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCoin, setSelectedCoin] = useState(null);
     const [news, setNews] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingNews, setLoadingNews] = useState(true);
     const params = useParams();
     const navigate = useNavigate(); // Hook for navigation
 
@@ -43,39 +43,13 @@ export const MoreInfo = () => {
             } catch (error) {
                 console.error("Error fetching news:", error);
             } finally {
-                setLoading(false); // Stop the loading spinner
+                setLoadingNews(false); // Stop the loading spinner
             }
         };
 
         fetchNews();
     }, []);
 
-    useEffect(() => {
-        const fetchWhitepaper = async () => {
-            try {
-                const response = await fetch("https://api.coingecko.com/api/v3/coins/bitcoin");
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.links && data.links.blockchain_site && data.links.blockchain_site.length > 0) {
-                        const whitepaperUrl = data.links.blockchain_site.find((url) =>
-                            url.toLowerCase().includes("bitcoin.pdf")
-                        );
-                        setWhitepaper(whitepaperUrl || null); // Set whitepaper URL or null if not found
-                    } else {
-                        console.warn("Whitepaper URL not found in the response.");
-                        setWhitepaper(null); // No whitepaper available
-                    }
-                } else {
-                    console.error("Error fetching whitepaper:", response.statusText);
-                    setWhitepaper(null);
-                }
-            } catch (error) {
-                console.error("Network or server error while fetching whitepaper:", error);
-                setWhitepaper(null);
-            }
-        };
-        fetchWhitepaper();
-    }, []);
 
     useEffect(() => {
         actions.getCurrentCoinPriceData();
@@ -118,22 +92,6 @@ export const MoreInfo = () => {
 
     return (
         <div className="moreInfo">
-            {/* Back to List Button */}
-            <div className="backToList">
-                <button
-                    type="button"
-                    onClick={handleBackToList} 
-                    style={{
-                        backgroundColor: "#39ff14",
-                        borderRadius: "5px",
-                        height: "50px",
-                        width: "90px",
-                        border: "1px solid black",
-                    }}
-                >
-                    Back to list
-                </button>
-            </div>
 
             {/* Main Info Section */}
             <div className="mainInfo">
