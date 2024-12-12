@@ -18,6 +18,7 @@ const FormCommon = ({ type }) => {
         email: '',
         password: '',
         address: '',
+        phone: '',
         description: '',
         classroomName: '',
         subjectName: '',
@@ -27,6 +28,13 @@ const FormCommon = ({ type }) => {
     useEffect(() => {
         if (type === 'student') {
             actions.getCourses();
+        }
+        if (type === 'updateStudents') {
+            actions.setStudents();
+            actions.getCourses();
+        }
+        if (type === 'updateTeachers') {
+            actions.setTeachers();
         }
         if (type === 'addSubject') {
             actions.getCourses();
@@ -45,6 +53,16 @@ const FormCommon = ({ type }) => {
     const handleDateChange = (date) => {
         setStartDate(date);
         setFormBody(prevState => ({ ...prevState, date: date ? date.toISOString().split('T')[0] : '' }));
+    };
+
+    const handleDeleteStudent = async (studentId) => {
+        await actions.studentsOperations('DELETE', ' ', studentId);
+        actions.setStudents();
+    };
+
+    const handleDeleteTeacher = async (teacherId) => {
+        await actions.teachersOperations('DELETE', ' ', teacherId);
+        actions.setTeachers();
     };
 
     const submitFormData = async (event) => {
@@ -70,6 +88,25 @@ const FormCommon = ({ type }) => {
                     "direccion": formBody.address,
                     "foto": "abc"
                 });
+            }
+            if (type === 'updateStudents') {
+                await actions.studentsOperations('PUT', {
+                    "nombre": formBody.name,
+                    "apellido": formBody.lastName,
+                    "direccion": formBody.address,
+                    "fecha_nacimiento": formBody.date,
+                    "grado_id": formBody.grado_id
+                }, " ");
+            }
+            if (type === 'updateTeachers') {
+                await actions.teachersOperations('PUT', {
+                    "nombre": formBody.name,
+                    "apellido": formBody.lastName,
+                    "email": formBody.email,
+                    "telefono": formBody.phone,
+                    "descripcion": formBody.description,
+                    "direccion": formBody.address,
+                }, " ");
             }
             if (type === 'addClassroom') {
                 let classroom = formBody.classroomName
@@ -105,6 +142,7 @@ const FormCommon = ({ type }) => {
                 password: '',
                 address: '',
                 description: '',
+                phone: '',
                 photo: null,
                 classroomName: '',
                 subjectName: '',
@@ -172,6 +210,12 @@ const FormCommon = ({ type }) => {
                 )}
                 {type === 'teacher' && (
                     <div className="mb-3">
+                        <label className="form-label text-form">Teléfono:</label>
+                        <input type="text" name="phone" className="form-control rounded-pill" required value={formBody.phone} onChange={handleChange} />
+                    </div>
+                )}
+                {type === 'teacher' && (
+                    <div className="mb-3">
                         <label className="form-label text-form">Descripción:</label>
                         <textarea name="description" className="form-control teacher-description" rows="3" required value={formBody.description} onChange={handleChange}></textarea>
                     </div>
@@ -186,25 +230,53 @@ const FormCommon = ({ type }) => {
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Apellido</th>
-                                    <th>Email</th>
+                                    <th>Dirección</th>
+                                    <th>Grado</th>
                                     <th>Fecha de nacimiento</th>
+                                    <th>Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" name="name" className="form-control" required value={formBody.name} onChange={(e) => handleChange(e)} />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="lastName" className="form-control" required value={formBody.lastName} onChange={(e) => handleChange(e)} />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="email" className="form-control" required value={formBody.email} onChange={(e) => handleChange(e)} />
-                                    </td>
-                                    <td>
-                                        <input type="date" name="date" className="form-control" required value={formBody.date} onChange={(e) => handleChange(e)} />
-                                    </td>
-                                </tr>
+                                {store.estudiantes.map(student => (
+                                    <tr key={student.id}>
+                                        <td>
+                                            <input type="text" name="name" className="form-control" required value={student.nombre} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="lastName" className="form-control" required value={student.apellido} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="address" className="form-control" required value={student.direccion} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <div className="input-group" required>
+                                                <select
+                                                    className="custom-select-edit rounded-pill"
+                                                    name="grado_id"
+                                                    id="inputGroupSelect04"
+                                                    onChange={handleChange}>
+
+                                                    <option value="" disabled selected>Opciones...</option>
+
+                                                    {store.grados.map(grado =>
+                                                        <option key={grado.id} value={grado.id}>{grado.nombre}</option>
+                                                    )}
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="date" name="date" className="form-control" required value={student.fecha_nacimiento} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-danger"
+                                                onClick={() => handleDeleteStudent(student.id)}>
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
@@ -221,31 +293,43 @@ const FormCommon = ({ type }) => {
                                     <th>Nombre</th>
                                     <th>Apellido</th>
                                     <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
                                     <th>Descripción</th>
-                                    <th>Foto</th>
+                                    <th>Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody className="table-design">
-                                <tr>
-                                    <td>
-                                        <input type="text" name="name" className="form-control" required value={formBody.name} onChange={(e) => handleChange(e)} />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="lastName" className="form-control" required value={formBody.lastName} onChange={(e) => handleChange(e)} />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="email" className="form-control" required value={formBody.email} onChange={(e) => handleChange(e)} />
-                                    </td>
-                                    <td>
-                                        <textarea name="description" className="form-control" rows="3" required value={formBody.description} onChange={(e) => handleChange(e)}></textarea>
-                                    </td>
-                                    <td>
-                                        <input type="file" accept="image/*" className="form-control select-image" onChange={handleUploadPhoto} required />
-                                        {photoPreview && (
-                                            <img src={photoPreview} alt="Preview" className="mt-2 teacher-photo" style={{ maxWidth: "30%", height: "auto" }} />
-                                        )}
-                                    </td>
-                                </tr>
+                                {store.profesores.map(profesor => (
+                                    <tr key={profesor.id}>
+                                        <td>
+                                            <input type="text" name="name" className="form-control" required value={profesor.nombre} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="lastName" className="form-control" required value={profesor.apellido} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="email" className="form-control" required value={profesor.email} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="phone" className="form-control" required value={profesor.telefono} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <input type="text" name="address" className="form-control" required value={profesor.direccion} onChange={(e) => handleChange(e)} />
+                                        </td>
+                                        <td>
+                                            <textarea name="description" className="form-control" rows="3" required value={profesor.descripcion} onChange={(e) => handleChange(e)}></textarea>
+                                        </td>
+                                        <td>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-danger"
+                                                onClick={() => handleDeleteTeacher(profesor.id)}>
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
