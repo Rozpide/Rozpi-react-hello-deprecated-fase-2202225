@@ -67,6 +67,7 @@ class Wallet(db.Model):
             "id": self.id,
             "name": self.name,
             "user_id": self.user_id,
+            "coin_id": self.coin_id,
             "symbol": self.symbol,
             "purchase_price": self.purchase_price,
             "purchase_quantity": self.purchase_quantity,

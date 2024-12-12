@@ -45,8 +45,6 @@ export const Listing = () => {
     };
 
 
-
-
     const handleFavoriteToggle = (coin) => {
         actions.setFavoriteData();
         actions.setFavoritePriceData();
