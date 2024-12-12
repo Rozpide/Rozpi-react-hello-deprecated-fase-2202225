@@ -815,14 +815,36 @@ h1 {
   z-index: 1000;
 }
 
-.modal-content {
-  background: white;
+.trdModal {
+  background: #90978f;
+  color: black;
   padding: 20px;
   border-radius: 8px;
   width: 400px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid #39ff14;
 }
+
+.trdBtn {
+  background-color: black;
+  border-color: #39ff14;
+  border-width: 1px;
+  color: #39ff14
+}
+
+.trdBtn:hover {
+  box-shadow: 0px 0px 5px 2px #39ff14;
+  background-color: #39ff14;
+  color: black
+}
+
+.trdBtnSlctd {
+  box-shadow: none;
+  background-color: #39ff14;
+  color: black
+}
+
 
 .close-button {
   position: absolute;        /* Position it at the top-right corner */
