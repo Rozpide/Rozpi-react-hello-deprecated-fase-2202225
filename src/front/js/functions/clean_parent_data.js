@@ -25,10 +25,15 @@ export function clean_student_data(obj) {
 }
 
 
-const formatDate = (date) => {
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
+export const get_student_avg = (student) => {
 
-    return `${year}-${month}-${day}`;
+    let avg = student.materias.length ? student.materias.map((materia) => {
+        return materia.promedio
+    }).reduce((a, b) => a + b) : 0
+
+    return {
+        "nombre": student.nombre,
+        "promedio": avg
+    }
 }

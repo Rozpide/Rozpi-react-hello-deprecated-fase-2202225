@@ -1,25 +1,22 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
-
 import { Home } from "./pages/home";
 import injectContext from "./store/appContext";
 import NavBar from "./component/Navbar";
 import { Footer } from "./component/footer";
 import { DashboardAdmin } from "./pages/dashboardAdmin";
 import { DashboardTeacher } from "./pages/dashboardTeacher";
-import { DashboardRepresentative } from "./pages/dashboardRepresentante";
 import RegistrationForm from './component/RegistrationForm';
 import LoginForm from './component/LoginForm';
 import ParentDashboard from "./pages/ParentDashboard.jsx";
 import ProtectedRoute from "./component/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";
-
-
 import { Context } from "./store/appContext";
+import PasswordRecovery from "./component/PasswordRecovery.jsx";
 
 const Layout = () => {
-    const { store } = useContext(Context)
+    const { store } = useContext(Context);
     const basename = process.env.BASENAME || "";
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") {
@@ -37,6 +34,7 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<RegistrationForm />} path="/register" />
                         <Route element={<LoginForm />} path="/login" />
+
                         <Route
                             path="/dashboard/admin"
                             element={
@@ -54,7 +52,7 @@ const Layout = () => {
                             }
                         />
                         <Route
-                            path="/dashboard/parent"
+                            path="/dashboard/parent/*"
                             element={
                                 <ProtectedRoute roles={["representante"]}>
                                     <ParentDashboard />
@@ -62,6 +60,7 @@ const Layout = () => {
                             } />
 
                         <Route element={<Unauthorized />} path="/unauthorized" />
+                        <Route path="/password/recovery/" element={<PasswordRecovery />} />
                     </Routes>
                     <Footer />
                 </ScrollToTop>

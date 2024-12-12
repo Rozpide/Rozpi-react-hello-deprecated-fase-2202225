@@ -1,5 +1,5 @@
 import { clean_student_data } from "../functions/clean_parent_data";
-const backendURL = process.env.BACKEND_URL || ""
+const backendURL = process.env.BACKEND_URL || "";
 
 
 
@@ -7,18 +7,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			profesores: [],
+			estudiantes: [],
+			profesorPersonalInfo: {
+				docente: {},
+				grados: [],
+				materias: []
+			},
 			usuarios: [],
 			grados: [],
 			materias: [],
 			asignaciones: [],
 			evaluaciones: [],
+			calificaciones: [],
 			personalInfo: null,
-			contactos: null
+			contactos: null,
+			userAvatar: null,
+			mensajes: [],
+			isChatVisible: false,
+			successMessage: '',
+			errorMessage: '',
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
 			fetchRoute: async (endpoint, { method = 'GET', body = '', isPrivate = false, bluePrint = '' } = {}) => {
-				if (isPrivate) getActions().loadSession();
+				if (isPrivate && !getStore().token) getActions().loadSession();
 
 				const headers = {
 					'Content-Type': 'application/json',
@@ -114,91 +126,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error
 				}
 
+			}, userOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('user/auth', method, { id, body, bluePrint: 'admin' })
+			}, setUsers: async () => {
+				const response = await getActions().userOperations('GET')
+				setStore({ usuarios: response })
 			}, studentsOperations: async (method, body = '', id = '') => {
-				return getActions().crudOperation('student', method, { id, body, bluePrint: 'admin' })
+				return getActions().crudOperation('students', method, { id, body, bluePrint: 'admin' })
+			}, gradeStudentsOperations: async (method, body = null, id = '') => {
+				return getActions().crudOperation('estudiantes', method, { id, body, bluePrint: 'teacher' })
+			}, setGradeStudents: async (grado_id) => {
+				const response = await getActions().gradeStudentsOperations('GET', null, grado_id)
+				setStore({ estudiantes: response })
+			}, setStudents: async () => {
+				const response = await getActions().studentsOperations('GET')
+				setStore({ estudiantes: response })
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
 			}, setSubjects: async () => {
 				const response = await getActions().subjectsOperations('GET')
 				setStore({ materias: response })
+			}, teachersOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('teachers', method, { id, body, bluePrint: 'admin' })
+			}, setTeachers: async () => {
+				const response = await getActions().teachersOperations('GET')
+				setStore({ profesores: response })
 			}, testsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('evaluaciones', method, { id, body, bluePrint: 'teacher' })
 			}, setTests: async () => {
 				const response = await getActions().testsOperations('GET')
 				setStore({ evaluaciones: response })
+			}, scoreOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('calificaciones', method, { id, body, bluePrint: 'teacher' })
+			}, setScores: async () => {
+				const response = await getActions().scoreOperations('GET')
+				setStore({ calificaciones: response })
 			},
 
-			//actions.subjectsOperations('GET', '', 2)
-			//actions.subjectsOperations('POST', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"})
-			//actions.subjectsOperations('PUT', {nombre: "Materia 3", grado_id: 1, descripcion: "Arroz con pollo"}, 2)
-			//actions.subjectsOperations('DELETE', '', 2)
-
-			// CRUD para usuarios autorizados
-
-			getUsers: async () => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("user/auth", {
-					method: "GET",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				setStore({ usuarios: data })
-			},
-
-			postUser: async (body) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("user/auth", {
-					method: "POST",
-					body: body,
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getUsers()
-			},
-
-			deleteUser: async (id) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute(`user/auth/${id}`, {
-					method: "DELETE",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getUsers()
-			},
-
-			// CRUD para profesores
-
-			postTeacher: async (body) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("teachers", {
-					method: "POST",
-					body: body,
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getTeachers()
-			},
-
-			deleteTeacher: async (id) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute(`teachers/${id}`, {
-					method: "DELETE",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getTeachers()
-			},
-
-			getTeachers: async () => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("teachers", {
-					method: "GET",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				setStore({ profesores: data })
-
-			}, postCourse: async (grado) => {
+			postCourse: async (grado) => {
 				const actions = getActions()
 				const data = await actions.fetchRoute("grados", {
 					method: "POST",
@@ -229,19 +194,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return data
 			}, handleRegister: async (body) => {
 				try {
+					const actions = getActions()
 					const data = await actions.fetchRoute('signup', { method: 'POST', body });
+					setStore({ successMessage: "¡Su usuario ha sido creado corectamente! Bienvenido a SchoolHub!" });
 					return true;
 				} catch (error) {
 					console.error("Error en handleRegister:", error);
+					setStore({ errorMessage: "Ocurrió un error al intentar registrarse" });
 					return 'Ocurrió un error al intentar registrarse';
 				}
-			}, handleLogin: async (body) => {
+			}, clearMessages: () => {
+				setStore({ successMessage: '', errorMessage: '' });
+			},
+			handleLogin: async (body) => {
 				try {
 					const data = await getActions().fetchRoute("login", {
 						method: "POST",
 						body
 					});
-
 
 					if (data.token && data.role) {
 						const rol = data.role.toLowerCase();
@@ -266,7 +236,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, handleLogout: async () => {
 				const { fetchRoute } = getActions();
 				try {
-					const resp = await fetchRoute("/logout", {
+					const resp = await fetchRoute("logout", {
 						method: "POST",
 						isPrivate: true,
 						bluePrint: "session"
@@ -277,13 +247,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 
-					setStore({ token: null, role: null });
+					setStore({ token: null, role: null, userAvatar: null }); /// agregando el userAvatar acá
 					localStorage.removeItem("token");
 					localStorage.removeItem("role");
 				} catch (error) {
 					console.error("Error al cerrar sesión:", error);
 				}
-			}, getParentInfo: async () => {
+			}, getTeacherInfo: async () => {
+
+				try {
+					let teacherData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "teacher" })
+					console.log('fetched teacher data:', teacherData)
+					if (!teacherData) {
+						console.log('El profesor no tiene materias asignadas')
+						return false
+					}
+					setStore({ profesorPersonalInfo: teacherData });
+				}
+				catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			},
+			getParentInfo: async () => {
 
 				try {
 					let parentData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "parent" })
@@ -299,24 +285,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					throw error
 				}
-			}, setParentResume: () => {
-				const store = getStore()
-
-				if (!store.personalInfo) {
-					console.error("No hay informacion personal almacenada")
-					return false
-				}
-
-				if (!store.personalInfo.estudiantes) {
-					console.log("No se ha encontrado informacion de estudiantes")
-					return false
-				}
-
-				let resume = estudiantes.map(clean_student_data)
-				setStore({ "statusResume": resume })
-
-				return true
-
 			}, getContacts: async () => {
 				try {
 					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "messages" })
@@ -333,8 +301,83 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					return
 				}
-			}
+			}, changePassword: async (newPassword) => {
+				const actions = getActions()
 
+				try {
+					const response = await actions.fetchRoute("reset", { method: 'PUT', isPrivate: true, bluePrint: "password", body: { "newPassword": newPassword } })
+
+					return response
+				} catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			},
+			handleUserAvatarUpdate: (avatarUrl) => {
+				setStore({ userAvatar: avatarUrl }); // Actualiza el avatar del usuario
+			},
+			toggleChat: () => {
+				const store = getStore();
+				setStore({ isChatVisible: !store.isChatVisible }); // Alterna el estado del chat
+			},
+			sendMessage: async (message) => {
+				try {
+					await getActions().fetchRoute("messages", {
+						method: "POST",
+						body: {},
+						isPrivate: true,
+						bluePrint: "messages"
+					});
+
+					await getActions().getMessages();
+				} catch (error) {
+					console.error("Error al enviar mensaje:", error);
+				}
+			},
+			postPicture: async (file) => {
+				const { token } = getStore()
+				try {
+					let formData = new FormData()
+					formData.append("profilePicture", file)
+
+					const response = await fetch(backendURL + "/profile/picture", {
+						method: "PUT",
+						headers: {
+							'Authorization': `Bearer ${token}`
+						},
+						body: formData
+					})
+
+					if (!response.ok) {
+						let error = await response.json()
+						throw new Error(error.msg || "Error al subir la imagen");
+					}
+					let data = await response.json()
+					await getActions().getParentInfo()
+					return data
+				} catch (error) {
+					console.error("Error al subir la imagen:", error.message);
+					return error
+				}
+			}, updateProfile: async (body) => {
+				try {
+					const response = await getActions().fetchRoute("update", { method: 'PUT', isPrivate: true, bluePrint: "profile", body: body })
+					await getActions().getParentInfo()
+					return response
+				} catch (error) {
+					console.error(error.message)
+					throw error
+
+				}
+			}, requestPasswordChange: async (email) => {
+				try {
+					const response = await getActions().fetchRoute("password/recovery", { method: 'POST', body: { "email": email } })
+					return response
+				} catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			}
 		}
 	}
 };

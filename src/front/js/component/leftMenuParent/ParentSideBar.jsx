@@ -46,11 +46,11 @@ const ListMenuItem = styled.span`
 
 const SidebarWrapper = styled.div`
   height: 100%;
-  width: 20vw;
+  width: 17vw;
   min-width: 100px;
 
   @media (max-width: 786px) {
-    width: 19vw;
+    width: 16vw;
   }
 `;
 

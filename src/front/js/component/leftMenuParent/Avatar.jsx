@@ -5,25 +5,27 @@ const AvatarWrapper = styled.div`
   border-radius: 50%;
   overflow: hidden;
   display: inline-block;
-  margin: 20px auto;
+  margin: auto;
   aspect-ratio: 1/1;
 `;
 const StyledAvatar = styled.img`
   width: 100%;
   height: 100%;
-  objectfit: cover;
+  object-fit: cover;
 `;
 const Avatar = ({
   src,
   alt = "Avatar",
-  size = 60,
+  height = "60px",
   name = "",
-  onClick = () => {},
+  onClick = () => { },
+  className = "",
 }) => {
   return (
     <div className="container-fluid d-flex flex-column align-items-center text-center">
       <AvatarWrapper
-        style={{ width: `${size}px`, height: `${size}px` }}
+        className={className}
+        style={{ height: height }}
         onClick={onClick}>
         <StyledAvatar src={src} alt={alt} />
       </AvatarWrapper>

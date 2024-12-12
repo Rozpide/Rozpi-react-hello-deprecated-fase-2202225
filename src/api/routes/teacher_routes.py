@@ -52,11 +52,11 @@ def get_personal_info():
     docente = Docente.query.get(docente_id)
     materias = [materia_asociada.materia for materia_asociada in docente.materias_enseñadas]
     grados = [materia.grado for materia in materias]
+    docente_info = teacher_schema.dump(docente)
+    docente_info["materias"] = materias_schema.dump(materias)
+    docente_info["grados"] = grados_schema.dump(grados)
     
-    return jsonify({"docente": teacher_schema.dump(docente),
-                    "materias": materias_schema.dump(materias),
-                    "grados": grados_schema.dump(grados),
-                   })
+    return jsonify(docente_info),200
     
     #Añadir evaluaciones
     
@@ -97,7 +97,7 @@ def add_test():
     
     materia = body.get('materia_id')
     
-    if not materia.query.get(materia):
+    if not Materias.query.get(materia):
         return jsonify({"msg": "Materia no encontrada"}),404
     
     body['profesor_id'] = get_jwt_identity()

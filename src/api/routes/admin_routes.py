@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 from api.models import db, User, EmailAuthorized, Estudiante, Role, Docente, Materias, Grados, DocenteMaterias
 from flask_cors import CORS
-from flask_bcrypt import Bcrypt
+from api.utils import bcrypt
 from flask_jwt_extended import get_jwt, verify_jwt_in_request
 from api.schemas.schemas import TeacherSchema, UserSchema, AuthorizedEmailSchema, StudentSchema, MateriasSchema, DocenteMateriaSchema, GradoSchema, RoleSchema
 from datetime import datetime
@@ -14,7 +14,6 @@ from api.services.generic_services import create_instance, delete_instance, get_
 
 
 app = Flask(__name__)
-bcrypt = Bcrypt(app)
 
 admin_routes = Blueprint('admin_routes', __name__)
 # Allow CORS requests to this API
@@ -66,10 +65,11 @@ def email_authorization():
     if not body:
         return jsonify({"msg": "Missig info"}),400
     
-    role_exists = Role.query.get(body["role_id"])
+    role_exists = Role.query.filter(Role.nombre.ilike('representante')).first()
     if not role_exists:
         return jsonify({"msg": "Role not found"}), 404
-        
+    
+    body['role_id'] = role_exists.id
     return create_instance(EmailAuthorized,body,authorized_email_schema)
 
 @admin_routes.route('/user/auth', methods=['GET'])
@@ -84,7 +84,7 @@ def add_teacher():
     if not body:
         return jsonify({"msg":"Error"}),400
     
-    role = Role.query.filter_by(Role.nombre.ilike("docente")).first()
+    role = Role.query.filter(Role.nombre.ilike("docente")).first()
     
     if not role:
         return jsonify({"msg":"Rol de docente no creado"})
@@ -159,7 +159,7 @@ def add_student():
 
 @admin_routes.route('/students', methods=['GET'])
 def get_students():
-    return get_all_instances(Estudiante)
+    return get_all_instances(Estudiante, students_schema)
 
 @admin_routes.route('/students/<int:student_id>', methods=['GET'])
 def get_student_by_id(student_id):
