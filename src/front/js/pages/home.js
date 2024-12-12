@@ -9,79 +9,26 @@ export const Home = () => {
 
 	return (
 		<div>
-
-			{/* Contenido principal */}
 			<div
-				className="d-flex justify-content-center align-items-center"
+				className="d-flex justify-content align-items-center"
 				style={{
 					height: "90vh",
-					background: "linear-gradient(to bottom right, #FCECCF, #FDF4E6)",
 					position: "relative",
 					overflow: "hidden",
 				}}
 			>
-				{/* Figuras decorativas */}
-				<div
-					style={{
-						position: "absolute",
-						width: "200px",
-						height: "200px",
-						backgroundColor: "#FDC968",
-						borderRadius: "50%",
-						top: "10%",
-						left: "20%",
-						zIndex: 1,
-					}}
-				></div>
-				<div
-					style={{
-						position: "absolute",
-						width: "300px",
-						height: "300px",
-						backgroundColor: "#002B5B",
-						borderRadius: "50%",
-						bottom: "20%",
-						right: "10%",
-						zIndex: 1,
-					}}
-				></div>
-				<div
-					style={{
-						position: "absolute",
-						width: "100px",
-						height: "100px",
-						backgroundColor: "#FDC968",
-						borderRadius: "50%",
-						bottom: "30%",
-						right: "30%",
-						zIndex: 1,
-					}}
-				></div>
-				<div
-					style={{
-						position: "absolute",
-						width: "80px",
-						height: "80px",
-						backgroundColor: "#FDC968",
-						borderRadius: "50%",
-						top: "40%",
-						left: "15%",
-						zIndex: 1,
-					}}
-				></div>
-
-				{/* Contenido textual */}
-				<div className="container text-center z-3" >
-					<h1 className=" adlam-display-regular display-5 fw-bold text-dark mb-3">
+				<div className="container  z-3" >
+					<h1 className=" adlam-display-regular fw-bolder fs-4 mb-3">
 						Una ayuda para encontrar mascotas perdidas en tu zona.
 					</h1>
-					<p className="text-muted fs-5 mb-4">
+					<p className="adlam-display-minusc text-muted fs-5 mb-4">
 						Encuentra a tu mascota o ayuda a otra persona a encontrarla. Miles
 						de historias felices nos respaldan.
 					</p>
-					<div className="d-flex justify-content-center gap-3">
-						<button className="btn btn-danger btn-lg">Perdí a mi mascota</button>
-						<button className="btn btn-success btn-lg">Encontré una mascota</button>
+					<div className=" row d-flex justify-content">
+						<button className="btn btn-danger col-sm-3 rounded-pill btn-md shadow">Perdí a mi mascota</button>
+						<div className="w-100 mt-3"></div>
+						<button className="btn btn-success col-sm-3 rounded-pill btn-md shadow">Encontré una mascota</button>
 					</div>
 				</div>
 			</div>
