@@ -144,37 +144,23 @@ def get_favorites(id):
 
 
 @app.route('/wallet/<coin_id>', methods=['POST'])
-<<<<<<< HEAD
 def add_wallet(coin_id):
     user_id = request.json['user_id']
     name = request.json['name']
     Wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
     db.session.add(Wallet_crypto)
-=======
-def add_to_wallet(coin_id):
-    user_id = request.json['user_id']
-    name = request.json['name']
-    fav_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
-    db.session.add(fav_crypto)
->>>>>>> 40c6b9b3028ff4d1e9ed509b06d86c6905c2b2ea
     db.session.commit()
     return jsonify(get_wallet(user_id))
  
 
 @app.route('/wallet/<int:user_id>/<int:wallet_id>', methods=['DELETE'])
 def delete_wallet(wallet_id, user_id):
-<<<<<<< HEAD
     wallet_crypto = Wallet.query.get(wallet_id)
     db.session.delete(wallet_crypto)
-=======
-    fav_crypto = Wallet.query.get(wallet_id)
-    db.session.delete(fav_crypto)
->>>>>>> 40c6b9b3028ff4d1e9ed509b06d86c6905c2b2ea
     db.session.commit()
     return jsonify(get_wallet(user_id))
 
 def get_wallet(id):
-<<<<<<< HEAD
     wallet = Wallet.query.filter_by(user_id=id)
     wallet = list(map(lambda x: x.serialize(), wallet))
     return wallet
@@ -184,17 +170,6 @@ def get_wallet(id):
     wallet = Wallet.query.filter_by(user_id=id)
     wallet = list(map(lambda x: x.serialize(), wallet))
     return jsonify(wallet)
-=======
-    Wallet = Wallet.query.filter_by(user_id=id)
-    Wallet = list(map(lambda x: x.serialize(), Wallet))
-    return Wallet
-
-@app.route('/users/<int:id>/wallet', methods=['GET']) 
-def get_wallet(id):
-    Wallet = Wallet.query.filter_by(user_id=id)
-    Wallet = list(map(lambda x: x.serialize(), Wallet))
-    return jsonify(Wallet)
->>>>>>> 40c6b9b3028ff4d1e9ed509b06d86c6905c2b2ea
 
 # Run the application
 if __name__ == '__main__':

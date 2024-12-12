@@ -54,7 +54,6 @@ class Wallet(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     coin_id = db.Column(db.String(120), nullable=False)
     symbol = db.Column(db.String(20))
-<<<<<<< HEAD
     purchase_price = db.Column(db.String(20))
     purchase_quantity = db.Column(db.String(20))
     purchase_date = db.Column(db.String(20))
@@ -62,21 +61,14 @@ class Wallet(db.Model):
 
     def __repr__(self):
         return f'<Wallet {self.name}>'
-=======
->>>>>>> 40c6b9b3028ff4d1e9ed509b06d86c6905c2b2ea
 
     def serialize(self):
         return {
             "id": self.id,
             "name": self.name,
             "user_id": self.user_id,
-<<<<<<< HEAD
             "symbol": self.symbol,
             "purchase_price": self.purchase_price,
             "purchase_quantity": self.purchase_quantity,
             "purchase_date": self.purchase_date,
-=======
-            "coin_id": self.coin_id,
-            
->>>>>>> 40c6b9b3028ff4d1e9ed509b06d86c6905c2b2ea
         }
