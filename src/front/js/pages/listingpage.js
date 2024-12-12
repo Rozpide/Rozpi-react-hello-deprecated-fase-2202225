@@ -73,18 +73,18 @@ export const Listing = () => {
             <table className="coin-table">
                 <thead>
                     <tr>
-                        <th>Asset</th>
-                        <th>Price</th>
-                        <th>Chart (7d)</th>
-                        <th>Change (24h)</th>
-                        <th>Market Cap</th>
-                        <th>Volume</th>
-                        <th>Actions</th>
+                        <th className='listRowHeaders'>Coin</th>
+                        <th className='listRowHeaders'>Price</th>
+                        <th className='listRowHeaders'>Chart (7d)</th>
+                        <th className='listRowHeaders'>Change (24h)</th>
+                        <th className='listRowHeaders'>Market Cap</th>
+                        <th className='listRowHeaders'>Volume</th>
+                        <th className='listRowHeaders'>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {store.coins.map((coin) => (
-                        <tr key={coin.id} onClick={()=> {
+                        <tr className="listCoin" key={coin.id} onClick={()=> {
                             console.log("Row clicked:", coin.id);
                             navigate('/moreinfo/' + coin.id)}}
                             >
@@ -93,7 +93,7 @@ export const Listing = () => {
                                     <img src={coin.image} alt={coin.name} className="coin-image" />
                                     <div>
                                         <div className="coin-name">{coin.name}</div>
-                                        <div className="coin-symbol">{coin.symbol.toUpperCase()}</div>
+                                        <div className="coin-symbol" style={{ color: "#39ff14"}}>{coin.symbol.toUpperCase()}</div>
                                     </div>
                                 </div>
                             </td>
@@ -118,10 +118,10 @@ export const Listing = () => {
                             <td>${coin.total_volume.toLocaleString()}</td>
                             <td>
                                 <button
-                                    className="btn btn-primary"
+                                    className="btn listTradeBtn"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleOpenModal(coin, "trade")}
+                                        actions.setShowTradeModal(coin)}
                                     }  
                                 >
                                     Trade
@@ -148,7 +148,7 @@ export const Listing = () => {
                                         handleFavoriteToggle(coin)}
                                     }
                                 >
-                                    {store.favoriteIds.some((favCoin) => favCoin.id === coin.id)
+                                    {store.favoriteIds.some((favCoin) => favCoin.coin_id === coin.id)
                                         ? "★"
                                         : "☆"}
                                 </button>
@@ -158,14 +158,14 @@ export const Listing = () => {
                 </tbody>
             </table>
 
-            {isModalOpen && selectedCoin && modalAction === "trade" && (
+            {/* {isModalOpen && selectedCoin && modalAction === "trade" && (
                 <TradeModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     onTrade={handleTrade}
                     coinName={selectedCoin.name}
                 />
-            )}
+            )} */}
         </div>
     );
 };

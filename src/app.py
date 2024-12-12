@@ -1,8 +1,7 @@
-"""
-This module takes care of starting the API Server, Loading the DB, and Adding the endpoints
-"""
 import os
-from flask import Flask, request, jsonify, url_for, send_from_directory
+from dotenv import load_dotenv
+load_dotenv()
+from flask import Flask, request, jsonify, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_cors import CORS  # Add CORS support
@@ -12,15 +11,30 @@ from api.models import db, User, Favorites, Wallet
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_mail import Mail, Message
 
 # Determine environment
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
+
+# Initialize Flask app first
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Enable CORS for frontend-backend communication
 CORS(app)
+
+# Configure Flask-Mail (after app initialization)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # For Gmail. Replace with your provider's SMTP
+app.config['MAIL_PORT'] = 587  # Use 465 for SSL, 587 for TLS
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')  # Set this in your .env or system variables
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')  # Set this in your .env or system variables
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_USERNAME')  # Default sender email address
+
+# Initialize Flask-Mail
+mail = Mail(app)
 
 # JWT Configuration
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY", "super-secret-key")  # Replace with your own secret key
