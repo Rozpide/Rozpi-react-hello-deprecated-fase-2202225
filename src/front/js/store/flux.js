@@ -25,6 +25,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             favoriteData: [],
             favoritePriceData: [],
             wallet: [],
+            walletIds: [],
+            walletNormalData: [],
+            walletPriceData: [],
+            walletNormalData: [],
             coins: [],
             loadingCoins: true,
             currentCoinId: null,
@@ -47,9 +51,17 @@ const getState = ({ getStore, getActions, setStore }) => {
             setFavoriteData: () => {
                 setStore({ favoriteData: [] })
             },
+
+            setWalletPriceData: () => {
+                setStore({ walletPriceData: [] })
+            },
+            setWalletNormalData: () => {
+                setStore({ walletNormalData: [] })
+            },
             setUserId: (id) => {
                 setStore({ userID: id })
             },
+
             setUserName: (username) => {
                 setStore({ username: username })
             },
@@ -188,6 +200,82 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err))
             },
 
+
+            getWalletPriceData: (id) => {
+                const currentData = getStore().walletPriceData; // Get current wallet price data from the store
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                    }
+                };
+            
+                fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
+                    .then((res) => res.json())
+                    .then((response) => {
+                        // Fix: Use 'id' instead of 'coin_id'
+                        if (!currentData.some((entry) => entry[0]?.id === id)) {
+                            setStore({
+                                walletPriceData: [
+                                    ...getStore().walletPriceData,
+                                    response.prices.map((price) => {
+                                        return {
+                                            id: id,
+                                            date: new Date(price[0]),
+                                            price: price[1]
+                                        };
+                                    })
+                                ]
+                            });
+                        }
+                    })
+                    .catch((err) => console.log(err));
+            },
+        
+
+            handleSignUp: async (e) => {
+                e.preventDefault();
+                const { username, email, confirmEmail, password, confirmPassword } = e.target.elements;
+
+                // Validation checks
+                if (email.value !== confirmEmail.value) {
+                    setError("Emails do not match.");
+                    return;
+                }
+                if (password.value !== confirmPassword.value) {
+                    setError("Passwords do not match.");
+                    return;
+                }
+
+                try {
+                    const payload = {
+                        email: email.value,
+                        password: password.value,
+                        username: username.value
+                    };
+
+                    const response = await fetch(process.env.BACKEND_URL + "api/users", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload), // Send email and password as JSON
+                    });
+
+                    const responseData = await response.json();
+
+                    if (!response.ok) {
+                        setError(responseData.error || "Sign-up failed"); // Handle backend errors
+                        return;
+                    }
+
+                    alert("Registration successful! You can now log in."); // Notify success
+                    setIsLogin(true); // Switch to login view
+                } catch (err) {
+                    console.error("Sign-up error:", err);
+                    setError("An error occurred while signing up."); // Catch unexpected errors
+                }
+            },
+
             signUp: (username, password) => {
                 console.log(`Sign-up request for: ${username}`);
                 // Implement API call or logic for user registration
@@ -263,8 +351,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 // Filter the coins based on the query
                 const filtered = store.coins.filter((coin) =>
                     coin.name.toLowerCase().includes(query.toLowerCase()) ||
-                    coin.symbol.toLowerCase().includes(query.toLowerCase()) ||
-                    coin.id.toLowerCase().includes(query.toLowerCase())
+                    coin.symbol.toLowerCase().includes(query.toLowerCase())
 
                 );
 
@@ -361,8 +448,100 @@ const getState = ({ getStore, getActions, setStore }) => {
                         }
                     })
                     .catch((err) => console.log(err))
-            }
+            },
+            
+            getWalletNormalData: (coin_id) => {
+                const currentData = getStore().walletNormalData; // Get current wallet data from the store
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                    }
+                };
+            
+                fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true`, options)
+                    .then((res) => res.json())
+                    .then((response) => {
+                        // Fix: check if currentData already contains the coin with the same id as response.id
+                        if (!currentData.some((wallet) => wallet.id === response.id)) {
+                            setStore({
+                                walletNormalData: [...getStore().walletNormalData, response] // Add the new coin data
+                            });
+                        }
+                    })
+                    .catch((err) => console.log(err));
+            },
+            
+            
 
+            addToWallet: (coin) => {
+                fetch(process.env.BACKEND_URL + `wallet/${coin.id}`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "name": coin.name,
+                        "user_id": getStore().userID,
+                        "coin_id": coin.id
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => setStore({ walletIds: response }))
+                .catch(error => console.error(error));
+            },
+            
+            removeFromWallet: (wallet_id) => {
+                fetch(process.env.BACKEND_URL + `wallet/${getStore().userID}/${wallet_id}`, {
+                    method: 'DELETE'
+                })
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => {
+                    setStore({ walletIds: response });
+                    response.forEach(element => {
+                        getActions().getWalletNormalData(element.coin_id);
+                        getActions().getWalletPriceData(element.coin_id);
+                    });
+                })
+                .catch(error => console.error(error));
+            },
+            
+            getWalletIds: (id) => {
+                fetch(process.env.BACKEND_URL + `users/${id}/wallet`)
+                    .then((res) => res.json())
+                    .then((response) => {
+                        setStore({ walletIds: response });
+                    })
+                    .catch((err) => console.log(err));
+            },
+            
+            getWalletData: (coin_id) => {
+                const currentData = getStore().walletData;
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                    }
+                };
+                fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, options)
+                    .then((res) => res.json())
+                    .then((response) => {
+                        if (!currentData.some((wallet) => wallet.id === response.id)) {
+                            setStore({ walletData: [...getStore().walletData, response] });
+                        }
+                    })
+                    .catch((err) => console.log(err));
+            }
+            
+        
         },
     };
 };
