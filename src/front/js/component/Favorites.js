@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 
@@ -16,12 +15,18 @@ export const Favorites = () => {
 
     return (
         <div className="row" id="favoriteScreen">
-            {store.favoriteData.map((favorite, index) => {
-                const chartdata = store.favoritePriceData.filter((array) => {
-                    if (array[0].id === favorite.id)
-                        return array})
+            {store.favoriteData.length === 0 ? (
+                <div className="col-12 d-flex flex-column justify-content-center align-items-center" style={{ height: "60vh" }}>
+                    <h3 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}>
+                        You don't have any favorites yet! Start adding your favorite coins.
+                    </h3>
+                </div>
+            ) : (
+                store.favoriteData.map((favorite, index) => {
+                    const chartdata = store.favoritePriceData.filter((array) => array[0].id === favorite.id);
+
                 return (
-                    <div className="favCardOut card col-4" >  {/* style={{ width: "20vw"}} */}
+                        <div key={favorite.id} className="favCardOut card col-4">
                         <div className="favCardIn">
                             <div className="favCardTop card-img-top">
                                 {/* <SparklineChart data={favorite.sparkline_in_7d.price} width={300} height={150} /> */}
@@ -41,11 +46,18 @@ export const Favorites = () => {
                                 <Link to={"/moreInfo/" + favorite.id }>
 								<span className="favMoreInfoButton btn">More Information</span>
 							    </Link>
+                                    <button
+                                        className="btn btn-danger ms-2"
+                                        onClick={() => handleFavoriteToggle(favorite)}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )
-            })}
+                    );
+                })
+            )}
         </div>
     );
 };

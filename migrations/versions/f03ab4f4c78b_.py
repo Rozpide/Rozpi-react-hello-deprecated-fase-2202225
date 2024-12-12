@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 9db6db696bcf
+Revision ID: f03ab4f4c78b
 Revises: 
-Create Date: 2024-12-10 14:38:43.097084
+Create Date: 2024-12-12 17:26:40.240919
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9db6db696bcf'
+revision = 'f03ab4f4c78b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,12 +38,13 @@ def upgrade():
     )
     op.create_table('wallet',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('coin_id', sa.String(length=10), nullable=True),
-    sa.Column('name', sa.String(length=100), nullable=True),
-    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('name', sa.String(length=80), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('coin_id', sa.String(length=120), nullable=False),
     sa.Column('symbol', sa.String(length=20), nullable=True),
     sa.Column('purchase_price', sa.String(length=20), nullable=True),
     sa.Column('purchase_quantity', sa.String(length=20), nullable=True),
+    sa.Column('purchase_date', sa.String(length=20), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

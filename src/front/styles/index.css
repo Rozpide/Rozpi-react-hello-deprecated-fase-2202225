@@ -525,7 +525,7 @@ h1 {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  height: 100%; /* Adjust based on your parent container */
+  height: 100vh; /* Adjust based on your parent container */
   min-height: 400px; /* Ensures adequate height */
 }
 
@@ -555,6 +555,24 @@ h1 {
   font-size: 16px;
   color: #555;
 }
+
+.remove-btn {
+    margin-top: 0px;
+    margin-left: 20px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover {
+    background-color: #ff1a1a;
+}
+
+
 
 
 /* .fav{
@@ -839,7 +857,7 @@ h1 {
 
 /* tradeModal:*/
 
-.modal-overlay {
+.trade-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -883,7 +901,7 @@ h1 {
 }
 
 
-.close-button {
+.trade-close-button {
   position: absolute;        /* Position it at the top-right corner */
   top: 10px;
   right: 10px;
@@ -901,11 +919,11 @@ h1 {
   transition: background-color 0.3s ease; /* Smooth background color transition */
 }
 
-.close-button:hover {
+.trade-close-button:hover {
   background-color: darkred;  /* Change background color on hover */
 }
 
-button.btn-success {
+trade-button.btn-success {
   margin-top: 20px;
   padding: 10px 20px;
   background: green;

@@ -84,7 +84,7 @@ def protected_route():
 
 # Get all users (admin functionality, protected)
 @api.route('/users', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_all_users():
     current_user_id = get_jwt_identity()
     # You can add logic here to restrict access to admin users only
