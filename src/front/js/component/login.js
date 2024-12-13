@@ -11,7 +11,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Evita que la página se recargue
         try {
             const response = await fetch(`${process.env.BACKEND_URL}/login`, {
                 method: "POST",
@@ -27,7 +27,7 @@ const Login = () => {
             const data = await response.json();
             if (response.ok) {
                 // Guardar el token en sessionStorage
-                //sessionStorage.setItem("token", data.token);
+                sessionStorage.setItem("token", data.token);
                 navigate("/"); // Redirigir a la página principal
             } else {
                 actions.setMessage(data.msg);
