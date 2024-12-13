@@ -323,6 +323,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                         setStore({ userToken: response.access_token, userEmail: response.user.email, userID: response.userID, username: response.username });
                         getActions().getFavoriteIds(response.userID)
+                        getActions().getWalletIds(response.userID)
                     })
                     .catch(error => console.error(error));
             },
