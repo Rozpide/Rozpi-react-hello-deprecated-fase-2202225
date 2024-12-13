@@ -62,21 +62,8 @@ export const MoreInfo = () => {
     };
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            const currentPrice = store.currentCoinData.market_data?.current_price?.usd;
-
-            if (alertPrice && currentPrice) {
-                // Check if the price breaks the alert value
-                if (currentPrice >= parseFloat(alertPrice)) {
-                    alert(`Price alert! ${store.currentCoinData.name} has risen to $${currentPrice}, passing your alert threshold of $${alertPrice}`);
-                    //setAlertPrice(""); // Clear the alert price after triggering
-                    clearInterval(interval); // Stop further checks once the alert is triggered
-                }
-            }
-        }, 5000); // Check every 5 seconds
-
-        return () => clearInterval(interval); // Cleanup the interval on component unmount
-    }, [store.currentCoinData.market_data, alertPrice]);
+        actions.getCurrentCoinPriceData();
+    }, [store.currency, store.timeFrame]);
 
     useEffect(() => {
         actions.loadAlerts();
