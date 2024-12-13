@@ -20,7 +20,7 @@
 
 body {
     background-image: url('/workspaces/Rosas-Alonso-Rodriguez-Acu-a-y-Chaves-Proyecto-final/src/front/img/banner.PNG');
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
     background-size: cover;
   }
 .btnStart{

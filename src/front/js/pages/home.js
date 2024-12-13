@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
+import { Link } from "react-router-dom";
 import "../../styles/home.css";
 import "../../styles/home.css";
 
@@ -26,9 +26,9 @@ export const Home = () => {
 						de historias felices nos respaldan.
 					</p>
 					<div className=" row d-flex justify-content">
-						<button className="btn btn-danger col-sm-3 rounded-pill btn-md shadow">Perdí a mi mascota</button>
+						<Link to="/newpetlost"><button className="btn btn-danger col-sm-3 rounded-pill btn-md shadow">Perdí a mi mascota</button></Link>
 						<div className="w-100 mt-3"></div>
-						<button className="btn btn-success col-sm-3 rounded-pill btn-md shadow">Encontré una mascota</button>
+						<Link to="/newpetfound"><button className="btn btn-success col-sm-3 rounded-pill btn-md shadow">Encontré una mascota</button></Link>
 					</div>
 				</div>
 			</div>
