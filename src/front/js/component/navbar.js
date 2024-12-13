@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import logotipo from "../../img/PatasperdidasPNG.png"
+
+
 export const Navbar = () => {
 	const [logged, setLogged] = useState(false)
 	const [user, setUser] = useState("Usuario");
@@ -36,9 +38,9 @@ export const Navbar = () => {
 							</a>
 						</li>
 						<li className="nav-item">
-							<a className="adlam-display-regular nav-link  me-2" href="#">
-								Contacto
-							</a>
+							<Link to="/PetView" className="adlam-display-regular nav-link  me-4">
+								Mascotas
+							</Link>
 						</li>
 						<li className="nav-item d-flex align-items-center">
 							<input className="form-control border-0  me-2" type="text" placeholder="🔎 Search" ></input>
@@ -56,4 +58,4 @@ export const Navbar = () => {
 			</div>
 		</nav>
 	);
-};
+}
