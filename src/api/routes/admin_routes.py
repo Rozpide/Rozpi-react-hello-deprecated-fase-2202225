@@ -170,7 +170,7 @@ def update_student(id):
     body = request.get_json()
     if not body:
         return jsonify({"msg": "request body not found"}),400
-    return update_instance(Estudiante,id,body)
+    return update_instance(Estudiante,id,body, student_schema)
     
 @admin_routes.route('/students/<int:student_id>', methods=['DELETE'])
 def remove_student(student_id):

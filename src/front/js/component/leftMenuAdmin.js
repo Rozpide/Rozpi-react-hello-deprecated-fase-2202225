@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import backgroundForViews from "../../img/background.jpg";
@@ -9,6 +9,7 @@ import "../../styles/components.css";
 import Swal from 'sweetalert2';
 
 const FormCommon = ({ type }) => {
+    const navigate = useNavigate()
     const { store, actions } = useContext(Context)
     const [startDate, setStartDate] = useState(new Date());
     const [formBody, setFormBody] = useState({
@@ -64,6 +65,8 @@ const FormCommon = ({ type }) => {
         await actions.teachersOperations('DELETE', ' ', teacherId);
         actions.setTeachers();
     };
+
+
 
     const submitFormData = async (event) => {
         event.preventDefault();
@@ -230,44 +233,27 @@ const FormCommon = ({ type }) => {
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Apellido</th>
-                                    <th>Dirección</th>
                                     <th>Grado</th>
                                     <th>Fecha de nacimiento</th>
-                                    <th>Eliminar</th>
+                                    <th>Editar/Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {store.estudiantes.map(student => (
                                     <tr key={student.id}>
-                                        <td>
-                                            <input type="text" name="name" className="form-control" required value={student.nombre} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="lastName" className="form-control" required value={student.apellido} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="address" className="form-control" required value={student.direccion} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
-                                            <div className="input-group" required>
-                                                <select
-                                                    className="custom-select-edit rounded-pill"
-                                                    name="grado_id"
-                                                    id="inputGroupSelect04"
-                                                    onChange={handleChange}>
-
-                                                    <option value="" disabled selected>Opciones...</option>
-
-                                                    {store.grados.map(grado =>
-                                                        <option key={grado.id} value={grado.id}>{grado.nombre}</option>
-                                                    )}
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <input type="date" name="date" className="form-control" required value={student.fecha_nacimiento} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
+                                        <td>{student.nombre}</td>
+                                        <td>{student.apellido}</td>
+                                        <td>{student.grado.nombre}</td>
+                                        <td>{student.fecha_nacimiento}</td>
+                                        <td className="d-flex justify-content-center">
+                                            <Link to={`/update-student/${student.id}`}>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-info me-3"
+                                                >
+                                                    <i class="bi bi-pen"></i>
+                                                </button>
+                                            </Link>
                                             <button
                                                 type="button"
                                                 className="btn btn-outline-danger"
@@ -296,31 +282,27 @@ const FormCommon = ({ type }) => {
                                     <th>Teléfono</th>
                                     <th>Dirección</th>
                                     <th>Descripción</th>
-                                    <th>Eliminar</th>
+                                    <th>Editar/Eliminar</th>
                                 </tr>
                             </thead>
                             <tbody className="table-design">
                                 {store.profesores.map(profesor => (
                                     <tr key={profesor.id}>
-                                        <td>
-                                            <input type="text" name="name" className="form-control" required value={profesor.nombre} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="lastName" className="form-control" required value={profesor.apellido} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="email" className="form-control" required value={profesor.email} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="phone" className="form-control" required value={profesor.telefono} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="address" className="form-control" required value={profesor.direccion} onChange={(e) => handleChange(e)} />
-                                        </td>
-                                        <td>
-                                            <textarea name="description" className="form-control" rows="3" required value={profesor.descripcion} onChange={(e) => handleChange(e)}></textarea>
-                                        </td>
-                                        <td>
+                                        <td>{profesor.nombre}</td>
+                                        <td>{profesor.apellido}</td>
+                                        <td>{profesor.email}</td>
+                                        <td>{profesor.telefono}</td>
+                                        <td>{profesor.direccion}</td>
+                                        <td>{profesor.descripcion}</td>
+                                        <td className="d-flex justify-content-center">
+                                            <Link to={'/updateTeacher/' + profesor.id}>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-info me-3"
+                                                >
+                                                    <i class="bi bi-pen"></i>
+                                                </button>
+                                            </Link>
                                             <button
                                                 type="button"
                                                 className="btn btn-outline-danger"
@@ -582,7 +564,7 @@ export const LeftMenuAdmin = () => {
                 </div>
                 <div className="d-flex justify-content-center render-content col py-3"
                     style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
-                    <div className="welcome-message mt-3">
+                    <div className="container-fluid welcome-message mt-3">
                         {renderContent()}
                     </div>
                 </div>
