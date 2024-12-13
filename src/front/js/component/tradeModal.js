@@ -3,6 +3,8 @@ import "../../styles/index.css"; // Adjust the path to your CSS file
 import { useContext } from "react";
 import { Context } from "../store/appContext";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+
 
 export const TradeModal = (coin) => {
     // if (!isOpen) return null; // Render nothing if `isOpen` is false
@@ -11,6 +13,7 @@ export const TradeModal = (coin) => {
     const [byCost, setByCost] = useState(true)
     const [ amount, setAmount] = useState("")
 	const [ quantity, setQuantity] = useState("")
+    let location = useLocation()
 
     const handleTrade = () => {
         const tradeType = document.getElementById("tradeType").value;

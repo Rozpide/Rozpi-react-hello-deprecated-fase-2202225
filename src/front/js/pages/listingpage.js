@@ -34,8 +34,8 @@ export const Listing = () => {
     };
 
     const handleAddToWallet = (coin) => {
-        actions.setWalletNormalData();
-        actions.setWalletPriceData();
+        // actions.setWalletNormalData();
+        // actions.setWalletPriceData();
         const existingWallet = store.walletIds.find((walletCoin) => walletCoin.coin_id === coin.id)
         if (existingWallet) {
             actions.removeFromWallet(existingWallet.id);
