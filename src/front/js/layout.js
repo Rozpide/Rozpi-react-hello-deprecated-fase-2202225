@@ -18,6 +18,10 @@ import NewPetLost from "./pages/newPetLost.js";
 import NewFoundPet from "./pages/newFoundPet.js"; 
 import UbicationMap from "./component/ubication_map.js";
 
+import PetView from "./component/PetView.jsx";
+import PetCard from "./component/PetCard.jsx";
+
+
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -42,6 +46,8 @@ const Layout = () => {
                         <Route element={<User />} path="/user" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Signup />} path="/signup" />
+                        <Route element={<PetView/>} path="/petview"/>
+                        <Route element= {<PetCard/>} path="/petcard/:theid"/>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                 </ScrollToTop>
