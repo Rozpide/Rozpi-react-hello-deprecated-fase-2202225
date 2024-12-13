@@ -25,12 +25,14 @@ const Login = () => {
             });
 
             const data = await response.json();
-            if (response.ok) {
-                // Guardar el token en sessionStorage
+            console.log(data);
+            if (response.ok && data.msg === "ok" && data.token) {
+                //Si la respuesta es "ok" y contiene un token válido, lo guardamos en sessionStorage
                 sessionStorage.setItem("token", data.token);
-                navigate("/"); // Redirigir a la página principal
+                navigate("/");
             } else {
-                actions.setMessage(data.msg);
+                //Si el mensaje no es "ok", mostramos un mensaje de error
+                actions.setMessage(data.msg || "Error en la autenticación");
             }
         } catch (err) {
             actions.setMessage("Error de conexión");
