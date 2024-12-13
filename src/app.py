@@ -7,7 +7,7 @@ from flask_swagger import swagger
 from flask_cors import CORS  # Add CORS support
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity  # Add JWT support
 from api.utils import APIException, generate_sitemap
-from api.models import db, User, Favorites, Wallet
+from api.models import db, User, Favorites, Wallet, Alert
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -170,6 +170,36 @@ def get_wallet(id):
     wallet = Wallet.query.filter_by(user_id=id)
     wallet = list(map(lambda x: x.serialize(), wallet))
     return jsonify(wallet)
+
+
+
+alerts = {}  # Store alerts in memory (replace with database in production)
+
+@app.route("/alerts", methods=["POST"])
+def add_alert():
+    data = request.json
+    user_id = data.get("user_id")
+    alert = {
+        "coin_id": data.get("coin_id"),
+        "coin_name": data.get("coin_name"),
+        "target_price": data.get("target_price")
+    }
+    if user_id not in alerts:
+        alerts[user_id] = []
+    alerts[user_id].append(alert)
+    return jsonify({"message": "Alert added successfully"}), 201
+
+@app.route("/alerts/<user_id>", methods=["GET"])
+def get_alerts(user_id):
+    user_alerts = alerts.get(user_id, [])
+    return jsonify(user_alerts), 200
+
+@app.route("/alerts/<user_id>/<int:alert_index>", methods=["DELETE"])
+def delete_alert(user_id, alert_index):
+    if user_id in alerts and 0 <= alert_index < len(alerts[user_id]):
+        alerts[user_id].pop(alert_index)
+        return jsonify({"message": "Alert deleted successfully"}), 200
+    return jsonify({"error": "Alert not found"}), 404
 
 # Run the application
 if __name__ == '__main__':

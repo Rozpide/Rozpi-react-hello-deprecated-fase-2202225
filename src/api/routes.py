@@ -113,4 +113,5 @@ def example_endpoint():
 #     db.session.add(fav_crypto)
 #     db.session.commit()
 #     return jsonify(get_favs(user_id))
-
+if __name__ == "__main__":
+    api.run(debug=True)
