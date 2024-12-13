@@ -62,7 +62,7 @@ export const Wallet = () => {
                   <div className="wallet-symbol" style ={{color: "#39ff14"}}>{walletArray.symbol.toUpperCase()}</div>
                 </div>
               </td>
-              <td>${walletArray.current_price?.toLocaleString() || "N/A"}</td>
+              <td>${walletArray.market_data.current_price[store.currency]?.toLocaleString() || ""}</td>
               <td>{walletArray.quantity_owned || 0}</td>
               <td>
                 ${(
