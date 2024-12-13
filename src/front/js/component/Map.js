@@ -6,7 +6,7 @@ import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from "leaflet"
 /* 
 Commands: 
- nvm install 16 ~para bajar de version de node
+ npm install 16 ~para bajar de version de node
  npm install react@^18.0.0 react-dom@^18.0.0 ~para bajar de version de react
  npm install react-leaflet
  npm i react-leaflet-cluster 
