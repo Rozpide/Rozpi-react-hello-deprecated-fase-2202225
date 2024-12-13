@@ -60,14 +60,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					if (!response.ok) {
 						let error = await response.json()
-						if (error.msg?.includes("Token has expired")) {
+						if (error.msg?.includes("Token has expired") || error.msg == "Token has been revoked") {
 							localStorage.removeItem("token")
 							localStorage.removeItem("role")
 							window.location.href = '/'
 							return { "msg": "Session Expired" }
 						}
-
-
 						throw new Error(`Error con la solicitud: ${error.msg ?? error.error}`)
 					}
 
@@ -232,9 +230,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 
-					setStore({ token: null, role: null, userAvatar: null }); /// agregando el userAvatar acá
+					setStore({ token: null, role: null, userAvatar: null, personalInfo: null });
 					localStorage.removeItem("token");
 					localStorage.removeItem("role");
+
 				} catch (error) {
 					console.error("Error al cerrar sesión:", error);
 				}
@@ -286,16 +285,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					return
 				}
-			}, changePassword: async (newPassword) => {
+			}, changePassword: async (newPassword, token = null) => {
 				const actions = getActions()
 
 				try {
+					if (token) {
+						console.log("Se detecto Token")
+						setStore({ token: token })
+					}
+
+
+
 					const response = await actions.fetchRoute("reset", { method: 'PUT', isPrivate: true, bluePrint: "password", body: { "newPassword": newPassword } })
 
 					return response
 				} catch (error) {
 					console.error(error.message)
 					throw error
+				} finally {
+					if (token) {
+						setStore({ token: null })
+						console.log("Se eliminó el token del store")
+					}
 				}
 			},
 			handleUserAvatarUpdate: (avatarUrl) => {
@@ -362,6 +373,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					throw error
 				}
+			}, getStudentData: (id) => {
+				const { personalInfo } = getStore()
+
+				try {
+					if (personalInfo) {
+
+
+						let student = personalInfo.estudiantes.find((estudiante => estudiante.id == id))
+						if (!student) {
+							throw new Error("Estudiante no encontrado");
+
+						}
+						return student
+					}
+
+				} catch (error) {
+					console.error(error.message)
+					throw error
+				}
+
+
+			}, getStudents: () => {
+				const { personalInfo } = getStore()
+
+				if (personalInfo) {
+					return personalInfo.estudiantes
+
+				}
+				return []
+
 			}
 		}
 	}
