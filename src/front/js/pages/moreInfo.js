@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
-import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from "recharts";
 import { TradeModal } from "../component/tradeModal";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
-
-export const MoreInfo = (coin) => {
+export const MoreInfo = () => {
     const { store, actions } = useContext(Context);
-    ///const coin = coin
-    const [timeFrame, setTimeFrame] = React.useState('left');
+    const [timeFrame, setTimeFrame] = React.useState("left");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCoin, setSelectedCoin] = useState(null);
     const [news, setNews] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [whitepaper, setWhitepaper] = useState("");
     const [loadingNews, setLoadingNews] = useState(true);
     const params = useParams();
-    const location = useLocation();
+    const navigate = useNavigate(); // Hook for navigation
 
+    const handleChange = (event, newAlignment) => {
+        setTimeFrame(newAlignment);
+    };
+
+    // Fetch price data on component mount
     useEffect(() => {
         actions.setCurrentCoinId(params.id);
         actions.setCurrency("usd");
@@ -26,9 +27,7 @@ export const MoreInfo = (coin) => {
         actions.getCurrentCoinData();
     }, [location]);
 
-    const handleChange = (event, newAlignment) => {
-        setTimeFrame(newAlignment);
-    };
+
     //const params = useParams();
     // Fetch price data on component mount
     // useEffect(() => {
@@ -50,54 +49,19 @@ export const MoreInfo = (coin) => {
                     const data = await response.json();
                     if (data.response && data.response.results) {
                         setNews(data.response.results); // Populate the news state
-                    } else {
-                        console.warn("No articles found in the response.");
                     }
-                } else {
-                    console.error("Error fetching news:", response.statusText);
                 }
             } catch (error) {
-                console.error("Network or server error:", error);
+                console.error("Error fetching news:", error);
             } finally {
                 setLoadingNews(false); // Stop the loading spinner
             }
         };
 
-
         fetchNews();
     }, []);
 
-    // Fetch whitepaper from CoinGecko API
-    useEffect(() => {
-        const fetchWhitepaper = async () => {
-            try {
-                const response = await fetch("https://api.coingecko.com/api/v3/coins/bitcoin");
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.links && data.links.blockchain_site && data.links.blockchain_site.length > 0) {
-                        const whitepaperUrl = data.links.blockchain_site.find((url) =>
-                            url.toLowerCase().includes("bitcoin.pdf")
-                        );
-                        setWhitepaper(whitepaperUrl || null); // Set whitepaper URL or null if not found
-                    } else {
-                        console.warn("Whitepaper URL not found in the response.");
-                        setWhitepaper(null); // No whitepaper available
-                    }
-                } else {
-                    console.error("Error fetching whitepaper:", response.statusText);
-                    setWhitepaper(null);
-                }
-            } catch (error) {
-                console.error("Network or server error while fetching whitepaper:", error);
-                setWhitepaper(null);
-            }
-        };
-        fetchWhitepaper();
-    }, []);
 
-
-
-    // Update price data based on timeframe or currency changes
     useEffect(() => {
         actions.getCurrentCoinPriceData();
     }, [store.currency]);
@@ -139,21 +103,6 @@ export const MoreInfo = (coin) => {
 
     return (
         <div className="moreInfo">
-            {/* Back to List Button */}
-            <div className="backToList">
-                <button
-                    type="button"
-                    style={{
-                        backgroundColor: "#39ff14",
-                        borderRadius: "5px",
-                        height: "50px",
-                        width: "90px",
-                        border: "1px solid black",
-                    }}
-                >
-                    Back to list
-                </button>
-            </div>
 
             {/* Main Info Section */}
             <div className="mainInfo">
@@ -212,7 +161,6 @@ export const MoreInfo = (coin) => {
 
                     </div>
                 </div>
-
                 {/* News Feed Section */}
                 <div className="news">
                     <h1>News feed for {store.currentCoinData.name}</h1>
@@ -238,30 +186,7 @@ export const MoreInfo = (coin) => {
                         <p>No news articles found for Bitcoin.</p>
                     )}
                 </div>
-
-                {/* Whitepaper Section */}
-                <div className="description">
-                    <h2>Whitepaper</h2>
-                    {whitepaper ? (
-                        <a
-                            href={whitepaper}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: "#39ff14", textDecoration: "none" }}
-                        >
-                            View the Bitcoin Whitepaper
-                        </a>
-                    ) : (
-                        <p style={{ color: "white" }}>Whitepaper not available.</p>
-                    )}
-                </div>
-
             </div>
         </div>
     );
 };
-
-
-
-
-
