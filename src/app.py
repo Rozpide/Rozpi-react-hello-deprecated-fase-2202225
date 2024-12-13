@@ -163,6 +163,7 @@ def delete_wallet(wallet_id, user_id):
 def get_wallets(id):
     wallet = Wallet.query.filter_by(user_id=id)
     wallet = list(map(lambda x: x.serialize(), wallet))
+    #print("wallet-------"+wallet)
     return wallet
 
 @app.route('/users/<int:id>/wallet', methods=['GET']) 
