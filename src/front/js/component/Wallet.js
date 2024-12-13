@@ -15,18 +15,17 @@ export const Wallet = () => {
       actions.getWalletPriceData(wallet.coin_id);
       actions.getWalletNormalData(wallet.coin_id);
     });
-  }, [store.walletIds, actions]);
+  }, [store.walletIds]);
 
   const handleOpenModal = (coin) => {
     setSelectedCoin(coin);
     setIsModalOpen(true);
   };
 
-  const handleTrade = (type, quantity) => {
-    console.log(`${type.toUpperCase()} ${quantity} of ${selectedCoin.name}`);
-    actions.tradeCoin(selectedCoin.id, type, quantity);
-    setIsModalOpen(false);
-  };
+  const handleTrade = () => {
+    setIsModalOpen(true);
+};
+
 
   // Deduplicate wallet data
   const uniqueWalletData = store.walletNormalData.filter(
@@ -58,15 +57,9 @@ export const Wallet = () => {
             <tr key={walletArray.id}>
               <td>
                 <div className="wallet-info">
-                  <h5 className="wallet-name">{walletArray.name}</h5>
-                  <div className="wallet-symbol">
-                    {walletArray.symbol.toUpperCase()}
-                  </div>
-                  <img
-                    src={walletArray.image}
-                    alt={walletArray.name}
-                    className="wallet-image"
-                  />
+                  <img src={walletArray.image.small} alt={walletArray.name} className="wallet-image"/>
+                  <div className="wallet-name">{walletArray.name}</div>
+                  <div className="wallet-symbol" style ={{color: "#39ff14"}}>{walletArray.symbol.toUpperCase()}</div>
                 </div>
               </td>
               <td>${walletArray.current_price?.toLocaleString() || "N/A"}</td>
@@ -85,15 +78,10 @@ export const Wallet = () => {
                 />
               </td>
               <td>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => handleOpenModal(walletArray)}
-                >
-                  Trade
-                </button>
+              <button type="submit" id="submitBtn" onClick={() => actions.setShowTradeModal(walletArray)} style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
               </td>
               <td>
-                <Link to={`/coin/${walletArray.id}`} className="btn btn-secondary">
+                <Link to={`/moreInfo/${walletArray.id}`} className="btn btn-secondary">
                   More Information
                 </Link>
               </td>
@@ -102,14 +90,8 @@ export const Wallet = () => {
         </tbody>
       </table>
 
-      {isModalOpen && selectedCoin && (
-        <TradeModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onTrade={handleTrade}
-          coinName={selectedCoin.name}
-        />
-      )}
+      
+    
     </div>
   );
 };

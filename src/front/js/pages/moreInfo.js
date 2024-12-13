@@ -53,7 +53,7 @@ export const MoreInfo = () => {
 
     useEffect(() => {
         actions.getCurrentCoinPriceData();
-    }, [store.currency]);
+    }, [store.currency, store.timeFrame]);
 
     useEffect(() => {
         document.getElementById("gb2").style.backgroundColor= "black";
