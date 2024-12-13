@@ -407,18 +407,12 @@ export const Wallet = () => {
             <tr key={walletArray.id}>
               <td>
                 <div className="wallet-info">
-                  <h5 className="wallet-name">{walletArray.name}</h5>
-                  <div className="wallet-symbol">
-                    {walletArray.symbol.toUpperCase()}
-                  </div>
-                  <img
-                    src={walletArray.image.small}
-                    alt={walletArray.name}
-                    className="wallet-image"
-                  />
+                  <img src={walletArray.image.small} alt={walletArray.name} className="wallet-image"/>
+                  <div className="wallet-name">{walletArray.name}</div>
+                  <div className="wallet-symbol" style ={{color: "#39ff14"}}>{walletArray.symbol.toUpperCase()}</div>
                 </div>
               </td>
-              <td>${walletArray.current_price?.toLocaleString() || "N/A"}</td>
+              <td>${walletArray.market_data.current_price[store.currency]?.toLocaleString() || ""}</td>
               <td>{walletArray.quantity_owned || 0}</td>
               <td>
                 ${(
@@ -434,15 +428,10 @@ export const Wallet = () => {
                 />
               </td>
               <td>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => handleOpenModal(walletArray)}
-                >
-                  Trade
-                </button>
+              <button type="submit" id="submitBtn" onClick={() => actions.setShowTradeModal(walletArray)} style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
               </td>
               <td>
-                <Link to={`/moreinfo/${walletArray.id}`} className="btn btn-secondary">
+                <Link to={`/moreInfo/${walletArray.id}`} className="btn btn-secondary">
                   More Information
                 </Link>
               </td>
@@ -451,14 +440,8 @@ export const Wallet = () => {
         </tbody>
       </table>
 
-      {isModalOpen && selectedCoin && (
-        <TradeModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onTrade={handleTrade}
-          coinName={selectedCoin.name}
-        />
-      )}
+      
+    
     </div>
   );
 };

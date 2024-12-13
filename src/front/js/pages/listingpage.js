@@ -114,25 +114,31 @@ export const Listing = () => {
                             <td>${coin.total_volume.toLocaleString()}</td>
                             <td>
                                 <button
-                                    className="btn listTradeBtn"
+                                    type="submit"
+                                    className="submitBtn"
                                     onClick={(e) => {
-                                        e.stopPropagation();
-                                        actions.setShowTradeModal(coin)}
-                                    }  
+                                        e.stopPropagation(); 
+                                        actions.setShowTradeModal(coin);
+                                    }}
+                                    style={{
+                                        backgroundColor: "#39ff14",
+                                        borderRadius: "5px",
+                                        height: "38px",
+                                        width: "90px",
+                                        border: "1px solid black"
+                                    }}
                                 >
                                     Trade
                                 </button>
-                        
                                 <button
                                     className="btn btn-primary"
                                     onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleAddToWallet(coin)}
-                                    }  // Add coin to wallet
+                                        e.stopPropagation(); // Prevent the event from propagating to the row
+                                        handleAddToWallet(coin);
+                                    }}
                                 >
                                     Add to Wallet
                                 </button>
-                        
                                 <button
                                     className={`star-button ${
                                         store.favoriteIds.some((favCoin) => favCoin.id === coin.id)
@@ -141,27 +147,27 @@ export const Listing = () => {
                                     }`}
                                     onClick={(e) => {
                                         e.stopPropagation(); 
-                                        handleFavoriteToggle(coin)}
-                                    }
+                                        handleFavoriteToggle(coin);
+                                    }}
                                 >
                                     {store.favoriteIds.some((favCoin) => favCoin.coin_id === coin.id)
                                         ? "★"
                                         : "☆"}
                                 </button>
                             </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
 
-            {/* {isModalOpen && selectedCoin && modalAction === "trade" && (
-                <TradeModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    onTrade={handleTrade}
-                    coinName={selectedCoin.name}
-                />
-            )} */}
-        </div>
-    );
-};
+                                        {/* {isModalOpen && selectedCoin && modalAction === "trade" && (
+                                            <TradeModal
+                                                isOpen={isModalOpen}
+                                                onClose={() => setIsModalOpen(false)}
+                                                onTrade={handleTrade}
+                                                coinName={selectedCoin.name}
+                                            />
+                                        )} */}
+                                    </div>
+                                );
+                            };

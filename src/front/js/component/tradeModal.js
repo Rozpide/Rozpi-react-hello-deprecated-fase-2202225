@@ -45,7 +45,7 @@ export const TradeModal = (coin) => {
                             <button
                                 type="button"
                                 className="btn-close"
-                                onClick={() => {actions.setShowTradeModal(false); setAmount(0); setQuantity(0)}}
+                                onClick={() => { actions.setShowTradeModal(false); setAmount(0); setQuantity(0) }}
                             ></button>
                         </div>
                         <div className="modal-body">
@@ -87,7 +87,12 @@ export const TradeModal = (coin) => {
                                                 <label htmlFor="buyCurrencyAmount" className="form-label">Amount in {store.currency.toUpperCase()}</label>
                                                 <input type="number" className="form-control" onChange={(e) => setAmount(e.target.value)} id="buyCurrencyAmount" name="buyCurrencyAmount" required />
                                             </div>
-                                            <div className="mb-3">Total Coins: {amount / store.tradeCoin.market_data.current_price[store.currency]} {store.tradeCoin.name}</div>
+                                            <div className="mb-3">
+                                                Total Coins: {amount /
+                                                    ((location.pathname == '/listingpage') ?
+                                                        store.tradeCoin.current_price :
+                                                        store.tradeCoin.market_data.current_price[store.currency])} {store.tradeCoin.name}
+                                            </div>
                                             <button type="submit" className="btn trdBtn">Buy</button>
                                         </>
                                     ) : (
@@ -96,7 +101,12 @@ export const TradeModal = (coin) => {
                                                 <label htmlFor="buyQuantity" className="form-label">Quantity of {store.tradeCoin.name}</label>
                                                 <input type="number" className="form-control" onChange={(e) => setQuantity(e.target.value)} id="buyQuantity" name="buyQuantity" required />
                                             </div>
-                                            <div className="mb-3">Total Cost: {Number(quantity * store.tradeCoin.market_data.current_price[store.currency]).toLocaleString()} {store.currency.toUpperCase()} </div>
+                                            <div className="mb-3">
+                                                Total Cost: {Number (quantity *
+                                                    ((location.pathname == '/listingpage') ?
+                                                        store.tradeCoin.current_price :
+                                                        store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}
+                                                {store.currency.toUpperCase()} </div>
                                             <button type="submit" className="btn trdBtn">Buy</button>
                                         </>
                                     )}
@@ -121,7 +131,11 @@ export const TradeModal = (coin) => {
                                                 <label htmlFor="sellCurrencyAmount" className="form-label">Amount in {store.currency.toUpperCase()}</label>
                                                 <input type="number" className="form-control" onChange={(e) => setAmount(e.target.value)} id="sellCurrencyAmount" name="sellCurrencyAmount" required />
                                             </div>
-                                            <div className="mb-3">{amount / store.tradeCoin.market_data.current_price[store.currency]} {store.tradeCoin.name}</div>
+                                            <div className="mb-3">
+                                                {amount /
+                                                    ((location.pathname == '/listingpage') ?
+                                                        store.tradeCoin.current_price:
+                                                        store.tradeCoin.market_data.current_price[store.currency])} {store.tradeCoin.name}</div>
                                             <button type="submit" className="btn trdBtn">Sell</button>
                                         </>
                                     ) : (
@@ -130,7 +144,12 @@ export const TradeModal = (coin) => {
                                                 <label htmlFor="sellQuantity" className="form-label">Quantity of {store.tradeCoin.name}</label>
                                                 <input type="number" className="form-control" onChange={(e) => setQuantity(e.target.value)} id="sellQuantity" name="sellQuantity" required />
                                             </div>
-                                            <div className="mb-3">{Number(quantity * store.tradeCoin.market_data.current_price[store.currency]).toLocaleString()} {store.currency.toUpperCase()} </div>
+                                            <div className="mb-3"> 
+                                                {Number(quantity *
+                                                    ((location.pathname == '/listingpage') ?
+                                                        store.tradeCoin.current_price :
+                                                        store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}
+                                                {store.currency.toUpperCase()} </div>
                                             <button type="submit" className="btn trdBtn">Sell</button>
                                         </>
                                     )}

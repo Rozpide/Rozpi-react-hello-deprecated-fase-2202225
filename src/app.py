@@ -150,7 +150,6 @@ def add_wallet(coin_id):
     Wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
     db.session.add(Wallet_crypto)
     db.session.commit()
-    print (str(get_wallets(user_id)) + "hi") 
     return jsonify(get_wallets(user_id))
  
 
