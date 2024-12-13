@@ -28,7 +28,9 @@ const getState = ({ getStore, getActions, setStore }) => {
             walletIds: [],
             walletNormalData: [],
             walletPriceData: [],
-            walletNormalData: [],
+            funds: 0,
+            fundsInCurrency: 0,
+            fundsCurrency: "usd",
             coins: [],
             loadingCoins: true,
             currentCoinId: null,
@@ -45,13 +47,15 @@ const getState = ({ getStore, getActions, setStore }) => {
             showFavorites: false,
         },
         actions: {
+            setFundsInCurrency: (money) => {
+                setStore({ fundsInCurrency: money})
+            },
             setFavoritePriceData: () => {
                 setStore({ favoritePriceData: [] })
             },
             setFavoriteData: () => {
                 setStore({ favoriteData: [] })
             },
-
             setWalletPriceData: () => {
                 setStore({ walletPriceData: [] })
             },
@@ -95,6 +99,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 setStore({ showFavorites: true })
                 setStore({ showWallet: false })
                 setStore({ showOverallHoldings: false })
+            },
+            addToFunds: (money) => {
+                setStore({ funds: getStore().funds + Number(money) })
             },
             fetchCoins: async () => {
                 setStore({ loading: true });
