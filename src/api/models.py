@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 
@@ -61,12 +62,11 @@ class Pet(db.Model):
     breed_relationship = db.relationship("Breed", back_populates= "pets")
     
     def __repr__(self):
-        return f'<Pet {self.name, self.species, self.color, self.user}>'
+        return f'<Pet {self.name, self.color, self.user}>'
 
     def serialize(self):
         return{
             "name" : self.name,
-            "species" : self.species,
             "breed" : self.breed,
             "color": self.color,
             "photo_1": self.photo_1,
@@ -99,7 +99,7 @@ class Post_Description (db.Model):
                 "latitude": self.latitude,
                 "description" : self.description,
                 "event_date" : self.event_date,
-                "pet_status" : self.pet_status
+                "pet_status" : self.pet_status.value if self.pet_status else None
             }
 
 class Breed (db.Model):
@@ -116,6 +116,6 @@ class Breed (db.Model):
             return{    
                 "breed_id": self.id,
                 "breed": self.name,
-                "specie" : self.longitude,
+                "species" : self.species,
                 "pet" : self.pets
             }
