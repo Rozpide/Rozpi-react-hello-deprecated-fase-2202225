@@ -210,30 +210,30 @@
 /* Contenedor principal del chat */
 .chatContainer {
   display: flex;
-  height: 450px;
   width: 100%;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
 }
 
 /* Sección de Contactos (35%) */
 .chatContacts {
   width: 35%;
-  border-right: 1px solid #ccc;
-  background-color: #f4f4f9;
-  overflow-y: scroll;
+  overflow-y: auto;
+  /*cambio hidden por auto para probar el scroll*/
   padding: 10px;
+  color: white;
+  font-weight: 500;
+  height: -webkit-fill-available;
 }
 
 /* Sección de Mensajes (65%) */
 .chatMessages {
-  width: 65%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 10px;
-  background-color: #f8f9fa;
-  position: absolute;
-  top: 45px;
-  right: 0;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+  height: 400px;
+  color: whitesmoke;
 }
 
 /* CardHeader para la parte superior */
@@ -242,7 +242,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 15px;
+  border-radius: 15px 15px 0px 0px !important;
   position: relative;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
 }
 
 .CardHeader h5 {
@@ -268,22 +270,66 @@
 }
 
 .card-footer {
-  /* display: flex; */
+  display: flex;
   flex-direction: column;
-  gap: 10px;
-  position: absolute;
-  right: 0;
-  width: 65%;
-  top: 82%;
-  background-color: #f8f9fa;
+  gap: 31px;
+  align-items: center;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
 }
 
 .card-footer input {
-  width: 100%;
+  align-items: center;
+  width: 90%;
+  height: 50px;
 }
 
 .card-footer button {
   width: 100%;
+}
+
+.card-body {
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+}
+
+.card-body>.mb-3 {
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+}
+
+
+/* cambios del scroll Para navegadores WebKit */
+.chatMessages::-webkit-scrollbar,
+.contactos::-webkit-scrollbar {
+  width: 14px;
+}
+
+.chatMessages::-webkit-scrollbar-track,
+.contactos::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.chatMessages::-webkit-scrollbar-thumb,
+.contactos::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #0d47a1, #0d47a1 25%, #1565c0 50%, #1976d2 75%, #1e88e5);
+  border-radius: 10px;
+  border: 3px solid #1a1a1a;
+}
+
+.chatMessages::-webkit-scrollbar-thumb:hover,
+.contactos::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg,
+      #0A74DA,
+      /* Azul brillante (primario) */
+      #00A3FF 25%,
+      /* Azul cian vibrante */
+      #0066FF 50%,
+      /* Azul medio clásico */
+      #0052CC 75%,
+      /* Azul profundo */
+      #002244
+      /* Azul marino oscuro */
+    );
+  border: 3px solid gainsboro;
 }
 
 /* Botón de cerrar */
@@ -309,7 +355,5 @@
 .closing {
   opacity: 0;
   transform: scale(0.95);
-  /* Hace que el chat se contraiga ligeramente */
   transition: opacity 0.5s ease, transform 0.5s ease;
-  /* Duración de la transición */
 }

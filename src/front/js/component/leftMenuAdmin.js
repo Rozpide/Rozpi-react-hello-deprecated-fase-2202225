@@ -7,6 +7,7 @@ import backgroundForViews from "../../img/background.jpg";
 import imgWelcome from "../../img/wellcomeicon.png"
 import "../../styles/components.css";
 import Swal from 'sweetalert2';
+import ChatComponent from "../component/chatComponent";
 
 const FormCommon = ({ type }) => {
     const { store, actions } = useContext(Context)
@@ -325,6 +326,7 @@ const FormCommon = ({ type }) => {
 
 export const LeftMenuAdmin = () => {
     const [activeContent, setActiveContent] = useState(null);
+    const { store } = useContext(Context)
 
     const handleStudentRegisterForm = () => {
         setActiveContent("estudiantes");
@@ -464,10 +466,15 @@ export const LeftMenuAdmin = () => {
                         <hr />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center render-content col mt-3 py-3 "
+                <div className="render-content col mt-3 py-3 "
                     style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
-                    <div className="welcome-message mt-5">
-                        {renderContent()}
+                    <div>
+                        <div className="welcome-message mt-5 ms-auto me-auto">
+                            {renderContent()}
+                        </div>
+                        <div >
+                            {store.isChatVisible && <ChatComponent />}
+                        </div>
                     </div>
                 </div>
             </div>

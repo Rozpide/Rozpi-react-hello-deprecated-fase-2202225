@@ -2,7 +2,8 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../../styles/Navbar.module.css";
-import Swal from "sweetalert2"
+import Swal from "sweetalert2";
+import { height } from "@fortawesome/free-solid-svg-icons/fa0";
 
 const ChatComponent = ({ userRole, userName, userAvatar }) => {
     const { store, actions } = useContext(Context);
@@ -41,7 +42,7 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                 text: response.msg,
                 timer: 2000,
                 icon: "success"
-            })
+            });
         }
     };
 
@@ -51,8 +52,7 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
 
     return (
         <div
-            className={`${styles.CardChat} card my-3 shadow-sm align-item-center ${store.isClosingChat ? styles.closing : ""
-                }`}
+            className={`${styles.CardChat} card my-3 shadow-sm align-item-center ${store.isClosingChat ? styles.closing : ""}`}
             style={{ display: store.isChatVisible || store.isClosingChat ? "block" : "none" }}
         >
             <div className={`${styles.CardHeader} card-header bg-primary text-white d-flex justify-content-between align-items-center`}>
@@ -64,8 +64,8 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                     ✖
                 </button>
             </div>
-            <div className={`${styles.chatContainer}`}>
-                <div className={`${styles.chatContacts}`}>
+            <div className={`${styles.chatContainer}`} >
+                <div className={`${styles.chatContacts}`} >
                     <div className="p-3">
                         <label htmlFor="filterRole" className="form-label">Filtrar por rol</label>
                         <select
@@ -81,7 +81,7 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                         </select>
                     </div>
 
-                    <div className="p-3">
+                    <div className={`${styles.contactos} p-3`} style={{ maxHeight: "450px", overflowY: "scroll" }}>
                         <h6>Seleccionar Contacto</h6>
                         {filteredContacts.length > 0 ? (
                             filteredContacts.map((contact, index) => (
@@ -98,8 +98,10 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                             <p className="text-muted">No hay contactos disponibles.</p>
                         )}
                     </div>
-                    <div className={`${styles.chatMessages}`}>
-                        <div className="card-body" style={{ height: "auto", overflowY: "auto", backgroundColor: "#f8f9fa" }}>
+                </div>
+                <div className={`${styles.chatCont} d-flex flex-column w-100`}>
+                    <div className={`${styles.chatMessages}`} style={{ overflowY: "scroll" }}>
+                        <div className="card-body" style={{ height: "auto" }}>
                             {store.mensajes.length > 0 ? (
                                 store.mensajes.map((msg, index) => (
                                     <div key={index} className="mb-3">
@@ -112,7 +114,9 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                                                     {!msg.read && (
                                                         <button
                                                             onClick={() => actions.markMessageAsRead(msg.id)}
-                                                            className="btn btn-link">
+                                                            className="btn btn-link"
+                                                            style={{ color: "gold", textDecoration: "none" }}
+                                                        >
                                                             Marcar como leído
                                                         </button>
                                                     )}
@@ -128,7 +132,6 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                     </div>
 
                     <div className={`${styles["card-footer"]}`}>
-
                         <input
                             type="text"
                             className="form-control"
@@ -136,14 +139,13 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
                         />
-
-
                         <input
-                            type="text"
+                            type="textarea"
                             className="form-control"
                             placeholder="Escribe tu mensaje..."
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
+                            style={{ height: "100px" }}
                         />
                         <button
                             className="btn btn-primary"
@@ -152,11 +154,10 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                         >
                             Enviar
                         </button>
-
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

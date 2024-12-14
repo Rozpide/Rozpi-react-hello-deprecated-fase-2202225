@@ -13,7 +13,6 @@ export const DashboardAdmin = () => {
             <div className="row">
                 <div className="col mt-5">
                     <LeftMenuAdmin />
-                    {store.isChatVisible && <ChatComponent />}
                 </div>
             </div>
         </div>

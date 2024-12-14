@@ -33,6 +33,12 @@ const NavBar = () => {
     actions.toggleChat();
   };
 
+  const handleNotificationClick = () => {
+    if (unreadCount > 0) {
+      handleMessaging();
+    }
+  };
+
   return (
     <Navbar expand="lg" className={`${styles["navbar-custom"]} navbar-dark fixed-top`}>
       <Navbar.Brand as={Link} to="/home">
@@ -47,7 +53,7 @@ const NavBar = () => {
       <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom}`}>
         {token ? (
           <Nav className="ms-auto text-center align-items-center">
-            <Nav.Link>
+            <Nav.Link onClick={handleNotificationClick}>
               <div className={`${styles["campana-container"]}`}>
                 <i className={`fas fa-bell ${store.unreadCount > 0 ? styles.campanaConNotificacion : styles.campana}`}></i>
                 {unreadCount > 0 && (
