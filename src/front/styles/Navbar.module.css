@@ -13,10 +13,7 @@
   padding: 10px;
   min-width: 10%;
   position: absolute;
-  /* Permite ajustar su posición */
   right: -10px;
-  /* Ajusta el menú para que aparezca en el costado derecho */
-
 }
 
 .ItemAvatarButtom {
@@ -49,11 +46,37 @@
   /* Separa el avatar del borde derecho */
 }
 
-.campana {
-  font-size: 1.5rem;
-  padding: 10px 15px;
+/* estilos para la campana de notificaciones */
+.campana-container {
+  position: relative;
+  display: inline-block;
 }
 
+.campana {
+  font-size: 30px;
+  color: white;
+  position: relative;
+  display: inline-block;
+}
+
+.campanaConNotificacion {
+  color: #ffc107 !important;
+  font-size: 30px;
+}
+
+.notificacionDot {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  transform: translate(50%, -50%);
+  width: 12px;
+  height: 12px;
+  background-color: red;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* --------------------*/
 .dashboard {
   position: fixed;
   top: 0;
@@ -184,22 +207,153 @@
 
 /* styles del chatComponent */
 
-.CardChat {
-  /* align-items: center; */
-  color: white;
-  font-weight: bold;
+/* Contenedor principal del chat */
+.chatContainer {
+  display: flex;
+  width: 100%;
   background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
 }
 
-.chatContainer {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-  opacity: 0;
+/* Sección de Contactos (35%) */
+.chatContacts {
+  width: 35%;
+  overflow-y: auto;
+  /*cambio hidden por auto para probar el scroll*/
+  padding: 10px;
+  color: white;
+  font-weight: 500;
+  height: -webkit-fill-available;
 }
 
-.chatContainerVisible {
-  max-height: 500px;
-  opacity: 1;
-  overflow: visible;
+/* Sección de Mensajes (65%) */
+.chatMessages {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+  height: 400px;
+  color: whitesmoke;
+}
+
+/* CardHeader para la parte superior */
+.CardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 15px 15px 0px 0px !important;
+  position: relative;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+}
+
+.CardHeader h5 {
+  font-size: 20px;
+}
+
+.chatContacts h6 {
+  font-size: 16px;
+}
+
+.chatContacts select {
+  margin-bottom: 10px;
+}
+
+.chatContacts div {
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.chatContacts div.bg-info {
+  background-color: #17a2b8 !important;
+  color: white !important;
+}
+
+.card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 31px;
+  align-items: center;
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+}
+
+.card-footer input {
+  align-items: center;
+  width: 90%;
+  height: 50px;
+}
+
+.card-footer button {
+  width: 100%;
+}
+
+.card-body {
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+}
+
+.card-body>.mb-3 {
+  background-image: linear-gradient(to right, rgba(31, 118, 146, 0.5), rgba(67, 56, 135, 0.5));
+}
+
+
+/* cambios del scroll Para navegadores WebKit */
+.chatMessages::-webkit-scrollbar,
+.contactos::-webkit-scrollbar {
+  width: 14px;
+}
+
+.chatMessages::-webkit-scrollbar-track,
+.contactos::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.chatMessages::-webkit-scrollbar-thumb,
+.contactos::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #0d47a1, #0d47a1 25%, #1565c0 50%, #1976d2 75%, #1e88e5);
+  border-radius: 10px;
+  border: 3px solid #1a1a1a;
+}
+
+.chatMessages::-webkit-scrollbar-thumb:hover,
+.contactos::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg,
+      #0A74DA,
+      /* Azul brillante (primario) */
+      #00A3FF 25%,
+      /* Azul cian vibrante */
+      #0066FF 50%,
+      /* Azul medio clásico */
+      #0052CC 75%,
+      /* Azul profundo */
+      #002244
+      /* Azul marino oscuro */
+    );
+  border: 3px solid gainsboro;
+}
+
+/* Botón de cerrar */
+.closeChat {
+  background: none;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s ease;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.closeChat:hover {
+  transform: scale(1.2) translateY(-50%) rotate(0.5turn);
+  color: yellow;
+}
+
+.closing {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
