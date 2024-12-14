@@ -45,10 +45,10 @@ h2 {
 }
 
 .LoginForm {
-  background: linear-gradient(45deg, rgba(10, 61, 98, 0.8), rgba(60, 99, 130, 0.8), rgba(60, 250, 250, 0.8));
-  min-height: 94vh;
+  background: linear-gradient(45deg, #0a3d62, #3c6382, #3cfa);
+  min-height: 100vh;
+  opacity: 0.8;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -70,4 +70,13 @@ h2 {
   100% {
     background-position: 0% 50%;
   }
+}
+
+.loggin-logo-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  text-align: start;
 }

@@ -211,7 +211,7 @@ const ProfileForm = ({ user }) => {
             src={userData.foto || "https://placehold.co/400"}
             alt={""}
             height={"200px"}
-            className="mb-0"
+            className="mb-0 mt-3"
           />
         </div>
         <div className="col-md-4 col-sm-auto d-flex flex-column align-items-center justify-content-around">

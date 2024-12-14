@@ -25,13 +25,6 @@ export function clean_student_data(obj) {
 }
 
 
-const formatDate = (date) => {
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-}
 
 export const get_student_avg = (student) => {
 

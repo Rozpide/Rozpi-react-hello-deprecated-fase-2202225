@@ -42,9 +42,10 @@ cloudinary.config(
 #Check revoked Token
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
-    is_pwd_type = jwt_payload["type"] == "password"  and request.path != '/api/resetpassword'
+    is_pwd_type = jwt_payload["type"] == "password"  and request.path == '/api/resetpassword'
 
     if is_pwd_type:
+        
         return True
     
     jti = jwt_payload["jti"]

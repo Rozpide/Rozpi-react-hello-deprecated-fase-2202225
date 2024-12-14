@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
+import Collapse from 'react-bootstrap/Collapse';
+import { Context } from "../../store/appContext";
 
 const calculateAVGMateria = arr =>
   arr.map(materia => ({
@@ -10,7 +12,9 @@ const calculateAVGMateria = arr =>
       : 0,
   }));
 
+
 const StyledTable = styled.div`
+position: relative;
   width: 90%;
   height: 100%;
   border: 1px solid #ddd;
@@ -49,14 +53,45 @@ const Column = styled.div`
   }
 `;
 
-const ParentDashboardTable = ({ materias }) => {
+const ParentDashboardTable = ({ materias, studentId }) => {
+  const { store } = useContext(Context)
   const [info, setInfo] = useState(materias);
+  const [openRows, setOpenRows] = useState({})
+  const [studentInfo, setStudentInfo] = useState([])
+
+
 
   useEffect(() => {
     if (materias.length) {
       setInfo(materias);
+      setStudentInfo(...store.personalInfo.estudiantes.filter(student => student.id == studentId))
+
     }
   }, [materias]);
+
+
+  const handleToggle = (index) => {
+    setOpenRows((prevState) => ({
+      ...prevState,
+      [index]: !prevState[index]
+    }))
+  }
+
+
+  const getMateriaInfo = (materia) => {
+    let materiaInfo = studentInfo.calificaciones?.filter((calificacion) => calificacion.materia == materia)
+
+
+    return materiaInfo.map((evaluacion) => (
+      <StyledRow>
+        <Column><i class="bi bi-file-text"></i> {evaluacion.evaluacion}</Column>
+        <Column>{new Date(evaluacion.fecha).toISOString().split("T")[0]}</Column>
+        <Column>{evaluacion.nota}</Column>
+      </StyledRow>
+    ))
+  }
+
+
 
   return (
     <StyledTable>
@@ -67,11 +102,24 @@ const ParentDashboardTable = ({ materias }) => {
       </StyledHeader>
       {info.length ? (
         info.map((materia, index) => (
-          <StyledRow key={index}>
-            <Column>{materia.materia}</Column>
-            <Column>{materia.evaluaciones}</Column>
-            <Column>{materia.promedio}</Column>
-          </StyledRow>
+          <div className="w-100 m-0 p-0" key={`table-info-${index}`}>
+            <StyledRow key={index} onClick={() => handleToggle(index)}>
+              <Column><i className={`bi bi-caret-${openRows[index] ? "up" : "down"}-fill me-1`}></i>{materia.materia}</Column>
+              <Column>{materia.evaluaciones}</Column>
+              <Column>{materia.promedio}</Column>
+            </StyledRow>
+            {
+              studentInfo.calificaciones ?
+                (<Collapse in={openRows[index]}>
+                  <div className="w-100 m-0 p-0">
+                    <hr class="dropdown-divider text-light" />
+
+                    {getMateriaInfo(materia.materia)}
+                    <hr class="dropdown-divider text-light" />
+                  </div>
+                </Collapse>) : ""
+            }
+          </div>
         ))
       ) : (
         <h1 className="text-center">Cargando contenido</h1>

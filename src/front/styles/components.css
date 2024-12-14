@@ -31,7 +31,7 @@
 .container-welcome-teacher {
   /* margin-left: 3rem; */
   padding: 4rem;
-  width: 900px;
+  width: 100%;
   height: auto;
   border-radius: 2rem;
   background-image: linear-gradient(to right, rgba(31, 118, 146, 0.8), rgba(67, 56, 135, 0.8));
@@ -204,6 +204,98 @@
   transition: box-shadow 0.2s ease-in;
 }
 
+/* Estilo para botón de retorno del formulario */
+
+.btn-outline-cancel {
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 3rem;
+  border: 1px solid rgb(61, 106, 255);
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: transparent;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+.btn-outline-cancel {
+  background: rgb(31, 135, 80);
+  box-shadow: 0 0 6px 3px rgba(0, 142, 236, 0.815);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.btn-outline-cancel:hover {
+  background: rgb(231, 236, 255);
+  color: black;
+  box-shadow: 0 0 30px 5px rgba(0, 142, 236, 0.815);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.btn-outline-cancel:hover::before {
+  background-color: #fff;
+  -webkit-animation: sh02 0.5s 0s linear;
+  -moz-animation: sh02 0.5s 0s linear;
+  animation: sh02 0.5s 0s linear;
+}
+
+.btn-outline-cancel::before {
+  content: '';
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 50px 30px #fff;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
+
+.btn-outline-cancel:focus {
+  outline-style: solid;
+  outline-color: #2b2d42;
+  outline-width: 2px;
+  outline-offset: 2px;
+}
+
+@keyframes sh02 {
+  from {
+    opacity: 0;
+    left: 0%;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    left: 100%;
+  }
+}
+
+.btn-outline-cancel:active {
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: box-shadow 0.2s ease-in;
+  -moz-transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-in;
+}
+
 /* Estilo para input de descripción de profesores*/
 
 .teacher-description {
@@ -260,8 +352,8 @@
   color: #ffffff;
   font-size: 20px;
   text-decoration: none;
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+  padding-top: .1rem;
+  padding-bottom: .2rem;
   margin: 0 5px;
   position: relative;
   overflow: hidden;
@@ -315,4 +407,30 @@
 .custom-select:hover {
   background-color: #e1e1e1;
   color: rgb(0, 0, 0);
+}
+
+.custom-select-edit {
+  background-color: transparent;
+  border: 1px solid #e7e7e7;
+  color: #000000;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 200;
+  border-radius: 0.3rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.custom-select-edit:hover {
+  background-color: #e1e1e1;
+  color: rgb(0, 0, 0);
+}
+
+/* Estilos para tablas */
+
+.table-styles {
+  border-radius: 2rem;
+  background: #fff;
+  width: 100%;
+  height: auto;
+  padding: 2rem;
 }

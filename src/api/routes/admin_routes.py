@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from api.models import db, User, EmailAuthorized, Estudiante, Role, Docente, Materias, Grados, DocenteMaterias
 from flask_cors import CORS
 from api.utils import bcrypt
-from flask_jwt_extended import get_jwt, verify_jwt_in_request
+from flask_jwt_extended import get_jwt, verify_jwt_in_request, get_jwt_identity
 from api.schemas.schemas import TeacherSchema, UserSchema, AuthorizedEmailSchema, StudentSchema, MateriasSchema, DocenteMateriaSchema, GradoSchema, RoleSchema
 from datetime import datetime
 from api.services.generic_services import create_instance, delete_instance, get_all_instances, update_instance, get_instance_by_id
@@ -65,15 +65,26 @@ def email_authorization():
     if not body:
         return jsonify({"msg": "Missig info"}),400
     
-    role_exists = Role.query.get(body["role_id"])
+    role_exists = Role.query.filter(Role.nombre.ilike('representante')).first()
     if not role_exists:
         return jsonify({"msg": "Role not found"}), 404
-        
+    
+    body['role_id'] = role_exists.id
     return create_instance(EmailAuthorized,body,authorized_email_schema)
 
 @admin_routes.route('/user/auth', methods=['GET'])
 def get_email_authorizations():
     return get_all_instances(EmailAuthorized,authorized_emails_schema)
+
+
+@admin_routes.route('/users', methods=['GET'])
+def get_users():
+    return get_all_instances(User, users_schema)
+
+
+@admin_routes.route('/info', methods=['GET'])
+def get_user_info():
+    return get_instance_by_id(User, user_schema, get_jwt_identity())
 
 # ////////////////////////////// Teachers Endpoints CRUD ////////////////////
 @admin_routes.route('/teachers', methods=['POST'])
@@ -169,7 +180,7 @@ def update_student(id):
     body = request.get_json()
     if not body:
         return jsonify({"msg": "request body not found"}),400
-    return update_instance(Estudiante,id,body)
+    return update_instance(Estudiante,id,body, student_schema)
     
 @admin_routes.route('/students/<int:student_id>', methods=['DELETE'])
 def remove_student(student_id):

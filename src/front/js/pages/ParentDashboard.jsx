@@ -18,6 +18,38 @@ const Content = styled.div`
   aspect-ratio: 16 / 9;
 `;
 
+
+
+const menuItems = [
+  {
+    key: "/dashboard/parent",
+    label: "Dashboard",
+    icon: <i className="bi bi-speedometer2"></i>,
+  },
+  {
+    key: "/dashboard/parent/",
+    label: "Revisar",
+    icon: <i className="bi bi-journal-check"></i>,
+  },
+  {
+    key: "/dashboard/parent/",
+    label: "Settings",
+    icon: <i className="bi bi-journal-text"></i>,
+  },
+  {
+    key: "/dashboard/parent/",
+    label: "Mensajes",
+    icon: <i className="bi bi-chat-left-text"></i>,
+  },
+  {
+    key: "/dashboard/parent/profile",
+    label: "Perfil",
+    icon: <i className="bi bi-chat-left-text"></i>,
+  },
+];
+
+
+
 const ParentDashboard = () => {
   const [activeKey, setActiveKey] = useState("home");
   const { store, actions } = useContext(Context);
@@ -104,31 +136,3 @@ const ParentDashboard = () => {
 };
 
 export default ParentDashboard;
-
-const menuItems = [
-  {
-    key: "/dashboard/parent",
-    label: "Dashboard",
-    icon: <i className="bi bi-speedometer2"></i>,
-  },
-  {
-    key: "/dashboard/parent/",
-    label: "Revisar",
-    icon: <i className="bi bi-journal-check"></i>,
-  },
-  {
-    key: "/dashboard/parent/",
-    label: "Settings",
-    icon: <i className="bi bi-journal-text"></i>,
-  },
-  {
-    key: "/dashboard/parent/",
-    label: "Mensajes",
-    icon: <i className="bi bi-chat-left-text"></i>,
-  },
-  {
-    key: "/dashboard/parent/profile",
-    label: "Perfil",
-    icon: <i className="bi bi-chat-left-text"></i>,
-  },
-];

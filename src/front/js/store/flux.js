@@ -7,11 +7,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			profesores: [],
+			estudiantes: [],
+			profesorPersonalInfo: {
+				docente: {},
+				grados: [],
+				materias: []
+			},
 			usuarios: [],
 			grados: [],
 			materias: [],
 			asignaciones: [],
 			evaluaciones: [],
+			calificaciones: [],
 			personalInfo: null,
 			contactos: [],
 			userAvatar: null,
@@ -57,14 +64,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					if (!response.ok) {
 						let error = await response.json()
-						if (error.msg?.includes("Token has expired")) {
+						if (error.msg?.includes("Token has expired") || error.msg == "Token has been revoked") {
 							localStorage.removeItem("token")
 							localStorage.removeItem("role")
 							window.location.href = '/'
 							return { "msg": "Session Expired" }
 						}
-
-
 						throw new Error(`Error con la solicitud: ${error.msg ?? error.error}`)
 					}
 
@@ -121,85 +126,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error
 				}
 
+			}, userOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('user/auth', method, { id, body, bluePrint: 'admin' })
+			}, setUsers: async () => {
+				const response = await getActions().userOperations('GET')
+				setStore({ usuarios: response })
 			}, studentsOperations: async (method, body = '', id = '') => {
-				return getActions().crudOperation('student', method, { id, body, bluePrint: 'admin' })
+				return getActions().crudOperation('students', method, { id, body, bluePrint: 'admin' })
+			}, gradeStudentsOperations: async (method, body = null, id = '') => {
+				return getActions().crudOperation('estudiantes', method, { id, body, bluePrint: 'teacher' })
+			}, setGradeStudents: async (grado_id) => {
+				const response = await getActions().gradeStudentsOperations('GET', null, grado_id)
+				setStore({ estudiantes: response })
+			}, setStudents: async () => {
+				const response = await getActions().studentsOperations('GET')
+				setStore({ estudiantes: response })
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
 			}, setSubjects: async () => {
 				const response = await getActions().subjectsOperations('GET')
 				setStore({ materias: response })
+			}, teachersOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('teachers', method, { id, body, bluePrint: 'admin' })
+			}, setTeachers: async () => {
+				const response = await getActions().teachersOperations('GET')
+				setStore({ profesores: response })
 			}, testsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('evaluaciones', method, { id, body, bluePrint: 'teacher' })
 			}, setTests: async () => {
 				const response = await getActions().testsOperations('GET')
 				setStore({ evaluaciones: response })
-			},
-			// CRUD para usuarios autorizados
-
-			getUsers: async () => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("user/auth", {
-					method: "GET",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				setStore({ usuarios: data })
+			}, scoreOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('calificaciones', method, { id, body, bluePrint: 'teacher' })
+			}, setScores: async () => {
+				const response = await getActions().scoreOperations('GET')
+				setStore({ calificaciones: response })
 			},
 
-			postUser: async (body) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("user/auth", {
-					method: "POST",
-					body: body,
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getUsers()
-			},
-
-			deleteUser: async (id) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute(`user/auth/${id}`, {
-					method: "DELETE",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getUsers()
-			},
-
-			// CRUD para profesores
-
-			postTeacher: async (body) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("teachers", {
-					method: "POST",
-					body: body,
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getTeachers()
-			},
-
-			deleteTeacher: async (id) => {
-				const actions = getActions()
-				const data = await actions.fetchRoute(`teachers/${id}`, {
-					method: "DELETE",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				actions.getTeachers()
-			},
-
-			getTeachers: async () => {
-				const actions = getActions()
-				const data = await actions.fetchRoute("teachers", {
-					method: "GET",
-					isPrivate: true,
-					bluePrint: 'admin'
-				});
-				setStore({ profesores: data })
-
-			}, postCourse: async (grado) => {
+			postCourse: async (grado) => {
 				const actions = getActions()
 				const data = await actions.fetchRoute("grados", {
 					method: "POST",
@@ -283,13 +247,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 
-					setStore({ token: null, role: null, userAvatar: null }); /// agregando el userAvatar acá
+					setStore({ token: null, role: null, userAvatar: null, personalInfo: null });
 					localStorage.removeItem("token");
 					localStorage.removeItem("role");
+
 				} catch (error) {
 					console.error("Error al cerrar sesión:", error);
 				}
-			}, getParentInfo: async () => {
+			}, getTeacherInfo: async () => {
+
+				try {
+					let teacherData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "teacher" })
+					console.log('fetched teacher data:', teacherData)
+					if (!teacherData) {
+						console.log('El profesor no tiene materias asignadas')
+						return false
+					}
+					setStore({ profesorPersonalInfo: teacherData });
+				}
+				catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			},
+			getParentInfo: async () => {
 
 				try {
 					let parentData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "parent" })
@@ -330,16 +311,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error al obtener mensajes:", error.message)
 					return
 				}
-			}, changePassword: async (newPassword) => {
+			}, changePassword: async (newPassword, token = null) => {
 				const actions = getActions()
 
 				try {
+					if (token) {
+						console.log("Se detecto Token")
+						setStore({ token: token })
+					}
+
+
+
 					const response = await actions.fetchRoute("reset", { method: 'PUT', isPrivate: true, bluePrint: "password", body: { "newPassword": newPassword } })
 
 					return response
 				} catch (error) {
 					console.error(error.message)
 					throw error
+				} finally {
+					if (token) {
+						setStore({ token: null })
+						console.log("Se eliminó el token del store")
+					}
 				}
 			},
 			handleUserAvatarUpdate: (avatarUrl) => {
@@ -435,6 +428,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					throw error
 				}
+			}, getStudentData: (id) => {
+				const { personalInfo } = getStore()
+
+				try {
+					if (personalInfo) {
+
+
+						let student = personalInfo.estudiantes.find((estudiante => estudiante.id == id))
+						if (!student) {
+							throw new Error("Estudiante no encontrado");
+
+						}
+						return student
+					}
+
+				} catch (error) {
+					console.error(error.message)
+					throw error
+				}
+
+
+			}, getStudents: () => {
+				const { personalInfo } = getStore()
+
+				if (personalInfo) {
+					return personalInfo.estudiantes
+
+				}
+				return []
+
 			}
 		}
 	}

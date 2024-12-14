@@ -51,7 +51,7 @@ const NavBar = () => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" className={`${styles["navbar-toggler"]}`} />
       <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom}`}>
-        {token ? (
+        {token && role ? (
           <Nav className="ms-auto text-center align-items-center">
             <Nav.Link onClick={handleNotificationClick}>
               <div className={`${styles["campana-container"]}`}>

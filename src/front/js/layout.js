@@ -7,6 +7,8 @@ import NavBar from "./component/Navbar";
 import { Footer } from "./component/footer";
 import { DashboardAdmin } from "./pages/dashboardAdmin";
 import { DashboardTeacher } from "./pages/dashboardTeacher";
+import { UpdateStudent } from "./pages/updateStudent";
+import { UpdateTeacher } from "./pages/updateTeacher";
 import RegistrationForm from './component/RegistrationForm';
 import LoginForm from './component/LoginForm';
 import ParentDashboard from "./pages/ParentDashboard.jsx";
@@ -14,6 +16,7 @@ import ProtectedRoute from "./component/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";
 import { Context } from "./store/appContext";
 import PasswordRecovery from "./component/PasswordRecovery.jsx";
+import PasswordReset from "./component/PasswordReset.jsx";
 
 const Layout = () => {
     const { store } = useContext(Context);
@@ -42,6 +45,23 @@ const Layout = () => {
                                     <DashboardAdmin />
                                 </ProtectedRoute>
                             }
+
+                        />
+                        <Route
+                            path="/update-student/:studentId"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <UpdateStudent />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/update-teacher/:teacherId"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <UpdateTeacher />
+                                </ProtectedRoute>
+                            }
                         />
                         <Route
                             path="/dashboard/teacher"
@@ -61,6 +81,7 @@ const Layout = () => {
 
                         <Route element={<Unauthorized />} path="/unauthorized" />
                         <Route path="/password/recovery/" element={<PasswordRecovery />} />
+                        <Route path="/password/reset/" element={<PasswordReset />} />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
