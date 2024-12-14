@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+
 			message: null,
 			demo: [
 
@@ -18,6 +19,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 		actions: {
 
+			// Use getActions to call a function within a fuction
+			exampleFunction: () => {
+				getActions().changeColor(0, "green");
+			},
+
+			// Función para establecer el mensaje en el estado global
+			setMessage: (msg) => {
+				const store = getStore(); // Accede al estado global
+				setStore({
+					...store, // Mantén el estado previo
+					message: msg // Actualiza el mensaje
+				});
+			},
+		
 			addNewPet: (newPet) => {
 				const token = sessionStorage.getItem('token');
 				console.log(token)
@@ -40,7 +55,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 					.catch((error) => { console.log(error) })
 			},
-
 
 
 		}
