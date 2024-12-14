@@ -18,7 +18,7 @@ def send_recovery_email(email, token, fullname):
     "template_params": {
         'user_name': fullname,
         'user_email': email,
-        'url': FRONT_URL+f"resetpassword?token={token}"
+        'url': FRONT_URL+f"password/reset/?token={token}"
         
     }
     }
