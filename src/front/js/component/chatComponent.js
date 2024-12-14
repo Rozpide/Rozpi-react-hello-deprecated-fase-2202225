@@ -107,9 +107,9 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                                     <div key={index} className="mb-3">
                                         <div className="d-flex align-items-start">
                                             <div>
-                                                <small><strong>{msg.name}</strong> - {msg.role}</small>
+                                                <strong>Remitente:</strong> {msg.remitente} - {msg.remitente_rol}
                                                 <p className="mb-1"><strong>Asunto:</strong> {msg.subject}</p>
-                                                <p>{msg.content}</p>
+                                                <p className="mb-1"><strong>Contenido:</strong> {msg.content}</p>
                                                 <p>
                                                     {!msg.read && (
                                                         <button
