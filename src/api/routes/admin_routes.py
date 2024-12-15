@@ -11,6 +11,7 @@ from flask_jwt_extended import get_jwt, verify_jwt_in_request, get_jwt_identity
 from api.schemas.schemas import TeacherSchema, UserSchema, AuthorizedEmailSchema, StudentSchema, MateriasSchema, DocenteMateriaSchema, GradoSchema, RoleSchema
 from datetime import datetime
 from api.services.generic_services import create_instance, delete_instance, get_all_instances, update_instance, get_instance_by_id
+from api.services.external_services import get_image
 
 
 app = Flask(__name__)
@@ -84,7 +85,19 @@ def get_users():
 
 @admin_routes.route('/info', methods=['GET'])
 def get_user_info():
-    return get_instance_by_id(User, user_schema, get_jwt_identity())
+    user = User.query.get(get_jwt_identity())
+    
+    if not user:
+        return jsonify({"msg": "User not found"}),401
+    
+    user_data = user_schema.dump(user)
+    user_data.pop("id")
+    user_data.pop("is_active")
+    user_data.pop("role_id")
+    user_data["foto"] = get_image(user.foto) if user.foto else ""
+    
+    
+    return jsonify(user_data),200
 
 # ////////////////////////////// Teachers Endpoints CRUD ////////////////////
 @admin_routes.route('/teachers', methods=['POST'])

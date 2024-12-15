@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, Route, Routes } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import backgroundForViews from "../../img/background.jpg";
@@ -8,9 +8,11 @@ import imgWelcome from "../../img/wellcomeicon.png"
 import "../../styles/components.css";
 import Swal from 'sweetalert2';
 import ChatComponent from "../component/chatComponent";
+import ProfileForm from "./ProfileForm.jsx";
 
 const FormCommon = ({ type }) => {
     const navigate = useNavigate()
+    const location = useLocation()
     const { store, actions } = useContext(Context)
     const [startDate, setStartDate] = useState(new Date());
     const [formBody, setFormBody] = useState({
@@ -28,6 +30,8 @@ const FormCommon = ({ type }) => {
     });
 
     useEffect(() => {
+
+
         if (type === 'student') {
             actions.getCourses();
         }
@@ -411,8 +415,10 @@ const FormCommon = ({ type }) => {
 };
 
 export const LeftMenuAdmin = () => {
+    const navigate = useNavigate()
+    const location = useLocation()
     const [activeContent, setActiveContent] = useState(null);
-    const { store } = useContext(Context)
+    const { store, actions } = useContext(Context)
 
     const handleStudentRegisterForm = () => {
         setActiveContent("estudiantes");
@@ -447,6 +453,13 @@ export const LeftMenuAdmin = () => {
     }
 
     const renderContent = () => {
+        if (location.pathname.includes("profile")) {
+            return (<Routes>
+                <Route path={"/profile"} element={<ProfileForm user={store.personalInfo} />} />
+            </Routes>
+            )
+        }
+
         switch (activeContent) {
             case "estudiantes":
                 return <FormCommon type="student" />;
@@ -478,6 +491,29 @@ export const LeftMenuAdmin = () => {
                 );
         }
     };
+
+
+    useEffect(() => {
+        const fetchPersonalData = async () => {
+            await actions.getAdminInfo()
+
+        }
+
+        if (!store.personalInfo) {
+            fetchPersonalData()
+        }
+
+    }, [store.personalInfo])
+
+
+    useEffect(() => {
+
+        if (location.pathname != "/dashboard/admin/") {
+            navigate("/dashboard/admin/")
+        }
+
+
+    }, [activeContent])
 
     return (
         <div className="mt-0">
@@ -567,9 +603,11 @@ export const LeftMenuAdmin = () => {
                 <div className="render-content col mt-3 py-3 "
                     style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
                     <div>
-                        <div className="welcome-message mt-5 ms-auto me-auto">
-                            {renderContent()}
-                        </div>
+                        {location.pathname.includes("profile") ? renderContent() :
+                            <div className="welcome-message mt-5 ms-auto me-auto">
+                                {renderContent()}
+                            </div>
+                        }
                         <div >
                             {store.isChatVisible && <ChatComponent />}
                         </div>

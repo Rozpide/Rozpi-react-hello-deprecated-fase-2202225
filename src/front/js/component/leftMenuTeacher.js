@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import backgroundForViews from "../../img/background.jpg";
@@ -8,6 +8,7 @@ import imgWelcome from "../../img/wellcomeicon.png"
 import "../../styles/components.css";
 import Swal from 'sweetalert2';
 import ChatComponent from "../component/chatComponent";
+import ProfileForm from "./ProfileForm.jsx"
 
 
 const FormCommon = ({ type }) => {
@@ -33,13 +34,7 @@ const FormCommon = ({ type }) => {
         setGrades(initialGrades);
     }, [store.calificaciones]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await actions.getTeacherInfo();
-            console.log('Fetched teacher info:', store.profesorPersonalInfo);
-        };
-        fetchData();
-    }, []);
+
 
     const handleChange = (e, studentId) => {
         const { name, value } = e.target;
@@ -439,8 +434,9 @@ const FormCommon = ({ type }) => {
 };
 
 export const LeftMenuTeacher = () => {
+    const location = useLocation()
     const [activeContent, setActiveContent] = useState(null);
-    const { store } = useContext(Context)
+    const { store, actions } = useContext(Context)
 
     const handleCreateEvaluation = () => {
         setActiveContent("crear");
@@ -454,7 +450,19 @@ export const LeftMenuTeacher = () => {
         setActiveContent("editar");
     };
 
+    const handleEditProfile = (edit = true) => {
+        setActiveContent(edit ? "profile" : "");
+    };
+
     const renderContent = () => {
+        if (location.pathname.includes("profile")) {
+            return (<Routes>
+                <Route path={"/profile"} element={<ProfileForm user={store.profesorPersonalInfo} />} />
+            </Routes>
+            )
+        }
+
+
         switch (activeContent) {
             case "crear":
                 return <FormCommon type="crear" />;
@@ -477,12 +485,25 @@ export const LeftMenuTeacher = () => {
         }
     };
 
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await actions.getTeacherInfo();
+
+        };
+        fetchData();
+    }, []);
+
+
+
+
     return (
         <div className="mt-0">
             <div className="row flex-nowrap mt-5">
                 <div className="col-auto col-md-3 col-xl-2 px-sm-2 mt-1 px-0 left-menu-background">
                     <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
-                        <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <Link to="/dashboard/teacher" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span className="fs-5 d-none d-sm-inline ">Menú</span>
                         </Link>
                         <ul className="nav nav-pills list-group flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
@@ -543,10 +564,12 @@ export const LeftMenuTeacher = () => {
                 </div>
                 <div className="render-content col mt-3 py-3"
                     style={{ backgroundImage: `url(${backgroundForViews})` }}>
-                    <div>
-                        <div className="welcome-message mt-5 ms-auto me-auto">
-                            {renderContent()}
-                        </div>
+                    <div className="d-flex flex-column w-100 gap-5">
+                        {location.pathname.includes("profile") ? renderContent() :
+                            <div className="welcome-message mt-5 ms-auto me-auto">
+                                {renderContent()}
+                            </div>
+                        }
                         <div >
                             {store.isChatVisible && <ChatComponent />}
                         </div>

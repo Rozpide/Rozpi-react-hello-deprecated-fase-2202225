@@ -10,7 +10,7 @@ import { Context } from "../store/appContext";
 const NavBar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const { token, unreadCount, role, personalInfo } = store;
+  const { token, unreadCount, role, personalInfo, profesorPersonalInfo } = store;
 
   useEffect(() => {
     actions.getMessages();
@@ -64,7 +64,7 @@ const NavBar = () => {
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className={`${styles.Toggle}`}>
                 <Avatar
-                  src={personalInfo?.foto || defaultAvatar}
+                  src={personalInfo?.foto || profesorPersonalInfo?.foto || defaultAvatar}
                   alt="User Avatar"
                   size={40}
                   className={`${styles["navbar-avatar"]}`}

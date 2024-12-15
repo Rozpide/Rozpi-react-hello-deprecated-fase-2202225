@@ -64,7 +64,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					if (!response.ok) {
 						let error = await response.json()
-						if (error.msg?.includes("Token has expired") || error.msg == "Token has been revoked") {
+						if (error?.msg?.includes("Token has expired") || error.msg == "Token has been revoked") {
 							localStorage.removeItem("token")
 							localStorage.removeItem("role")
 							window.location.href = '/'
@@ -404,7 +404,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 						throw new Error(error.msg || "Error al subir la imagen");
 					}
 					let data = await response.json()
-					await getActions().getParentInfo()
+					let rol = getStore().role
+					switch (rol) {
+						case "representante":
+							await getActions().getParentInfo()
+						case "docente":
+							await getActions().getTeacherInfo()
+						default:
+							await getActions().getAdminInfo()
+
+					}
 					return data
 				} catch (error) {
 					console.error("Error al subir la imagen:", error.message);
@@ -413,7 +422,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, updateProfile: async (body) => {
 				try {
 					const response = await getActions().fetchRoute("update", { method: 'PUT', isPrivate: true, bluePrint: "profile", body: body })
-					await getActions().getParentInfo()
+					let rol = getStore().role
+					switch (rol) {
+						case "representante":
+							await getActions().getParentInfo()
+						case "docente":
+							await getActions().getTeacherInfo()
+						default:
+							await getActions().getAdminInfo()
+							break;
+					}
+
 					return response
 				} catch (error) {
 					console.error(error.message)
@@ -458,7 +477,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				return []
 
-			}
+			}, getAdminInfo: async () => {
+
+				try {
+					let adminData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "admin" })
+					setStore({ "personalInfo": adminData })
+				}
+				catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			},
 		}
 	}
 };
