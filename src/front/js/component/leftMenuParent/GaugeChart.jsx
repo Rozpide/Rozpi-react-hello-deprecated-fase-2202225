@@ -5,14 +5,14 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
   let subArcs =
     max == 20
       ? [
-          { limit: 3 },
-          { limit: 6 },
-          { limit: 9 },
-          { limit: 12 },
-          { limit: 15 },
-          { limit: 18 },
-          {},
-        ]
+        { limit: 3 },
+        { limit: 6 },
+        { limit: 9 },
+        { limit: 12 },
+        { limit: 15 },
+        { limit: 18 },
+        {},
+      ]
       : [{}, {}, {}, {}, {}, {}, {}];
 
   return (
@@ -45,6 +45,7 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
         height: "100%",
         maxWidth: "333px",
         maxHeight: "165px",
+        margin: "0 auto"
       }}
     />
   );

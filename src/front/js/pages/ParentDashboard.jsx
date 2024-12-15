@@ -7,7 +7,7 @@ import { Context } from "../store/appContext.js";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import ProfileForm from "../component/ProfileForm.jsx";
 import ChatComponent from "../component/chatComponent";
-
+import ParentReview from "../component/leftMenuParent/ParentReview.jsx"
 
 const Content = styled.div`
   flex: 1;
@@ -27,24 +27,14 @@ const menuItems = [
     icon: <i className="bi bi-speedometer2"></i>,
   },
   {
-    key: "/dashboard/parent/",
+    key: "/dashboard/parent/review",
     label: "Revisar",
     icon: <i className="bi bi-journal-check"></i>,
   },
   {
-    key: "/dashboard/parent/",
-    label: "Settings",
-    icon: <i className="bi bi-journal-text"></i>,
-  },
-  {
-    key: "/dashboard/parent/",
-    label: "Mensajes",
-    icon: <i className="bi bi-chat-left-text"></i>,
-  },
-  {
     key: "/dashboard/parent/profile",
     label: "Perfil",
-    icon: <i className="bi bi-chat-left-text"></i>,
+    icon: <i className="bi bi-person-lines-fill"></i>,
   },
 ];
 
@@ -57,7 +47,7 @@ const ParentDashboard = () => {
   const [infoEstudiantes, setInfoEstudiantes] = useState([]);
   const navigate = useNavigate();
   const [isChatVisible, setIsChatVisible] = useState(false);
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleChat = () => {
     setIsChatVisible(!isChatVisible);
   };
@@ -84,20 +74,6 @@ const ParentDashboard = () => {
     }
   }, [store.personalInfo]);
 
-  const handleContentRender = key => {
-    switch (key) {
-      case "materias":
-        break;
-
-      default:
-        return (
-          <MainDashboard
-            dataEvents={infoEventos}
-            estudiantes={infoEstudiantes}
-          />
-        );
-    }
-  };
 
   return (
     <div
@@ -128,6 +104,7 @@ const ParentDashboard = () => {
             path="/profile"
             element={<ProfileForm user={store.personalInfo ?? {}} />}
           />
+          <Route path="/review/:studentId?/:subject?" element={<ParentReview />} />
         </Routes>
         <div>{store.isChatVisible && <ChatComponent />}</div>
       </Content>
