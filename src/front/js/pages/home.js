@@ -6,7 +6,7 @@ import img1 from "../../img/niñosylibros.jpg";
 import img3 from "../../img/un-aula-de-un-colegio.jpeg";
 import CardDocente from '../component/CardDocente';
 import CarruselValoraciones from '../component/CarruselValoraciones';
-import logoBlanco from '../../img/logo-blanco.png';
+
 
 export const Home = () => {
   const location = useLocation();

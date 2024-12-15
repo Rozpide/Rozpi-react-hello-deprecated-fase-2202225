@@ -1,17 +1,18 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import backgroundForViews from "../../img/background.jpg";
 import imgWelcome from "../../img/wellcomeicon.png"
 import "../../styles/components.css";
 import Swal from 'sweetalert2';
+import ChatComponent from "../component/chatComponent";
 
 const FormCommon = ({ type }) => {
+    const navigate = useNavigate()
     const { store, actions } = useContext(Context)
     const [startDate, setStartDate] = useState(new Date());
-    const [photoPreview, setPhotoPreview] = useState(null)
     const [formBody, setFormBody] = useState({
         name: '',
         lastName: '',
@@ -19,14 +20,24 @@ const FormCommon = ({ type }) => {
         email: '',
         password: '',
         address: '',
+        phone: '',
         description: '',
-        photo: null,
         classroomName: '',
         subjectName: '',
         subjectDescription: ''
     });
 
     useEffect(() => {
+        if (type === 'student') {
+            actions.getCourses();
+        }
+        if (type === 'updateStudents') {
+            actions.setStudents();
+            actions.getCourses();
+        }
+        if (type === 'updateTeachers') {
+            actions.setTeachers();
+        }
         if (type === 'addSubject') {
             actions.getCourses();
         }
@@ -41,22 +52,22 @@ const FormCommon = ({ type }) => {
         setFormBody(prevState => ({ ...prevState, [name]: value }));
     };
 
-    const handleUploadPhoto = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormBody(prevState => ({ ...prevState, photo: file }));
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPhotoPreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
     const handleDateChange = (date) => {
         setStartDate(date);
         setFormBody(prevState => ({ ...prevState, date: date ? date.toISOString().split('T')[0] : '' }));
     };
+
+    const handleDeleteStudent = async (studentId) => {
+        await actions.studentsOperations('DELETE', ' ', studentId);
+        actions.setStudents();
+    };
+
+    const handleDeleteTeacher = async (teacherId) => {
+        await actions.teachersOperations('DELETE', ' ', teacherId);
+        actions.setTeachers();
+    };
+
+
 
     const submitFormData = async (event) => {
         event.preventDefault();
@@ -67,7 +78,8 @@ const FormCommon = ({ type }) => {
                     "nombre": formBody.name,
                     "apellido": formBody.lastName,
                     "direccion": formBody.address,
-                    "fecha_nacimiento": formBody.date
+                    "fecha_nacimiento": formBody.date,
+                    "grado_id": formBody.grado_id
                 })
             }
             if (type === 'teacher') {
@@ -80,6 +92,25 @@ const FormCommon = ({ type }) => {
                     "direccion": formBody.address,
                     "foto": "abc"
                 });
+            }
+            if (type === 'updateStudents') {
+                await actions.studentsOperations('PUT', {
+                    "nombre": formBody.name,
+                    "apellido": formBody.lastName,
+                    "direccion": formBody.address,
+                    "fecha_nacimiento": formBody.date,
+                    "grado_id": formBody.grado_id
+                }, " ");
+            }
+            if (type === 'updateTeachers') {
+                await actions.teachersOperations('PUT', {
+                    "nombre": formBody.name,
+                    "apellido": formBody.lastName,
+                    "email": formBody.email,
+                    "telefono": formBody.phone,
+                    "descripcion": formBody.description,
+                    "direccion": formBody.address,
+                }, " ");
             }
             if (type === 'addClassroom') {
                 let classroom = formBody.classroomName
@@ -115,12 +146,13 @@ const FormCommon = ({ type }) => {
                 password: '',
                 address: '',
                 description: '',
+                phone: '',
                 photo: null,
                 classroomName: '',
                 subjectName: '',
                 subjectDescription: ''
             });
-            setPhotoPreview(null);
+
 
         } catch (error) {
             console.error("Error submitting data", error)
@@ -135,7 +167,7 @@ const FormCommon = ({ type }) => {
         <div className="container ms-2">
 
             <form onSubmit={(e) => submitFormData(e)} className="container-welcome-teacher">
-                <h4 className="text-title d-flex justify-content-center mb-4">{`Registrar ${type === 'student' ? 'estudiante nuevo' : type === 'teacher' ? 'profesor nuevo' : type === 'addClassroom' ? 'grado nuevo' : type === 'addSubject' ? 'materia nueva' : type === 'assignSubject' ? 'asignación de materia' : type === 'authorizeUser' ? 'autorización de usuario' : ''}`}</h4>
+                <h4 className="text-title d-flex justify-content-center mb-4">{`Registrar ${type === 'student' ? 'estudiante nuevo' : type === 'teacher' ? 'profesor nuevo' : type === 'updateStudents' ? 'actualización de estudiantes' : type === 'updateTeachers' ? 'actualización de profesores' : type === 'addClassroom' ? 'grado nuevo' : type === 'addSubject' ? 'materia nueva' : type === 'assignSubject' ? 'asignación de materia' : type === 'authorizeUser' ? 'autorización de usuario' : ''}`}</h4>
                 {/* Formulario con elementos comunes para crear profesor y estudiante */}
 
                 {(type === 'student' || type === 'teacher') && <div className="mb-3">
@@ -150,9 +182,22 @@ const FormCommon = ({ type }) => {
                     <label className="form-label text-form">Email:</label>
                     <input type="email" name="email" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
                 </div>}
-                {type === 'student' && <div className="mb-3">
-                    <label className="form-label text-form">Fecha de nacimiento:</label> <br></br>
-                    <DatePicker selected={startDate} name="date" onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
+                {type === 'student' && <div className="mb-3 d-flex justify-content-between">
+                    <div>
+                        <label className="form-label text-form">Fecha de nacimiento:</label> <br></br>
+                        <DatePicker selected={startDate} name="date" onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
+                    </div>
+                    <div className="d-flex flex-column">
+                        <label className="form-label text-form">Asignar un grado:</label>
+                        <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
+                            <option value="" disabled selected>Opciones...</option>
+                            {store.grados.map(grado =>
+                                <option key={grado.id} value={grado.id}>{grado.nombre}</option>
+
+                            )}
+                        </select>
+                    </div>
+
                 </div>}
                 {(type === 'student' || type === 'teacher') && <div className="mb-3">
                     <label className="form-label text-form">Dirección:</label>
@@ -169,88 +214,108 @@ const FormCommon = ({ type }) => {
                 )}
                 {type === 'teacher' && (
                     <div className="mb-3">
-                        <label className="form-label text-form">Descripción:</label>
-                        <textarea name="description" className="form-control teacher-description" rows="3" required value={formBody.description} onChange={handleChange}></textarea>
+                        <label className="form-label text-form">Teléfono:</label>
+                        <input type="text" name="phone" className="form-control rounded-pill" required value={formBody.phone} onChange={handleChange} />
                     </div>
                 )}
                 {type === 'teacher' && (
                     <div className="mb-3">
-                        <label className="form-label text-form">Subir foto:</label>
-                        <input type="file" accept="image/*" className="form-control select-image rounded-pill" onChange={handleUploadPhoto} required />
-                        {photoPreview && (
-                            <img src={photoPreview} alt="Preview" className="mt-2 teacher-photo" style={{ maxWidth: "30%", height: "auto" }} />
-                        )}
+                        <label className="form-label text-form">Descripción:</label>
+                        <textarea name="description" className="form-control teacher-description" rows="3" required value={formBody.description} onChange={handleChange}></textarea>
                     </div>
                 )}
 
                 {/* Vista para editar estudiantes */}
 
                 {type === 'updateStudents' && (
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Email</th>
-                                <th>Fecha de nacimiento</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <input type="text" name="name" className="form-control" required value={formBody.name} onChange={(e) => handleChange(e)} />
-                                </td>
-                                <td>
-                                    <input type="text" name="lastName" className="form-control" required value={formBody.lastName} onChange={(e) => handleChange(e)} />
-                                </td>
-                                <td>
-                                    <input type="text" name="email" className="form-control" required value={formBody.email} onChange={(e) => handleChange(e)} />
-                                </td>
-                                <td>
-                                    <input type="date" name="date" className="form-control" required value={formBody.date} onChange={(e) => handleChange(e)} />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div className="table-styles mt-3">
+                        <table className="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Grado</th>
+                                    <th>Fecha de nacimiento</th>
+                                    <th>Editar/Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {store.estudiantes.map(student => (
+                                    <tr key={student.id}>
+                                        <td>{student.nombre}</td>
+                                        <td>{student.apellido}</td>
+                                        <td>{student.grado.nombre}</td>
+                                        <td>{student.fecha_nacimiento}</td>
+                                        <td className="d-flex justify-content-center">
+                                            <Link to={`/update-student/${student.id}`}>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-info me-3"
+                                                >
+                                                    <i class="bi bi-pen"></i>
+                                                </button>
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-danger"
+                                                onClick={() => handleDeleteStudent(student.id)}>
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
 
 
                 {/* Vista para editar profesores */}
 
                 {type === 'updateTeachers' && (
-                    <table className="table table-hover ">
-                        <thead className="table-design">
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Apellido</th>
-                                <th>Email</th>
-                                <th>Descripción</th>
-                                <th>Foto</th>
-                            </tr>
-                        </thead>
-                        <tbody className="table-design">
-                            <tr>
-                                <td>
-                                    <input type="text" name="name" className="form-control" required value={formBody.name} onChange={(e) => handleChange(e)} />
-                                </td>
-                                <td>
-                                    <input type="text" name="lastName" className="form-control" required value={formBody.lastName} onChange={(e) => handleChange(e)} />
-                                </td>
-                                <td>
-                                    <input type="text" name="email" className="form-control" required value={formBody.email} onChange={(e) => handleChange(e)} />
-                                </td>
-                                <td>
-                                    <textarea name="description" className="form-control" rows="3" required value={formBody.description} onChange={(e) => handleChange(e)}></textarea>
-                                </td>
-                                <td>
-                                    <input type="file" accept="image/*" className="form-control select-image" onChange={handleUploadPhoto} required />
-                                    {photoPreview && (
-                                        <img src={photoPreview} alt="Preview" className="mt-2 teacher-photo" style={{ maxWidth: "30%", height: "auto" }} />
-                                    )}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div className="table-styles mt-3">
+                        <table className="table table-hover ">
+                            <thead className="table-design">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                    <th>Descripción</th>
+                                    <th>Editar/Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody className="table-design">
+                                {store.profesores.map(profesor => (
+                                    <tr key={profesor.id}>
+                                        <td>{profesor.nombre}</td>
+                                        <td>{profesor.apellido}</td>
+                                        <td>{profesor.email}</td>
+                                        <td>{profesor.telefono}</td>
+                                        <td>{profesor.direccion}</td>
+                                        <td>{profesor.descripcion}</td>
+                                        <td className="d-flex justify-content-center">
+                                            <Link to={'/updateTeacher/' + profesor.id}>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-info me-3"
+                                                >
+                                                    <i class="bi bi-pen"></i>
+                                                </button>
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-danger"
+                                                onClick={() => handleDeleteTeacher(profesor.id)}>
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
 
                 {/* Formulario para añadir grados */}
@@ -347,6 +412,7 @@ const FormCommon = ({ type }) => {
 
 export const LeftMenuAdmin = () => {
     const [activeContent, setActiveContent] = useState(null);
+    const { store } = useContext(Context)
 
     const handleStudentRegisterForm = () => {
         setActiveContent("estudiantes");
@@ -400,7 +466,7 @@ export const LeftMenuAdmin = () => {
                 return <FormCommon type="authorizeUser" />;
             default:
                 return (
-                    <div className="container-fluid container-welcome-parent mt-3">
+                    <div className="container-fluid container-welcome-parent">
                         <div className="container-welcome-teacher py-5 d-flex">
                             <img src={imgWelcome} alt="welcome image" className="welcome-icon" />
                             <div>
@@ -415,9 +481,9 @@ export const LeftMenuAdmin = () => {
 
     return (
         <div className="mt-0">
-            <div className="row flex-nowrap " >
-                <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 rounded-start left-menu-background">
-                    <div className="d-flex flex-column mt-5 align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
+            <div className="row flex-nowrap mt-5" >
+                <div className="col-auto col-md-3 col-xl-2 mt-1 px-sm-2 px-0 left-menu-background">
+                    <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
                         <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span className="fs-5 d-none d-sm-inline ">Menú</span>
                         </Link>
@@ -498,10 +564,15 @@ export const LeftMenuAdmin = () => {
                         <hr />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center render-content col mt-3 py-3 "
+                <div className="render-content col mt-3 py-3 "
                     style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
-                    <div className="welcome-message mt-5">
-                        {renderContent()}
+                    <div>
+                        <div className="welcome-message mt-5 ms-auto me-auto">
+                            {renderContent()}
+                        </div>
+                        <div >
+                            {store.isChatVisible && <ChatComponent />}
+                        </div>
                     </div>
                 </div>
             </div>

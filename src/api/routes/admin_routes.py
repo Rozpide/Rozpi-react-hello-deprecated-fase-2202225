@@ -65,7 +65,7 @@ def email_authorization():
     if not body:
         return jsonify({"msg": "Missig info"}),400
     
-    role_exists = Role.query.filter(Role.nombre.ilike('docente')).first()
+    role_exists = Role.query.filter(Role.nombre.ilike('representante')).first()
     if not role_exists:
         return jsonify({"msg": "Role not found"}), 404
     
@@ -180,7 +180,7 @@ def update_student(id):
     body = request.get_json()
     if not body:
         return jsonify({"msg": "request body not found"}),400
-    return update_instance(Estudiante,id,body)
+    return update_instance(Estudiante,id,body, student_schema)
     
 @admin_routes.route('/students/<int:student_id>', methods=['DELETE'])
 def remove_student(student_id):

@@ -1,10 +1,11 @@
-import React, { useState, useContext } from "react";
-import { LeftMenuAdmin } from "../component/leftMenuAdmin";
+import React, { useState, useEffect, useContext } from "react";
 import NavBar from "../component/Navbar.js";
-import ChatComponent from "../component/chatComponent";
 import { Context } from "../store/appContext";
+import { Link, useNavigate } from "react-router-dom";
+import "../../styles/components.css";
+import Swal from 'sweetalert2';
 
-export const DashboardAdmin = () => {
+export const UpdateTeacher = () => {
     const { store, actions } = useContext(Context);
 
     return (
@@ -12,11 +13,11 @@ export const DashboardAdmin = () => {
             <NavBar />
             <div className="row">
                 <div className="col mt-5">
-                    <LeftMenuAdmin />
+                    <h1>Update Teacher</h1>
                 </div>
             </div>
         </div>
     );
 };
 
-export default DashboardAdmin
+export default UpdateTeacher;

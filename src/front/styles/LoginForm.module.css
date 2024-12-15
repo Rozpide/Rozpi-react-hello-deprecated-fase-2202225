@@ -6,12 +6,18 @@
   font-weight: 500;
   align-self: center;
   width: 100%;
-  margin: 20px 0px;
+  margin: 20px 0¿5px;
   color: white;
 }
 
-.formLog .form-control,
-.formLog .form-select {
+.inputFormLog {
+  margin: auto;
+  padding: 10px 20px;
+  width: 90%;
+}
+
+.formLog .formLog-control,
+.formLog .formLog-select {
   box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   transition: all 0.2s ease;
@@ -40,9 +46,9 @@ h2 {
 
 .LoginForm {
   background: linear-gradient(45deg, #0a3d62, #3c6382, #3cfa);
-  min-height: 94vh;
+  min-height: 100vh;
+  opacity: 0.8;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -64,4 +70,13 @@ h2 {
   100% {
     background-position: 0% 50%;
   }
+}
+
+.loggin-logo-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  text-align: start;
 }

@@ -16,7 +16,7 @@ const CardDocente = () => {
     ];
 
     useEffect(() => {
-        fetch(`${process.env.BACKEND_URL}/info/teachers`, {
+        fetch(`${process.env.BACKEND_URL}/teachers/info`, {
             "method": "GET",
             "headers": {
                 'Content-Type': 'application/json',
@@ -30,13 +30,11 @@ const CardDocente = () => {
                 return response.json();
             })
             .then(data => {
-                // Prioriza los datos de la API y complementa con los ficticios si es necesario
                 const combinedDocentes = [...data, ...fakeDocentes.slice(data.length)];
                 setDocentes(combinedDocentes);
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Si hay un error o no hay docentes cargados, usa solo los docentes ficticios
                 setDocentes(fakeDocentes);
             });
     }, []);

@@ -7,6 +7,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			profesores: [],
+			estudiantes: [],
 			profesorPersonalInfo: {
 				docente: {},
 				grados: [],
@@ -17,11 +18,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			materias: [],
 			asignaciones: [],
 			evaluaciones: [],
+			calificaciones: [],
 			personalInfo: null,
-			contactos: null,
+			contactos: [],
 			userAvatar: null,
 			mensajes: [],
+			unreadCount: 0,
 			isChatVisible: false,
+			isClosingChat: false,
 			successMessage: '',
 			errorMessage: '',
 		},
@@ -129,6 +133,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ usuarios: response })
 			}, studentsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('students', method, { id, body, bluePrint: 'admin' })
+			}, gradeStudentsOperations: async (method, body = null, id = '') => {
+				return getActions().crudOperation('estudiantes', method, { id, body, bluePrint: 'teacher' })
+			}, setGradeStudents: async (grado_id) => {
+				const response = await getActions().gradeStudentsOperations('GET', null, grado_id)
+				setStore({ estudiantes: response })
+			}, setStudents: async () => {
+				const response = await getActions().studentsOperations('GET')
+				setStore({ estudiantes: response })
 			}, subjectsOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('materias', method, { id, body, bluePrint: 'admin' })
 			}, setSubjects: async () => {
@@ -144,6 +156,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, setTests: async () => {
 				const response = await getActions().testsOperations('GET')
 				setStore({ evaluaciones: response })
+			}, scoreOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('calificaciones', method, { id, body, bluePrint: 'teacher' })
+			}, setScores: async () => {
+				const response = await getActions().scoreOperations('GET')
+				setStore({ calificaciones: response })
 			},
 
 			postCourse: async (grado) => {
@@ -272,17 +289,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, getContacts: async () => {
 				try {
 					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "messages" })
-					setStore({ "contactos": response })
+					if (response && Array.isArray(response)) {
+						setStore({ "contactos": response })
+					}
 				} catch (error) {
-					console.error(error.message)
+					console.error("Error al obtener contactos:", error.message)
 					return
 				}
 			}, getMessages: async () => {
 				try {
 					let response = await getActions().fetchRoute("get", { isPrivate: true, bluePrint: "messages" })
-					setStore({ "mensajes": response })
+					if (response && Array.isArray(response)) {
+						const unReadMessages = response.filter(msg => !msg.read);
+
+						setStore({
+							"mensajes": response,
+							"unreadCount": unReadMessages.length
+						});
+					}
 				} catch (error) {
-					console.error(error.message)
+					console.error("Error al obtener mensajes:", error.message)
 					return
 				}
 			}, changePassword: async (newPassword, token = null) => {
@@ -310,24 +336,53 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			handleUserAvatarUpdate: (avatarUrl) => {
-				setStore({ userAvatar: avatarUrl }); // Actualiza el avatar del usuario
+				setStore({ userAvatar: avatarUrl });
 			},
 			toggleChat: () => {
 				const store = getStore();
-				setStore({ isChatVisible: !store.isChatVisible }); // Alterna el estado del chat
+
+				if (store.isChatVisible) {
+					setStore({ isClosingChat: true });
+
+					setTimeout(() => {
+						setStore({ isChatVisible: false, isClosingChat: false });
+					}, 500);
+				} else {
+					setStore({ isChatVisible: true });
+				}
 			},
 			sendMessage: async (message) => {
 				try {
-					await getActions().fetchRoute("messages", {
+					const response = await getActions().fetchRoute("send", {
 						method: "POST",
-						body: {},
+						body: message, //para enviar el msj al backend
+						isPrivate: true,
+						bluePrint: "messages"
+					});
+					if (response) {
+						return response
+					}
+					await getActions().getMessages();
+				} catch (error) {
+					console.error("Error al enviar mensaje:", error);
+				}
+			},
+			markMessageAsRead: async (messageId) => {
+				try {
+					console.log("Marcando mensaje como leído con message_id:", messageId);
+
+					let response = await getActions().fetchRoute("read", {
+						method: "PUT",
+						body: { message_id: messageId },
 						isPrivate: true,
 						bluePrint: "messages"
 					});
 
+					console.log("Respuesta de la API para markMessageAsRead:", response);
+
 					await getActions().getMessages();
 				} catch (error) {
-					console.error("Error al enviar mensaje:", error);
+					console.error("Error al marcar mensaje como leído:", error.message);
 				}
 			},
 			postPicture: async (file) => {
