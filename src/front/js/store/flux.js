@@ -321,8 +321,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                         localStorage.setItem('userID', response.userID);
                         // localStorage.setItem('userToken', response.access_token);
 
-                        setStore({ userToken: response.access_token, userEmail: response.user.email, userID: response.userID, username: response.username });
+                        setStore({ userToken: response.access_token, userEmail: response.user.email, userID: response.userID, username: response.username, funds: Number(response.user.funds) });
                         getActions().getFavoriteIds(response.userID)
+                        getActions().getWalletIds(response.userID)
                     })
                     .catch(error => console.error(error));
             },
@@ -343,7 +344,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // Logout action to clear token and user data
             logout: () => {
                 localStorage.removeItem("token"); // Clear the token
-                setStore({ username: null, userID: null, userToken: null }); // Clear store data
+                setStore({ username: null, userID: null, userToken: null, funds: 0 }); // Clear store data
                 console.log("User logged out");
             },
             search: (query) => {
@@ -546,9 +547,35 @@ const getState = ({ getStore, getActions, setStore }) => {
                         }
                     })
                     .catch((err) => console.log(err));
-            }
+            },
+
+            addFundsToWallet: (funds) => {
+                fetch(process.env.BACKEND_URL + `users/funds`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        "user_id": getStore().userID,
+                        "funds": funds
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => setStore({ funds: Number(response) }))
+                .catch(error => console.error(error));
+            },
             
-        
+            getFunds: (id) => {
+                fetch(process.env.BACKEND_URL + `users/${id}/funds`)
+                    .then((res) => res.json())
+                    .then((response) => {
+                        setStore({ funds: Number(response) });
+                    })
+                    .catch((err) => console.log(err));
+            },
         },
     };
 };

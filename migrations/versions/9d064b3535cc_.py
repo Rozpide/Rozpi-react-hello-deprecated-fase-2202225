@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 9d10d1520772
+Revision ID: 9d064b3535cc
 Revises: 
-Create Date: 2024-12-12 18:20:04.568815
+Create Date: 2024-12-13 21:33:22.807009
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9d10d1520772'
+revision = '9d064b3535cc'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,6 +24,7 @@ def upgrade():
     sa.Column('password', sa.String(length=200), nullable=False),
     sa.Column('username', sa.String(length=200), nullable=False),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
+    sa.Column('funds', sa.Numeric(precision=10, scale=3), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
@@ -38,13 +39,13 @@ def upgrade():
     )
     op.create_table('wallet',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=80), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('coin_id', sa.String(length=120), nullable=False),
+    sa.Column('name', sa.String(length=80), nullable=True),
+    sa.Column('coin_id', sa.String(length=120), nullable=True),
     sa.Column('symbol', sa.String(length=20), nullable=True),
-    sa.Column('purchase_price', sa.String(length=20), nullable=True),
-    sa.Column('purchase_quantity', sa.String(length=20), nullable=True),
-    sa.Column('purchase_date', sa.String(length=20), nullable=True),
+    sa.Column('purchase_price', sa.Numeric(precision=10, scale=3), nullable=True),
+    sa.Column('purchase_quantity', sa.Numeric(precision=10, scale=3), nullable=True),
+    sa.Column('purchase_date', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

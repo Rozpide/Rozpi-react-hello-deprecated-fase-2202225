@@ -173,6 +173,26 @@ def get_wallet(id):
     wallet = list(map(lambda x: x.serialize(), wallet))
     return jsonify(wallet)
 
+@app.route('/users/funds', methods=['PATCH'])
+def add_funds():
+    user_id = request.json['user_id']
+    funds = request.json['funds']
+    updateRow = User.query.filter_by(id=user_id).first()
+    updateRow.funds = funds
+    db.session.commit()
+    return jsonify(get_funds(user_id))
+
+def get_funds(id):
+    user = User.query.filter_by(id=id).first()
+    print ('-----------------',user)
+    return user.funds
+
+@app.route('/users/<int:id>/funds', methods=['GET'])
+def get_funds1(id):
+    user = User.query.filter_by(id=id).first()
+    print ('-----------------',user.funds)
+    return jsonify(user.funds)
+
 # Run the application
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
