@@ -41,9 +41,32 @@ export const TradeModal = (coin) => {
         actions.setShowTradeModal(false)
     }
 
-    const verifyAmount = (value) => {
-        if (value > ownedValue) {
+    const verifyAmountSell = () => {
+        let price = Number(price)
+        let ownedValue = Number(ownedValue)
+        if (price > ownedValue) {
+            alert ("Please enter an amount equal or lower than your current holdings")
+        } else if (price < ownedValue) {
+            actions.sellSomeCoin(store.tradeCoin, quantity)
+            actions.addFundsToWallet(store.funds + Number(price))
+        } else {
+            actions.sellAllCoin(store.tradeCoin)
+            actions.addFundsToWallet(store.funds + Number(price))
+        }
 
+    }
+
+    const verifyQuantitySell = () => {
+        let quantity = Number(quantity)
+        let ownedQuantity = Number(ownedQuantity)
+        if (quantity > ownedQuantity) {
+            alert ("Please enter an amount equal or lower than your available coins")
+        } else if (quantity < ownedQuantity) {
+            actions.sellSomeCoin(store.tradeCoin, quantity)
+            actions.addFundsToWallet(store.funds + Number(price))
+        } else {
+            actions.sellAllCoin(store.tradeCoin)
+            actions.addFundsToWallet(store.funds + Number(price))
         }
     }
 
@@ -202,7 +225,7 @@ export const TradeModal = (coin) => {
                                                     ((location.pathname == '/listingpage') ?
                                                         store.tradeCoin.current_price :
                                                         store.tradeCoin.market_data.current_price[store.currency])}{' '}{store.tradeCoin.name}</div>
-                                            <button type="submit" className="btn trdBtn">Sell</button>
+                                            <button type="submit" className="btn trdBtn" onClick={(e)=> {e.preventDefault(); verifyAmountSell()}}>Sell</button>
                                         </>
                                     ) : (
                                         <>
@@ -223,7 +246,7 @@ export const TradeModal = (coin) => {
                                                         store.tradeCoin.current_price :
                                                         store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}{' '}
                                                 {store.currency.toUpperCase()} </div>
-                                            <button type="submit" className="btn trdBtn">Sell</button>
+                                            <button type="submit" className="btn trdBtn" onClick={(e)=> {e.preventDefault(); verifyQuantitySell()}}>Sell</button>
                                         </>
                                     )}
                                 </form>

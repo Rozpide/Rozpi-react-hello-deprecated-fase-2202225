@@ -507,23 +507,23 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch(error => console.error(error));
             },
 
-            removeFromWallet: (wallet_id) => {
-                fetch(process.env.BACKEND_URL + `wallet/${getStore().userID}/${wallet_id}`, {
-                    method: 'DELETE'
-                })
-                    .then(res => {
-                        if (!res.ok) throw Error(res.statusText);
-                        return res.json();
-                    })
-                    .then(response => {
-                        setStore({ walletIds: response });
-                        response.forEach(element => {
-                            getActions().getWalletNormalData(element.coin_id);
-                            getActions().getWalletPriceData(element.coin_id);
-                        });
-                    })
-                    .catch(error => console.error(error));
-            },
+            // removeFromWallet: (wallet_id) => {
+            //     fetch(process.env.BACKEND_URL + `wallet/${getStore().userID}/${wallet_id}`, {
+            //         method: 'DELETE'
+            //     })
+            //         .then(res => {
+            //             if (!res.ok) throw Error(res.statusText);
+            //             return res.json();
+            //         })
+            //         .then(response => {
+            //             setStore({ walletIds: response });
+            //             response.forEach(element => {
+            //                 getActions().getWalletNormalData(element.coin_id);
+            //                 getActions().getWalletPriceData(element.coin_id);
+            //             });
+            //         })
+            //         .catch(error => console.error(error));
+            // },
 
             getWalletIds: (id) => {
                 fetch(process.env.BACKEND_URL + `users/${id}/wallet`)
@@ -713,14 +713,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                 .catch(error => console.error(error));
             },
 
-            sellCoin: (coin, quantity) => {
+            sellSomeCoin: (coin, quantity) => {
                 fetch(process.env.BACKEND_URL + `wallet/${coin.id}`, {
                     method: 'PATCH',
                     body: JSON.stringify({
                         "name": coin.name,
                         "user_id": getStore().userID,
                         "coin_id": coin.id,
-                        "purchase_quantity": quantity
+                        "remaining_quantity": quantity
                     }),
                     headers: {
                         'Content-type': 'application/json'
@@ -730,8 +730,32 @@ const getState = ({ getStore, getActions, setStore }) => {
                     if (!res.ok) throw Error(res.statusText);
                     return res.json();
                 })
-                .then(response => setStore({ walletIds: response }))
+                .then(response => {
+                    setStore({ walletIds: response });
+                    response.forEach(element => {
+                        getActions().getWalletNormalData(element.coin_id);
+                        getActions().getWalletPriceData(element.coin_id);
+                    });
+                })
                 .catch(error => console.error(error));
+            },
+
+            sellAllCoin: (coin) => {
+                fetch(process.env.BACKEND_URL + `wallet/${getStore().userID}/${coin.id}`, {
+                    method: 'DELETE',
+                })
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => {
+                        setStore({ walletIds: response });
+                        response.forEach(element => {
+                            getActions().getWalletNormalData(element.coin_id);
+                            getActions().getWalletPriceData(element.coin_id);
+                        });
+                    })
+                    .catch(error => console.error(error));
             },
 
         },
