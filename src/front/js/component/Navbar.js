@@ -92,7 +92,19 @@ const NavBar = () => {
                   Perfil
                 </Dropdown.Item>
                 <Dropdown.Item
-                  onClick={actions.toggleChat}
+                  onClick={() => {
+                    // Ejecutar toggleChat antes de la navegación
+                    actions.toggleChat();
+
+                    // Redirigir al dashboard correspondiente, pasando el estado para hacer scroll
+                    const route =
+                      role === "admin" ? "/dashboard/admin" :
+                        role === "docente" ? "/dashboard/teacher" :
+                          role === "representante" ? "/dashboard/parent" :
+                            "/home";
+
+                    navigate(route, { state: { scrollTo: "Mensajería" } });
+                  }}
                   className={`${styles.ItemAvatarButtom} `}
                 >
                   Mensajería
