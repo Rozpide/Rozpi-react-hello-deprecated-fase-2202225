@@ -19,7 +19,7 @@ export const Favorites = () => {
         const existingFav = store.favoriteIds.find((favCoin) => favCoin.coin_id === coin.id);
         if (existingFav) {
             actions.removeFromFavs(existingFav.id);
-            setFavoriteIds(store.favoriteIds)
+            //setFavoriteIds(store.favoriteIds)
         }
     };
 
