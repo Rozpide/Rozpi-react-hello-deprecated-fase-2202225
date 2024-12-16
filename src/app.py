@@ -176,7 +176,7 @@ def add_wallet(coin_id):
     Wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
     db.session.add(Wallet_crypto)
     db.session.commit()
-    return jsonify(get_wallet(user_id))
+    return jsonify(get_wallets(user_id))
  
 
 @app.route('/wallet/<int:user_id>/<int:wallet_id>', methods=['DELETE'])
@@ -184,11 +184,12 @@ def delete_wallet(wallet_id, user_id):
     wallet_crypto = Wallet.query.get(wallet_id)
     db.session.delete(wallet_crypto)
     db.session.commit()
-    return jsonify(get_wallet(user_id))
+    return jsonify(get_wallets(user_id))
 
-def get_wallet(id):
+def get_wallets(id):
     wallet = Wallet.query.filter_by(user_id=id)
     wallet = list(map(lambda x: x.serialize(), wallet))
+    #print("wallet-------"+wallet)
     return wallet
 
 @app.route('/users/<int:id>/wallet', methods=['GET']) 

@@ -26,9 +26,11 @@ const getState = ({ getStore, getActions, setStore }) => {
             favoritePriceData: [],
             wallet: [],
             walletIds: [],
-            walletNormalData: [],
             walletPriceData: [],
             walletNormalData: [],
+            funds: 0,
+            fundsInCurrency: 0,
+            fundsCurrency: "usd",
             coins: [],
             loadingCoins: true,
             currentCoinId: null,
@@ -45,13 +47,15 @@ const getState = ({ getStore, getActions, setStore }) => {
             showFavorites: false,
         },
         actions: {
+            setFundsInCurrency: (money) => {
+                setStore({ fundsInCurrency: money})
+            },
             setFavoritePriceData: () => {
                 setStore({ favoritePriceData: [] })
             },
             setFavoriteData: () => {
                 setStore({ favoriteData: [] })
             },
-
             setWalletPriceData: () => {
                 setStore({ walletPriceData: [] })
             },
@@ -95,6 +99,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 setStore({ showFavorites: true })
                 setStore({ showWallet: false })
                 setStore({ showOverallHoldings: false })
+            },
+            addToFunds: (money) => {
+                setStore({ funds: getStore().funds + Number(money) })
             },
             fetchCoins: async () => {
                 setStore({ loading: true });
@@ -188,7 +195,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
                     .then((res) => res.json())
                     .then((response) => {
-                        if (!currentData.some((entry) => entry[0]?.id === coin_id)) {
+                        if (!currentData.some((entry) => entry[0]?.id === id)) {
                             setStore({
                                 favoritePriceData: [...getStore().favoritePriceData,
                                 response.prices.map((price) => {
@@ -316,6 +323,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                         setStore({ userToken: response.access_token, userEmail: response.user.email, userID: response.userID, username: response.username });
                         getActions().getFavoriteIds(response.userID)
+                        getActions().getWalletIds(response.userID)
                     })
                     .catch(error => console.error(error));
             },
@@ -419,7 +427,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         if (!res.ok) throw Error(res.statusText);
                         return res.json();
                     })
-                    .then(response => setStore({ favoriteIds: response }))
+                    .then(response => {setStore({ favoriteIds: response })})
                     .catch(error => console.error(error));
             },
 
@@ -443,7 +451,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`, options)
                     .then((res) => res.json())
                     .then((response) => {
-                        if (!currentData.some((fav) => fav.id === data.id)) {
+                        if (!currentData.some((fav) => fav.id === coin_id)) {
                             setStore({ favoriteData: [...getStore().favoriteData, response] })
                         }
                     })
