@@ -98,9 +98,9 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
     return (
         <div className="modal show d-block" tabIndex="-1" style={{ background: "rgba(0, 0, 0, 0.5)" }}>
             <div className="modal-dialog">
-                <div className="modal-content">
+                <div className="modal-content" style={{ background: "silver" }}>
                     <div className="modal-header">
-                        <h5 className="modal-title">{isLogin ? "Login" : "Sign Up"}</h5>
+                        <h5 className="modal-title" style={{ color: "#39ff14" }}>{isLogin ? "Login" : "Sign Up"}</h5>
                         <button
                             type="button"
                             className="btn-close"
@@ -110,16 +110,20 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                     <div className="modal-body">
                         <div className="d-flex justify-content-center mb-3">
                             <button
-                                className={`btn ${isLogin ? "btn-primary" : "btn-outline-primary"} me-2`}
+                                id="button-for-login"
+                                className={`btn ${isLogin ? "btn-primary inactive" : "btn-outline-primary "} me-2`}
                                 onClick={() => {
                                     setError(null);
                                     setIsLogin(true);
-                                }}
+                                }
+
+                                }
                             >
                                 Login
                             </button>
                             <button
-                                className={`btn ${!isLogin ? "btn-primary" : "btn-outline-primary"}`}
+                                id="button-for-signup"
+                                className={`btn ${!isLogin ? "btn-primary inactive" : "btn-outline-primary "}`}
                                 onClick={() => {
                                     setError(null);
                                     setIsLogin(false);
@@ -130,7 +134,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                         </div>
                         {error && <div className="alert alert-danger">{error}</div>}
                         {isLogin ? (
-                            <form onSubmit={handleLogin}>
+                            <form onSubmit={handleLogin} id="login">
                                 <div className="mb-3">
                                     <label htmlFor="username" className="form-label">Email</label>
                                     <input type="text" className="form-control" id="username" name="username" required />
@@ -139,10 +143,10 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                                     <label htmlFor="password" className="form-label">Password</label>
                                     <input type="password" className="form-control" id="password" name="password" required />
                                 </div>
-                                <button type="submit" className="btn btn-primary">Login</button>
+                                <button type="submit" className="btn btn-primary" style={{ background: "#39ff14", color: "black", border: "none" }}>Login</button>
                             </form>
                         ) : (
-                            <form onSubmit={handleSignUp}>
+                            <form onSubmit={handleSignUp} id="signup">
                                 <div className="mb-3">
                                     <label htmlFor="username" className="form-label">Username</label>
                                     <input type="text" className="form-control" id="username" name="username" required />
@@ -163,7 +167,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                                     <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
                                     <input type="password" className="form-control" id="confirmPassword" name="confirmPassword" required />
                                 </div>
-                                <button type="submit" className="btn btn-primary">Sign Up</button>
+                                <button type="submit" className="btn btn-primary" style={{ background: "#39ff14", color: "black", border: "none" }}>Sign Up</button>
                             </form>
                         )}
                     </div>
