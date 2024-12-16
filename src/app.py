@@ -178,29 +178,58 @@ alerts = {}  # Store alerts in memory (replace with database in production)
 
 @app.route("/alerts", methods=["POST"])
 def add_alert():
-    data = request.json
+    data = request.get_json()
     user_id = data.get("user_id")
-    alert = {
-        "coin_id": data.get("coin_id"),
-        "coin_name": data.get("coin_name"),
-        "target_price": data.get("target_price")
-    }
-    if user_id not in alerts:
-        alerts[user_id] = []
-    alerts[user_id].append(alert)
-    return jsonify({"message": "Alert added successfully"}), 201
+    coin_id = data.get("coin_id")
+    coin_name = data.get("coin_name")
+    target_price = data.get("target_price")
+    above_below = data.get("above_below")
+
+    if not user_id or not coin_id or coin_name is None or target_price is None:
+        return jsonify({"error": "Missing required fields"}), 400
+
+    # Create a new alert object
+    new_alert = Alert(
+        user_id=user_id,
+        coin_id=coin_id,
+        coin_name=coin_name,
+        target_price=target_price,
+        above_below = above_below
+    )
+
+    # Add and commit to the database
+    db.session.add(new_alert)
+    db.session.commit()
+
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
+
+    return jsonify({
+        "message": "Alert added successfully", 
+        "alert": new_alert.serialize(),
+        "alerts_array": user_alerts
+        }), 201
+
 
 @app.route("/alerts/<user_id>", methods=["GET"])
 def get_alerts(user_id):
-    user_alerts = alerts.get(user_id, [])
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
     return jsonify(user_alerts), 200
 
-@app.route("/alerts/<user_id>/<int:alert_index>", methods=["DELETE"])
-def delete_alert(user_id, alert_index):
-    if user_id in alerts and 0 <= alert_index < len(alerts[user_id]):
-        alerts[user_id].pop(alert_index)
-        return jsonify({"message": "Alert deleted successfully"}), 200
-    return jsonify({"error": "Alert not found"}), 404
+
+
+@app.route("/alerts/<user_id>/<int:alert_id>", methods=["DELETE"])
+def delete_alert(user_id, alert_id):
+    removed_alert = Alert.query.get(alert_id)
+    db.session.delete(removed_alert)
+    db.session.commit()
+
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
+
+    return jsonify({"message": "Alert deleted successfully", "alerts_array": user_alerts}), 200
+
 
 # Run the application
 if __name__ == '__main__':

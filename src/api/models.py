@@ -79,8 +79,9 @@ class Alert(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Link to the user
     coin_id = db.Column(db.String(50), nullable=False)  # ID of the coin
     coin_name = db.Column(db.String(100), nullable=False)  # Name of the coin
+    above_below = db.Column(db.String(100), nullable=False)  # above the target or below the target
     target_price = db.Column(db.Float, nullable=False)  # Target price for the alert
-    created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())  # Timestamp for creation
+    # created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())  # Timestamp for creation
     user = db.relationship(User)
     
     def __repr__(self):
@@ -93,5 +94,5 @@ class Alert(db.Model):
             "coin_id": self.coin_id,
             "coin_name": self.coin_name,
             "target_price": self.target_price,
-            "created_at": self.created_at.isoformat() if self.created_at else None
+            "above_below": self.above_below
         }

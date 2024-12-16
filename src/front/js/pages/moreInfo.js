@@ -12,6 +12,8 @@ export const MoreInfo = () => {
     const [news, setNews] = useState([]);
     const [loadingNews, setLoadingNews] = useState(true);
     const [alertPrice, setAlertPrice] = useState("");
+    const [above_below, setAbove_Below] = useState("");
+
     const params = useParams();
     const navigate = useNavigate(); // Hook for navigation
 
@@ -103,10 +105,25 @@ export const MoreInfo = () => {
             return;
         }
 
-        actions.addAlert(store.currentCoinData.id, store.currentCoinData.name, price);
+        actions.addAlert(store.currentCoinData.id, store.currentCoinData.name, price, above_below);
         alert(`Alert set for ${store.currentCoinData.name} at $${price}`);
         setAlertPrice(""); // Reset input field
     };
+
+    useEffect(() => {
+        // Set up an interval to fetch the latest price data periodically
+        // const intervalId = setInterval(() => {
+        setInterval(() => {
+            console.log("I work");
+            actions.getCurrentCoinData();
+            actions.checkAlerts();
+            // actions.getCurrentCoinPriceData();
+
+        }, 30000); // fetch new data every 30 seconds
+
+        // Clean up the interval when the component unmounts
+        // return () => clearInterval(intervalId);
+    }, []);
 
     return (
         <div className="moreInfo">
@@ -191,6 +208,8 @@ export const MoreInfo = () => {
                             width: "200px",
                         }}
                     />
+                    <label style={{ color: "#39ff14" }}> <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("above")} /> Above </label>
+                    <label style={{ color: "#39ff14" }}> <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("below")} /> Below   </label>
                     <button
                         onClick={handleSetAlert}
                         style={{
@@ -228,7 +247,7 @@ export const MoreInfo = () => {
                                         }}
                                     >
                                         <span>
-                                            {alert.coin_name} - Target: ${alert.target_price.toFixed(2)}
+                                            {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} {alert.above_below}
                                         </span>
                                         <button
                                             onClick={() => actions.removeAlert(alert.id)}
