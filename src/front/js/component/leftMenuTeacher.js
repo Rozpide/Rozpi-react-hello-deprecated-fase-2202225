@@ -1,12 +1,14 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import backgroundForViews from "../../img/background.jpg";
 import imgWelcome from "../../img/wellcomeicon.png"
 import "../../styles/components.css";
 import Swal from 'sweetalert2';
+import ChatComponent from "../component/chatComponent";
+
 
 const FormCommon = ({ type }) => {
     const { store, actions } = useContext(Context)
@@ -438,6 +440,7 @@ const FormCommon = ({ type }) => {
 
 export const LeftMenuTeacher = () => {
     const [activeContent, setActiveContent] = useState(null);
+    const { store } = useContext(Context)
 
     const handleCreateEvaluation = () => {
         setActiveContent("crear");
@@ -538,10 +541,15 @@ export const LeftMenuTeacher = () => {
                         <hr />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center render-content col py-3"
+                <div className="render-content col mt-3 py-3"
                     style={{ backgroundImage: `url(${backgroundForViews})` }}>
-                    <div className="welcome-message mt-3">
-                        {renderContent()}
+                    <div>
+                        <div className="welcome-message mt-5 ms-auto me-auto">
+                            {renderContent()}
+                        </div>
+                        <div >
+                            {store.isChatVisible && <ChatComponent />}
+                        </div>
                     </div>
                 </div>
             </div>

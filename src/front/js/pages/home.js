@@ -9,6 +9,7 @@ import CarruselValoraciones from '../component/CarruselValoraciones';
 import homeBackground from '../../img/homeBackground.png';
 import logoBlanco from '../../img/logo-blanco.png';
 
+
 export const Home = () => {
   const location = useLocation();
 

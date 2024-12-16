@@ -291,7 +291,7 @@ def send_message():
 @api.route("/messages/get", methods=['GET'])
 @jwt_required()
 def get_messages():
-    schema = MessagesSchema(many=True)
+    schema = MessagesSchema()
     receiver_id = get_jwt_identity()
     
     user = User.query.get(receiver_id)
@@ -301,7 +301,18 @@ def get_messages():
     
     messages = Messages.query.filter_by(receiver_id=receiver_id).all()
     
-    return jsonify(schema.dump(messages))
+    messages_data = []
+    
+    for mensaje in messages:
+        message_data = schema.dump(mensaje)
+        
+        message_data["remitente"] = f"{mensaje.sender.nombre} {mensaje.sender.apellido}"
+        message_data["remitente_rol"] = mensaje.sender.role.nombre
+
+        messages_data.append(message_data)
+    
+    
+    return jsonify(messages_data)
     
 
 @api.route("/messages/read", methods=['PUT'])

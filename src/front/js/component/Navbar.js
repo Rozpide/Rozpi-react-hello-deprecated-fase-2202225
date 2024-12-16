@@ -10,12 +10,11 @@ import { Context } from "../store/appContext";
 const NavBar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const { token, isChatVisible, role, personalInfo } = store;
-  // const [hasNotification, setHasNotification] = useState(false);
+  const { token, unreadCount, role, personalInfo } = store;
 
-  // useEffect(() => {
-  //   actions.getNotifications();
-  // }, []);
+  useEffect(() => {
+    actions.getMessages();
+  }, []);
 
   const handleLogout = () => {
     actions.handleLogout();
@@ -34,6 +33,12 @@ const NavBar = () => {
     actions.toggleChat();
   };
 
+  const handleNotificationClick = () => {
+    if (unreadCount > 0) {
+      handleMessaging();
+    }
+  };
+
   return (
     <Navbar expand="lg" className={`${styles["navbar-custom"]} navbar-dark fixed-top`}>
       <Navbar.Brand as={Link} to="/home">
@@ -46,17 +51,16 @@ const NavBar = () => {
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" className={`${styles["navbar-toggler"]}`} />
       <Navbar.Collapse id="basic-navbar-nav" className={`${styles.collapseCustom}`}>
-        {token ? (
+        {token && role ? (
           <Nav className="ms-auto text-center align-items-center">
-            <Nav.Link >
-              <i className={`${styles.campana} fas fa-bell`}></i>
+            <Nav.Link onClick={handleNotificationClick}>
+              <div className={`${styles["campana-container"]}`}>
+                <i className={`fas fa-bell ${store.unreadCount > 0 ? styles.campanaConNotificacion : styles.campana}`}></i>
+                {unreadCount > 0 && (
+                  <span className={styles.notificacionDot}></span>
+                )}
+              </div>
             </Nav.Link>
-            {/* <Nav.Link 
-            onClick={() => setHasNotification(false)}>
-              <i className={`${styles.campana} fas fa-bell
-              ${hasNotification ? "text-warning" : "text-white"}`}
-                style={{ cursor: "pointer", fontSize: "24px" }}></i>
-            </Nav.Link> */}
             <Dropdown align="end">
               <Dropdown.Toggle as="div" className={`${styles.Toggle}`}>
                 <Avatar
@@ -67,6 +71,18 @@ const NavBar = () => {
                 />
               </Dropdown.Toggle>
               <Dropdown.Menu className={`${styles.ItemAvatar}`}>
+                <Dropdown.Item
+                  onClick={actions.personalInfo} //seguir con esta función
+                  className={`${styles.ItemAvatarButtom} `}
+                  as={Link} to={
+                    role === "admin" ? "/dashboard/admin" :
+                      role === "docente" ? "/dashboard/teacher" :
+                        role === "representante" ? "/dashboard/parent" :
+                          "/unauthorized"
+                  }
+                >
+                  Dashboard
+                </Dropdown.Item>
                 <Dropdown.Item as={Link} to={
                   role === "admin" ? "/dashboard/admin/profile" :
                     role === "docente" ? "/dashboard/teacher/profile" :
@@ -76,8 +92,8 @@ const NavBar = () => {
                   Perfil
                 </Dropdown.Item>
                 <Dropdown.Item
-                  onClick={handleMessaging}
-                  className={`${styles.ItemAvatarButtom}`}
+                  onClick={actions.toggleChat}
+                  className={`${styles.ItemAvatarButtom} `}
                 >
                   Mensajería
                 </Dropdown.Item>

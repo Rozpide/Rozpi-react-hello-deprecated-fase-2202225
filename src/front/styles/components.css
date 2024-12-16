@@ -40,8 +40,44 @@
 
 .welcome-message {
   /* position: absolute; */
-  overflow: auto;
+  overflow-y: auto;
+
 }
+
+/* estilos para la barra de scroll */
+.welcome-message::-webkit-scrollbar {
+  width: 14px;
+  display: none;
+}
+
+.welcome-message::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.welcome-message::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #0d47a1, #0d47a1 25%, #3e7cc3 50%, #6094c8 75%, #8eb0ce);
+  border-radius: 10px;
+  border: 3px solid black;
+}
+
+.welcome-message::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg,
+      #0A74DA,
+      /* Azul brillante (primario) */
+      #00A3FF 25%,
+      /* Azul cian vibrante */
+      #0066FF 50%,
+      /* Azul medio clásico */
+      #0052CC 75%,
+      /* Azul profundo */
+      #002244
+      /* Azul marino oscuro */
+    );
+  border: 3px solid gainsboro;
+}
+
+/* ---------------- */
 
 .welcome-icon {
   max-width: 60%;

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Swal from "sweetalert2";
 import { Context } from "../store/appContext";
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 60vh;
@@ -18,7 +18,7 @@ const Container = styled.div`
   border-radius: 30px;
 `;
 
-const Background = styled.div`
+export const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -66,7 +66,7 @@ const PasswordRecovery = () => {
         <form onSubmit={e => handleSubmit(e)}>
           <div className="container-fluid">
             <div className="row mb-3">
-              <h4 className="m-3">¿Olvidaste tu contraseña?</h4>
+              <h4 className="m-3 text-center">¿Olvidaste tu contraseña?</h4>
               <p className="text-light fs-6 fw-light text-center">
                 Ingresa tu correo de inicio de sesion para recuperar la
                 contraseña

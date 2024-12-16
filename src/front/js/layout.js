@@ -16,6 +16,7 @@ import ProtectedRoute from "./component/ProtectedRoutes";
 import Unauthorized from "./pages/Unauthorized";
 import { Context } from "./store/appContext";
 import PasswordRecovery from "./component/PasswordRecovery.jsx";
+import PasswordReset from "./component/PasswordReset.jsx";
 
 const Layout = () => {
     const { store } = useContext(Context);
@@ -80,6 +81,7 @@ const Layout = () => {
 
                         <Route element={<Unauthorized />} path="/unauthorized" />
                         <Route path="/password/recovery/" element={<PasswordRecovery />} />
+                        <Route path="/password/reset/" element={<PasswordReset />} />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
