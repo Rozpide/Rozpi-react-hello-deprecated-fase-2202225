@@ -23,7 +23,7 @@ export const Wallet = () => {
       actions.getWalletPriceData(wallet.coin_id);
       actions.getWalletNormalData(wallet.coin_id);
     });
-  }, [store.walletIds]);
+  }, []);
 
 
 
