@@ -27,6 +27,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             wallet: [],
             walletIds: [],
             walletPriceData: [],
+            walletNormalData: [],
             funds: 0,
             fundsInCurrency: 0,
             fundsCurrency: "usd",
