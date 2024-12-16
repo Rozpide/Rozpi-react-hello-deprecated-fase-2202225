@@ -661,6 +661,25 @@ const getState = ({ getStore, getActions, setStore }) => {
                 .then(response => setStore({ funds: Number(response) }))
                 .catch(error => console.error(error));
             },
+
+            removeFundsFromWallet: (funds) => {
+                fetch(process.env.BACKEND_URL + `users/funds`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        "user_id": getStore().userID,
+                        "funds": funds
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => setStore({ funds: Number(response) }))
+                .catch(error => console.error(error));
+            },
             
             getFunds: (id) => {
                 fetch(process.env.BACKEND_URL + `users/${id}/funds`)
@@ -681,6 +700,27 @@ const getState = ({ getStore, getActions, setStore }) => {
                         "purchase_price": price,
                         "purchase_quantity": quantity,
                         "purchase_date": date
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => setStore({ walletIds: response }))
+                .catch(error => console.error(error));
+            },
+
+            sellCoin: (coin, quantity) => {
+                fetch(process.env.BACKEND_URL + `wallet/${coin.id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        "name": coin.name,
+                        "user_id": getStore().userID,
+                        "coin_id": coin.id,
+                        "purchase_quantity": quantity
                     }),
                     headers: {
                         'Content-type': 'application/json'
