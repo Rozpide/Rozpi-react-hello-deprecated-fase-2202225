@@ -178,6 +178,17 @@ def add_wallet(coin_id):
     db.session.commit()
     return jsonify(get_wallets(user_id))
  
+@app.route('/wallet/<coin_id>', methods=['POST'])
+def buy_coin(coin_id):
+    user_id = request.json['user_id']
+    name = request.json['name']
+    purchase_price= request.json['purchase_price']
+    purchase_quantity = request.json['purchase_quantity']
+    purchase_date = request.json['purchase_date']
+    buy_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id, purchase_price=purchase_price, purchase_date=purchase_date, purchase_quantity=purchase_quantity)
+    db.session.add(buy_crypto)
+    db.session.commit() 
+    return jsonify(get_wallets(user_id))
 
 @app.route('/wallet/<int:user_id>/<int:wallet_id>', methods=['DELETE'])
 def delete_wallet(wallet_id, user_id):
@@ -197,6 +208,26 @@ def get_wallet(id):
     wallet = Wallet.query.filter_by(user_id=id)
     wallet = list(map(lambda x: x.serialize(), wallet))
     return jsonify(wallet)
+
+@app.route('/users/funds', methods=['PATCH'])
+def add_funds():
+    user_id = request.json['user_id']
+    funds = request.json['funds']
+    updateRow = User.query.filter_by(id=user_id).first()
+    updateRow.funds = funds
+    db.session.commit()
+    return jsonify(get_funds(user_id))
+
+def get_funds(id):
+    user = User.query.filter_by(id=id).first()
+    print ('-----------------',user)
+    return user.funds
+
+@app.route('/users/<int:id>/funds', methods=['GET'])
+def get_funds1(id):
+    user = User.query.filter_by(id=id).first()
+    print ('-----------------',user.funds)
+    return jsonify(user.funds)
 
 # Run the application
 if __name__ == '__main__':
