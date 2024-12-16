@@ -45,6 +45,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             showOverallHoldings: false,
             showWallet: false,
             showFavorites: false,
+            alerts: [], // Array to store alerts { id: coinId, name: coinName, targetPrice: number }
+
         },
         actions: {
             setFundsInCurrency: (money) => {
@@ -155,6 +157,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'x-cg-pro-api-key': process.env.COINGECKO_KEY
                     }
                 };
+                console.log("I ran");
+
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${getStore().currentCoinId}/market_chart?vs_currency=${getStore().currency}&days=${getStore().timeFrame}`, options)
                     .then((res) => res.json())
                     .then((response) => {
@@ -411,6 +415,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         getActions().clearFavPriceData()
 
                     })
+                    .then(response => { setStore({ favoriteIds: response }) })
                     .catch(error => console.error(error));
             },
 
@@ -565,6 +570,96 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err));
             },
 
+            loadAlerts: async () => {
+                const userId = localStorage.getItem("userID"); // Get user ID
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + `alerts/${userId}`);
+                    if (response.ok) {
+                        const alerts = await response.json(); // Fetch alerts from backend
+                        setStore({ alerts }); // Update the store with fetched alerts
+                    } else {
+                        console.error("Failed to load alerts:", await response.text());
+                    }
+                } catch (error) {
+                    console.error("Error loading alerts:", error);
+                }
+            },
+
+            addAlert: async (coinId, coinName, targetPrice, above_below) => {
+                const userId = localStorage.getItem("userID"); // Get user ID from localStorage
+                const newAlert = {
+                    user_id: userId,
+                    coin_id: coinId,
+                    coin_name: coinName,
+                    target_price: targetPrice,
+                    above_below: above_below
+                };
+
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + `alerts`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(newAlert),
+                    });
+
+                    if (response.ok) {
+                        const resp = await response.json(); // Get saved alert from backend response
+                        const store = getStore();
+                        setStore({ alerts: resp.alerts_array }); // Update the store
+                    } else {
+                        console.error("Failed to add alert:", await response.text());
+                    }
+                } catch (error) {
+                    console.error("Error adding alert:", error);
+                }
+            },
+
+            removeAlert: async (alertId) => {
+                const userId = localStorage.getItem("userID");
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + `alerts/${userId}/${alertId}`, {
+                        method: "DELETE",
+                    });
+                    if (response.ok) {
+                        const resp = await response.json();
+                        setStore({ alerts: resp.alerts_array })
+                    } else {
+                        console.error("Failed to remove alert:", await response.text());
+                    }
+                } catch (error) {
+                    console.error("Error removing alert:", error);
+                }
+            },
+
+            checkAlerts: () => {
+                const store = getStore();
+                const triggeredAlerts = [];
+
+                // Check all alerts
+                store.alerts.forEach((alert) => {
+                    const coin = store.coins.find((coin) => coin.id === alert.coin_id);
+                    if (alert.above_below === "above") {
+                        if (coin && coin.current_price >= alert.target_price) {
+                            triggeredAlerts.push(alert);
+                        }
+                    } else if (alert.above_below === "below") {
+                        if (coin && coin.current_price <= alert.target_price) {
+                            triggeredAlerts.push(alert);
+                        }
+                    }
+                });
+
+                if (triggeredAlerts.length > 0) {
+                    triggeredAlerts.forEach((triggeredAlert) => {
+                        window.alert(
+                            `Price Alert! ${triggeredAlert.coin_name} has reached $${triggeredAlert.target_price}`
+                        );
+                    });
+
+                   
+                    
+                }
+            },
             addFundsToWallet: (funds) => {
                 fetch(process.env.BACKEND_URL + `users/funds`, {
                     method: 'PATCH',
@@ -584,6 +679,25 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch(error => console.error(error));
             },
 
+            removeFundsFromWallet: (funds) => {
+                fetch(process.env.BACKEND_URL + `users/funds`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        "user_id": getStore().userID,
+                        "funds": funds
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => setStore({ funds: Number(response) }))
+                .catch(error => console.error(error));
+            },
+            
             getFunds: (id) => {
                 fetch(process.env.BACKEND_URL + `users/${id}/funds`)
                     .then((res) => res.json())
@@ -608,12 +722,33 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                    .then(res => {
-                        if (!res.ok) throw Error(res.statusText);
-                        return res.json();
-                    })
-                    .then(response => setStore({ walletIds: response }))
-                    .catch(error => console.error(error));
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => setStore({ walletIds: response }))
+                .catch(error => console.error(error));
+            },
+
+            sellCoin: (coin, quantity) => {
+                fetch(process.env.BACKEND_URL + `wallet/${coin.id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        "name": coin.name,
+                        "user_id": getStore().userID,
+                        "coin_id": coin.id,
+                        "purchase_quantity": quantity
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => setStore({ walletIds: response }))
+                .catch(error => console.error(error));
             },
 
         },

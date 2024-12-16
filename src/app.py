@@ -7,7 +7,7 @@ from flask_swagger import swagger
 from flask_cors import CORS  # Add CORS support
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity  # Add JWT support
 from api.utils import APIException, generate_sitemap
-from api.models import db, User, Favorites, Wallet
+from api.models import db, User, Favorites, Wallet, Alert
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -143,24 +143,35 @@ def get_favorites(id):
 
 
 
-@app.route('/wallet/<coin_id>', methods=['POST'])
-def add_wallet(coin_id):
-    user_id = request.json['user_id']
-    name = request.json['name']
-    Wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
-    db.session.add(Wallet_crypto)
-    db.session.commit()
-    return jsonify(get_wallets(user_id))
+# @app.route('/wallet/<coin_id>', methods=['POST'])
+# def add_wallet(coin_id):
+#     user_id = request.json['user_id']
+#     name = request.json['name']
+#     Wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
+#     db.session.add(Wallet_crypto)
+#     db.session.commit()
+#     return jsonify(get_wallets(user_id))
  
 @app.route('/wallet/<coin_id>', methods=['POST'])
 def buy_coin(coin_id):
+    print(request.json)
     user_id = request.json['user_id']
     name = request.json['name']
     purchase_price= request.json['purchase_price']
     purchase_quantity = request.json['purchase_quantity']
     purchase_date = request.json['purchase_date']
-    buy_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id, purchase_price=purchase_price, purchase_date=purchase_date, purchase_quantity=purchase_quantity)
+    buy_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id, purchase_price=purchase_price, purchase_date=purchase_date, quantity_owned=purchase_quantity)
     db.session.add(buy_crypto)
+    db.session.commit() 
+    return jsonify(get_wallets(user_id))
+
+@app.route('/wallet/<coin_id>', methods=['PATCH, DELETE'])
+def sell_coin(coin_id):
+    user_id = request.json['user_id']
+    name = request.json['name']
+    purchase_quantity = request.json['purchase_quantity']
+    sell_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id, quantity_owned=purchase_quantity)
+    db.session.add(sell_crypto)
     db.session.commit() 
     return jsonify(get_wallets(user_id))
 
@@ -182,6 +193,61 @@ def get_wallet(id):
     wallet = Wallet.query.filter_by(user_id=id)
     wallet = list(map(lambda x: x.serialize(), wallet))
     return jsonify(wallet)
+
+
+@app.route("/alerts", methods=["POST"])
+def add_alert():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    coin_id = data.get("coin_id")
+    coin_name = data.get("coin_name")
+    target_price = data.get("target_price")
+    above_below = data.get("above_below")
+
+    if not user_id or not coin_id or coin_name is None or target_price is None:
+        return jsonify({"error": "Missing required fields"}), 400
+
+    # Create a new alert object
+    new_alert = Alert(
+        user_id=user_id,
+        coin_id=coin_id,
+        coin_name=coin_name,
+        target_price=target_price,
+        above_below = above_below
+    )
+
+    # Add and commit to the database
+    db.session.add(new_alert)
+    db.session.commit()
+
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
+
+    return jsonify({
+        "message": "Alert added successfully", 
+        "alert": new_alert.serialize(),
+        "alerts_array": user_alerts
+        }), 201
+
+
+@app.route("/alerts/<user_id>", methods=["GET"])
+def get_alerts(user_id):
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
+    return jsonify(user_alerts), 200
+
+
+
+@app.route("/alerts/<user_id>/<int:alert_id>", methods=["DELETE"])
+def delete_alert(user_id, alert_id):
+    removed_alert = Alert.query.get(alert_id)
+    db.session.delete(removed_alert)
+    db.session.commit()
+
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
+
+    return jsonify({"message": "Alert deleted successfully", "alerts_array": user_alerts}), 200
 
 @app.route('/users/funds', methods=['PATCH'])
 def add_funds():

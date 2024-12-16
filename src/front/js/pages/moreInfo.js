@@ -6,11 +6,14 @@ import { useParams, useNavigate } from "react-router-dom";
 
 export const MoreInfo = () => {
     const { store, actions } = useContext(Context);
-    const [timeFrame, setTimeFrame] = React.useState("left");
+    const [timeFrame, setTimeFrame] = useState("left");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCoin, setSelectedCoin] = useState(null);
     const [news, setNews] = useState([]);
     const [loadingNews, setLoadingNews] = useState(true);
+    const [alertPrice, setAlertPrice] = useState("");
+    const [above_below, setAbove_Below] = useState("");
+
     const params = useParams();
     const navigate = useNavigate(); // Hook for navigation
 
@@ -18,13 +21,18 @@ export const MoreInfo = () => {
         setTimeFrame(newAlignment);
     };
 
-    // Fetch price data on component mount
+    // Fetch price and coin data on component mount
     useEffect(() => {
         actions.setCurrentCoinId(params.id);
         actions.setCurrency("usd");
         actions.setTimeFrame("7");
         actions.getCurrentCoinPriceData();
         actions.getCurrentCoinData();
+    }, []);
+
+    // Load alerts on component mount (ensures alerts are fetched from backend)
+    useEffect(() => {
+        actions.loadAlerts();
     }, []);
 
     // Fetch news data from The Guardian API
@@ -48,20 +56,19 @@ export const MoreInfo = () => {
         };
 
         fetchNews();
-    }, []);
-
+    }, [params.id]);
 
     useEffect(() => {
         actions.getCurrentCoinPriceData();
     }, [store.currency, store.timeFrame]);
 
     useEffect(() => {
-        document.getElementById("gb2").style.backgroundColor= "black";
-        document.getElementById("gb2").style.color= "#39ff14";
-        document.getElementById("gb11").style.backgroundColor= "black";
-        document.getElementById("gb11").style.color= "#39ff14";
+        document.getElementById("gb2").style.backgroundColor = "black";
+        document.getElementById("gb2").style.color = "#39ff14";
+        document.getElementById("gb11").style.backgroundColor = "black";
+        document.getElementById("gb11").style.color = "#39ff14";
     }, []);
-    
+
     const handleTrade = () => {
         setIsModalOpen(true);
     };
@@ -90,9 +97,36 @@ export const MoreInfo = () => {
         }
     };
 
+    // Handle setting the price alert
+    const handleSetAlert = () => {
+        const price = parseFloat(alertPrice);
+        if (!price || isNaN(price)) {
+            alert("Please enter a valid price.");
+            return;
+        }
+
+        actions.addAlert(store.currentCoinData.id, store.currentCoinData.name, price, above_below);
+        alert(`Alert set for ${store.currentCoinData.name} at $${price}`);
+        setAlertPrice(""); // Reset input field
+    };
+
+    useEffect(() => {
+        // Set up an interval to fetch the latest price data periodically
+        // const intervalId = setInterval(() => {
+        setInterval(() => {
+            console.log("I work");
+            actions.getCurrentCoinData();
+            actions.checkAlerts();
+            // actions.getCurrentCoinPriceData();
+
+        }, 30000); // fetch new data every 30 seconds
+
+        // Clean up the interval when the component unmounts
+        // return () => clearInterval(intervalId);
+    }, []);
+
     return (
         <div className="moreInfo">
-
             {/* Main Info Section */}
             <div className="mainInfo">
                 {/* Coin Name */}
@@ -105,17 +139,17 @@ export const MoreInfo = () => {
                     <div className="graphBox">
                         <div className="graphButtonsBox">
                             <div className="timeFrame" role="group" >
-                                <button id="gb1" className="graphButtons" onClick={() => {actions.setTimeFrame("1"); graphOptions("gb1")}}>1D</button>
-                                <button id="gb2" className="graphButtons" onClick={() => {actions.setTimeFrame("7"); graphOptions("gb2")}}>7D</button>
-                                <button id="gb3" className="graphButtons" onClick={() => {actions.setTimeFrame("30"); graphOptions("gb3")}}>30D</button>
-                                <button id="gb4" className="graphButtons" onClick={() => {actions.setTimeFrame("365"); graphOptions("gb4")}}>1Y</button>
+                                <button id="gb1" className="graphButtons" onClick={() => { actions.setTimeFrame("1"); graphOptions("gb1") }}>1D</button>
+                                <button id="gb2" className="graphButtons" onClick={() => { actions.setTimeFrame("7"); graphOptions("gb2") }}>7D</button>
+                                <button id="gb3" className="graphButtons" onClick={() => { actions.setTimeFrame("30"); graphOptions("gb3") }}>30D</button>
+                                <button id="gb4" className="graphButtons" onClick={() => { actions.setTimeFrame("365"); graphOptions("gb4") }}>1Y</button>
                             </div>
                             <div className="currency" role="group" >
-                                <button id="gb11" className="graphButtons2" onClick={() => {actions.setCurrency("usd"); graphOptions2("gb11")}}>USD</button>
-                                <button id="gb12" className="graphButtons2" onClick={() => {actions.setCurrency("cad"); graphOptions2("gb12")}}>CAD</button>
-                                <button id="gb13" className="graphButtons2" onClick={() => {actions.setCurrency("eur"); graphOptions2("gb13")}}>EUR</button>
-                                <button id="gb14" className="graphButtons2" onClick={() => {actions.setCurrency("gbp"); graphOptions2("gb14")}}>GBP</button>
-                                <button id="gb15" className="graphButtons2" onClick={() => {actions.setCurrency("jpy"); graphOptions2("gb15")}}>JPY</button>
+                                <button id="gb11" className="graphButtons2" onClick={() => { actions.setCurrency("usd"); graphOptions2("gb11") }}>USD</button>
+                                <button id="gb12" className="graphButtons2" onClick={() => { actions.setCurrency("cad"); graphOptions2("gb12") }}>CAD</button>
+                                <button id="gb13" className="graphButtons2" onClick={() => { actions.setCurrency("eur"); graphOptions2("gb13") }}>EUR</button>
+                                <button id="gb14" className="graphButtons2" onClick={() => { actions.setCurrency("gbp"); graphOptions2("gb14") }}>GBP</button>
+                                <button id="gb15" className="graphButtons2" onClick={() => { actions.setCurrency("jpy"); graphOptions2("gb15") }}>JPY</button>
                             </div>
                         </div>
                         <div className="bigGraph">
@@ -127,7 +161,7 @@ export const MoreInfo = () => {
                                     <Tooltip />
                                 </LineChart>
                             </ResponsiveContainer>
-                        </div>                        
+                        </div>
                     </div>
                     <div id="marketData">
                         <h4>Current Price: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.current_price[store.currency].toLocaleString() : null}</h4>
@@ -146,10 +180,97 @@ export const MoreInfo = () => {
                             color: store.currentCoinData.market_data?.price_change_percentage_1y < 0 ? 'red' : '#39ff14',
                         }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_1y.toFixed(2) : null}%</div></h4>
                         <h4>Market Cap rank: {store.currentCoinData.market_data ? store.currentCoinData.market_data.market_cap_rank : null}</h4>
-                        <button type="submit" id="submitBtn" onClick={() => actions.setShowTradeModal(store.currentCoinData)} style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
-                            
+                        <button
+                            type="submit"
+                            id="submitBtn"
+                            onClick={() => actions.setShowTradeModal(store.currentCoinData)}
+                            style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}
+                        >
+                            Trade
+                        </button>
                     </div>
                 </div>
+
+                {/* Alert Configuration Section */}
+                <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#1a1a1a", borderRadius: "5px" }}>
+                    <h4 style={{ color: "#39ff14" }}>Set Price Alert</h4>
+                    <input
+                        id="alert_price"
+                        type="number"
+                        value={alertPrice}
+                        onChange={(e) => setAlertPrice(e.target.value)}
+                        placeholder="Enter target price"
+                        style={{
+                            padding: "8px",
+                            borderRadius: "5px",
+                            border: "1px solid #39ff14",
+                            marginRight: "10px",
+                            width: "200px",
+                        }}
+                    />
+                    <label style={{ color: "#39ff14" }}> <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("above")} /> Above </label>
+                    <label style={{ color: "#39ff14" }}> <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("below")} /> Below   </label>
+                    <button
+                        onClick={handleSetAlert}
+                        style={{
+                            padding: "8px 15px",
+                            backgroundColor: "#39ff14",
+                            color: "black",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                        }}
+                    >
+                        Set Alert
+                    </button>
+                </div>
+
+                {/* Alerts List Section */}
+                <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#1a1a1a", borderRadius: "5px" }}>
+                    <h4 style={{ color: "#39ff14" }}>Your Alerts</h4>
+                    {store.alerts && store.alerts.length > 0 ? (
+                        <ul style={{ listStyle: "none", padding: 0 }}>
+                            {store.alerts.map((alert) => {
+                                return (
+                                    <li
+                                        key={alert.id}
+                                        style={{
+                                            marginBottom: "10px",
+                                            padding: "10px",
+                                            border: "1px solid #39ff14",
+                                            borderRadius: "5px",
+                                            backgroundColor: "#000",
+                                            color: "#39ff14",
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <span>
+                                            {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} {alert.above_below}
+                                        </span>
+                                        <button
+                                            onClick={() => actions.removeAlert(alert.id)}
+                                            style={{
+                                                backgroundColor: "red",
+                                                color: "white",
+                                                border: "none",
+                                                borderRadius: "5px",
+                                                padding: "5px 10px",
+                                                cursor: "pointer",
+                                            }}
+                                        >
+                                            Remove
+                                        </button>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    ) : (
+                        <p style={{ color: "#39ff14" }}>No alerts set.</p>
+                    )}
+                </div>
+
                 {/* News Feed Section */}
                 <div className="news">
                     <h1>News feed for {store.currentCoinData.name}</h1>
@@ -172,7 +293,7 @@ export const MoreInfo = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p>No news articles found for Bitcoin.</p>
+                        <p>No news articles found for {store.currentCoinData.name}.</p>
                     )}
                 </div>
             </div>

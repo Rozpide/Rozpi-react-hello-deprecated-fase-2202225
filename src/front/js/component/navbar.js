@@ -46,13 +46,13 @@ export const Navbar = () => {
         }, 150);
     };
 
-    const handleSuggestionClick = (coinName) => {
-        setSearchQuery(coinName); // Update the input with the selected suggestion
-        actions.searchCoins(coinName); // Trigger search
-        navigate("/searchresults"); // Navigate to the search results page
+    const handleSuggestionClick = (coin) => {
+        setSearchQuery(coin.name); // Update the input with the selected suggestion
         setShowSuggestions(false); // Hide suggestions after selecting
-    };
+        console.log(coin.id);
+        navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
 
+    };
     return (
         <>
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "black" }}>
@@ -97,12 +97,14 @@ export const Navbar = () => {
                                         border: "1px solid #39ff14",
                                     }}
                                 >
-                                    {store.searchSuggestions.map((coin) => (
+                                    {store.searchSuggestions.map((coin, id) => (
                                         <li
                                             key={coin.id}
                                             className="dropdown-item"
                                             style={{ cursor: "pointer", color: "white" }}
-                                            onClick={() => handleSuggestionClick(coin.name)}
+                                            onMouseDown={() => {
+                                                navigate(`/moreinfo/${coin.id}`);
+                                            }}
                                         >
                                             {coin.name} ({coin.symbol.toUpperCase()})
                                         </li>

@@ -57,7 +57,7 @@ class Wallet(db.Model):
     coin_id = db.Column(db.String(120))
     symbol = db.Column(db.String(20))
     purchase_price = db.Column(db.Numeric(10,3))
-    purchase_quantity = db.Column(db.Numeric(10,3))
+    quantity_owned = db.Column(db.Numeric(10,3))
     purchase_date = db.Column(db.DateTime)
     user = db.relationship(User)
 
@@ -72,6 +72,29 @@ class Wallet(db.Model):
             "coin_id": self.coin_id,
             "symbol": self.symbol,
             "purchase_price": self.purchase_price,
-            "purchase_quantity": self.purchase_quantity,
+            "quantity_owned": self.quantity_owned,
             "purchase_date": self.purchase_date,
+        }
+    
+class Alert(db.Model):
+    id = db.Column(db.Integer, primary_key=True)  # Unique ID for the alert
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Link to the user
+    coin_id = db.Column(db.String(50), nullable=False)  # ID of the coin
+    coin_name = db.Column(db.String(100), nullable=False)  # Name of the coin
+    above_below = db.Column(db.String(100), nullable=False)  # above the target or below the target
+    target_price = db.Column(db.Float, nullable=False)  # Target price for the alert
+    # created_at = db.Column(db.DateTime, nullable=False, server_default=db.func.now())  # Timestamp for creation
+    user = db.relationship(User)
+    
+    def __repr__(self):
+            return f'<Alert {self.name}>'
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "coin_id": self.coin_id,
+            "coin_name": self.coin_name,
+            "target_price": self.target_price,
+            "above_below": self.above_below
         }
