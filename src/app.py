@@ -7,7 +7,7 @@ from flask_swagger import swagger
 from flask_cors import CORS  # Add CORS support
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity  # Add JWT support
 from api.utils import APIException, generate_sitemap
-from api.models import db, User, Favorites, Wallet
+from api.models import db, User, Favorites, Wallet, Alert
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -193,6 +193,61 @@ def get_wallet(id):
     wallet = Wallet.query.filter_by(user_id=id)
     wallet = list(map(lambda x: x.serialize(), wallet))
     return jsonify(wallet)
+
+
+@app.route("/alerts", methods=["POST"])
+def add_alert():
+    data = request.get_json()
+    user_id = data.get("user_id")
+    coin_id = data.get("coin_id")
+    coin_name = data.get("coin_name")
+    target_price = data.get("target_price")
+    above_below = data.get("above_below")
+
+    if not user_id or not coin_id or coin_name is None or target_price is None:
+        return jsonify({"error": "Missing required fields"}), 400
+
+    # Create a new alert object
+    new_alert = Alert(
+        user_id=user_id,
+        coin_id=coin_id,
+        coin_name=coin_name,
+        target_price=target_price,
+        above_below = above_below
+    )
+
+    # Add and commit to the database
+    db.session.add(new_alert)
+    db.session.commit()
+
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
+
+    return jsonify({
+        "message": "Alert added successfully", 
+        "alert": new_alert.serialize(),
+        "alerts_array": user_alerts
+        }), 201
+
+
+@app.route("/alerts/<user_id>", methods=["GET"])
+def get_alerts(user_id):
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
+    return jsonify(user_alerts), 200
+
+
+
+@app.route("/alerts/<user_id>/<int:alert_id>", methods=["DELETE"])
+def delete_alert(user_id, alert_id):
+    removed_alert = Alert.query.get(alert_id)
+    db.session.delete(removed_alert)
+    db.session.commit()
+
+    user_alerts = Alert.query.filter_by(user_id=user_id).all()
+    user_alerts = list(map(lambda alert: alert.serialize(), user_alerts))
+
+    return jsonify({"message": "Alert deleted successfully", "alerts_array": user_alerts}), 200
 
 @app.route('/users/funds', methods=['PATCH'])
 def add_funds():
