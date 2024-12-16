@@ -146,6 +146,15 @@ export const Navbar = () => {
                             <li>
                                 <Link
                                     className="dropdown-item"
+                                    to="/userdashboard#wallet"
+                                    onClick={() => actions.setShowWallet()}
+                                >
+                                    Wallet
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="dropdown-item"
                                     to="/userdashboard#overallHoldings"
                                     onClick={() => actions.setShowOverallHoldings()}
                                 >

@@ -23,7 +23,7 @@ export const Wallet = () => {
       actions.getWalletPriceData(wallet.coin_id);
       actions.getWalletNormalData(wallet.coin_id);
     });
-  }, []);
+  }, [store.walletIds]);
 
 
 
@@ -55,8 +55,7 @@ export const Wallet = () => {
   }
 
   const addFunds = () => {
-    const inputAmount = parseFloat(document.getElementById("dollarAmount").value);
-    actions.addFundsToWallet(store.funds + inputAmount)
+    actions.addToFunds(document.getElementById("dollarAmount").value)
   }
 
   // Deduplicate wallet data
@@ -65,9 +64,25 @@ export const Wallet = () => {
       index === self.findIndex((w) => w.id === wallet.id)
   );
 
-  // if (!Array.isArray(store.walletNormalData) || store.walletNormalData.length === 0) {
-  //   return <p>Loading wallet data...</p>;
-  // }
+  if (!Array.isArray(store.walletNormalData) || store.walletNormalData.length === 0) {
+    return (
+      <div
+        className="col-12 d-flex flex-column justify-content-center align-items-center"
+        style={{ height: "60vh" }}
+      >
+        <h3
+          style={{
+            fontSize: "2rem",
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        >
+          You don't have anything in you wallet yet! Start trading to access you wallet capabilities!
+        </h3>
+      </div>
+    );
+  }
+  
 
   const fundsCurrency =(pref)=> {
     if (pref == "cad") {
@@ -208,7 +223,7 @@ export const Wallet = () => {
                   />
                 </div>
                 <div className="col-4">
-                  <label for="dollarAmount" className="form-label d-block">Amount</label>
+                  <label for="inputAmount" className="form-label d-block">Amount</label>
                   <div className="input-group mb-3">
                     <span className="input-group-text">$</span>
                     <input
@@ -377,7 +392,7 @@ export const Wallet = () => {
       <h2>Your Wallet</h2>
       <div className="funds">
         <div style={{ display: "flex" }}>
-          <h3 style={{ paddingRight: "3vw" }}>Available Funds: {store.fundsInCurrency > 0 ? Number(store.fundsInCurrency.toFixed(2)).toLocaleString() : store.funds > 0 ? Number(store.funds.toFixed(2)).toLocaleString() : "0"} {store.currency.toUpperCase()}</h3>
+          <h3 style={{ paddingRight: "3vw" }}>Available Funds: {store.fundsInCurrency > 0 ? store.fundsInCurrency.toFixed(2) : store.funds > 0 ? store.funds.toFixed(2) : "0"} {store.currency.toUpperCase()}</h3>
           <button onClick={() => openFundsModal()} className="btn trdBtn">Add Funds</button>
         </div>
         <div>

@@ -48,7 +48,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         },
         actions: {
             setFundsInCurrency: (money) => {
-                setStore({ fundsInCurrency: money})
+                setStore({ fundsInCurrency: money })
             },
             setFavoritePriceData: () => {
                 setStore({ favoritePriceData: [] })
@@ -83,7 +83,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             setShowTradeModal: (coin) => {
                 setStore({ showTradeModal: !getStore().showTradeModal })
-                setStore({ tradeCoin: coin})
+                setStore({ tradeCoin: coin })
             },
             setShowOverallHoldings: () => {
                 setStore({ showOverallHoldings: true })
@@ -183,29 +183,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err))
             },
 
-            getFavPriceData: (id) => {
-                const currentData = getStore().favoritePriceData
-                const options = {
-                    method: 'GET',
-                    headers: {
-                        accept: 'application/json',
-                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
-                    }
-                };
-                fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
-                    .then((res) => res.json())
-                    .then((response) => {
-                        if (!currentData.some((entry) => entry[0]?.id === id)) {
-                            setStore({
-                                favoritePriceData: [...getStore().favoritePriceData,
-                                response.prices.map((price) => {
-                                    return ({ id: id, date: new Date(price[0]), price: price[1] })
-                                })]
-                            })
-                        }
-                    })
-                    .catch((err) => console.log(err))
-            },
+
 
 
             getWalletPriceData: (id) => {
@@ -217,7 +195,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'x-cg-pro-api-key': process.env.COINGECKO_KEY
                     }
                 };
-            
+
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
                     .then((res) => res.json())
                     .then((response) => {
@@ -239,7 +217,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch((err) => console.log(err));
             },
-        
+
 
             handleSignUp: async (e) => {
                 e.preventDefault();
@@ -427,7 +405,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                         if (!res.ok) throw Error(res.statusText);
                         return res.json();
                     })
-                    .then(response => {setStore({ favoriteIds: response })})
+                    .then(response => {
+                        setStore({ favoriteIds: response });
+                        getActions().clearFavoriteData()
+                        getActions().clearFavPriceData()
+
+                    })
                     .catch(error => console.error(error));
             },
 
@@ -439,6 +422,39 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch((err) => console.log(err))
             },
+            clearFavoriteData: () => {
+                setStore({ favoriteData: [] })
+            },
+
+            clearFavoritePriceData: () => {
+                setStore({ favoritePriceData: [] })
+            },
+
+
+            getFavPriceData: (id) => {
+                const currentData = getStore().favoritePriceData
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                    }
+                };
+                fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
+                    .then((res) => res.json())
+                    .then((response) => {
+                        if (!currentData.some((entry) => entry[0]?.id === id)) {
+                            setStore({
+                                favoritePriceData: [...getStore().favoritePriceData,
+                                response.prices.map((price) => {
+                                    return ({ id: id, date: new Date(price[0]), price: price[1] })
+                                })]
+                            })
+                        }
+                    })
+                    .catch((err) => console.log(err))
+            },
+
             getFavoriteData: (coin_id) => {
                 const currentData = getStore().favoriteData
                 const options = {
@@ -457,7 +473,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch((err) => console.log(err))
             },
-            
+
             getWalletNormalData: (coin_id) => {
                 const currentData = getStore().walletNormalData; // Get current wallet data from the store
                 const options = {
@@ -467,7 +483,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'x-cg-pro-api-key': process.env.COINGECKO_KEY
                     }
                 };
-            
+
                 fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true`, options)
                     .then((res) => res.json())
                     .then((response) => {
@@ -480,8 +496,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch((err) => console.log(err));
             },
-            
-            
+
+
 
             addToWallet: (coin) => {
                 fetch(process.env.BACKEND_URL + `wallet/${coin.id}`, {
@@ -495,32 +511,32 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ walletIds: response }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ walletIds: response }))
+                    .catch(error => console.error(error));
             },
-            
+
             removeFromWallet: (wallet_id) => {
                 fetch(process.env.BACKEND_URL + `wallet/${getStore().userID}/${wallet_id}`, {
                     method: 'DELETE'
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => {
-                    setStore({ walletIds: response });
-                    response.forEach(element => {
-                        getActions().getWalletNormalData(element.coin_id);
-                        getActions().getWalletPriceData(element.coin_id);
-                    });
-                })
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => {
+                        setStore({ walletIds: response });
+                        response.forEach(element => {
+                            getActions().getWalletNormalData(element.coin_id);
+                            getActions().getWalletPriceData(element.coin_id);
+                        });
+                    })
+                    .catch(error => console.error(error));
             },
-            
+
             getWalletIds: (id) => {
                 fetch(process.env.BACKEND_URL + `users/${id}/wallet`)
                     .then((res) => res.json())
@@ -529,7 +545,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch((err) => console.log(err));
             },
-            
+
             getWalletData: (coin_id) => {
                 const currentData = getStore().walletData;
                 const options = {
@@ -560,14 +576,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ funds: Number(response) }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ funds: Number(response) }))
+                    .catch(error => console.error(error));
             },
-            
+
             getFunds: (id) => {
                 fetch(process.env.BACKEND_URL + `users/${id}/funds`)
                     .then((res) => res.json())
@@ -592,12 +608,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ walletIds: response }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ walletIds: response }))
+                    .catch(error => console.error(error));
             },
 
         },

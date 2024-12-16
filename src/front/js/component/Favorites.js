@@ -5,25 +5,26 @@ import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip, XAxis } from "rec
 
 export const Favorites = () => {
     const { store, actions } = useContext(Context);
-    const [favoriteIds, setFavoriteIds] = useState (store.favoriteIds);
+    ///const [favoriteIds, setFavoriteIds] = useState(store.favoriteIds);
 
     useEffect(() => {
-        favoriteIds.forEach((favorite) => {
+
+        store.favoriteIds.forEach((favorite) => {
             actions.getFavPriceData(favorite.coin_id);
             actions.getFavoriteData(favorite.coin_id);
         });
-    }, [favoriteIds]);
+    }, [store.favoriteIds]);
 
     const handleFavoriteToggle = (coin) => {
         const existingFav = store.favoriteIds.find((favCoin) => favCoin.coin_id === coin.id);
         if (existingFav) {
-            actions.removeFromFavs(existingFav.id); 
+            actions.removeFromFavs(existingFav.id);
             setFavoriteIds(store.favoriteIds)
         }
     };
 
-   
-    const hasFavorites = store.favoriteIds.length > 0;
+
+    const hasFavorites = store.favoriteIds.length > 0 && store.favoriteData.length > 0;
 
 
     return (
