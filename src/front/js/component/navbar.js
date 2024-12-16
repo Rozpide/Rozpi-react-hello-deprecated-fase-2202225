@@ -114,7 +114,7 @@ export const Navbar = () => {
                     {token ? (
                         <>
                             <span className="navbar-text text-light ms-3">Hello, {username}</span>
-                            <button className="logoutButton btn ms-3" onClick={actions.logout}>Logout</button>
+                            <button className="logoutButton btn ms-3" onClick={()=>{actions.logout(), navigate('/')}}>Logout</button>
                         </>
                     ) : (
                         <button className="loginButton btn ms-3" onClick={() => setShowModal(true)}>Login</button>

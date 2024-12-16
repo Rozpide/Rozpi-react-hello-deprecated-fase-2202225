@@ -39,6 +39,7 @@ const injectContext = PassedComponent => {
 				state.actions.setUserId(localStorage.userID)
 				state.actions.getFavoriteIds(localStorage.userID)
 				state.actions.getWalletIds(localStorage.userID)
+				state.actions.getFunds(localStorage.userID)
 			}
 		}, [] )
 
