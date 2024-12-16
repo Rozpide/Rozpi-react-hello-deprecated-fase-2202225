@@ -180,13 +180,24 @@ def add_wallet(coin_id):
  
 @app.route('/wallet/<coin_id>', methods=['POST'])
 def buy_coin(coin_id):
+    print(request.json)
     user_id = request.json['user_id']
     name = request.json['name']
     purchase_price= request.json['purchase_price']
     purchase_quantity = request.json['purchase_quantity']
     purchase_date = request.json['purchase_date']
-    buy_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id, purchase_price=purchase_price, purchase_date=purchase_date, purchase_quantity=purchase_quantity)
+    buy_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id, purchase_price=purchase_price, purchase_date=purchase_date, quantity_owned=purchase_quantity)
     db.session.add(buy_crypto)
+    db.session.commit() 
+    return jsonify(get_wallets(user_id))
+
+@app.route('/wallet/<coin_id>', methods=['PATCH, DELETE'])
+def sell_coin(coin_id):
+    user_id = request.json['user_id']
+    name = request.json['name']
+    purchase_quantity = request.json['purchase_quantity']
+    sell_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id, quantity_owned=purchase_quantity)
+    db.session.add(sell_crypto)
     db.session.commit() 
     return jsonify(get_wallets(user_id))
 
