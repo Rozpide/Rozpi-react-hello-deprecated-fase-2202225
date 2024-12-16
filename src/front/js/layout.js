@@ -10,12 +10,14 @@ import injectContext from "./store/appContext";
 import  User  from "./component/user";
 import  Login  from "./component/login";
 import  Signup  from "./component/signup";
+import { ErrorPage } from "./pages/error";
 
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import NewPetLost from "./pages/newPetLost.js";
 import NewFoundPet from "./pages/newFoundPet.js"; 
+import EditFoundPet from "./pages/editFoundPet.js"; 
 import UbicationMap from "./component/ubication_map.js";
 
 //create your first component
@@ -42,7 +44,9 @@ const Layout = () => {
                         <Route element={<User />} path="/user" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Signup />} path="/signup" />
+                        <Route element = {<EditFoundPet/>} path = "/editpetfound"/>
                         <Route element={<h1>Not found!</h1>} />
+                        <Route element={<ErrorPage />} path="/error" />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

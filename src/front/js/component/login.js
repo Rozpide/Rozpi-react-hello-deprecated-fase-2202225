@@ -17,7 +17,7 @@ const Login = () => {
                         <input type="password" className="form-control" id="floatingPassword" placeholder="Password" />
                         <label htmlFor="floatingPassword">CONTRASEÑA</label>
                     </div>
-                    <Link to="/forgot-password" className="d-block mb-3">¿OLVIDÓ SU CONTRASEÑA?</Link>
+                    <Link to="/error" className="d-block mb-3">¿OLVIDÓ SU CONTRASEÑA?</Link>
                     <button className="btn btn-primary" style={{ width: "100%" }}>Iniciar sesión</button>
                     <p className="mt-3">¿NO TIENES UNA CUENTA? <Link to="/signup">REGÍSTRATE</Link></p>
                 </div>

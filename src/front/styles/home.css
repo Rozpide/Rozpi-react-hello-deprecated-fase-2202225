@@ -10,6 +10,12 @@
     font-weight: 400;
     font-style: normal;
   }
+.adlam-display{
+  font-family: "ADLaM Display";
+    font-weight: 100;
+    font-style: normal;
+    color: #003459; 
+}
 
   .nunito {
     font-family: "Nunito", sans-serif;
@@ -34,3 +40,15 @@ body {
 color: darkblue;
 font-size: 30px;
 }
+
+.list{
+  list-style-type: none;
+  margin-top: 4%;
+  padding: 0%;
+}
+.leaflet-popup-content-wrapper{
+ border-style: 0px;
+ background: url('/workspaces/Rosas-Alonso-Rodriguez-Acu-a-y-Chaves-Proyecto-final/src/front/img/mapCard.PNG') no-repeat center center;
+ background-size: cover;
+}
+

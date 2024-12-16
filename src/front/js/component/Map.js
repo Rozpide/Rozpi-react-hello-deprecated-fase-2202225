@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react';
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { Icon,divIcon, map } from "leaflet"
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from "leaflet"
+import { Link } from "react-router-dom";
 /* 
 Commands: 
  npm install 16 ~para bajar de version de node
@@ -111,6 +112,21 @@ const Map = () => {
   //     html: <div></div>
   //   })
   // }
+  
+
+    const getStatusClass = (status) =>{
+      switch (status){
+ //       case "Encontrado":
+   //     return "bg-success";
+        case "Estoy perdido":
+          return "bg-danger"; // Rojo
+     //   case "Buscando a su familia":
+    //      return "bg-warning"; // Amarillo
+   //     default:
+    //      return "bg-secondary"; // Gris
+      }
+    };
+
 
   return (
     <MapContainer center={[-34.91709426939976, -56.16318765994477]} zoom={13} style={{width: "100vw", height:"100vh"}}> //Asi se centra el mapa en un lugar: -34.91709426939976, -56.16318765994477
@@ -125,24 +141,31 @@ const Map = () => {
       {pets.map(pet => (
         <Marker position={pet.geocode} icon={CustomIcon}>
           <Popup>
-            <h6>
-              Se perdio: <span className='fw-bold'>{pet.name}</span>
-            </h6>
-            <ul>
-            <img src='https://www.akc.org/wp-content/uploads/2020/07/Golden-Retriever-puppy-standing-outdoors-500x486.jpg' width={100} height={100} ></img>
+            <div className="card-body h-auto">
+       <div classname="rounded" > 
+            <img className="img-fluid" src='https://www.akc.org/wp-content/uploads/2020/07/Golden-Retriever-puppy-standing-outdoors-500x486.jpg'></img>
+            <Link to="" style={{ textDecoration: 'none' }} ><p className={`mt-0 text-center text-light text-uppercase bold ${getStatusClass(pet.pet_status)}`}>{pet.pet_status}</p></Link>
+            </div>
+              <ul className="list adlam-display  ">
               <li>
-              <span className='fw-bold'>Raza: </span><span>{pet.breed}</span> 
-              </li>
-              <li>
-              <span className='fw-bold'>Color: </span><span>{pet.color}</span> 
-              </li>
-              <li>
-              <span className='fw-bold'>Sexo: </span><span>{pet.gender}</span> 
-              </li>
-              <li>
-              <span className='fw-bold'>Especie: </span><span>{pet.species}</span> 
-              </li>
-            </ul>
+                  <span className=' fw-bold'>Nombre: </span><span className="text-black">{pet.name}</span>
+                </li>          
+                   <li>
+                  <span className='fw-bold'>Sexo: </span><span className="text-black">{pet.gender}</span>
+                </li>
+                <li>
+                  <span className='fw-bold'>Raza: </span><span className="text-black">{pet.breed}</span>
+                </li>
+                <li>
+                  <span className='fw-bold'>Color: </span><span className="text-black">{pet.color}</span>
+                </li>
+   
+                <li>
+                  <span className='fw-bold'>Especie: </span><span className="text-black">{pet.species}</span>
+                </li>
+              </ul>
+              
+            </div>
           </Popup>
         </Marker>
       ))}
