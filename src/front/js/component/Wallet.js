@@ -23,7 +23,7 @@ export const Wallet = () => {
       actions.getWalletPriceData(wallet.coin_id);
       actions.getWalletNormalData(wallet.coin_id);
     });
-  }, [walletIds]);
+  }, []);
 
 
 
@@ -65,9 +65,9 @@ export const Wallet = () => {
       index === self.findIndex((w) => w.id === wallet.id)
   );
 
-  if (!Array.isArray(store.walletNormalData) || store.walletNormalData.length === 0) {
-    return <p>Loading wallet data...</p>;
-  }
+  // if (!Array.isArray(store.walletNormalData) || store.walletNormalData.length === 0) {
+  //   return <p>Loading wallet data...</p>;
+  // }
 
   const fundsCurrency =(pref)=> {
     if (pref == "cad") {
@@ -391,66 +391,68 @@ export const Wallet = () => {
           </div>
         </div>
       </div>
-      <table className="wallet-table" style={{ width: "88vw" }}>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Current Price</th>
-            <th>Quantity Owned</th>
-            <th>Total Spent</th>
-            <th>Graph (7d)</th>
-            <th>Quick Actions</th>
-            <th>Market Details</th>
-          </tr>
-        </thead>
-        <tbody>
-          {uniqueWalletData.map((walletArray, index) => (
-            <tr key={walletArray.id}>
-              <td>
-                <div className="wallet-info">
-                  <h5 className="wallet-name">{walletArray.name}</h5>
-                  <div className="wallet-symbol">
-                    {walletArray.symbol.toUpperCase()}
-                  </div>
-                  <img
-                    src={walletArray.image.small}
-                    alt={walletArray.name}
-                    className="wallet-image"
-                  />
-                </div>
-              </td>
-              <td>${walletArray.current_price?.toLocaleString() || "N/A"}</td>
-              <td>{walletArray.quantity_owned || 0}</td>
-              <td>
-                ${(
-                  walletArray.quantity_owned * walletArray.purchase_price ||
-                  0
-                ).toLocaleString()}
-              </td>
-              <td>
-                <SparklineChart
-                  data={walletArray.market_data.sparkline_7d?.price || []}
-                  width={150}
-                  height={50}
-                />
-              </td>
-              <td>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => handleOpenModal(walletArray)}
-                >
-                  Trade
-                </button>
-              </td>
-              <td>
-                <Link to={`/moreinfo/${walletArray.id}`} className="btn btn-secondary">
-                  More Information
-                </Link>
-              </td>
+      {Array.isArray(store.walletNormalData) || store.walletNormalData.length > 0 ? (
+        <table className="wallet-table" style={{ width: "88vw" }}>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Current Price</th>
+              <th>Quantity Owned</th>
+              <th>Total Spent</th>
+              <th>Graph (7d)</th>
+              <th>Quick Actions</th>
+              <th>Market Details</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {uniqueWalletData.map((walletArray, index) => (
+              <tr key={walletArray.id}>
+                <td>
+                  <div className="wallet-info">
+                    <h5 className="wallet-name">{walletArray.name}</h5>
+                    <div className="wallet-symbol">
+                      {walletArray.symbol.toUpperCase()}
+                    </div>
+                    <img
+                      src={walletArray.image.small}
+                      alt={walletArray.name}
+                      className="wallet-image"
+                    />
+                  </div>
+                </td>
+                <td>${walletArray.current_price?.toLocaleString() || "N/A"}</td>
+                <td>{walletArray.quantity_owned || 0}</td>
+                <td>
+                  ${(
+                    walletArray.quantity_owned * walletArray.purchase_price ||
+                    0
+                  ).toLocaleString()}
+                </td>
+                <td>
+                  <SparklineChart
+                    data={walletArray.market_data.sparkline_7d?.price || []}
+                    width={150}
+                    height={50}
+                  />
+                </td>
+                <td>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => handleOpenModal(walletArray)}
+                  >
+                    Trade
+                  </button>
+                </td>
+                <td>
+                  <Link to={`/moreinfo/${walletArray.id}`} className="btn btn-secondary">
+                    More Information
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>)
+      : ( <p>Loading wallet data...</p> )}
 
       {isModalOpen && selectedCoin && (
         <TradeModal

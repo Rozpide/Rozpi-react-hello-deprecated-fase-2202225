@@ -576,6 +576,30 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch((err) => console.log(err));
             },
+
+            buyCoin: (coin, price, quantity, date) => {
+                fetch(process.env.BACKEND_URL + `wallet/${coin.id}`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        "name": coin.name,
+                        "user_id": getStore().userID,
+                        "coin_id": coin.id,
+                        "purchase_price": price,
+                        "purchase_quantity": quantity,
+                        "purchase_date": date
+                    }),
+                    headers: {
+                        'Content-type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw Error(res.statusText);
+                    return res.json();
+                })
+                .then(response => setStore({ walletIds: response }))
+                .catch(error => console.error(error));
+            },
+
         },
     };
 };
