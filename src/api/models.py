@@ -9,6 +9,7 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     username = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
+    funds = db.Column(db.Numeric(10,3), default=0)
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -17,7 +18,8 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            "username": self.username
+            "username": self.username,
+            "funds": self.funds,
         }
 
     def set_password(self, password):
@@ -50,13 +52,13 @@ class Favorites(db.Model):
 
 class Wallet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    coin_id = db.Column(db.String(120), nullable=False)
+    name = db.Column(db.String(80))
+    coin_id = db.Column(db.String(120))
     symbol = db.Column(db.String(20))
-    purchase_price = db.Column(db.String(20))
-    purchase_quantity = db.Column(db.String(20))
-    purchase_date = db.Column(db.String(20))
+    purchase_price = db.Column(db.Numeric(10,3))
+    purchase_quantity = db.Column(db.Numeric(10,3))
+    purchase_date = db.Column(db.DateTime)
     user = db.relationship(User)
 
     def __repr__(self):
