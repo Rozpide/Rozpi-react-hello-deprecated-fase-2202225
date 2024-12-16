@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify, Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from .models import db, User, Favorites, Wallet
+from .models import db, User, Favorites, Wallet, Alert
 from flask_cors import CORS
+
 
 api = Blueprint('api', __name__)
 
@@ -113,5 +114,57 @@ def example_endpoint():
 #     db.session.add(fav_crypto)
 #     db.session.commit()
 #     return jsonify(get_favs(user_id))
+
+
+
+
+# @api.route('/alerts/<int:user_id>', methods=['GET'])
+# @jwt_required()
+# def get_alerts(user_id):
+#     # Ensure the request is from the logged-in user
+#     current_user_id = get_jwt_identity()
+#     if current_user_id != user_id:
+#         return jsonify({"error": "Unauthorized"}), 401
+
+#     alerts = Alert.query.filter_by(user_id=user_id).all()
+#     return jsonify([alert.serialize() for alert in alerts]), 200
+
+# @api.route('/alerts', methods=['POST'])
+# @jwt_required()
+# def create_alert():
+#     current_user_id = get_jwt_identity()
+#     data = request.get_json()
+#     coin_id = data.get('coin_id')
+#     coin_name = data.get('coin_name')
+#     target_price = data.get('target_price')
+
+#     if not coin_id or not coin_name or target_price is None:
+#         return jsonify({"error": "coin_id, coin_name, and target_price are required"}), 400
+
+#     new_alert = Alert(user_id=current_user_id, coin_id=coin_id, coin_name=coin_name, target_price=target_price)
+#     db.session.add(new_alert)
+#     db.session.commit()
+#     return jsonify(new_alert.serialize()), 201
+
+# @api.route('/alerts/<int:user_id>/<int:alert_id>', methods=['DELETE'])
+# @jwt_required()
+# def delete_alert(user_id, alert_id):
+#     current_user_id = get_jwt_identity()
+#     if current_user_id != user_id:
+#         return jsonify({"error": "Unauthorized"}), 401
+
+#     alert = Alert.query.filter_by(id=alert_id, user_id=user_id).first()
+#     if not alert:
+#         return jsonify({"error": "Alert not found"}), 404
+
+#     db.session.delete(alert)
+#     db.session.commit()
+#     return jsonify({"message": "Alert removed successfully"}), 200
+
+
+
+
+
+
 if __name__ == "__main__":
     api.run(debug=True)
