@@ -7,6 +7,8 @@ import NavBar from "./component/Navbar";
 import { Footer } from "./component/footer";
 import { DashboardAdmin } from "./pages/dashboardAdmin";
 import { DashboardTeacher } from "./pages/dashboardTeacher";
+import { UpdateStudent } from "./pages/updateStudent";
+import { UpdateTeacher } from "./pages/updateTeacher";
 import RegistrationForm from './component/RegistrationForm';
 import LoginForm from './component/LoginForm';
 import ParentDashboard from "./pages/ParentDashboard.jsx";
@@ -40,6 +42,23 @@ const Layout = () => {
                             element={
                                 <ProtectedRoute roles={["admin"]}>
                                     <DashboardAdmin />
+                                </ProtectedRoute>
+                            }
+
+                        />
+                        <Route
+                            path="/update-student/:studentId"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <UpdateStudent />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/update-teacher/:teacherId"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <UpdateTeacher />
                                 </ProtectedRoute>
                             }
                         />
