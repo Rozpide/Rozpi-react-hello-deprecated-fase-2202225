@@ -639,8 +639,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         );
                     });
 
-                   
-                    
+
+
                 }
             },
             addFundsToWallet: (funds) => {
@@ -654,12 +654,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ funds: Number(response) }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ funds: Number(response) }))
+                    .catch(error => console.error(error));
             },
 
             removeFundsFromWallet: (funds) => {
@@ -673,14 +673,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ funds: Number(response) }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ funds: Number(response) }))
+                    .catch(error => console.error(error));
             },
-            
+
             getFunds: (id) => {
                 fetch(process.env.BACKEND_URL + `users/${id}/funds`)
                     .then((res) => res.json())
@@ -705,12 +705,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ walletIds: response }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ walletIds: response }))
+                    .catch(error => console.error(error));
             },
 
             sellCoin: (coin, quantity) => {
@@ -726,12 +726,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ walletIds: response }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ walletIds: response }))
+                    .catch(error => console.error(error));
             },
 
         },
