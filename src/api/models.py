@@ -57,7 +57,7 @@ class Wallet(db.Model):
     coin_id = db.Column(db.String(120))
     symbol = db.Column(db.String(20))
     purchase_price = db.Column(db.Numeric(10,3))
-    purchase_quantity = db.Column(db.Numeric(10,3))
+    quantity_owned = db.Column(db.Numeric(10,3))
     purchase_date = db.Column(db.DateTime)
     user = db.relationship(User)
 
@@ -72,6 +72,6 @@ class Wallet(db.Model):
             "coin_id": self.coin_id,
             "symbol": self.symbol,
             "purchase_price": self.purchase_price,
-            "purchase_quantity": self.purchase_quantity,
+            "quantity_owned": self.quantity_owned,
             "purchase_date": self.purchase_date,
         }
