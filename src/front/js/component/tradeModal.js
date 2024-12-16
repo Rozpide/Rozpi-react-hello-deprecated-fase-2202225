@@ -91,7 +91,7 @@ export const TradeModal = (coin) => {
                                                 Total Coins: {amount /
                                                     ((location.pathname == '/listingpage') ?
                                                         store.tradeCoin.current_price :
-                                                        store.tradeCoin.market_data.current_price[store.currency])} {store.tradeCoin.name}
+                                                        store.tradeCoin.market_data.current_price[store.currency])}{' '}{store.tradeCoin.name}
                                             </div>
                                             <button type="submit" className="btn trdBtn">Buy</button>
                                         </>
@@ -102,12 +102,15 @@ export const TradeModal = (coin) => {
                                                 <input type="number" className="form-control" onChange={(e) => setQuantity(e.target.value)} id="buyQuantity" name="buyQuantity" required />
                                             </div>
                                             <div className="mb-3">
-                                                Total Cost: {Number (quantity *
-                                                    ((location.pathname == '/listingpage') ?
-                                                        store.tradeCoin.current_price :
-                                                        store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}
-                                                {store.currency.toUpperCase()} </div>
-                                            <button type="submit" className="btn trdBtn">Buy</button>
+                                            Total Cost: {Number(
+                                                quantity * 
+                                                (location.pathname === '/listingpage' 
+                                                    ? store.tradeCoin.current_price 
+                                                    : store.tradeCoin.market_data.current_price[store.currency])
+                                            ).toLocaleString()}{' '}
+                                            {store.currency.toUpperCase()}
+                                        </div>
+                                    <button type="submit" className="btn trdBtn">Buy</button>
                                         </>
                                     )}
                                 </form>
@@ -135,7 +138,7 @@ export const TradeModal = (coin) => {
                                                 {amount /
                                                     ((location.pathname == '/listingpage') ?
                                                         store.tradeCoin.current_price:
-                                                        store.tradeCoin.market_data.current_price[store.currency])} {store.tradeCoin.name}</div>
+                                                        store.tradeCoin.market_data.current_price[store.currency])}{' '}{store.tradeCoin.name}</div>
                                             <button type="submit" className="btn trdBtn">Sell</button>
                                         </>
                                     ) : (
@@ -148,7 +151,7 @@ export const TradeModal = (coin) => {
                                                 {Number(quantity *
                                                     ((location.pathname == '/listingpage') ?
                                                         store.tradeCoin.current_price :
-                                                        store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}
+                                                        store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}{' '}
                                                 {store.currency.toUpperCase()} </div>
                                             <button type="submit" className="btn trdBtn">Sell</button>
                                         </>
