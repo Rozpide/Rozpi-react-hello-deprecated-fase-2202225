@@ -1,6 +1,6 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Context } from "../store/appContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import backgroundForViews from "../../img/background.jpg";
@@ -413,6 +413,13 @@ const FormCommon = ({ type }) => {
 export const LeftMenuAdmin = () => {
     const [activeContent, setActiveContent] = useState(null);
     const { store } = useContext(Context)
+    const location = useLocation();
+    const messagingDivRef = useRef(null);
+    useEffect(() => {
+        if (location.state?.scrollTo === "Mensajería" && messagingDivRef.current) {
+            messagingDivRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [location]);
 
     const handleStudentRegisterForm = () => {
         setActiveContent("estudiantes");
@@ -570,7 +577,7 @@ export const LeftMenuAdmin = () => {
                         <div className="welcome-message mt-5 ms-auto me-auto">
                             {renderContent()}
                         </div>
-                        <div >
+                        <div id="Mensajería" ref={messagingDivRef}>
                             {store.isChatVisible && <ChatComponent />}
                         </div>
                     </div>
