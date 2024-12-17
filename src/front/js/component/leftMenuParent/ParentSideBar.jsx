@@ -97,9 +97,10 @@ const ParentSideBar = ({
   onSelect,
   src = "https://placehold.co/100",
   name = "Sample Name",
+  className = {}
 }) => {
   return (
-    <SidebarWrapper>
+    <SidebarWrapper className={"d-none d-sm-block"}>
       <StyledNav
         variant="tab"
         className="gap-3"

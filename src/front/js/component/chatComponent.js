@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../../styles/Navbar.module.css";
 import Swal from "sweetalert2";
-import { height } from "@fortawesome/free-solid-svg-icons/fa0";
+
 
 const ChatComponent = ({ userRole, userName, userAvatar }) => {
     const { store, actions } = useContext(Context);

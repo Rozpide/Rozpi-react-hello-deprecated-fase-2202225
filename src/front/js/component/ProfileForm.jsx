@@ -7,7 +7,7 @@ import { Spinner } from "react-bootstrap";
 import { useContext } from "react";
 import { Context } from "../store/appContext.js";
 
-const Container = styled.div`
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 95%;
@@ -183,7 +183,13 @@ const ProfileForm = ({ user }) => {
       delete newData.estudiantes;
       delete newData.calendario;
       delete newData.statusResume;
-      setIsTeacher(store.role == "docente" ? true : false);
+      if (store.role == "docente") {
+        setIsTeacher(true);
+        delete newData.msg;
+        delete newData.materias;
+        delete newData.grados;
+        delete newData.id;
+      }
       setUserData(newData);
     }
   }, [user]);

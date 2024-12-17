@@ -39,7 +39,7 @@ const Layout = () => {
                         <Route element={<LoginForm />} path="/login" />
 
                         <Route
-                            path="/dashboard/admin"
+                            path="/dashboard/admin/*"
                             element={
                                 <ProtectedRoute roles={["admin"]}>
                                     <DashboardAdmin />
@@ -64,7 +64,7 @@ const Layout = () => {
                             }
                         />
                         <Route
-                            path="/dashboard/teacher"
+                            path="/dashboard/teacher/*"
                             element={
                                 <ProtectedRoute roles={["docente"]}>
                                     <DashboardTeacher />

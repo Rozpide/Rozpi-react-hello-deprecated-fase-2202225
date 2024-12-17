@@ -124,7 +124,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                 {studentSlide > 0 ? (
                   <Button
                     variant="light"
-                    className={`ms-2 h-50 fadeInLeft`}
+                    className={`ms-2 h-25 fadeInLeft`}
                     onClick={() =>
                       handlePrevSlide(studentSlide, setStudentSlide)
                     }>
@@ -163,7 +163,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                 {studentSlide < estudiantes.length - 1 ? (
                   <Button
                     variant="light"
-                    className={`me-2 h-50 fadeInRight`}
+                    className={`me-2 h-25 fadeInRight`}
                     onClick={() =>
                       handleNextSlide(
                         studentSlide,

@@ -3,11 +3,11 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, Blueprint
 
-from api.models import User,db, Role, Estudiante
+from api.models import User, Role
 from flask_cors import CORS
 from flask_jwt_extended import get_jwt, verify_jwt_in_request, get_jwt_identity
 from api.services.parent_services import get_students_info
-from api.services.generic_services import get_feriadosAPI, get_schedule
+from api.services.generic_services import  get_schedule
 from api.services.external_services import get_image
 from api.schemas.schemas import UserSchema
 
