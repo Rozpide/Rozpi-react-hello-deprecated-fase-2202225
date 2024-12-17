@@ -296,7 +296,7 @@ const FormCommon = ({ type }) => {
                                         <td>{profesor.direccion}</td>
                                         <td>{profesor.descripcion}</td>
                                         <td className="d-flex justify-content-center">
-                                            <Link to={'/updateTeacher/' + profesor.id}>
+                                            <Link to={`/update-teacher/${profesor.id}`}>
                                                 <button
                                                     type="button"
                                                     className="btn btn-outline-info me-3"
