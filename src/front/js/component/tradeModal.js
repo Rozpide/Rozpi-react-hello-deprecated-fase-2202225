@@ -17,7 +17,7 @@ export const TradeModal = (coin) => {
     const [ownedQuantity, setOwnedQuantity] = useState()
     const [ownedValue, setOwnedValue] = useState()
     let location = useLocation()
-    const timestamp = new Date(Date.now())
+    const timestamp = Date.now()
 
 
 
@@ -41,9 +41,36 @@ export const TradeModal = (coin) => {
         actions.setShowTradeModal(false)
     }
 
-    const verifyAmount = (value) => {
-        if (value > ownedValue) {
+    const verifyAmountSell = () => {
+        let pric = Number(price)
+        let ownedVal = Number(ownedValue)
+        if (pric > ownedVal) {
+            alert("Please enter an amount equal or lower than your current holdings")
+        } else if (pric < ownedVal) {
+            actions.sellSomeCoin(store.tradeCoin, Number(ownedQuantity)-Number(quantity))
+            actions.addFundsToWallet(store.funds + pric)
+            actions.setShowTradeModal(false)
+        } else {
+            actions.sellAllCoin(store.tradeCoin)
+            actions.addFundsToWallet(store.funds + pric)
+            actions.setShowTradeModal(false)
+        }
 
+    }
+
+    const verifyQuantitySell = () => {
+        let quant = Number(quantity)
+        let ownedQuant = Number(ownedQuantity)
+        if (quant > ownedQuant) {
+            alert("Please enter an amount equal or lower than your available coins")
+        } else if (quant < ownedQuant) {
+            actions.sellSomeCoin(store.tradeCoin, ownedQuant-quant)
+            actions.addFundsToWallet(store.funds + Number(price))
+            actions.setShowTradeModal(false)
+        } else {
+            actions.sellAllCoin(store.tradeCoin)
+            actions.addFundsToWallet(store.funds + Number(price))
+            actions.setShowTradeModal(false)
         }
     }
 
@@ -169,7 +196,7 @@ export const TradeModal = (coin) => {
                                     )}
                                 </form>
                             ) : (
-                                <form onSubmit={handleSell}>
+                                <form>
                                     <div className="qOwned">{ownedQuantity > 0 ? (`Available quantity: ${ownedQuantity}`) : ("You do not own this coin")}</div>
                                     <div className="d-flex justify-content-center mb-3">
                                         <button
@@ -194,7 +221,7 @@ export const TradeModal = (coin) => {
                                                         ((location.pathname == '/listingpage') ?
                                                             store.tradeCoin.current_price :
                                                             store.tradeCoin.market_data.current_price[store.currency]))
-                                                    
+
                                                 }} id="sellCurrencyAmount" name="sellCurrencyAmount" required />
                                             </div>
                                             <div className="mb-3">
@@ -202,7 +229,7 @@ export const TradeModal = (coin) => {
                                                     ((location.pathname == '/listingpage') ?
                                                         store.tradeCoin.current_price :
                                                         store.tradeCoin.market_data.current_price[store.currency])}{' '}{store.tradeCoin.name}</div>
-                                            <button type="submit" className="btn trdBtn">Sell</button>
+                                            <button type="text" className="btn trdBtn" onClick={(e) => { e.preventDefault(); verifyAmountSell() }}>Sell</button>
                                         </>
                                     ) : (
                                         <>
@@ -223,7 +250,7 @@ export const TradeModal = (coin) => {
                                                         store.tradeCoin.current_price :
                                                         store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}{' '}
                                                 {store.currency.toUpperCase()} </div>
-                                            <button type="submit" className="btn trdBtn">Sell</button>
+                                            <div type="text" className="btn trdBtn" onClick={(e) => { e.preventDefault(); verifyQuantitySell() }}>Sell</div>
                                         </>
                                     )}
                                 </form>

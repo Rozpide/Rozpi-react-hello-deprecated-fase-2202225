@@ -28,6 +28,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             walletIds: [],
             walletPriceData: [],
             walletNormalData: [],
+            walletReturnsData: [],
+            combinedReturns: [],
             funds: 0,
             fundsInCurrency: 0,
             fundsCurrency: "usd",
@@ -244,7 +246,155 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err));
             },
 
+            // getWalletReturnsData: (coin_id, purchase_date, current_date) => {
+            //     const options = {
+            //         method: 'GET',
+            //         headers: {
+            //             accept: 'application/json',
+            //             'x-cg-pro-api-key': process.env.COINGECKO_KEY
+            //         }
+            //     };
 
+            //     fetch(
+            //         `https://pro-api.coingecko.com/api/v3/coins/${coin_id}/market_chart/range?vs_currency=usd&from=${purchase_date}&to=${current_date}`,
+            //         options
+            //     )
+            //         .then((res) => res.json())
+            //         .then((response) => {
+            //             if (!response.prices || response.prices.length === 0) {
+            //                 console.log("No prices returned from API.");
+            //                 return;
+            //             }
+
+            //             // Create a map to aggregate prices by date
+            //             const aggregatedMap = {};
+
+            //             response.prices.forEach(([timestamp, price]) => {
+            //                 // Convert timestamp to date string (e.g., "2023-01-01")
+            //                 const date = new Date(timestamp).toISOString().split("T")[0];
+
+            //                 // If the date already exists in the map, sum up the prices
+            //                 if (aggregatedMap[date]) {
+            //                     aggregatedMap[date] += price;
+            //                 } else {
+            //                     // Otherwise, initialize it with the current price
+            //                     aggregatedMap[date] = price;
+            //                 }
+            //             });
+
+            //             // Convert the aggregated map back into an array
+            //             const aggregatedData = Object.entries(aggregatedMap).map(([date, price]) => ({
+            //                 date,
+            //                 price
+            //             }));
+
+            //             // Update the store with the aggregated data
+            //             setStore({
+            //                 walletReturnsData: [...getStore().walletReturnsData, ...aggregatedData]
+            //             });
+            //         })
+            //         .catch((err) => console.log(err));
+            // },
+
+            getWalletReturnsData: (coin_id, purchase_date, current_date) => {
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                    }
+                };
+
+                fetch(
+                    `https://pro-api.coingecko.com/api/v3/coins/${coin_id}/market_chart/range?vs_currency=usd&from=${purchase_date}&to=${current_date}`,
+                    options
+                )
+                    .then((res) => res.json())
+                    .then((response) => {
+                        const resultArray = getStore().walletReturnsData;
+                        response.prices.forEach((entry) => {
+                            if (resultArray.length < 1) resultArray.push({
+                                date: (new Date(entry[0])).toDateString(),
+                                price: entry[1]
+                            });
+                            else {
+                                let exists = resultArray.find((elem, ind) => elem.date == entry[0]);
+                                if (!exists) {
+                                    resultArray.push({
+                                        date: (new Date(entry[0])).toDateString(),
+                                        price: entry[1]
+                                    });
+                                } else {
+                                    exists.price += entry[1]
+                                }
+                            }
+                        });
+                        setStore({ walletReturnsData: resultArray })
+                    })
+                    .catch((err) => console.log(err));
+            },
+
+
+            // const resultArray = []
+            //             response.prices.forEach((entry) => {
+            //                 if (resultArray < 1) resultArray.push(entry);
+            //                 else {
+            //                     let exists = resultArray.find((elem, ind) => elem.date == entry[0]);
+            //                     if (!exists) {
+            //                         resultArray.push({
+            //                             date: price[0],
+            //                             price: price[1]
+            //                         });
+            //                     } else {
+            //                         exists.price += entry[1]
+            //                     }
+            //                 }
+            //             });
+
+            // fetch(`https://pro-api.coingecko.com/api/v3/coins/${coin_id}/market_chart/range?vs_currency=usd&from=${purchase_date}&to=${current_date}`, options)
+            //     .then((res) => res.json())
+            //     .then((response) => {
+            //         let returnsWallet = getStore().walletReturnsData;
+
+            //         if (returnsWallet.length < 1) {
+            //             let mapping = response.prices.map((price) => {
+            //                 return {
+            //                     date: price[0],
+            //                     price: price[1]
+            //                 };
+            //             })
+            //             setStore({
+            //                 walletReturnsData: [...getStore().walletReturnsData, ...mapping
+            //                 ]
+            //             })
+            //         } else if (returnsWallet.length > 0) {
+            //             response.prices.forEach((day_price) => {
+            //                 returnsWallet.forEach((elem, ind) => {
+            //                     if (elem.date == day_price[0]) returnsWallet[ind] += day_price[1];
+            //                     else returnsWallet.push(day_price);
+            //                 })
+            //             })
+            //             setStore({ walletReturnsData: returnsWallet })
+            //         }
+
+
+
+
+            //             let mapping = response.prices.map((price) => {
+            //                 return {
+            //                     date: price[0],
+            //                     price: price[1]
+            //                 };
+            //             })
+            //             setStore({
+
+            //          walletReturnsData: [...getStore().walletReturnsData, ...mapping
+            //                 ]
+            //             })
+
+            //         })
+            //         .catch((err) => console.log(err));
+            // },
             handleSignUp: async (e) => {
                 e.preventDefault();
                 const { username, email, confirmEmail, password, confirmPassword } = e.target.elements;
@@ -507,29 +657,30 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch(error => console.error(error));
             },
 
-            removeFromWallet: (wallet_id) => {
-                fetch(process.env.BACKEND_URL + `wallet/${getStore().userID}/${wallet_id}`, {
-                    method: 'DELETE'
-                })
-                    .then(res => {
-                        if (!res.ok) throw Error(res.statusText);
-                        return res.json();
-                    })
-                    .then(response => {
-                        setStore({ walletIds: response });
-                        response.forEach(element => {
-                            getActions().getWalletNormalData(element.coin_id);
-                            getActions().getWalletPriceData(element.coin_id);
-                        });
-                    })
-                    .catch(error => console.error(error));
-            },
+            // removeFromWallet: (wallet_id) => {
+            //     fetch(process.env.BACKEND_URL + `wallet/${getStore().userID}/${wallet_id}`, {
+            //         method: 'DELETE'
+            //     })
+            //         .then(res => {
+            //             if (!res.ok) throw Error(res.statusText);
+            //             return res.json();
+            //         })
+            //         .then(response => {
+            //             setStore({ walletIds: response });
+            //             response.forEach(element => {
+            //                 getActions().getWalletNormalData(element.coin_id);
+            //                 getActions().getWalletPriceData(element.coin_id);
+            //             });
+            //         })
+            //         .catch(error => console.error(error));
+            // },
 
             getWalletIds: (id) => {
                 fetch(process.env.BACKEND_URL + `users/${id}/wallet`)
                     .then((res) => res.json())
                     .then((response) => {
                         setStore({ walletIds: response });
+                        response.map((coin) => getActions().getWalletReturnsData(coin.coin_id, coin.purchase_date, Date.now()))
                     })
                     .catch((err) => console.log(err));
             },
@@ -639,8 +790,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         );
                     });
 
-                   
-                    
+
+
                 }
             },
             addFundsToWallet: (funds) => {
@@ -654,12 +805,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ funds: Number(response) }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ funds: Number(response) }))
+                    .catch(error => console.error(error));
             },
 
             removeFundsFromWallet: (funds) => {
@@ -673,14 +824,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ funds: Number(response) }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => setStore({ funds: Number(response) }))
+                    .catch(error => console.error(error));
             },
-            
+
             getFunds: (id) => {
                 fetch(process.env.BACKEND_URL + `users/${id}/funds`)
                     .then((res) => res.json())
@@ -705,33 +856,66 @@ const getState = ({ getStore, getActions, setStore }) => {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
-                })
-                .then(response => setStore({ walletIds: response }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => {
+                        setStore({ walletIds: response });
+                        response.forEach(element => {
+                            getActions().getWalletNormalData(element.coin_id);
+                            getActions().getWalletPriceData(element.coin_id);
+                            getActions().getWalletReturnsData(element.coin_id, element.purchase_date, Date.now())
+                        })
+                    })
+                    .catch(error => console.error(error));
             },
 
-            sellCoin: (coin, quantity) => {
+            sellSomeCoin: (coin, quantity) => {
                 fetch(process.env.BACKEND_URL + `wallet/${coin.id}`, {
                     method: 'PATCH',
                     body: JSON.stringify({
                         "name": coin.name,
                         "user_id": getStore().userID,
                         "coin_id": coin.id,
-                        "purchase_quantity": quantity
+                        "remaining_quantity": quantity
                     }),
                     headers: {
                         'Content-type': 'application/json'
                     }
                 })
-                .then(res => {
-                    if (!res.ok) throw Error(res.statusText);
-                    return res.json();
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => {
+                        setStore({ walletIds: response });
+                        response.forEach(element => {
+                            getActions().getWalletNormalData(element.coin_id);
+                            getActions().getWalletPriceData(element.coin_id);
+                            getActions().getWalletReturnsData(element.coin_id, element.purchase_date, Date.now())
+                        });
+                    })
+                    .catch(error => console.error(error));
+            },
+
+            sellAllCoin: (coin) => {
+                fetch(process.env.BACKEND_URL + `wallet/${getStore().userID}/${coin.id}`, {
+                    method: 'DELETE',
                 })
-                .then(response => setStore({ walletIds: response }))
-                .catch(error => console.error(error));
+                    .then(res => {
+                        if (!res.ok) throw Error(res.statusText);
+                        return res.json();
+                    })
+                    .then(response => {
+                        setStore({ walletIds: response });
+                        response.forEach(element => {
+                            getActions().getWalletNormalData(element.coin_id);
+                            getActions().getWalletPriceData(element.coin_id);
+                            getActions().getWalletReturnsData(element.coin_id, element.purchase_date, Date.now())
+                        });
+                    })
+                    .catch(error => console.error(error));
             },
 
         },

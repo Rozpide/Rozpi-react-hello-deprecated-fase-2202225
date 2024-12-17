@@ -5,8 +5,13 @@ import { Context } from "../store/appContext";
 
 export const OverallHoldings = () => {
     const { store, actions } = useContext(Context);
+    const timestamp = Date.now()
 
-    return( 
+    // useEffect (()=>{
+    //     store.walletReturnsData.map((coin)=> )
+    // },[])
+
+    return (
         <div>overallholdings</div>
     )
 
