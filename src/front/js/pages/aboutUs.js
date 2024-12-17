@@ -14,6 +14,7 @@ export const AboutUs = () => {
          We’re committed to transparency, innovation, and community-driven growth. By combining cutting-edge analytics with an intuitive user experience, we aim to bring the benefits of blockchain technology to everyone.
 
           Join us at CryptoScope as we chart a course through the future of finance—one block at a time. Together, let’s scope out the opportunities in crypto and unlock its full potential.</div>
+    
     </div>
 	
    )
