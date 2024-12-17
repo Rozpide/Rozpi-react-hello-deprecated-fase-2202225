@@ -5,10 +5,8 @@ import { LineChart, Line, YAxis, ResponsiveContainer, Tooltip, XAxis } from "rec
 
 export const Favorites = () => {
     const { store, actions } = useContext(Context);
-    ///const [favoriteIds, setFavoriteIds] = useState(store.favoriteIds);
 
     useEffect(() => {
-
         store.favoriteIds.forEach((favorite) => {
             actions.getFavPriceData(favorite.coin_id);
             actions.getFavoriteData(favorite.coin_id);
@@ -16,16 +14,18 @@ export const Favorites = () => {
     }, [store.favoriteIds]);
 
     const handleFavoriteToggle = (coin) => {
-        const existingFav = store.favoriteIds.find((favCoin) => favCoin.coin_id === coin.id);
-        if (existingFav) {
-            actions.removeFromFavs(existingFav.id);
-            //setFavoriteIds(store.favoriteIds)
+        // Ask for confirmation before removing a favorite
+        const confirmRemoval = window.confirm(`Are you sure you want to remove ${coin.name} from your favorites?`);
+        
+        if (confirmRemoval) {
+            const existingFav = store.favoriteIds.find((favCoin) => favCoin.coin_id === coin.id);
+            if (existingFav) {
+                actions.removeFromFavs(existingFav.id);
+            }
         }
     };
 
-
     const hasFavorites = store.favoriteIds.length > 0 && store.favoriteData.length > 0;
-
 
     return (
         <div className="row" id="favoriteScreen">
@@ -38,7 +38,6 @@ export const Favorites = () => {
             ) : (
                 store.favoriteData.map((favorite, index) => {
                     const chartdata = store.favoritePriceData.filter((array) => array[0].id === favorite.id);
-
                     return (
                         <div key={favorite.id} className="favCardOut card col-4">
                             <div className="favCardIn">
@@ -55,7 +54,7 @@ export const Favorites = () => {
                                 <div className="favCardBody card-body">
                                     <h5 className="card-title">{favorite.name}</h5>
                                     <p className="card-text">{favorite.symbol}</p>
-                                    <p className="card-text"><strong>Current Price:</strong> ${favorite.current_price}</p>
+                                    <p className="card-text"><strong>Current Price:</strong> ${favorite.market_data.current_price[store.currency]}</p>
                                     <Link to={"/moreInfo/" + favorite.id}>
                                         <span className="favMoreInfoButton btn">More Information</span>
                                     </Link>

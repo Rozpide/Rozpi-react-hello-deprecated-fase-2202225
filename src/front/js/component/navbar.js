@@ -51,8 +51,16 @@ export const Navbar = () => {
         setShowSuggestions(false); // Hide suggestions after selecting
         console.log(coin.id);
         navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
-
     };
+
+    const handleLogout = () => {
+        const isConfirmed = window.confirm(`Are you sure you want to log out, ${username}?`);
+        if (isConfirmed) {
+            actions.logout(); // Perform the logout action
+            navigate('/'); // Navigate to home page after logout
+        }
+    };
+
     return (
         <>
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "black" }}>
@@ -113,10 +121,16 @@ export const Navbar = () => {
                             )}
                         </form>
                     </div>
+
                     {token ? (
                         <>
                             <span className="navbar-text text-light ms-3">Hello, {username}</span>
-                            <button className="logoutButton btn ms-3" onClick={()=>{actions.logout(), navigate('/')}}>Logout</button>
+                            <button
+                                className="logoutButton btn ms-3"
+                                onClick={handleLogout} // Trigger the confirmation popup
+                            >
+                                Logout
+                            </button>
                         </>
                     ) : (
                         <button className="loginButton btn ms-3" onClick={() => setShowModal(true)}>Login</button>
