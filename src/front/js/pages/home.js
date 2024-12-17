@@ -43,7 +43,7 @@ export const Home = () => {
 
   return (
     <div className="allSection" >
-      <div style={{ backgroundImage: `url(${homeBackground})`, backgroundRepeat: "repeat-y", backgroundSize: "auto", backgroundPosition: "center" }}>
+      <div style={{ backgroundImage: `url(${homeBackground})`, backgroundRepeat: "repeat-y", backgroundSize: "110% auto", backgroundPosition: "center" }}>
         <section id="bienvenida" className="section alternate">
           <div className="container">
             <div className="text-content p-5">
