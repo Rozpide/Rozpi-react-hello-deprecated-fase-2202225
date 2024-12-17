@@ -189,29 +189,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     .catch((err) => console.log(err))
             },
 
-            getFavPriceData: (id) => {
-                const currentData = getStore().favoritePriceData
-                const options = {
-                    method: 'GET',
-                    headers: {
-                        accept: 'application/json',
-                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
-                    }
-                };
-                fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
-                    .then((res) => res.json())
-                    .then((response) => {
-                        if (!currentData.some((entry) => entry[0]?.id === id)) {
-                            setStore({
-                                favoritePriceData: [...getStore().favoritePriceData,
-                                response.prices.map((price) => {
-                                    return ({ id: id, date: new Date(price[0]), price: price[1] })
-                                })]
-                            })
-                        }
-                    })
-                    .catch((err) => console.log(err))
-            },
+
 
 
             getWalletPriceData: (id) => {
@@ -581,6 +559,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                         if (!res.ok) throw Error(res.statusText);
                         return res.json();
                     })
+                    .then(response => {
+                        setStore({ favoriteIds: response });
+                        getActions().clearFavoriteData()
+                        getActions().clearFavPriceData()
+
+                    })
                     .then(response => { setStore({ favoriteIds: response }) })
                     .catch(error => console.error(error));
             },
@@ -593,6 +577,39 @@ const getState = ({ getStore, getActions, setStore }) => {
                     })
                     .catch((err) => console.log(err))
             },
+            clearFavoriteData: () => {
+                setStore({ favoriteData: [] })
+            },
+
+            clearFavoritePriceData: () => {
+                setStore({ favoritePriceData: [] })
+            },
+
+
+            getFavPriceData: (id) => {
+                const currentData = getStore().favoritePriceData
+                const options = {
+                    method: 'GET',
+                    headers: {
+                        accept: 'application/json',
+                        'x-cg-pro-api-key': process.env.COINGECKO_KEY
+                    }
+                };
+                fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7`, options)
+                    .then((res) => res.json())
+                    .then((response) => {
+                        if (!currentData.some((entry) => entry[0]?.id === id)) {
+                            setStore({
+                                favoritePriceData: [...getStore().favoritePriceData,
+                                response.prices.map((price) => {
+                                    return ({ id: id, date: new Date(price[0]), price: price[1] })
+                                })]
+                            })
+                        }
+                    })
+                    .catch((err) => console.log(err))
+            },
+
             getFavoriteData: (coin_id) => {
                 const currentData = getStore().favoriteData
                 const options = {
