@@ -44,47 +44,63 @@ export const TradeModal = (coin) => {
 
     const handleBuy = (e) => {
         e.preventDefault();
-        actions.buyCoin(store.tradeCoin, price, quantity, timestamp);
-        actions.removeFundsFromWallet(store.funds - Number(price));
-        actions.setShowTradeModal(false)
-    }
-
-
+        const confirmation = window.confirm(
+            `Are you sure you want to buy ${quantity} ${store.tradeCoin.name} for ${price} ${store.currency.toUpperCase()}?`
+        );
+        if (confirmation) {
+            actions.buyCoin(store.tradeCoin, price, quantity, timestamp);
+            actions.removeFundsFromWallet(store.funds - Number(price));
+            actions.setShowTradeModal(false);
+        }
+    };
+    
     const verifyAmountSell = () => {
-        let pric = Number(price)
-        let ownedVal = Number(ownedValue)
+        let pric = Number(price);
+        let ownedVal = Number(ownedValue);
+    
         if (pric > ownedVal) {
-            alert("Please enter an amount equal or lower than your current holdings")
-        } else if (pric < ownedVal) {
-            actions.sellSomeCoin(store.tradeCoin, Number(ownedQuantity) - Number(quantity))
-            actions.addFundsToWallet(store.funds + pric)
-            actions.setShowTradeModal(false)
+            alert("Please enter an amount equal or lower than your current holdings");
         } else {
-            actions.sellAllCoin(store.tradeCoin)
-            actions.addFundsToWallet(store.funds + pric)
-            actions.setShowTradeModal(false)
+            const confirmation = window.confirm(
+                `Are you sure you want to sell ${quantity} ${store.tradeCoin.name} for ${price} ${store.currency.toUpperCase()}?`
+            );
+            if (confirmation) {
+                if (pric < ownedVal) {
+                    actions.sellSomeCoin(store.tradeCoin, Number(ownedQuantity) - Number(quantity));
+                    actions.addFundsToWallet(store.funds + pric);
+                    actions.setShowTradeModal(false);
+                } else {
+                    actions.sellAllCoin(store.tradeCoin);
+                    actions.addFundsToWallet(store.funds + pric);
+                    actions.setShowTradeModal(false);
+                }
+            }
         }
-
-
-    }
-
-
+    };
+    
     const verifyQuantitySell = () => {
-        let quant = Number(quantity)
-        let ownedQuant = Number(ownedQuantity)
+        let quant = Number(quantity);
+        let ownedQuant = Number(ownedQuantity);
+    
         if (quant > ownedQuant) {
-            alert("Please enter an amount equal or lower than your available coins")
-        } else if (quant < ownedQuant) {
-            actions.sellSomeCoin(store.tradeCoin, ownedQuant - quant)
-            actions.addFundsToWallet(store.funds + Number(price))
-            actions.setShowTradeModal(false)
+            alert("Please enter an amount equal or lower than your available coins");
         } else {
-            actions.sellAllCoin(store.tradeCoin)
-            actions.addFundsToWallet(store.funds + Number(price))
-            actions.setShowTradeModal(false)
+            const confirmation = window.confirm(
+                `Are you sure you want to sell ${quant} ${store.tradeCoin.name} for ${price} ${store.currency.toUpperCase()}?`
+            );
+            if (confirmation) {
+                if (quant < ownedQuant) {
+                    actions.sellSomeCoin(store.tradeCoin, ownedQuant - quant);
+                    actions.addFundsToWallet(store.funds + Number(price));
+                    actions.setShowTradeModal(false);
+                } else {
+                    actions.sellAllCoin(store.tradeCoin);
+                    actions.addFundsToWallet(store.funds + Number(price));
+                    actions.setShowTradeModal(false);
+                }
+            }
         }
-    }
-
+    };
 
     const handleSell = () => {
     }

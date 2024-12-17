@@ -34,6 +34,12 @@ export const Navbar = () => {
             setShowSuggestions(false); // Hide suggestions on search
         }
     };
+    const handleUnauthorizedAction = (e) => {
+        if (!token) {
+            e.preventDefault(); // Prevent navigation
+            alert("You are not logged in. Please register or sign in.");
+        }
+    };
 
     const handleLoginSuccess = (username, password) => {
         actions.login(username, password); // Update global store with logged-in user
@@ -61,6 +67,14 @@ export const Navbar = () => {
         }
     };
 
+    // Combine both logic (show alert or navigate) in one function
+    const handleListOfCoinsClick = (e) => {
+        if (!token) {
+            e.preventDefault(); // Prevent navigation
+            alert("You are not logged in. Please register or sign in.");
+        }
+    };
+
     return (
         <>
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "black" }}>
@@ -71,7 +85,13 @@ export const Navbar = () => {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link className="listButton btn" to="/listingpage">List of Coins</Link>
+                                <Link 
+                                    className="listButton btn" 
+                                    to="/listingpage"
+                                    onClick={handleListOfCoinsClick} // Combined handler for both alert and navigation
+                                >
+                                    List of Coins
+                                </Link>
                             </li>
                         </ul>
                         <form
@@ -149,12 +169,11 @@ export const Navbar = () => {
                         />
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><span className="dropdown-item-text">Hello, {username || "Guest"}</span></li>
-                            {/* <li><Link className="dropdown-item" to="/profile">Profile</Link></li> */}
                             <li>
                                 <Link
                                     className="dropdown-item"
                                     to="/userdashboard#favorites"
-                                    onClick={() => actions.setShowFavorites()}
+                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
                                 >
                                     Favorites
                                 </Link>
@@ -163,7 +182,7 @@ export const Navbar = () => {
                                 <Link
                                     className="dropdown-item"
                                     to="/userdashboard#wallet"
-                                    onClick={() => actions.setShowWallet()}
+                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
                                 >
                                     Wallet
                                 </Link>
@@ -172,7 +191,7 @@ export const Navbar = () => {
                                 <Link
                                     className="dropdown-item"
                                     to="/userdashboard#overallHoldings"
-                                    onClick={() => actions.setShowOverallHoldings()}
+                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
                                 >
                                     Dashboard
                                 </Link>
