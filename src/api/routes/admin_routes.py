@@ -144,7 +144,7 @@ def update_teacher(id):
     except ValidationError as err:
         return jsonify(err.messages)
 
-    return update_instance(Docente,id,body)
+    return update_instance(Docente,id,body, teacher_schema)
     
 @admin_routes.route('/teachers/<int:id>', methods=['DELETE'])
 def remove_teacher(id):

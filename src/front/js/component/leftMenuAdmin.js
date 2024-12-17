@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Context } from "../store/appContext";
 import { Link, useLocation, useNavigate, Route, Routes } from "react-router-dom";
 import DatePicker from "react-datepicker";
@@ -300,7 +300,7 @@ const FormCommon = ({ type }) => {
                                         <td>{profesor.direccion}</td>
                                         <td>{profesor.descripcion}</td>
                                         <td className="d-flex justify-content-center">
-                                            <Link to={'/updateTeacher/' + profesor.id}>
+                                            <Link to={`/update-teacher/${profesor.id}`}>
                                                 <button
                                                     type="button"
                                                     className="btn btn-outline-info me-3"
@@ -419,6 +419,12 @@ export const LeftMenuAdmin = () => {
     const location = useLocation()
     const [activeContent, setActiveContent] = useState(null);
     const { store, actions } = useContext(Context)
+    const messagingDivRef = useRef(null);
+    useEffect(() => {
+        if (location.state?.scrollTo === "Mensajería" && messagingDivRef.current) {
+            messagingDivRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [location]);
 
     const handleStudentRegisterForm = () => {
         setActiveContent("estudiantes");
@@ -608,7 +614,7 @@ export const LeftMenuAdmin = () => {
                                 {renderContent()}
                             </div>
                         }
-                        <div >
+                        <div id="Mensajería" ref={messagingDivRef}>
                             {store.isChatVisible && <ChatComponent />}
                         </div>
                     </div>

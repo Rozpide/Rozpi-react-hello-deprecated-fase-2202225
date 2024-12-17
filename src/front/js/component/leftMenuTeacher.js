@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Context } from "../store/appContext";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
@@ -437,6 +437,12 @@ export const LeftMenuTeacher = () => {
     const location = useLocation()
     const [activeContent, setActiveContent] = useState(null);
     const { store, actions } = useContext(Context)
+    const messagingDivRef = useRef(null);
+    useEffect(() => {
+        if (location.state?.scrollTo === "Mensajería" && messagingDivRef.current) {
+            messagingDivRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [location]);
 
     const handleCreateEvaluation = () => {
         setActiveContent("crear");
@@ -570,7 +576,7 @@ export const LeftMenuTeacher = () => {
                                 {renderContent()}
                             </div>
                         }
-                        <div >
+                        <div id="Mensajería" ref={messagingDivRef}>
                             {store.isChatVisible && <ChatComponent />}
                         </div>
                     </div>

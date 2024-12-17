@@ -56,7 +56,7 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
             style={{ display: store.isChatVisible || store.isClosingChat ? "block" : "none" }}
         >
             <div className={`${styles.CardHeader} card-header bg-primary text-white d-flex justify-content-between align-items-center`}>
-                <h5 className="mb-0">Mensajería</h5>
+                <h5 className="mb-0" id="Mensajería">Mensajería</h5>
                 <button
                     className={`${styles.closeChat}`}
                     onClick={actions.toggleChat}

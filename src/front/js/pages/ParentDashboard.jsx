@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import ParentSideBar from "../component/leftMenuParent/ParentSideBar.jsx";
 import MainDashboard from "../component/leftMenuParent/MainDashboard.jsx";
 import styled from "styled-components";
 import img from "./../../img/background.jpg";
 import { Context } from "../store/appContext.js";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import ProfileForm from "../component/ProfileForm.jsx";
 import ChatComponent from "../component/chatComponent";
 import ParentReview from "../component/leftMenuParent/ParentReview.jsx"
@@ -47,7 +47,8 @@ const ParentDashboard = () => {
   const [infoEstudiantes, setInfoEstudiantes] = useState([]);
   const navigate = useNavigate();
   const [isChatVisible, setIsChatVisible] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const messagingDivRef = useRef(null);
   const toggleChat = () => {
     setIsChatVisible(!isChatVisible);
   };
@@ -56,7 +57,11 @@ const ParentDashboard = () => {
     navigate(key);
   };
 
-
+  useEffect(() => {
+    if (location.state?.scrollTo === "Mensajería" && messagingDivRef.current) {
+      messagingDivRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location]);
   useEffect(() => {
     const fetchPersonalInfo = async () => {
       if (!store.personalInfo) {
@@ -106,7 +111,7 @@ const ParentDashboard = () => {
           />
           <Route path="/review/:studentId?/:subject?" element={<ParentReview />} />
         </Routes>
-        <div>{store.isChatVisible && <ChatComponent />}</div>
+        <div id="Mensajería" ref={messagingDivRef}>{store.isChatVisible && <ChatComponent />}</div>
       </Content>
     </div>
   );
