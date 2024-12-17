@@ -191,39 +191,24 @@ export const MoreInfo = () => {
                     </div>
                 </div>
 
-                {/* Alert Configuration Section */}
-                <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#1a1a1a", borderRadius: "5px" }}>
-                    <h4 style={{ color: "#39ff14" }}>Set Price Alert</h4>
-                    <input
-                        id="alert_price"
-                        type="number"
-                        value={alertPrice}
-                        onChange={(e) => setAlertPrice(e.target.value)}
-                        placeholder="Enter target price"
-                        style={{
-                            padding: "8px",
-                            borderRadius: "5px",
-                            border: "1px solid #39ff14",
-                            marginRight: "10px",
-                            width: "200px",
-                        }}
-                    />
-                    <label style={{ color: "#39ff14" }}> <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("above")} /> Above </label>
-                    <label style={{ color: "#39ff14" }}> <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("below")} /> Below   </label>
-                    <button
-                        onClick={handleSetAlert}
-                        style={{
-                            padding: "8px 15px",
-                            backgroundColor: "#39ff14",
-                            color: "black",
-                            border: "none",
-                            borderRadius: "5px",
-                            cursor: "pointer",
-                        }}
-                    >
-                        Set Alert
-                    </button>
-                </div>
+               {/* Alert Configuration Section */}
+<div className="alert-configuration">
+    <h4>Set Price Alert</h4>
+    <input
+        id="alert_price"
+        type="number"
+        value={alertPrice}
+        onChange={(e) => setAlertPrice(e.target.value)}
+        placeholder="Enter target price"
+    />
+    <label>
+        <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("above")} /> Above
+    </label>
+    <label>
+        <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("below")} /> Below
+    </label>
+    <button onClick={handleSetAlert}>Set Alert</button>
+</div>
 
                 {/* Alerts List Section */}
                     <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#1a1a1a", borderRadius: "5px" }}>

@@ -4,40 +4,74 @@ import { useLocation } from "react-router-dom";
 
 export const TradeModal = (coin) => {
     const { store, actions } = useContext(Context);
-    const [buy, setBuy] = useState(true);
-    const [byCost, setByCost] = useState(true);
-    const [price, setPrice] = useState("");
-    const [quantity, setQuantity] = useState("");
-    const [ownedQuantity, setOwnedQuantity] = useState();
-    const [ownedValue, setOwnedValue] = useState();
-    let location = useLocation();
-    const timestamp = new Date(Date.now());
+    const [buy, setBuy] = useState(true)
+    const [byCost, setByCost] = useState(true)
+    const [price, setPrice] = useState("")
+    const [quantity, setQuantity] = useState("")
+    const [ownedQuantity, setOwnedQuantity] = useState()
+    const [ownedValue, setOwnedValue] = useState()
+    let location = useLocation()
+    const timestamp = Date.now()
+
+
+
+
+    // const handleTrade = () => {
+    //     const tradeType = document.getElementById("tradeType").value;
+    //     const quantity = parseFloat(document.getElementById("quantity").value);
+
+    //     if (tradeType && quantity > 0) {
+    //         console.log(`Executing trade: ${tradeType} ${quantity} of ${coinName}`);
+    //         onTrade(tradeType, quantity);
+    //     } else {
+    //         alert("Please select a trade type and enter a valid quantity.");
+    //     }
+    // };
 
     const handleBuy = (e) => {
         e.preventDefault();
+        actions.buyCoin(store.tradeCoin, price, quantity, timestamp);
+        actions.removeFundsFromWallet(store.funds - Number(price));
+        actions.setShowTradeModal(false)
+    }
 
-        // Confirmation before buying
-        const confirmBuy = window.confirm(`Are you sure you want to buy ${quantity} of ${store.tradeCoin.name} for ${price} ${store.currency.toUpperCase()}?`);
-
-        if (confirmBuy) {
-            actions.buyCoin(store.tradeCoin, price, quantity, timestamp);
-            actions.removeFundsFromWallet(store.funds - Number(price));
-            actions.setShowTradeModal(false);
+    const verifyAmountSell = () => {
+        let pric = Number(price)
+        let ownedVal = Number(ownedValue)
+        if (pric > ownedVal) {
+            alert("Please enter an amount equal or lower than your current holdings")
+        } else if (pric < ownedVal) {
+            actions.sellSomeCoin(store.tradeCoin, Number(ownedQuantity)-Number(quantity))
+            actions.addFundsToWallet(store.funds + pric)
+            actions.setShowTradeModal(false)
+        } else {
+            actions.sellAllCoin(store.tradeCoin)
+            actions.addFundsToWallet(store.funds + pric)
+            actions.setShowTradeModal(false)
         }
-    };
 
-    const handleSell = (e) => {
-        e.preventDefault();
+    }
 
-        // Confirmation before selling
-        const confirmSell = window.confirm(`Are you sure you want to sell ${quantity} of ${store.tradeCoin.name} for ${price} ${store.currency.toUpperCase()}?`);
-
-        if (confirmSell) {
-            actions.sellCoin(store.tradeCoin, price, quantity, timestamp);
-            actions.addFundsToWallet(Number(price));
-            actions.setShowTradeModal(false);
+    const verifyQuantitySell = () => {
+        let quant = Number(quantity)
+        let ownedQuant = Number(ownedQuantity)
+        if (quant > ownedQuant) {
+            alert("Please enter an amount equal or lower than your available coins")
+        } else if (quant < ownedQuant) {
+            actions.sellSomeCoin(store.tradeCoin, ownedQuant-quant)
+            actions.addFundsToWallet(store.funds + Number(price))
+            actions.setShowTradeModal(false)
+        } else {
+            actions.sellAllCoin(store.tradeCoin)
+            actions.addFundsToWallet(store.funds + Number(price))
+            actions.setShowTradeModal(false)
         }
-    };
+    }
+
+    const handleSell = () => {
+    }
+
+
 
     const availableToSell = () => {
         let ownedCoin = store.walletIds.find((owned) => owned.coin_id === store.tradeCoin.id);
@@ -209,10 +243,8 @@ export const TradeModal = (coin) => {
                                                 {price /
                                                     ((location.pathname === '/listingpage') ?
                                                         store.tradeCoin.current_price :
-                                                        store.tradeCoin.market_data.current_price[store.currency])}{' '}
-                                                {store.tradeCoin.name}
-                                            </div>
-                                            <button type="submit" className="btn trdBtn">Sell</button>
+                                                        store.tradeCoin.market_data.current_price[store.currency])}{' '}{store.tradeCoin.name}</div>
+                                            <button type="text" className="btn trdBtn" onClick={(e) => { e.preventDefault(); verifyAmountSell() }}>Sell</button>
                                         </>
                                     ) : (
                                         <>
@@ -240,9 +272,8 @@ export const TradeModal = (coin) => {
                                                     ((location.pathname === '/listingpage') ?
                                                         store.tradeCoin.current_price :
                                                         store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}{' '}
-                                                {store.currency.toUpperCase()}
-                                            </div>
-                                            <button type="submit" className="btn trdBtn">Sell</button>
+                                                {store.currency.toUpperCase()} </div>
+                                            <div type="text" className="btn trdBtn" onClick={(e) => { e.preventDefault(); verifyQuantitySell() }}>Sell</div>
                                         </>
                                     )}
                                 </form>
