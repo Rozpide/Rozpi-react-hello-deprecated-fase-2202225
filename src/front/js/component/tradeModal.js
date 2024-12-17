@@ -1,8 +1,16 @@
-import React, { useState, useContext, useEffect } from "react";
+import React from "react";
+import "../../styles/index.css"; // Adjust the path to your CSS file
+import { useContext } from "react";
 import { Context } from "../store/appContext";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+
+
+
 
 export const TradeModal = (coin) => {
+    // if (!isOpen) return null; // Render nothing if `isOpen` is false
     const { store, actions } = useContext(Context);
     const [buy, setBuy] = useState(true)
     const [byCost, setByCost] = useState(true)
@@ -16,9 +24,14 @@ export const TradeModal = (coin) => {
 
 
 
+
+
+
+
     // const handleTrade = () => {
     //     const tradeType = document.getElementById("tradeType").value;
     //     const quantity = parseFloat(document.getElementById("quantity").value);
+
 
     //     if (tradeType && quantity > 0) {
     //         console.log(`Executing trade: ${tradeType} ${quantity} of ${coinName}`);
@@ -28,6 +41,7 @@ export const TradeModal = (coin) => {
     //     }
     // };
 
+
     const handleBuy = (e) => {
         e.preventDefault();
         actions.buyCoin(store.tradeCoin, price, quantity, timestamp);
@@ -35,13 +49,14 @@ export const TradeModal = (coin) => {
         actions.setShowTradeModal(false)
     }
 
+
     const verifyAmountSell = () => {
         let pric = Number(price)
         let ownedVal = Number(ownedValue)
         if (pric > ownedVal) {
             alert("Please enter an amount equal or lower than your current holdings")
         } else if (pric < ownedVal) {
-            actions.sellSomeCoin(store.tradeCoin, Number(ownedQuantity)-Number(quantity))
+            actions.sellSomeCoin(store.tradeCoin, Number(ownedQuantity) - Number(quantity))
             actions.addFundsToWallet(store.funds + pric)
             actions.setShowTradeModal(false)
         } else {
@@ -50,7 +65,9 @@ export const TradeModal = (coin) => {
             actions.setShowTradeModal(false)
         }
 
+
     }
+
 
     const verifyQuantitySell = () => {
         let quant = Number(quantity)
@@ -58,7 +75,7 @@ export const TradeModal = (coin) => {
         if (quant > ownedQuant) {
             alert("Please enter an amount equal or lower than your available coins")
         } else if (quant < ownedQuant) {
-            actions.sellSomeCoin(store.tradeCoin, ownedQuant-quant)
+            actions.sellSomeCoin(store.tradeCoin, ownedQuant - quant)
             actions.addFundsToWallet(store.funds + Number(price))
             actions.setShowTradeModal(false)
         } else {
@@ -68,30 +85,42 @@ export const TradeModal = (coin) => {
         }
     }
 
+
     const handleSell = () => {
     }
 
 
 
+
+
+
     const availableToSell = () => {
-        let ownedCoin = store.walletIds.find((owned) => owned.coin_id === store.tradeCoin.id);
+        let ownedCoin = store.walletIds.find((owned) => owned.coin_id === store.tradeCoin.id)
         if (ownedCoin) {
             setOwnedQuantity(ownedCoin.quantity_owned);
             setOwnedValue(Number(ownedCoin.quantity_owned *
                 (location.pathname === '/listingpage'
                     ? store.tradeCoin.current_price
-                    : store.tradeCoin.market_data.current_price[store.currency])));
+                    : store.tradeCoin.market_data.current_price[store.currency])))
         }
-    };
+    }
 
-    useEffect(() => {
-        if (store.showTradeModal) {
-            availableToSell();
-        }
-    }, [store.showTradeModal]);
+
+    useEffect(
+        () => {
+            if (store.showTradeModal) {
+                availableToSell()
+            }
+        },
+        [store.showTradeModal]
+    )
+
+
+    //return ownedCoin ? `Available Quantity: ${ownedCoin.quantity_owned}` : "No Coins Available"
+
 
     return (
-        store.showTradeModal ? (
+        store.showTradeModal ?
             <div className="modal show d-block" tabIndex="-1" style={{ background: "rgba(0, 0, 0, 0.5)" }}>
                 <div className="modal-dialog">
                     <div className="modal-content trdModal">
@@ -100,148 +129,123 @@ export const TradeModal = (coin) => {
                             <button
                                 type="button"
                                 className="btn-close"
-                                onClick={() => { actions.setShowTradeModal(false); setPrice(0); setQuantity(0); }}
+                                onClick={() => { actions.setShowTradeModal(false); setPrice(0); setQuantity(0) }}
                             ></button>
                         </div>
                         <div className="modal-body">
                             <div className="d-flex justify-content-center mb-3">
                                 <button
                                     className={`btn ${buy ? "trdBtnSlctd" : "trdBtn"} me-2`}
-                                    onClick={(e) => { e.preventDefault(); setBuy(true); setPrice(0); setQuantity(0); }}
+                                    onClick={(e) => {
+                                        e.preventDefault(); setBuy(true); setPrice(0); setQuantity(0)
+                                    }}
                                 >
                                     Buy
                                 </button>
                                 <button
                                     className={`btn ${!buy ? "trdBtnSlctd" : "trdBtn"}`}
-                                    onClick={(e) => { e.preventDefault(); setBuy(false); setPrice(0); setQuantity(0); }}
+                                    onClick={(e) => {
+                                        e.preventDefault(); setBuy(false); setPrice(0); setQuantity(0)
+                                    }}
                                 >
                                     Sell
                                 </button>
                             </div>
                             {buy ? (
                                 <form onSubmit={handleBuy}>
-                                    {/* Display available funds for buying */}
-                                    <h5 style={{ margin: 10, whiteSpace: "nowrap" }}>
-                                        Available Funds: {store.fundsInCurrency > 0
-                                            ? Number(store.fundsInCurrency.toFixed(2)).toLocaleString()
-                                            : store.funds > 0
-                                            ? Number(store.funds.toFixed(2)).toLocaleString()
-                                            : "0"} {store.currency.toUpperCase()}
-                                    </h5>
-
                                     <div className="d-flex justify-content-center mb-3">
                                         <button
                                             className={`btn ${byCost ? "trdBtnSlctd" : "trdBtn"} me-2`}
-                                            onClick={(e) => { e.preventDefault(); setByCost(true); setPrice(0); setQuantity(0); }}
-                                        >By Cost</button>
+                                            onClick={(e) => {
+                                                e.preventDefault(); setByCost(true); setPrice(0); setQuantity(0)
+                                            }}>By Cost</button>
                                         <button
                                             className={`btn ${!byCost ? "trdBtnSlctd" : "trdBtn"}`}
-                                            onClick={(e) => { e.preventDefault(); setByCost(false); setPrice(0); setQuantity(0); }}
-                                        >By Quantity</button>
+                                            onClick={(e) => {
+                                                e.preventDefault(); setByCost(false); setPrice(0); setQuantity(0)
+                                            }}>By Quantity</button>
                                     </div>
                                     {byCost ? (
                                         <>
                                             <div className="mb-3">
                                                 <label htmlFor="buyCurrencyAmount" className="form-label">Amount in {store.currency.toUpperCase()}</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    onChange={(e) => {
-                                                        let price = e.target.value;
+                                                <input type="number" className="form-control" onChange={
+                                                    (e) => {
+                                                        let price = e.target.value
                                                         setPrice(e.target.value);
                                                         setQuantity(price /
-                                                            ((location.pathname === '/listingpage')
-                                                                ? store.tradeCoin.current_price
-                                                                : store.tradeCoin.market_data.current_price[store.currency]));
-                                                    }}
-                                                    id="buyCurrencyAmount"
-                                                    name="buyCurrencyAmount"
-                                                    required
-                                                />
+                                                            ((location.pathname == '/listingpage') ?
+                                                                store.tradeCoin.current_price :
+                                                                store.tradeCoin.market_data.current_price[store.currency]))
+                                                    }} id="buyCurrencyAmount" name="buyCurrencyAmount" required />
                                             </div>
                                             <div className="mb-3">
                                                 Total Coins: {price /
-                                                    ((location.pathname === '/listingpage') ? 
+                                                    ((location.pathname == '/listingpage') ?
                                                         store.tradeCoin.current_price :
-                                                        store.tradeCoin.market_data.current_price[store.currency])}{' '}
-                                                {store.tradeCoin.name}
+                                                        store.tradeCoin.market_data.current_price[store.currency])}{' '}{store.tradeCoin.name}
                                             </div>
-                                            <button type="submit" className="btn trdBtn">Buy</button>
+                                            <button type="submit" className="btn trdBtn" onClick={(e) => handleBuy(e)}>Buy</button>
                                         </>
                                     ) : (
                                         <>
                                             <div className="mb-3">
                                                 <label htmlFor="buyQuantity" className="form-label">Quantity of {store.tradeCoin.name}</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    onChange={(e) => {
-                                                        let quantity = e.target.value;
+                                                <input type="number" className="form-control" onChange={
+                                                    (e) => {
+                                                        let quantity = e.target.value
                                                         setQuantity(e.target.value);
                                                         setPrice(Number(
                                                             quantity *
                                                             (location.pathname === '/listingpage'
                                                                 ? store.tradeCoin.current_price
-                                                                : store.tradeCoin.market_data.current_price[store.currency])));
-                                                    }}
-                                                    id="buyQuantity"
-                                                    name="buyQuantity"
-                                                    required
-                                                />
+                                                                : store.tradeCoin.market_data.current_price[store.currency])))
+                                                    }} id="buyQuantity" name="buyQuantity" required />
                                             </div>
                                             <div className="mb-3">
                                                 Total Cost: {Number(
                                                     quantity *
                                                     (location.pathname === '/listingpage'
                                                         ? store.tradeCoin.current_price
-                                                        : store.tradeCoin.market_data.current_price[store.currency])
-                                                ).toLocaleString()}{' '}
-                                                {store.currency.toUpperCase()}
+                                                        : store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}{' '}{store.currency.toUpperCase()}
                                             </div>
-                                            <button type="submit" className="btn trdBtn">Buy</button>
+                                            <button type="submit" className="btn trdBtn" onClick={(e) => handleBuy(e)}>Buy</button>
                                         </>
                                     )}
                                 </form>
                             ) : (
-                                <form onSubmit={handleSell}>
-                                    {/* Display available quantity for selling */}
-                                    <div className="qOwned">
-                                        {ownedQuantity > 0 ? (`Available quantity: ${ownedQuantity}`) : ("You do not own this coin")}
-                                    </div>
-
+                                <form>
+                                    <div className="qOwned">{ownedQuantity > 0 ? (`Available quantity: ${ownedQuantity}`) : ("You do not own this coin")}</div>
                                     <div className="d-flex justify-content-center mb-3">
                                         <button
                                             className={`btn ${byCost ? "trdBtnSlctd" : "trdBtn"} me-2`}
-                                            onClick={() => setByCost(true)}
-                                        >By Cost</button>
+                                            onClick={() => {
+                                                setByCost(true);
+                                            }}>By Cost</button>
                                         <button
                                             className={`btn ${!byCost ? "trdBtnSlctd" : "trdBtn"}`}
-                                            onClick={() => setByCost(false)}
-                                        >By Quantity</button>
+                                            onClick={() => {
+                                                setByCost(false);
+                                            }}>By Quantity</button>
                                     </div>
                                     {byCost ? (
                                         <>
                                             <div className="mb-3">
                                                 <label htmlFor="sellCurrencyAmount" className="form-label">Amount in {store.currency.toUpperCase()}</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    onChange={(e) => {
-                                                        let price = e.target.value;
-                                                        setPrice(e.target.value);
-                                                        setQuantity(price /
-                                                            ((location.pathname === '/listingpage')
-                                                                ? store.tradeCoin.current_price
-                                                                : store.tradeCoin.market_data.current_price[store.currency]));
-                                                    }}
-                                                    id="sellCurrencyAmount"
-                                                    name="sellCurrencyAmount"
-                                                    required
-                                                />
+                                                <input type="number" className="form-control" onChange={(e) => {
+                                                    let price = e.target.value;
+                                                    setPrice(e.target.value);
+                                                    setQuantity(price /
+                                                        ((location.pathname == '/listingpage') ?
+                                                            store.tradeCoin.current_price :
+                                                            store.tradeCoin.market_data.current_price[store.currency]))
+
+
+                                                }} id="sellCurrencyAmount" name="sellCurrencyAmount" required />
                                             </div>
                                             <div className="mb-3">
                                                 {price /
-                                                    ((location.pathname === '/listingpage') ?
+                                                    ((location.pathname == '/listingpage') ?
                                                         store.tradeCoin.current_price :
                                                         store.tradeCoin.market_data.current_price[store.currency])}{' '}{store.tradeCoin.name}</div>
                                             <button type="text" className="btn trdBtn" onClick={(e) => { e.preventDefault(); verifyAmountSell() }}>Sell</button>
@@ -250,26 +254,18 @@ export const TradeModal = (coin) => {
                                         <>
                                             <div className="mb-3">
                                                 <label htmlFor="sellQuantity" className="form-label">Quantity of {store.tradeCoin.name}</label>
-                                                <input
-                                                    type="number"
-                                                    className="form-control"
-                                                    onChange={(e) => {
-                                                        let quantity = e.target.value;
-                                                        setQuantity(e.target.value);
-                                                        setPrice(Number(
-                                                            quantity *
-                                                            ((location.pathname === '/listingpage')
-                                                                ? store.tradeCoin.current_price
-                                                                : store.tradeCoin.market_data.current_price[store.currency])));
-                                                    }}
-                                                    id="sellQuantity"
-                                                    name="sellQuantity"
-                                                    required
-                                                />
+                                                <input type="number" className="form-control" onChange={(e) => {
+                                                    let quantity = e.target.value;
+                                                    setQuantity(e.target.value);
+                                                    setPrice(Number(quantity *
+                                                        ((location.pathname == '/listingpage') ?
+                                                            store.tradeCoin.current_price :
+                                                            store.tradeCoin.market_data.current_price[store.currency])))
+                                                }} id="sellQuantity" name="sellQuantity" required />
                                             </div>
                                             <div className="mb-3">
                                                 {Number(quantity *
-                                                    ((location.pathname === '/listingpage') ?
+                                                    ((location.pathname == '/listingpage') ?
                                                         store.tradeCoin.current_price :
                                                         store.tradeCoin.market_data.current_price[store.currency])).toLocaleString()}{' '}
                                                 {store.currency.toUpperCase()} </div>
@@ -282,6 +278,7 @@ export const TradeModal = (coin) => {
                     </div>
                 </div>
             </div>
-        ) : null
+            :
+            null
     );
 };
