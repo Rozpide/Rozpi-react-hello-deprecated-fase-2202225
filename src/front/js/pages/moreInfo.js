@@ -213,19 +213,25 @@ export const MoreInfo = () => {
 {/* Alerts List Section */}
 <div className="alerts-list">
     <h4>Your Alerts</h4>
-    {store.alerts && store.alerts.length > 0 ? (
-        <ul>
-            {store.alerts.map((alert) => (
-                <li key={alert.id}>
-                    <span>
-                        {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} or {alert.above_below}
-                    </span>
-                    <button onClick={() => actions.removeAlert(alert.id)}>Remove</button>
-                </li>
-            ))}
-        </ul>
+    {store.userID ? ( // Check if the user is logged in
+        store.alerts && store.alerts.length > 0 ? (
+            <ul>
+                {store.alerts
+                    .filter((alert) => alert.user_id === store.userID) // Only show alerts for the current user
+                    .map((alert) => (
+                        <li key={alert.id}>
+                            <span>
+                                {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} {alert.above_below}
+                            </span>
+                            <button onClick={() => actions.removeAlert(alert.id)}>Remove</button>
+                        </li>
+                    ))}
+            </ul>
+        ) : (
+            <p>No alerts set.</p>
+        )
     ) : (
-        <p>No alerts set.</p>
+        <p>Please log in to see your alerts.</p>
     )}
 </div>
 
