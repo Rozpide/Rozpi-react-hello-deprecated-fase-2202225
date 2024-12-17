@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import Collapse from 'react-bootstrap/Collapse';
 import { Context } from "../../store/appContext";
+import { Link } from "react-router-dom";
 
 const calculateAVGMateria = arr =>
   arr.map(materia => ({
@@ -13,7 +14,7 @@ const calculateAVGMateria = arr =>
   }));
 
 
-const StyledTable = styled.div`
+export const StyledTable = styled.div`
 position: relative;
   width: 90%;
   height: 100%;
@@ -24,7 +25,7 @@ position: relative;
   margin: 0 0 2rem 0;
 `;
 
-const StyledHeader = styled.div`
+export const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
   background-color: #f8f9fa;
@@ -34,7 +35,7 @@ const StyledHeader = styled.div`
   border-bottom: 2px solid #ddd;
 `;
 
-const StyledRow = styled.div`
+export const StyledRow = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px 20px;
@@ -42,7 +43,7 @@ const StyledRow = styled.div`
   backdrop-filter: blur(2.9px);
 `;
 
-const Column = styled.div`
+export const Column = styled.div`
   flex: 1;
   text-align: center;
   &:first-child {
@@ -64,7 +65,7 @@ const ParentDashboardTable = ({ materias, studentId }) => {
   useEffect(() => {
     if (materias.length) {
       setInfo(materias);
-      setStudentInfo(...store.personalInfo.estudiantes.filter(student => student.id == studentId))
+      setStudentInfo(store.personalInfo.estudiantes.find(student => student.id == studentId))
 
     }
   }, [materias]);
@@ -79,14 +80,14 @@ const ParentDashboardTable = ({ materias, studentId }) => {
 
 
   const getMateriaInfo = (materia) => {
-    let materiaInfo = studentInfo.calificaciones?.filter((calificacion) => calificacion.materia == materia)
+    let materiaInfo = studentInfo.calificaciones?.filter((calificacion) => calificacion.materia == materia[0])
 
 
     return materiaInfo.map((evaluacion) => (
-      <StyledRow>
-        <Column><i class="bi bi-file-text"></i> {evaluacion.evaluacion}</Column>
+      <StyledRow key={evaluacion.evaluacion}>
+        <Column><i className="bi bi-file-text"></i> {evaluacion.evaluacion}</Column>
         <Column>{new Date(evaluacion.fecha).toISOString().split("T")[0]}</Column>
-        <Column>{evaluacion.nota}</Column>
+        <Column>{evaluacion.nota.toFixed(2)}</Column>
       </StyledRow>
     ))
   }
@@ -99,23 +100,29 @@ const ParentDashboardTable = ({ materias, studentId }) => {
         <Column>Materia</Column>
         <Column>Evaluaciones</Column>
         <Column>Promedio</Column>
+        <Column><i className="bi bi-binoculars-fill fs-5"></i></Column>
       </StyledHeader>
       {info.length ? (
         info.map((materia, index) => (
           <div className="w-100 m-0 p-0" key={`table-info-${index}`}>
             <StyledRow key={index} onClick={() => handleToggle(index)}>
-              <Column><i className={`bi bi-caret-${openRows[index] ? "up" : "down"}-fill me-1`}></i>{materia.materia}</Column>
+              <Column><i className={`bi bi-caret-${openRows[index] ? "up" : "down"}-fill me-1`}></i>{materia.materia[0]}</Column>
               <Column>{materia.evaluaciones}</Column>
-              <Column>{materia.promedio}</Column>
+              <Column>{materia.promedio.toFixed(2)}</Column>
+              <Column>
+                <Link to={`/dashboard/parent/review/${studentInfo.id}/${materia.materia[1]}`}>
+                  <i className="bi bi-zoom-in fs-5 text-light"></i>
+                </Link>
+              </Column>
             </StyledRow>
             {
               studentInfo.calificaciones ?
                 (<Collapse in={openRows[index]}>
                   <div className="w-100 m-0 p-0">
-                    <hr class="dropdown-divider text-light" />
+                    <hr className="dropdown-divider text-light" />
 
                     {getMateriaInfo(materia.materia)}
-                    <hr class="dropdown-divider text-light" />
+                    <hr className="dropdown-divider text-light" />
                   </div>
                 </Collapse>) : ""
             }

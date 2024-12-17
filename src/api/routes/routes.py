@@ -112,7 +112,6 @@ def handle_logout():
 @jwt_required()
 def handle_profile_pic():
     user = User.query.get(get_jwt_identity())
-    print(request.files)
     body = request.files["profilePicture"]
     
     if not user:

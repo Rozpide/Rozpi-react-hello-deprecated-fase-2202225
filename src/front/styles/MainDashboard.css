@@ -47,3 +47,16 @@
         transform: translateY(0);
     }
 }
+
+
+.translate-start {
+    transform: translateX(-100%);
+}
+
+.translate-none {
+    transform: translateX(0);
+}
+
+.transition-all {
+    transition: transform 0.3s ease;
+}

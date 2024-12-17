@@ -9,6 +9,7 @@ from flask_jwt_extended import get_jwt, verify_jwt_in_request, get_jwt_identity
 from api.schemas.schemas import TeacherSchema, MateriasSchema, EvaluacionSchema, GradoSchema, StudentSchema, CalificacionSchema
 from api.services.generic_services import create_instance, update_instance, delete_instance
 from api.services.teacher_services import get_califications, post_update_califications
+from api.services.external_services import get_image
 
 app = Flask(__name__)
 
@@ -55,6 +56,7 @@ def get_personal_info():
     docente_info = teacher_schema.dump(docente)
     docente_info["materias"] = materias_schema.dump(materias)
     docente_info["grados"] = grados_schema.dump(grados)
+    docente_info["foto"] = get_image(docente.foto) if docente.foto else ""
     
     return jsonify(docente_info),200
     
