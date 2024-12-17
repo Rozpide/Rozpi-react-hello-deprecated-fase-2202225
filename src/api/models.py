@@ -58,7 +58,7 @@ class Wallet(db.Model):
     symbol = db.Column(db.String(20))
     purchase_price = db.Column(db.Numeric(10,3))
     quantity_owned = db.Column(db.Numeric(10,3))
-    purchase_date = db.Column(db.DateTime)
+    purchase_date = db.Column(db.BigInteger)
     user = db.relationship(User)
 
     def __repr__(self):
