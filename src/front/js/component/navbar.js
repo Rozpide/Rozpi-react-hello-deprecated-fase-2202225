@@ -173,7 +173,7 @@ export const Navbar = () => {
                                 <Link
                                     className="dropdown-item"
                                     to="/profile"
-                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
+                                   
                                 >
                                     Profile
                                 </Link>
