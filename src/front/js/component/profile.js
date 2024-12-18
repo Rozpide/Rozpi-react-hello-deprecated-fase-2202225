@@ -184,7 +184,7 @@ export const Profile = () => {
                 ) : (
                     <>
                         {error && <div className="alert alert-danger">{error}</div>}
-                        <h2>Please Log In</h2>
+                        <h2 style={{color:"white"}}>Please Log In</h2>
                     </>
                 )
             }
