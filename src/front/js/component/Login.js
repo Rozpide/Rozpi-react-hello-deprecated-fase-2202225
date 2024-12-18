@@ -17,44 +17,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
         navigate('/userdashboard#overallHoldings');
         actions.setShowOverallHoldings()
         onClose()
-    }
-    //     await fetch(process.env.BACKEND_URL+"api/login", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify({
-    //             email: username.value,
-    //             password: password.value,
-    //         })
-    //     }).then(res => {
-    //         if (!res.ok) throw Error(res.statusText);
-    //         return res.json();
-    //     }).then((response) => {
-    //         actions.setUserId ( response.user.id );
-    //         actions.setUserName ( response.user.username);
-    //         actions.getFavoriteIds( response.user.id )
-    //         onClose()
-
-
-    //     }).catch(error => console.error(error));
-    // };
-
-    //         await fetch("https://psychic-potato-7vvw4xvvrw7934xw-3001.app.github.dev/api/login", {
-    //             method: "POST",
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify({
-    //                 email: username.value,
-    //                 password: password.value,
-    //             })
-    //         }).then(res => {
-    //             if (!res.ok) throw Error(res.statusText);
-    //             return res.json();
-    //         }).then((response) => {
-    //             actions.setUserId ( response.user.id );
-    //             actions.setUserName ( response.user.username);
-    //             actions.getFavoriteIds( response.user.id )
-    //             onClose()
-    //         }).catch(error => console.error(error));
-    //     };
+    };
 
 
     const handleSignUp = async (e) => {
@@ -104,7 +67,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
             <div className="modal-dialog">
                 <div id="logModal" className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title">{isLogin ? "Login" : "Sign Up"}</h5>
+                        <h5 className="modal-title" style={{ color: "#39ff14" }}>{isLogin ? "Login" : "Sign Up"}</h5>
                         <button
                             type="button"
                             className="btn-close"
@@ -118,7 +81,9 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                                 onClick={() => {
                                     setError(null);
                                     setIsLogin(true);
-                                }}
+                                }
+
+                                }
                             >
                                 Login
                             </button>
@@ -134,7 +99,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                         </div>
                         {error && <div className="alert alert-danger">{error}</div>}
                         {isLogin ? (
-                            <form onSubmit={handleLogin}>
+                            <form onSubmit={handleLogin} id="login">
                                 <div className="mb-3">
                                     <label htmlFor="username" className="form-label">Email</label>
                                     <input type="text" className="form-control" id="username" name="username" required />
@@ -146,7 +111,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                                 <button type="submit" className="btn trdBtn">Login</button>
                             </form>
                         ) : (
-                            <form onSubmit={handleSignUp}>
+                            <form onSubmit={handleSignUp} id="signup">
                                 <div className="mb-3">
                                     <label htmlFor="username" className="form-label">Username</label>
                                     <input type="text" className="form-control" id="username" name="username" required />

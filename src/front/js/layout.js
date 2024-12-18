@@ -18,7 +18,11 @@ import { MoreInfo } from "./pages/moreInfo";
 import { TradeModal } from "./component/tradeModal";
 import { Wallet } from "./component/Wallet";
 import { SearchResults } from "./component/searchresults";
+<<<<<<< HEAD
 import { OverallHoldings } from "./component/overallHoldings";
+=======
+import { Profile } from "./component/profile";
+>>>>>>> bade84c0960f1528374ce03c724f893c710865b6
 
 
 
@@ -41,7 +45,7 @@ const Layout = () => {
                     <ContactUs />
                     <TradeModal />
                     <Routes>
-                        <Route element={<Landing />} path="/" />
+                        <Route element={<Landing />} exact path="/" />
                         <Route element={<AboutUs />} path="/about" />
                         <Route element={<Listing />} path="/listingpage" />
                         <Route element={<Userdashboard />} path="/userdashboard" />
@@ -53,6 +57,7 @@ const Layout = () => {
                         <Route element={<MoreInfo />} path="/moreInfo/:id" />
                         <Route element={<Wallet />} path="/wallet" />
                         <Route element={<SearchResults />} path="/searchresults" />
+                        <Route element={<Profile />} path="/profile" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

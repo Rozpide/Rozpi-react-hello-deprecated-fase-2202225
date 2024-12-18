@@ -13,6 +13,11 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_mail import Mail, Message
 
+
+
+
+
+
 # Determine environment
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
@@ -23,6 +28,8 @@ app.url_map.strict_slashes = False
 
 # Enable CORS for frontend-backend communication
 CORS(app)
+
+
 
 # Configure Flask-Mail (after app initialization)
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # For Gmail. Replace with your provider's SMTP
@@ -143,14 +150,40 @@ def get_favorites(id):
 
 
 
-# @app.route('/wallet/<coin_id>', methods=['POST'])
-# def add_wallet(coin_id):
-#     user_id = request.json['user_id']
-#     name = request.json['name']
-#     Wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
-#     db.session.add(Wallet_crypto)
-#     db.session.commit()
-#     return jsonify(get_wallets(user_id))
+
+@app.route('/send-email', methods=['POST'])
+def send_email():
+    data = request.get_json()
+    email = data.get('email')  # Get the email from the frontend form submission
+    message = data.get('message')
+
+    if not email or not message:
+        return jsonify({'success': False, 'message': 'Email and message are required'}), 400
+    try:
+        # Send the email from the user's email address
+        msg = Message(
+            subject="New Contact Us Message",
+            recipients=[os.getenv('RECIPIENT_EMAIL')],  # The recipient's email address
+            body=f"Message from {email}:\n\n{message}",
+            sender=email  # The sender's email will be the user's email address
+        )
+        mail.send(msg)
+        return jsonify({'success': True, 'message': 'Email sent successfully!'}), 200
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return jsonify({'success': False, 'message': 'Failed to send email.'}), 500
+
+
+
+
+@app.route('/wallet/<coin_id>', methods=['POST'])
+def add_wallet(coin_id):
+    user_id = request.json['user_id']
+    name = request.json['name']
+    Wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
+    db.session.add(Wallet_crypto)
+    db.session.commit()
+    return jsonify(get_wallets(user_id))
  
 @app.route('/wallet/<coin_id>', methods=['POST'])
 def buy_coin(coin_id):
@@ -273,8 +306,119 @@ def get_funds(id):
 @app.route('/users/<int:id>/funds', methods=['GET'])
 def get_funds1(id):
     user = User.query.filter_by(id=id).first()
-    print ('-----------------',user.funds)
-    return jsonify(user.funds)
+    if user:
+        print ('-----------------',user.funds)
+        return jsonify(user.funds)
+    else: 
+        print ('-----------------',user)
+        return jsonify("user does not exist")
+
+
+
+# without jwt
+@app.route('/profile/<user_id>', methods=['GET'])
+def get_profile(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    return jsonify({"user": user.serialize()}), 200
+    
+
+# Update Profile Endpoint without jwt
+@app.route("/profile/<user_id>", methods=["PUT"])
+def update_profile(user_id):
+    user = User.query.get(user_id)
+
+    # if not user:
+    #     return jsonify({"error": "User not found"}), 404
+
+    # Parse request data
+    data = request.get_json()
+
+    # if not data:
+    #     return jsonify({"error": "Invalid input"}), 400
+
+    # Update fields if provided
+    if "username" in data:
+        # if User.query.filter_by(username=data["username"]).first(): 
+            # return jsonify({"error": "Username already taken"}), 400
+        user.username = data["username"]
+
+    if "first_name" in data:
+        user.first_name = data["first_name"]
+
+    if "last_name" in data:
+        user.last_name = data["last_name"]
+
+    if "address" in data:
+        user.address = data["address"]
+
+    if "city" in data:
+        user.city = data["city"]
+
+    if "state" in data:
+        user.state = data["state"]
+
+    if "zip" in data:
+        user.zip = data["zip"]
+
+    db.session.commit()
+
+    user = User.query.get(user_id)
+    print("UserProfile", user)
+    
+    return jsonify(
+        {"message": "Profile updated successfully", "profile": user.serialize()}
+        ), 200
+
+
+# # Update Profile Endpoint
+# @app.route("/profile", methods=["PUT"])
+# @jwt_required()
+# def update_profile():
+#     user_id = get_jwt_identity()
+#     user = User.query.get(user_id)
+
+#     if not user:
+#         return jsonify({"error": "User not found"}), 404
+
+#     # Parse request data
+#     data = request.get_json()
+#     if not data:
+#         return jsonify({"error": "Invalid input"}), 400
+
+#     # Update fields if provided
+#     if "username" in data:
+#         if User.query.filter_by(username=data["username"]).first():
+#             return jsonify({"error": "Username already taken"}), 400
+#         user.username = data["username"]
+
+#     if "first_name" in data:
+#         user.first_name = data["first_name"]
+
+#     if "last_name" in data:
+#         user.last_name = data["last_name"]
+
+#     if "address" in data:
+#         user.address = data["address"]
+
+#     if "city" in data:
+#         user.city = data["city"]
+
+#     if "state" in data:
+#         user.state = data["state"]
+
+#     if "zip" in data:
+#         user.zip = data["zip"]
+
+#     # Commit updates to the database
+#     try:
+#         db.session.commit()
+#         return jsonify({"message": "Profile updated successfully"}), 200
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({"error": str(e)}), 500
+
+
+
 
 # Run the application
 if __name__ == '__main__':
