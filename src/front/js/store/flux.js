@@ -292,14 +292,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                         const resultArray = getStore().walletReturnsData;
                         response.prices.forEach((entry) => {
                             if (resultArray.length < 1) resultArray.push({
-                                date: (new Date(entry[0])).toDateString(),
+                                date: entry[0],
                                 price: entry[1]
                             });
                             else {
                                 let exists = resultArray.find((elem, ind) => elem.date == entry[0]);
                                 if (!exists) {
                                     resultArray.push({
-                                        date: (new Date(entry[0])).toDateString(),
+                                        date: entry[0],
                                         price: entry[1]
                                     });
                                 } else {

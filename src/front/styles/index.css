@@ -516,6 +516,7 @@ h1 {
 #dashboardContent {
   width: 90vw;
   height: 100%;
+  background-color: black;
 }
 
 /* Favorites CSS */
@@ -768,6 +769,39 @@ h1 {
 }
 
 /* Overall Performance CSS */
+
+#overallHoldings {
+  background-color: black;
+}
+
+.holdingsGraph {
+  width: 70vw;
+  height: 80vh;
+  background-color: #90978f;
+  margin: auto;
+  border: 1px solid #39ff14;
+}
+
+.holdingsTitle {
+  color: #39ff14;
+  text-align: center
+}
+
+.holdingspct {
+  color: #39ff14;
+  text-align: center;
+}
+
+.factBox {
+  text-align: center;
+  margin:auto;
+  width: 70vw;
+  display: flex;
+  justify-content: space-between;
+  color: #39ff14;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+}
 
 /* Login/singup modal */
 
