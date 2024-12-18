@@ -171,7 +171,7 @@ export const MoreInfo = () => {
                     </div>
                     <div id="morInfMktDta">
                         <div id="marketData">
-                            <h3 style={{paddingLeft: "5vw", color: "#39ff14", paddingBottom: "2vh"}}>Market Data:</h3>
+                            <h3 style={{ paddingLeft: "5vw", color: "#39ff14", paddingBottom: "2vh" }}>Market Data:</h3>
                             <h4>Current Price: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.current_price[store.currency].toLocaleString() : null}</h4>
                             <h4>24H High: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.high_24h[store.currency].toLocaleString() : null}</h4>
                             <h4>24H Low: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.low_24h[store.currency].toLocaleString() : null}</h4>
@@ -195,7 +195,7 @@ export const MoreInfo = () => {
                                 className="btn"
                                 id="moreInfTrdBtn"
                                 onClick={() => actions.setShowTradeModal(store.currentCoinData)}
-                                >Trade
+                            >Trade
                             </button>
                         </div>
                     </div>
@@ -221,56 +221,32 @@ export const MoreInfo = () => {
                 </div>
 
                 {/* Alerts List Section */}
-                <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#1a1a1a", borderRadius: "5px" }}>
-                    <h4 style={{ color: "#39ff14" }}>Your Alerts</h4>
+                <div className="alerts-list">
+                    <h4>Your Alerts</h4>
                     {store.alerts && store.alerts.length > 0 ? (
-                        <ul style={{ listStyle: "none", padding: 0 }}>
-                            {store.alerts.map((alert) => {
-                                return (
-                                    <li
-                                        key={alert.id}
-                                        style={{
-                                            marginBottom: "10px",
-                                            padding: "10px",
-                                            border: "1px solid #39ff14",
-                                            borderRadius: "5px",
-                                            backgroundColor: "#000",
-                                            color: "#39ff14",
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
+                        <ul>
+                            {store.alerts.map((alert) => (
+                                <li key={alert.id}>
+                                    <span>
+                                        {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} or {alert.above_below}
+                                    </span>
+                                    <button
+                                        onClick={() => {
+                                            const confirmRemoval = window.confirm("Are you sure you want to remove this alert?");
+                                            if (confirmRemoval) {
+                                                actions.removeAlert(alert.id);
+                                            }
                                         }}
                                     >
-                                        <span>
-                                            {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} {alert.above_below}
-                                        </span>
-                                        <button
-                                            onClick={() => {
-                                                const confirmRemoval = window.confirm("Are you sure you want to remove this alert?");
-                                                if (confirmRemoval) {
-                                                    actions.removeAlert(alert.id);
-                                                }
-                                            }}
-                                            style={{
-                                                backgroundColor: "red",
-                                                color: "white",
-                                                border: "none",
-                                                borderRadius: "5px",
-                                                padding: "5px 10px",
-                                                cursor: "pointer",
-                                            }}
-                                        >
-                                            Remove
-                                        </button>
-                                    </li>
-                                )
-                            })}
+                                        Remove
+                                    </button>
+                                </li>
+                            ))}
                         </ul>
                     ) : (
-                        <p style={{ color: "#39ff14" }}>No alerts set.</p>
+                        <p>No alerts set.</p>
                     )}
                 </div>
-
 
 
                 {/* News Feed Section */}
