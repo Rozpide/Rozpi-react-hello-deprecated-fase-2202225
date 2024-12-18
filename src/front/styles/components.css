@@ -434,3 +434,7 @@
   height: auto;
   padding: 2rem;
 }
+
+.react-datepicker-wrapper {
+  width: 100% !important;
+}

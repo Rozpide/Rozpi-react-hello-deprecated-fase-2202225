@@ -26,7 +26,8 @@ const FormCommon = ({ type }) => {
         description: '',
         classroomName: '',
         subjectName: '',
-        subjectDescription: ''
+        subjectDescription: '',
+        representante_id: ''
     });
 
     useEffect(() => {
@@ -34,6 +35,7 @@ const FormCommon = ({ type }) => {
 
         if (type === 'student') {
             actions.getCourses();
+            actions.setAllUsers();
         }
         if (type === 'updateStudents') {
             actions.setStudents();
@@ -81,9 +83,9 @@ const FormCommon = ({ type }) => {
                 await actions.studentsOperations('POST', {
                     "nombre": formBody.name,
                     "apellido": formBody.lastName,
-                    "direccion": formBody.address,
-                    "fecha_nacimiento": formBody.date,
-                    "grado_id": formBody.grado_id
+                    "fecha_nacimiento": new Date(formBody.date),
+                    "grado_id": formBody.grado_id,
+                    "representante_id": formBody.representante_id
                 })
             }
             if (type === 'teacher') {
@@ -174,182 +176,221 @@ const FormCommon = ({ type }) => {
                 <h4 className="text-title d-flex justify-content-center mb-4">{`Registrar ${type === 'student' ? 'estudiante nuevo' : type === 'teacher' ? 'profesor nuevo' : type === 'updateStudents' ? 'actualización de estudiantes' : type === 'updateTeachers' ? 'actualización de profesores' : type === 'addClassroom' ? 'grado nuevo' : type === 'addSubject' ? 'materia nueva' : type === 'assignSubject' ? 'asignación de materia' : type === 'authorizeUser' ? 'autorización de usuario' : ''}`}</h4>
                 {/* Formulario con elementos comunes para crear profesor y estudiante */}
 
-                {(type === 'student' || type === 'teacher') && <div className="mb-3">
-                    <label className="form-label text-form">Nombre:</label>
-                    <input type="text" name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
-                </div>}
-                {(type === 'student' || type === 'teacher') && <div className="mb-3">
-                    <label className="form-label text-form">Apellido:</label>
-                    <input type="text" name="lastName" className="form-control rounded-pill" required value={formBody.lastName} onChange={handleChange} />
-                </div>}
-                {(type === 'student' || type === 'teacher') && <div className="mb-3">
-                    <label className="form-label text-form">Email:</label>
-                    <input type="email" name="email" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
-                </div>}
-                {type === 'student' && <div className="mb-3 d-flex justify-content-between">
-                    <div>
-                        <label className="form-label text-form">Fecha de nacimiento:</label> <br></br>
-                        <DatePicker selected={startDate} name="date" onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
-                    </div>
-                    <div className="d-flex flex-column">
-                        <label className="form-label text-form">Asignar un grado:</label>
-                        <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
-                            <option value="" disabled selected>Opciones...</option>
-                            {store.grados.map(grado =>
-                                <option key={grado.id} value={grado.id}>{grado.nombre}</option>
-
-                            )}
-                        </select>
-                    </div>
-
-                </div>}
-                {(type === 'student' || type === 'teacher') && <div className="mb-3">
-                    <label className="form-label text-form">Dirección:</label>
-                    <input type="text" name="address" className="form-control rounded-pill" required value={formBody.address} onChange={handleChange} />
-                </div>}
-
-                {/* Elementos específicos del formuario para crear profesor */}
-
-                {type === 'teacher' && (
-                    <div className="mb-3">
-                        <label className="form-label text-form">Contraseña:</label>
-                        <input type="password" name="password" className="form-control rounded-pill" required value={formBody.password} onChange={handleChange} />
-                    </div>
-                )}
-                {type === 'teacher' && (
-                    <div className="mb-3">
-                        <label className="form-label text-form">Teléfono:</label>
-                        <input type="text" name="phone" className="form-control rounded-pill" required value={formBody.phone} onChange={handleChange} />
-                    </div>
-                )}
-                {type === 'teacher' && (
-                    <div className="mb-3">
-                        <label className="form-label text-form">Descripción:</label>
-                        <textarea name="description" className="form-control teacher-description" rows="3" required value={formBody.description} onChange={handleChange}></textarea>
-                    </div>
-                )}
-
-                {/* Vista para editar estudiantes */}
-
-                {type === 'updateStudents' && (
-                    <div className="table-styles mt-3">
-                        <table className="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Grado</th>
-                                    <th>Fecha de nacimiento</th>
-                                    <th>Editar/Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {store.estudiantes.map(student => (
-                                    <tr key={student.id}>
-                                        <td>{student.nombre}</td>
-                                        <td>{student.apellido}</td>
-                                        <td>{student.grado.nombre}</td>
-                                        <td>{student.fecha_nacimiento}</td>
-                                        <td className="d-flex justify-content-center">
-                                            <Link to={`/update-student/${student.id}`}>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-outline-info me-3"
-                                                >
-                                                    <i class="bi bi-pen"></i>
-                                                </button>
-                                            </Link>
-                                            <button
-                                                type="button"
-                                                className="btn btn-outline-danger"
-                                                onClick={() => handleDeleteStudent(student.id)}>
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                {(type === 'student' || type === 'teacher') &&
+                    <form className="row g-3 d-flex justify-content-between mb-3">
+                        <div className="col">
+                            <label className="form-label text-form">Nombre:</label>
+                            <input type="text" name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
+                        </div>
+                        <div className="col">
+                            <label className="form-label text-form">Apellido:</label>
+                            <input type="text" name="lastName" className="form-control rounded-pill" required value={formBody.lastName} onChange={handleChange} />
+                        </div>
+                    </form>}
 
 
-                {/* Vista para editar profesores */}
-
-                {type === 'updateTeachers' && (
-                    <div className="table-styles mt-3">
-                        <table className="table table-hover ">
-                            <thead className="table-design">
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Apellido</th>
-                                    <th>Email</th>
-                                    <th>Teléfono</th>
-                                    <th>Dirección</th>
-                                    <th>Descripción</th>
-                                    <th>Editar/Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody className="table-design">
-                                {store.profesores.map(profesor => (
-                                    <tr key={profesor.id}>
-                                        <td>{profesor.nombre}</td>
-                                        <td>{profesor.apellido}</td>
-                                        <td>{profesor.email}</td>
-                                        <td>{profesor.telefono}</td>
-                                        <td>{profesor.direccion}</td>
-                                        <td>{profesor.descripcion}</td>
-                                        <td className="d-flex justify-content-center">
-                                            <Link to={`/update-teacher/${profesor.id}`}>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-outline-info me-3"
-                                                >
-                                                    <i class="bi bi-pen"></i>
-                                                </button>
-                                            </Link>
-                                            <button
-                                                type="button"
-                                                className="btn btn-outline-danger"
-                                                onClick={() => handleDeleteTeacher(profesor.id)}>
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                {/* Formulario para añadir grados */}
-
-                {type === "addClassroom" && (
-                    <div className="mb-3">
-                        <label className="form-label text-title">Ingresa un nombre para crear un nuevo grado:</label>
-                        <input type="text" name="classroomName" className="form-control rounded-pill" required value={formBody.classroomName} placeholder="1er Grado..." onChange={(e) => handleChange(e)} />
-                    </div>
-                )}
-
-                {/* Formulario para añadir materias */}
-
-                {type === "addSubject" && (
-
-
-
-                    < div className="mb-3">
-                        <label className="form-label text-title">Selecciona el grado al que vas a asignar la materia:</label>
-                        <div className="input-group" required>
-                            <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
-                                <option value="" disabled selected>Opciones...</option>
+                {type === 'student' && <div className="mb-3 ">
+                    <div className="row-g4 d-flex">
+                        <div className="col-4">
+                            <label className="form-label text-form">Fecha de nacimiento:</label> <br></br>
+                            <DatePicker selected={startDate} name="date" onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
+                        </div>
+                        <div className="col-4 d-flex flex-column">
+                            <label className="form-label text-form">Asignar un grado:</label>
+                            <select className="custom-select rounded-pill ms-3" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
+                                <option value="" disabled selected>Opciones</option>
                                 {store.grados.map(grado =>
                                     <option key={grado.id} value={grado.id}>{grado.nombre}</option>
 
                                 )}
                             </select>
                         </div>
+                        <div className="col-4 d-flex flex-column">
+                            <label className="form-label text-form">Representante:</label>
+                            <select className="custom-select rounded-pill ms-3" name="representante_id" id="inputGroupSelect05" onChange={handleChange}>
+                                <option value="" disabled selected>Opciones</option>
+                                {store.usuarios
+                                    .filter(user => user.role_id === 3)
+                                    .map(user =>
+                                        <option key={user.id} value={user.id}>{user.nombre} {user.apellido}</option>
+
+                                    )}
+                            </select>
+                        </div>
                     </div>
-                )
+
+                </div >}
+
+                {/* Elementos específicos del formuario para crear profesor */}
+
+                {
+                    type === 'teacher' && (
+                        <div className="mb-3">
+                            <label className="form-label text-form">Contraseña:</label>
+                            <input type="password" name="password" className="form-control rounded-pill" required value={formBody.password} onChange={handleChange} />
+                        </div>
+                    )
+                }
+                {
+                    type === 'teacher' && (
+                        <div className="mb-3">
+                            <label className="form-label text-form">Teléfono:</label>
+                            <input type="text" name="phone" className="form-control rounded-pill" required value={formBody.phone} onChange={handleChange} />
+                        </div>
+                    )
+                }
+
+                {
+                    (type === 'teacher' || type === 'teacher') && <div className="mb-3">
+                        <label className="form-label text-form">Email:</label>
+                        <input type="email" name="email" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
+                    </div>
+                }
+
+                {
+                    (type === 'teacher' || type === 'teacher') && <div className="mb-3">
+                        <label className="form-label text-form">Dirección:</label>
+                        <input type="text" name="address" className="form-control rounded-pill" required value={formBody.address} onChange={handleChange} />
+                    </div>
+                }
+
+                {
+                    type === 'teacher' && (
+                        <div className="mb-3">
+                            <label className="form-label text-form">Descripción:</label>
+                            <textarea name="description" className="form-control teacher-description" rows="3" required value={formBody.description} onChange={handleChange}></textarea>
+                        </div>
+                    )
+                }
+
+                {/* Vista para editar estudiantes */}
+
+                {
+                    type === 'updateStudents' && (
+                        <div className="table-styles mt-3">
+                            <table className="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Grado</th>
+                                        <th>Fecha de nacimiento</th>
+                                        <th>Editar/Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {store.estudiantes.map(student => (
+                                        <tr key={student.id}>
+                                            <td>{student.nombre}</td>
+                                            <td>{student.apellido}</td>
+                                            <td>{student.grado.nombre}</td>
+                                            <td>{student.fecha_nacimiento}</td>
+                                            <td className="d-flex justify-content-center">
+                                                <Link to={`/update-student/${student.id}`}>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-outline-info me-3"
+                                                    >
+                                                        <i class="bi bi-pen"></i>
+                                                    </button>
+                                                </Link>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-danger"
+                                                    onClick={() => handleDeleteStudent(student.id)}>
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )
+                }
+
+
+                {/* Vista para editar profesores */}
+
+                {
+                    type === 'updateTeachers' && (
+                        <div className="table-styles mt-3">
+                            <table className="table table-hover ">
+                                <thead className="table-design">
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Email</th>
+                                        <th>Teléfono</th>
+                                        <th>Dirección</th>
+                                        <th>Descripción</th>
+                                        <th>Editar/Eliminar</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="table-design">
+                                    {store.profesores.map(profesor => (
+                                        <tr key={profesor.id}>
+                                            <td>{profesor.nombre}</td>
+                                            <td>{profesor.apellido}</td>
+                                            <td>{profesor.email}</td>
+                                            <td>{profesor.telefono}</td>
+                                            <td>{profesor.direccion}</td>
+                                            <td>{profesor.descripcion}</td>
+                                            <td className="d-flex justify-content-center">
+                                                <Link to={`/update-teacher/${profesor.id}`}>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-outline-info me-3"
+                                                    >
+                                                        <i class="bi bi-pen"></i>
+                                                    </button>
+                                                </Link>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-danger"
+                                                    onClick={() => handleDeleteTeacher(profesor.id)}>
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )
+                }
+
+                {/* Formulario para añadir grados */}
+
+                {
+                    type === "addClassroom" && (
+                        <div className="mb-3">
+                            <label className="form-label text-title">Ingresa un nombre para crear un nuevo grado:</label>
+                            <input type="text" name="classroomName" className="form-control rounded-pill" required value={formBody.classroomName} placeholder="1er Grado..." onChange={(e) => handleChange(e)} />
+                        </div>
+                    )
+                }
+
+                {/* Formulario para añadir materias */}
+
+                {
+                    type === "addSubject" && (
+
+
+
+                        < div className="mb-3">
+                            <label className="form-label text-title">Selecciona el grado al que vas a asignar la materia:</label>
+                            <div className="input-group" required>
+                                <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
+                                    <option value="" disabled selected>Opciones...</option>
+                                    {store.grados.map(grado =>
+                                        <option key={grado.id} value={grado.id}>{grado.nombre}</option>
+
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+                    )
                 }
 
                 {
@@ -367,44 +408,48 @@ const FormCommon = ({ type }) => {
 
                 {/* Formulario para asignar materias a profesores */}
 
-                {type === "assignSubject" && (
-                    <div className="mb-3 d-flex justify-content-between mb-5">
-                        <div className="d-flex flex-column ms-4">
-                            <label className="form-label text-title">Selecciona un profesor:</label>
-                            <div className="input-group" required>
-                                <select name="id_docente" className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
-                                    <option value="" disabled selected>Opciones...</option>
-                                    {store.profesores.map(profesor =>
-                                        <option key={profesor.id} value={profesor.id}>{profesor.nombre + " " + profesor.apellido}</option>
-                                    )}
-                                </select>
+                {
+                    type === "assignSubject" && (
+                        <div className="mb-3 d-flex justify-content-between mb-5">
+                            <div className="d-flex flex-column ms-4">
+                                <label className="form-label text-title">Selecciona un profesor:</label>
+                                <div className="input-group" required>
+                                    <select name="id_docente" className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
+                                        <option value="" disabled selected>Opciones...</option>
+                                        {store.profesores.map(profesor =>
+                                            <option key={profesor.id} value={profesor.id}>{profesor.nombre + " " + profesor.apellido}</option>
+                                        )}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="d-flex flex-column me-4">
-                            <label className="form-label text-title">Selecciona una materia:</label>
-                            <div className="input-group" required>
-                                <select name="id_materia" className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
-                                    <option value="" disabled selected>Opciones...</option>
-                                    {store.materias.map(materia =>
-                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
-                                    )}
-                                </select>
+                            <div className="d-flex flex-column me-4">
+                                <label className="form-label text-title">Selecciona una materia:</label>
+                                <div className="input-group" required>
+                                    <select name="id_materia" className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
+                                        <option value="" disabled selected>Opciones...</option>
+                                        {store.materias.map(materia =>
+                                            <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                        )}
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
                 {/* Formulario para autorizar usuarios */}
 
-                {type === "authorizeUser" && (
-                    <div className="mb-3">
-                        <div className="d-flex flex-column ms-4">
-                            <label className="form-label text-title">Ingresa el correo del usuario:</label>
-                            <input type="email" name="email" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
+                {
+                    type === "authorizeUser" && (
+                        <div className="mb-3">
+                            <div className="d-flex flex-column ms-4">
+                                <label className="form-label text-title">Ingresa el correo del usuario:</label>
+                                <input type="email" name="email" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
                 <div className="d-flex justify-content-center mt-5">
                     <button type="submit" className="btn btn-outline-register">Registrar</button>
