@@ -184,17 +184,17 @@ export const Navbar = () => {
                             <li>
                                 <Link
                                     className="dropdown-item"
-                                    to="/userdashboard#favorites"
-                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
+                                    to="/userdashboard#watchlist"
+                                    onClick={!token ? handleUnauthorizedAction : actions.setShowFavorites} // Check if logged in
                                 >
-                                    Favorites
+                                    Watchlist
                                 </Link>
                             </li>
                             <li>
                                 <Link
                                     className="dropdown-item"
                                     to="/userdashboard#wallet"
-                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
+                                    onClick={!token ? handleUnauthorizedAction : actions.setShowWallet} // Check if logged in
                                 >
                                     Wallet
                                 </Link>
@@ -203,7 +203,7 @@ export const Navbar = () => {
                                 <Link
                                     className="dropdown-item"
                                     to="/userdashboard#overallHoldings"
-                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
+                                    onClick={!token ? handleUnauthorizedAction : actions.setShowOverallHoldings} // Check if logged in
                                 >
                                     Dashboard
                                 </Link>
