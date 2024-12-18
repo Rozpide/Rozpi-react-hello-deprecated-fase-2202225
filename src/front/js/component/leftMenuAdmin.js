@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import ChatComponent from "../component/chatComponent";
 import ProfileForm from "./ProfileForm.jsx";
 
+
 const FormCommon = ({ type }) => {
     const navigate = useNavigate()
     const location = useLocation()
@@ -180,24 +181,24 @@ const FormCommon = ({ type }) => {
                     <form className="row g-3 d-flex justify-content-between mb-3">
                         <div className="col">
                             <label className="form-label text-form">Nombre:</label>
-                            <input type="text" name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
+                            <input type="text" name="name" placeholder="Juan" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
                         </div>
                         <div className="col">
                             <label className="form-label text-form">Apellido:</label>
-                            <input type="text" name="lastName" className="form-control rounded-pill" required value={formBody.lastName} onChange={handleChange} />
+                            <input type="text" name="lastName" placeholder="Pérez" className="form-control rounded-pill" required value={formBody.lastName} onChange={handleChange} />
                         </div>
                     </form>}
 
 
                 {type === 'student' && <div className="mb-3 ">
-                    <div className="row-g4 d-flex">
+                    <div className="row g-3 d-flex">
                         <div className="col-4">
                             <label className="form-label text-form">Fecha de nacimiento:</label> <br></br>
                             <DatePicker selected={startDate} name="date" onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
                         </div>
                         <div className="col-4 d-flex flex-column">
                             <label className="form-label text-form">Asignar un grado:</label>
-                            <select className="custom-select rounded-pill ms-3" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
+                            <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
                                 <option value="" disabled selected>Opciones</option>
                                 {store.grados.map(grado =>
                                     <option key={grado.id} value={grado.id}>{grado.nombre}</option>
@@ -207,7 +208,7 @@ const FormCommon = ({ type }) => {
                         </div>
                         <div className="col-4 d-flex flex-column">
                             <label className="form-label text-form">Representante:</label>
-                            <select className="custom-select rounded-pill ms-3" name="representante_id" id="inputGroupSelect05" onChange={handleChange}>
+                            <select className="custom-select rounded-pill" name="representante_id" id="inputGroupSelect05" onChange={handleChange}>
                                 <option value="" disabled selected>Opciones</option>
                                 {store.usuarios
                                     .filter(user => user.role_id === 3)
@@ -225,32 +226,27 @@ const FormCommon = ({ type }) => {
 
                 {
                     type === 'teacher' && (
-                        <div className="mb-3">
-                            <label className="form-label text-form">Contraseña:</label>
-                            <input type="password" name="password" className="form-control rounded-pill" required value={formBody.password} onChange={handleChange} />
+                        <div className="row g-3 mb-3">
+                            <div className="col">
+                                <label className="form-label text-form">Contraseña:</label>
+                                <input type="password" name="password" placeholder="Al12K09gmo" className="form-control rounded-pill" required value={formBody.password} onChange={handleChange} />
+                            </div>
+                            <div className="col">
+                                <label className="form-label text-form">Teléfono:</label>
+                                <input type="text" name="phone" placeholder="099 278 256" className="form-control rounded-pill" required value={formBody.phone} onChange={handleChange} />
+                            </div>
+                            <div className="col">
+                                <label className="form-label text-form">Email:</label>
+                                <input type="email" name="email" placeholder="mail@example.com" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
+                            </div>
                         </div>
                     )
-                }
-                {
-                    type === 'teacher' && (
-                        <div className="mb-3">
-                            <label className="form-label text-form">Teléfono:</label>
-                            <input type="text" name="phone" className="form-control rounded-pill" required value={formBody.phone} onChange={handleChange} />
-                        </div>
-                    )
-                }
-
-                {
-                    (type === 'teacher' || type === 'teacher') && <div className="mb-3">
-                        <label className="form-label text-form">Email:</label>
-                        <input type="email" name="email" className="form-control rounded-pill" required value={formBody.email} onChange={handleChange} />
-                    </div>
                 }
 
                 {
                     (type === 'teacher' || type === 'teacher') && <div className="mb-3">
                         <label className="form-label text-form">Dirección:</label>
-                        <input type="text" name="address" className="form-control rounded-pill" required value={formBody.address} onChange={handleChange} />
+                        <input type="text" name="address" placeholder="Calle 123 y los Álamos" className="form-control rounded-pill" required value={formBody.address} onChange={handleChange} />
                     </div>
                 }
 
@@ -258,7 +254,7 @@ const FormCommon = ({ type }) => {
                     type === 'teacher' && (
                         <div className="mb-3">
                             <label className="form-label text-form">Descripción:</label>
-                            <textarea name="description" className="form-control teacher-description" rows="3" required value={formBody.description} onChange={handleChange}></textarea>
+                            <textarea name="description" placeholder="Profesor de x con amplia experiencia académica y profesional." className="form-control teacher-description" rows="3" required value={formBody.description} onChange={handleChange}></textarea>
                         </div>
                     )
                 }
@@ -269,22 +265,22 @@ const FormCommon = ({ type }) => {
                     type === 'updateStudents' && (
                         <div className="table-styles mt-3">
                             <table className="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Apellido</th>
-                                        <th>Grado</th>
-                                        <th>Fecha de nacimiento</th>
-                                        <th>Editar/Eliminar</th>
+                                <thead >
+                                    <tr >
+                                        <th className="text-center">Nombre</th>
+                                        <th className="text-center">Apellido</th>
+                                        <th className="text-center">Grado</th>
+                                        <th className="text-center">Fecha de nacimiento</th>
+                                        <th className="text-center">Editar/Eliminar</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {store.estudiantes.map(student => (
                                         <tr key={student.id}>
-                                            <td>{student.nombre}</td>
-                                            <td>{student.apellido}</td>
-                                            <td>{student.grado.nombre}</td>
-                                            <td>{student.fecha_nacimiento}</td>
+                                            <td className="text-center">{student.nombre}</td>
+                                            <td className="text-center">{student.apellido}</td>
+                                            <td className="text-center">{student.grado.nombre}</td>
+                                            <td className="text-center">{student.fecha_nacimiento}</td>
                                             <td className="d-flex justify-content-center">
                                                 <Link to={`/update-student/${student.id}`}>
                                                     <button
@@ -318,13 +314,13 @@ const FormCommon = ({ type }) => {
                             <table className="table table-hover ">
                                 <thead className="table-design">
                                     <tr>
-                                        <th>Nombre</th>
-                                        <th>Apellido</th>
-                                        <th>Email</th>
-                                        <th>Teléfono</th>
-                                        <th>Dirección</th>
-                                        <th>Descripción</th>
-                                        <th>Editar/Eliminar</th>
+                                        <th className="text-center">Nombre</th>
+                                        <th className="text-center">Apellido</th>
+                                        <th className="text-center">Email</th>
+                                        <th className="text-center">Teléfono</th>
+                                        <th className="text-center">Dirección</th>
+                                        <th className="text-center">Descripción</th>
+                                        <th className="text-center">Editar/Eliminar</th>
                                     </tr>
                                 </thead>
                                 <tbody className="table-design">
@@ -375,12 +371,9 @@ const FormCommon = ({ type }) => {
 
                 {
                     type === "addSubject" && (
-
-
-
-                        < div className="mb-3">
-                            <label className="form-label text-title">Selecciona el grado al que vas a asignar la materia:</label>
-                            <div className="input-group" required>
+                        <div className="row g-3 justify-content-center mb-3">
+                            <div className="col-4 d-flex flex-column">
+                                <label className="form-label text-title">Selecciona un grado:</label>
                                 <select className="custom-select rounded-pill" name="grado_id" id="inputGroupSelect04" onChange={handleChange}>
                                     <option value="" disabled selected>Opciones...</option>
                                     {store.grados.map(grado =>
@@ -388,6 +381,11 @@ const FormCommon = ({ type }) => {
 
                                     )}
                                 </select>
+
+                            </div>
+                            <div className="col-6">
+                                <label className="form-label text-title">Ingresa el nombre de la materia:</label>
+                                <input type="text" name="subjectName" className="form-control rounded-pill" required value={formBody.subjectName} onChange={handleChange} />
                             </div>
                         </div>
                     )
@@ -395,12 +393,12 @@ const FormCommon = ({ type }) => {
 
                 {
                     type === "addSubject" && (
-                        <div className="mb-3">
-                            <label className="form-label text-title">Ingresa un nombre para crear una nueva materia:</label>
-                            <input type="text" name="subjectName" className="form-control rounded-pill" required value={formBody.subjectName} onChange={handleChange} />
 
-                            <label className="form-label text-title mt-3">Ingresa una descripción simple para la materia:</label>
-                            <textarea name="subjectDescription" className="form-control teacher-description" rows="5" required value={formBody.subjectDescription} onChange={(e) => handleChange(e)}></textarea>
+                        <div className="row justify-content-center mb-3">
+                            <div className="col-10">
+                                <label className="form-label text-title mt-3">Escribe una descripción simple para la materia:</label>
+                                <textarea name="subjectDescription" className="form-control teacher-description" rows="5" required value={formBody.subjectDescription} onChange={(e) => handleChange(e)}></textarea>
+                            </div>
                         </div>
 
                     )
@@ -410,29 +408,25 @@ const FormCommon = ({ type }) => {
 
                 {
                     type === "assignSubject" && (
-                        <div className="mb-3 d-flex justify-content-between mb-5">
-                            <div className="d-flex flex-column ms-4">
+                        <div className="row g-3 justify-content-center mb-5">
+                            <div className="col-5 d-flex flex-column">
                                 <label className="form-label text-title">Selecciona un profesor:</label>
-                                <div className="input-group" required>
-                                    <select name="id_docente" className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
-                                        <option value="" disabled selected>Opciones...</option>
-                                        {store.profesores.map(profesor =>
-                                            <option key={profesor.id} value={profesor.id}>{profesor.nombre + " " + profesor.apellido}</option>
-                                        )}
-                                    </select>
-                                </div>
+                                <select name="id_docente" required className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
+                                    <option value="" disabled selected>Opciones...</option>
+                                    {store.profesores.map(profesor =>
+                                        <option key={profesor.id} value={profesor.id}>{profesor.nombre + " " + profesor.apellido}</option>
+                                    )}
+                                </select>
                             </div>
 
-                            <div className="d-flex flex-column me-4">
+                            <div className="col-5 d-flex flex-column">
                                 <label className="form-label text-title">Selecciona una materia:</label>
-                                <div className="input-group" required>
-                                    <select name="id_materia" className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
-                                        <option value="" disabled selected>Opciones...</option>
-                                        {store.materias.map(materia =>
-                                            <option key={materia.id} value={materia.id}>{materia.nombre}</option>
-                                        )}
-                                    </select>
-                                </div>
+                                <select name="id_materia" required className="custom-select rounded-pill" id="inputGroupSelect04" onChange={handleChange}>
+                                    <option value="" disabled selected>Opciones...</option>
+                                    {store.materias.map(materia =>
+                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                    )}
+                                </select>
                             </div>
                         </div>
                     )
@@ -452,7 +446,9 @@ const FormCommon = ({ type }) => {
                 }
 
                 <div className="d-flex justify-content-center mt-5">
-                    <button type="submit" className="btn btn-outline-register">Registrar</button>
+                    {type !== "updateStudents" && type !== "updateTeachers" && (
+                        <button type="submit" className="btn btn-outline-register">Registrar</button>
+                    )}
                 </div>
             </form >
         </div >
@@ -651,11 +647,11 @@ export const LeftMenuAdmin = () => {
                         <hr />
                     </div>
                 </div>
-                <div className="render-content col mt-3 py-3 "
+                <div className="render-content container-fluid col py-3 "
                     style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
-                    <div>
+                    <div className="container-fluid">
                         {location.pathname.includes("profile") ? renderContent() :
-                            <div className="welcome-message mt-5 ms-auto me-auto">
+                            <div className="welcome-message mt-4 ms-auto me-auto ">
                                 {renderContent()}
                             </div>
                         }
