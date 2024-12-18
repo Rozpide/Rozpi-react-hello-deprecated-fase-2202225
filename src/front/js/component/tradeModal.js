@@ -47,7 +47,7 @@ export const TradeModal = (coin) => {
         if (pric > ownedVal) {
             alert("Please enter an amount equal or lower than your current holdings")
         } else if (pric < ownedVal) {
-            actions.sellSomeCoin(store.tradeCoin, Number(ownedQuantity)-Number(quantity))
+            actions.sellSomeCoin(store.tradeCoin, Number(ownedQuantity) - Number(quantity))
             actions.addFundsToWallet(store.funds + pric)
             actions.setShowTradeModal(false)
         } else {
@@ -64,7 +64,7 @@ export const TradeModal = (coin) => {
         if (quant > ownedQuant) {
             alert("Please enter an amount equal or lower than your available coins")
         } else if (quant < ownedQuant) {
-            actions.sellSomeCoin(store.tradeCoin, ownedQuant-quant)
+            actions.sellSomeCoin(store.tradeCoin, ownedQuant - quant)
             actions.addFundsToWallet(store.funds + Number(price))
             actions.setShowTradeModal(false)
         } else {
@@ -135,6 +135,7 @@ export const TradeModal = (coin) => {
                             </div>
                             {buy ? (
                                 <form onSubmit={handleBuy}>
+                                    <div className="availFunds">{store.funds > 0 ? (`Available funds: ${store.funds.toLocaleString()}${store.currency.toUpperCase()}`) : ("You are broke")}</div>
                                     <div className="d-flex justify-content-center mb-3">
                                         <button
                                             className={`btn ${byCost ? "trdBtnSlctd" : "trdBtn"} me-2`}
