@@ -71,112 +71,114 @@ export const Profile = () => {
 
 
     return (
-        <div className="container mt-5">
-            <h2 className="text-center">My Profile</h2>
+        <div className="container mt-5" style={{ border: "" }}>
+            <h2 className="text-center" style={{ backgroundColor: "#39ff14" }}>My Profile</h2>
 
             {
                 store.userID ? (
                     <>
                         {success && <div className="alert alert-success">{success}</div>}
                         <div className="mb-3">
-                            <h5>Email: <span className="text-muted">{profile.email}</span></h5>
+                            <h5 style={{color:"#39ff14"}}>Email: <span className="" style={{color:"white"}}>{profile.email}</span></h5>
                         </div>
                         <div className="mb-3">
-                            <h5>Username: <span className="text-muted">{profile.username}</span></h5>
+                            <h5 style={{color:"#39ff14"}}>Username: <span className="" style={{color:"white"}}>{profile.username}</span></h5>
                         </div>
                         <div className="mb-3">
-                            <h5>First Name: <span className="text-muted">{profile.first_name}</span></h5>
+                            <h5 style={{color:"#39ff14"}}>First Name: <span className="" style={{color:"white"}}>{profile.first_name}</span></h5>
                         </div>
                         <div className="mb-3">
-                            <h5>Last Name: <span className="text-muted">{profile.last_name}</span></h5>
+                            <h5 style={{color:"#39ff14"}}>Last Name: <span className="" style={{color:"white"}}>{profile.last_name}</span></h5>
                         </div>
                         <div className="mb-3">
-                            <h5>Address:
-                                <span className="text-muted"> {profile.address} </span>
-                                <span className="text-muted"> {profile.city} </span>
-                                <span className="text-muted"> {profile.state} </span>
-                                <span className="text-muted"> {profile.zip}</span>
+                            <h5 style={{color:"#39ff14"}}>Address:
+                                <span className="" style={{color:"white"}}> {profile.address} </span>
+                                <span className=""style={{color:"white"}}> {profile.city} </span>
+                                <span className=""style={{color:"white"}}> {profile.state} </span>
+                                <span className=""style={{color:"white"}}> {profile.zip}</span>
                             </h5>
                         </div>
 
                         {/* Button to open modal */}
-                        <button onClick={openModal} className="btn btn-primary">Update Profile</button>
+                        <button onClick={openModal} className="btn trdBtn">Update Profile</button>
 
                         {/* Modal for Editing Profile */}
-                        <Modal show={showModal} onHide={closeModal}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Edit Profile</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <Form onSubmit={handleUpdate}>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Username</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="username"
-                                            value={profile.username}
-                                            onChange={handleInputChange}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>First Name</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="first_name"
-                                            value={profile.first_name}
-                                            onChange={handleInputChange}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Last Name</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="last_name"
-                                            value={profile.last_name}
-                                            onChange={handleInputChange}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>Address</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="address"
-                                            value={profile.address}
-                                            onChange={handleInputChange}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>City</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="city"
-                                            value={profile.city}
-                                            onChange={handleInputChange}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>State</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="state"
-                                            value={profile.state}
-                                            onChange={handleInputChange}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label>ZIP Code</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="zip"
-                                            value={profile.zip}
-                                            onChange={handleInputChange}
-                                        />
-                                    </Form.Group>
-                                    <Button variant="primary" type="submit">
-                                        Save Changes
-                                    </Button>
-                                </Form>
-                            </Modal.Body>
+                        <Modal show={showModal} onHide={closeModal} style={{ border: "rgba(0, 0, 0, 0.5)" }}>
+                            <div style={{ border: "rgba(0, 0, 0, 0.5)" }}>
+                                <Modal.Header closeButton >
+                                    <Modal.Title style={{ color: "#39ff14" }}>Edit Profile</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <Form onSubmit={handleUpdate}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Username</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="username"
+                                                value={profile.username}
+                                                onChange={handleInputChange}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>First Name</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="first_name"
+                                                value={profile.first_name}
+                                                onChange={handleInputChange}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Last Name</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="last_name"
+                                                value={profile.last_name}
+                                                onChange={handleInputChange}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Address</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="address"
+                                                value={profile.address}
+                                                onChange={handleInputChange}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>City</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="city"
+                                                value={profile.city}
+                                                onChange={handleInputChange}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>State</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="state"
+                                                value={profile.state}
+                                                onChange={handleInputChange}
+                                            />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>ZIP Code</Form.Label>
+                                            <Form.Control
+                                                type="text"
+                                                name="zip"
+                                                value={profile.zip}
+                                                onChange={handleInputChange}
+                                            />
+                                        </Form.Group>
+                                        <Button variant="primary" className="btn trdBtn" type="submit">
+                                            Save Changes
+                                        </Button>
+                                    </Form>
+                                </Modal.Body>
+                            </div>
                         </Modal>
                     </>
                 ) : (
