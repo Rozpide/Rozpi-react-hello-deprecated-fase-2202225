@@ -34,6 +34,12 @@ export const Navbar = () => {
             setShowSuggestions(false); // Hide suggestions on search
         }
     };
+    const handleUnauthorizedAction = (e) => {
+        if (!token) {
+            e.preventDefault(); // Prevent navigation
+            alert("You are not logged in. Please register or sign in.");
+        }
+    };
 
     const handleLoginSuccess = (username, password) => {
         actions.login(username, password); // Update global store with logged-in user
@@ -51,8 +57,24 @@ export const Navbar = () => {
         setShowSuggestions(false); // Hide suggestions after selecting
         console.log(coin.id);
         navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
-
     };
+
+    const handleLogout = () => {
+        const isConfirmed = window.confirm(`Are you sure you want to log out, ${username}?`);
+        if (isConfirmed) {
+            actions.logout(); // Perform the logout action
+            navigate('/'); // Navigate to home page after logout
+        }
+    };
+
+    // Combine both logic (show alert or navigate) in one function
+    const handleListOfCoinsClick = (e) => {
+        if (!token) {
+            e.preventDefault(); // Prevent navigation
+            alert("You are not logged in. Please register or sign in.");
+        }
+    };
+
     return (
         <>
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "black" }}>
@@ -63,7 +85,13 @@ export const Navbar = () => {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link className="listButton btn" to="/listingpage">List of Coins</Link>
+                                <Link 
+                                    className="listButton btn" 
+                                    to="/listingpage"
+                                    onClick={handleListOfCoinsClick} // Combined handler for both alert and navigation
+                                >
+                                    List of Coins
+                                </Link>
                             </li>
                         </ul>
                         <form
@@ -113,10 +141,16 @@ export const Navbar = () => {
                             )}
                         </form>
                     </div>
+
                     {token ? (
                         <>
                             <span className="navbar-text text-light ms-3">Hello, {username}</span>
-                            <button className="logoutButton btn ms-3" onClick={()=>{actions.logout(), navigate('/')}}>Logout</button>
+                            <button
+                                className="logoutButton btn ms-3"
+                                onClick={handleLogout} // Trigger the confirmation popup
+                            >
+                                Logout
+                            </button>
                         </>
                     ) : (
                         <button className="loginButton btn ms-3" onClick={() => setShowModal(true)}>Login</button>
@@ -135,12 +169,11 @@ export const Navbar = () => {
                         />
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><span className="dropdown-item-text">Hello, {username || "Guest"}</span></li>
-                            {/* <li><Link className="dropdown-item" to="/profile">Profile</Link></li> */}
                             <li>
                                 <Link
                                     className="dropdown-item"
                                     to="/userdashboard#favorites"
-                                    onClick={() => actions.setShowFavorites()}
+                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
                                 >
                                     Favorites
                                 </Link>
@@ -148,8 +181,17 @@ export const Navbar = () => {
                             <li>
                                 <Link
                                     className="dropdown-item"
+                                    to="/userdashboard#wallet"
+                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
+                                >
+                                    Wallet
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    className="dropdown-item"
                                     to="/userdashboard#overallHoldings"
-                                    onClick={() => actions.setShowOverallHoldings()}
+                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
                                 >
                                     Dashboard
                                 </Link>
