@@ -175,15 +175,6 @@ def send_email():
 
 
 
-
-@app.route('/wallet/<coin_id>', methods=['POST'])
-def add_wallet(coin_id):
-    user_id = request.json['user_id']
-    name = request.json['name']
-    Wallet_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id)
-    db.session.add(Wallet_crypto)
-    db.session.commit()
-    return jsonify(get_wallets(user_id))
  
 @app.route('/wallet/<coin_id>', methods=['POST'])
 def buy_coin(coin_id):

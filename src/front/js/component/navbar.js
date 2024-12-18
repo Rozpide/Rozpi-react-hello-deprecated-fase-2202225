@@ -57,6 +57,7 @@ export const Navbar = () => {
         setShowSuggestions(false); // Hide suggestions after selecting
         console.log(coin.id);
         navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
+        window.location.reload();
     };
 
     const handleLogout = () => {
@@ -130,9 +131,7 @@ export const Navbar = () => {
                                             key={coin.id}
                                             className="dropdown-item"
                                             style={{ cursor: "pointer", color: "white" }}
-                                            onMouseDown={() => {
-                                                navigate(`/moreinfo/${coin.id}`);
-                                            }}
+                                            onMouseDown={() => handleSuggestionClick(coin)}
                                         >
                                             {coin.name} ({coin.symbol.toUpperCase()})
                                         </li>

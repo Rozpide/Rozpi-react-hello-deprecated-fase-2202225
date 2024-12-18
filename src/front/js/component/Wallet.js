@@ -129,19 +129,24 @@ export const Wallet = () => {
 
   const fundsCurrency = (pref) => {
     if (pref == "cad") {
-      actions.setFundsInCurrency(Number(store.funds * 1.42))
+      actions.setFundsInCurrency(Number(store.funds * 1.42));
+      actions.setCurrencyMultiplier(1.42)
     }
     else if (pref == "eur") {
-      actions.setFundsInCurrency(Number(store.funds / 1.05))
+      actions.setFundsInCurrency(Number(store.funds * .9524));
+      actions.setCurrencyMultiplier(.9524)
     }
     else if (pref == "gbp") {
-      actions.setFundsInCurrency(Number(store.funds / 1.21))
+      actions.setFundsInCurrency(Number(store.funds * .826));
+      actions.setCurrencyMultiplier(.826)
     }
     else if (pref == "jpy") {
-      actions.setFundsInCurrency(Number(store.funds * 153.73))
+      actions.setFundsInCurrency(Number(store.funds * 153.73));
+      actions.setCurrencyMultiplier(153.73)
     }
     else if (pref == "usd") {
-      actions.setFundsInCurrency(store.funds)
+      actions.setFundsInCurrency(store.funds);
+      actions.setCurrencyMultiplier(1)
     }
   }
 
@@ -498,7 +503,7 @@ export const Wallet = () => {
                 <td>{walletId.quantity_owned}</td>
                 <td>
                   ${(
-                    walletId.quantity_owned * walletId.purchase_price ||
+                    walletId.quantity_owned * (walletId.purchase_price * store.currencyMultiplier) ||
                     0
                   ).toLocaleString()}
                 </td>
@@ -510,7 +515,7 @@ export const Wallet = () => {
                 </td>
                 <td>
                   {(
-                    (((walletId.quantity_owned * walletArray.market_data.current_price[store.currency]) / (walletId.purchase_price)) - 1) * 100 || 0
+                    (((walletId.quantity_owned * walletArray.market_data.current_price[store.currency]) / (walletId.purchase_price * store.currencyMultiplier)) - 1) * 100 || 0
                   ).toLocaleString()}%
                 </td>
                 <td>

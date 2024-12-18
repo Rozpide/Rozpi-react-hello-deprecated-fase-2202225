@@ -130,7 +130,7 @@ export const MoreInfo = () => {
             {/* Main Info Section */}
             <div className="mainInfo">
                 {/* Coin Name */}
-                <div className="coinName" style={{ fontSize: "25px", marginLeft: "80px", color: "white" }}>
+                <div className="coinName" style={{ fontSize: "40px", marginLeft: "80px", color: "#39ff14" }}>
                     {store.currentCoinData.name}
                 </div>
 

@@ -35,6 +35,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             funds: 0,
             fundsInCurrency: 0,
             fundsCurrency: "usd",
+            currencyMultiplier: 1,
             loadingCoins: true,
             searchSuggestions: [], // Initialize as an empty array
             showContactModal: false,
@@ -51,6 +52,9 @@ const getState = ({ getStore, getActions, setStore }) => {
             userProfile: {}
         },
         actions: {
+            setCurrencyMultiplier: (num) => {
+                setStore({ currencyMultiplier: Number(num)})
+            },
             setFundsInCurrency: (money) => {
                 setStore({ fundsInCurrency: money })
             },
