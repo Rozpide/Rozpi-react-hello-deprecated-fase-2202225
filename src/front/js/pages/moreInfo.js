@@ -210,31 +210,58 @@ export const MoreInfo = () => {
     <button onClick={handleSetAlert}>Set Alert</button>
 </div>
 
-{/* Alerts List Section */}
-<div className="alerts-list">
-    <h4>Your Alerts</h4>
-    {store.userID ? ( // Check if the user is logged in
-        store.alerts && store.alerts.length > 0 ? (
-            <ul>
-                {store.alerts
-                    .filter((alert) => alert.user_id === store.userID) // Only show alerts for the current user
-                    .map((alert) => (
-                        <li key={alert.id}>
-                            <span>
-                                {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} {alert.above_below}
-                            </span>
-                            <button onClick={() => actions.removeAlert(alert.id)}>Remove</button>
-                        </li>
-                    ))}
-            </ul>
-        ) : (
-            <p>No alerts set.</p>
-        )
-    ) : (
-        <p>Please log in to see your alerts.</p>
-    )}
-</div>
+                {/* Alerts List Section */}
+                    <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#1a1a1a", borderRadius: "5px" }}>
+                        <h4 style={{ color: "#39ff14" }}>Your Alerts</h4>
+                        {store.alerts && store.alerts.length > 0 ? (
+                            <ul style={{ listStyle: "none", padding: 0 }}>
+                                {store.alerts.map((alert) => {
+                                    return (
+                                        <li
+                                            key={alert.id}
+                                            style={{
+                                                marginBottom: "10px",
+                                                padding: "10px",
+                                                border: "1px solid #39ff14",
+                                                borderRadius: "5px",
+                                                backgroundColor: "#000",
+                                                color: "#39ff14",
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <span>
+                                                {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} {alert.above_below}
+                                            </span>
+                                            <button
+                                                onClick={() => {
+                                                    const confirmRemoval = window.confirm("Are you sure you want to remove this alert?");
+                                                    if (confirmRemoval) {
+                                                        actions.removeAlert(alert.id);
+                                                    }
+                                                }}
+                                                style={{
+                                                    backgroundColor: "red",
+                                                    color: "white",
+                                                    border: "none",
+                                                    borderRadius: "5px",
+                                                    padding: "5px 10px",
+                                                    cursor: "pointer",
+                                                }}
+                                            >
+                                                Remove
+                                            </button>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
+                        ) : (
+                            <p style={{ color: "#39ff14" }}>No alerts set.</p>
+                        )}
+                    </div>
 
+                
 
                 {/* News Feed Section */}
                 <div className="news">
@@ -262,6 +289,6 @@ export const MoreInfo = () => {
                     )}
                 </div>
             </div>
-        </div>
+            </div>
     );
 };

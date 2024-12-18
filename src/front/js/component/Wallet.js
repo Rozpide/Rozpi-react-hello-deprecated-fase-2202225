@@ -11,11 +11,8 @@ export const Wallet = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [walletIds, setWalletIds] = useState(store.walletIds)
   const [addFundsModal, setAddFundsModal] = useState(false)
-  const [sortCriteria, setSortCriteria] = useState("name");
-  const [sortOrder, setSortOrder] = useState("asc");
-
-
-
+  const [sortCriteria, setSortCriteria] = useState("name"); 
+  const [sortOrder, setSortOrder] = useState("asc"); 
 
 
 
@@ -80,10 +77,7 @@ export const Wallet = () => {
     (wallet, index, self) =>
       index === self.findIndex((w) => w.id === wallet.id)
 
-
   );
-
-
 
 
   const sortedWalletData = [...uniqueWalletData].sort((a, b) => {
@@ -93,21 +87,18 @@ export const Wallet = () => {
         : b.name.localeCompare(a.name);
     }
 
-
     if (sortCriteria === "currentPrice") {
       const aPrice = a.market_data.current_price[store.currency] || 0;
       const bPrice = b.market_data.current_price[store.currency] || 0;
       return sortOrder === "asc" ? aPrice - bPrice : bPrice - aPrice;
     }
-   
-
+    
 
     if (sortCriteria === "purchasedPrice") {
       const aTotal = store.walletIds.find((elm) => elm.coin_id === a.id)?.quantity_owned * store.walletIds.find((elm) => elm.coin_id === a.id)?.purchase_price || 0;
       const bTotal = store.walletIds.find((elm) => elm.coin_id === b.id)?.quantity_owned * store.walletIds.find((elm) => elm.coin_id === b.id)?.purchase_price || 0;
       return sortOrder === "asc" ? aTotal - bTotal : bTotal - aTotal;
     }
-
 
     if (sortCriteria === "quantityOwned") {
       const aTotal = store.walletIds.find((elm) => elm.coin_id === a.id)?.quantity_owned  || 0;
@@ -116,9 +107,8 @@ export const Wallet = () => {
     }
     return 0;
   });
- 
- 
-
+  
+  
 
   const handleSort = (criteria) => {
     if (sortCriteria === criteria) {
@@ -128,12 +118,10 @@ export const Wallet = () => {
       setSortOrder("asc");
     }
   };
- 
+  
 
 
-
-
- 
+  
   // if (!Array.isArray(store.walletNormalData) || store.walletNormalData.length === 0) {
   //   return <p>Loading wallet data...</p>;
   // }
