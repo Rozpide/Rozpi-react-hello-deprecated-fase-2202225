@@ -54,6 +54,7 @@ export const TradeModal = (coin) => {
         }
     };
 
+
     const verifyAmountSell = () => {
         let pric = Number(price);
         let ownedVal = Number(ownedValue);
@@ -78,6 +79,7 @@ export const TradeModal = (coin) => {
         }
     };
 
+
     const verifyQuantitySell = () => {
         let quant = Number(quantity);
         let ownedQuant = Number(ownedQuantity);
@@ -101,6 +103,7 @@ export const TradeModal = (coin) => {
             }
         }
     };
+
 
     const handleSell = () => {
     }
@@ -254,7 +257,7 @@ export const TradeModal = (coin) => {
                                                     setPrice(e.target.value);
                                                     setQuantity(price /
                                                         ((location.pathname == '/listingpage') ?
-                                                            store.tradeCoin.current_price :
+                                                             store.tradeCoin.current_price :
                                                             store.tradeCoin.market_data.current_price[store.currency]))
 
 

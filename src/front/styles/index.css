@@ -1231,7 +1231,6 @@ td canvas {
   margin-right: 60px;
 }
 
-/* If you'd like the same overall look, you can also add similar styling: */
 .alert-configuration {
   margin-top: 20px;
   padding: 20px;
@@ -1252,7 +1251,70 @@ td canvas {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
+<<<<<<< HEAD
 /* ABOUT US */
+=======
+
+/* Alerts List Section */
+.alerts-list {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #1a1a1a;
+  border-radius: 10px;
+  border: 1px solid #39ff14;
+  width: 50vw;
+  margin-left: 80px;
+  margin-right: 60px;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.5);
+}
+
+.alerts-list h4 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #39ff14;
+}
+
+.alerts-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.alerts-list li {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #39ff14;
+  border-radius: 5px;
+  background-color: #000;
+  color: #39ff14;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alerts-list li button {
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.alerts-list p {
+  color: #39ff14;
+}
+
+
+
+
+
+
+
+
+
+/* ABOUT US */ 
+>>>>>>> 0e55996f246c407a1696139b6613f0cd5e6241a3
 
 .about {
   max-width: 800px; /* Limit width for better readability */

@@ -4,6 +4,7 @@ import { Context } from "../store/appContext";
 import { SparklineChart } from "../pages/sparklineChart";
 import { TradeModal } from "./tradeModal";
 
+
 export const Wallet = () => {
   const { store, actions } = useContext(Context);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,6 +21,7 @@ export const Wallet = () => {
   //   document.getElementById("wc1").style.color= "black";
   // }, []);
 
+
   useEffect(() => {
     // Fetch wallet price and normal data for each coin
     store.walletIds.forEach((wallet) => {
@@ -27,6 +29,10 @@ export const Wallet = () => {
       actions.getWalletNormalData(wallet.coin_id);
     });
   }, []);
+
+
+
+
 
 
 
@@ -47,20 +53,24 @@ export const Wallet = () => {
     setIsModalOpen(true);
   };
 
+
   const handleTrade = (type, quantity) => {
     console.log(`${type.toUpperCase()} ${quantity} of ${selectedCoin.name}`);
     actions.tradeCoin(selectedCoin.id, type, quantity);
     setIsModalOpen(false);
   };
 
+
   const openFundsModal = () => {
     setAddFundsModal(!addFundsModal)
   }
+
 
   const addFunds = () => {
     const inputAmount = parseFloat(document.getElementById("dollarAmount").value);
     actions.addFundsToWallet(store.funds + inputAmount)
   }
+
 
   // Deduplicate wallet data
   const uniqueWalletData = store.walletNormalData.filter(
@@ -116,6 +126,7 @@ export const Wallet = () => {
   //   return <p>Loading wallet data...</p>;
   // }
 
+
   const fundsCurrency =(pref)=> {
     if (pref == "cad") {
       actions.setFundsInCurrency(Number(store.funds * 1.42))}
@@ -130,6 +141,7 @@ export const Wallet = () => {
     }
   }
 
+
   const validator = () => {
     let cardNumber = document.querySelector("#inputcard");
     let cvcNumber = document.querySelector("#inputCVC");
@@ -141,6 +153,7 @@ export const Wallet = () => {
     let zip = document.querySelector("#inputZip");
     let cardType = document.querySelector("#selector");
     let errorList = document.querySelector("#errorList");
+
 
     if (cardNumber.value.length < 15 || cardNumber.value.length > 16) {
       let newError = document.createElement("li");
@@ -214,6 +227,7 @@ export const Wallet = () => {
       errorList.classList.remove("d-none");
     }
   }
+
 
   return (
     <div className="wallet-page">
@@ -514,8 +528,9 @@ export const Wallet = () => {
         </tbody>
       </table>
 
-      
-    
+
+     
+   
     </div>
   );
 };
