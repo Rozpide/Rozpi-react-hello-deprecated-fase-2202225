@@ -50,6 +50,7 @@ export const Navbar = () => {
         setSearchQuery(coin.name); // Update the input with the selected suggestion
         setShowSuggestions(false); // Hide suggestions after selecting
         navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
+        window.location.reload();
     };
     
     const handleUnauthorizedAction = (e) => {
@@ -133,9 +134,7 @@ export const Navbar = () => {
                                             key={coin.id}
                                             className="dropdown-item"
                                             style={{ cursor: "pointer", color: "white" }}
-                                            onMouseDown={() => {
-                                                navigate(`/moreinfo/${coin.id}`);
-                                            }}
+                                            onMouseDown={() => handleSuggestionClick(coin)}
                                         >
                                             {coin.name} ({coin.symbol.toUpperCase()})
                                         </li>
