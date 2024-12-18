@@ -125,6 +125,7 @@ export const Listing = () => {
                             <td>${coin.market_cap.toLocaleString()}</td>
                             <td>${coin.total_volume.toLocaleString()}</td>
                             <td>
+                            <div style={{ display: "flex" }}>
                                 <button
                                     type="submit"
                                     className="submitBtn"
@@ -151,6 +152,7 @@ export const Listing = () => {
                                         e.stopPropagation();
                                         showAlertIfNotLoggedIn(() => handleFavoriteToggle(coin));
                                     }}
+                                    style={{ marginLeft: "20px" }}
                                     >
                                     {store.favoriteIds.some((favCoin) => favCoin.coin_id === coin.id) ? (
                                         <i className="bi bi-bookmark-fill"></i>
@@ -158,6 +160,7 @@ export const Listing = () => {
                                         <i className="bi bi-bookmark"></i>
                                     )}
                                     </button>
+                                    </div>
 
                             </td>
                         </tr>
