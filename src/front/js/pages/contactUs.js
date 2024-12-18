@@ -55,7 +55,7 @@ export const ContactUs = props => {
     style={{ display: store.showContactModal ? "block" : "none" }}
 >
     <div className="modal-dialog modal_dialog_div ">
-        <div className="modal-content modal_content_div_btn" style={{backgroundColor:"silver", width:"40vw"}}>
+        <div className="modal-content modal_content_div_btn" style={{backgroundColor:"silver", width:"40vw", minHeight:"85vh", maxHeight:"95vh"}}>
             <button
                 type="button"
                 className="close close_contact_us_btn"
