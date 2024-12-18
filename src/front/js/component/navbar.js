@@ -8,7 +8,7 @@ import gear_colored from "../../img/gear_colored.png";
 export const Navbar = () => {
     const { store, actions } = useContext(Context);
     const username = store.username;
-    const token = store.userToken;
+    const token = store.token;
     const [showModal, setShowModal] = useState(false); // Control modal visibility
     const [searchQuery, setSearchQuery] = useState(""); // State for search query
     const [showSuggestions, setShowSuggestions] = useState(false); // State to control dropdown visibility
@@ -85,8 +85,8 @@ export const Navbar = () => {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                             <li className="nav-item">
-                                <Link 
-                                    className="listButton btn" 
+                                <Link
+                                    className="listButton btn"
                                     to="/listingpage"
                                     onClick={handleListOfCoinsClick} // Combined handler for both alert and navigation
                                 >
@@ -169,6 +169,15 @@ export const Navbar = () => {
                         />
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                             <li><span className="dropdown-item-text">Hello, {username || "Guest"}</span></li>
+                            <li>
+                                <Link
+                                    className="dropdown-item"
+                                    to="/profile"
+                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
+                                >
+                                    Profile
+                                </Link>
+                            </li>
                             <li>
                                 <Link
                                     className="dropdown-item"

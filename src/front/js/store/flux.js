@@ -485,7 +485,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 localStorage.removeItem('username');
                 localStorage.removeItem('userID');
                 localStorage.removeItem('userProfile');
-                setStore({ username: "", userID: "", userToken: "", funds: 0, userProfile: {} }); // Clear store data
+                setStore({ username: "", userID: "", token: "", funds: 0, userProfile: {} }); // Clear store data
                 console.log("User logged out");
             },
             search: (query) => {
