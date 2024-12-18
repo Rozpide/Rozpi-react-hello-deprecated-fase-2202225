@@ -53,11 +53,12 @@ export const TradeModal = (coin) => {
             actions.setShowTradeModal(false);
         }
     };
-    
+
+
     const verifyAmountSell = () => {
         let pric = Number(price);
         let ownedVal = Number(ownedValue);
-    
+
         if (pric > ownedVal) {
             alert("Please enter an amount equal or lower than your current holdings");
         } else {
@@ -77,11 +78,12 @@ export const TradeModal = (coin) => {
             }
         }
     };
-    
+
+
     const verifyQuantitySell = () => {
         let quant = Number(quantity);
         let ownedQuant = Number(ownedQuantity);
-    
+
         if (quant > ownedQuant) {
             alert("Please enter an amount equal or lower than your available coins");
         } else {
@@ -101,6 +103,7 @@ export const TradeModal = (coin) => {
             }
         }
     };
+
 
     const handleSell = () => {
     }
@@ -169,6 +172,7 @@ export const TradeModal = (coin) => {
                             </div>
                             {buy ? (
                                 <form onSubmit={handleBuy}>
+                                    <div className="availFunds">{store.funds > 0 ? (`Available funds: ${store.funds.toLocaleString()}${store.currency.toUpperCase()}`) : ("You are broke")}</div>
                                     <div className="d-flex justify-content-center mb-3">
                                         <button
                                             className={`btn ${byCost ? "trdBtnSlctd" : "trdBtn"} me-2`}
@@ -253,7 +257,7 @@ export const TradeModal = (coin) => {
                                                     setPrice(e.target.value);
                                                     setQuantity(price /
                                                         ((location.pathname == '/listingpage') ?
-                                                            store.tradeCoin.current_price :
+                                                             store.tradeCoin.current_price :
                                                             store.tradeCoin.market_data.current_price[store.currency]))
 
 
