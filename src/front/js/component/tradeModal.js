@@ -257,7 +257,7 @@ export const TradeModal = (coin) => {
                                                     setPrice(e.target.value);
                                                     setQuantity(price /
                                                         ((location.pathname == '/listingpage') ?
-                                                            store.tradeCoin.current_price :
+                                                             store.tradeCoin.current_price :
                                                             store.tradeCoin.market_data.current_price[store.currency]))
 
 
@@ -301,10 +301,4 @@ export const TradeModal = (coin) => {
             :
             null
     );
-<<<<<<< HEAD
 };
-
-
-=======
-};
->>>>>>> bade84c0960f1528374ce03c724f893c710865b6
