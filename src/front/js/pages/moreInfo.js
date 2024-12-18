@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Context } from "../store/appContext";
-import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer } from "recharts";
+import { LineChart, Line, YAxis, Tooltip, XAxis, ResponsiveContainer, AreaChart, Area, lineargradient, defs } from "recharts";
 import { TradeModal } from "../component/tradeModal";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -154,114 +154,124 @@ export const MoreInfo = () => {
                         </div>
                         <div className="bigGraph">
                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={store.currentCoinPriceData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                                <AreaChart data={store.currentCoinPriceData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="65%" stopColor="#39ff14" stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor="#39ff14" stopOpacity={0.1} />
+                                        </linearGradient>
+                                    </defs>
                                     <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
-                                    <Line type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} />
+                                    <Area type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} fill="url(#colorUv)" />
                                     <XAxis dataKey="date" height={0} />
                                     <Tooltip />
-                                </LineChart>
+                                </AreaChart>
                             </ResponsiveContainer>
                         </div>
                     </div>
-                    <div id="marketData">
-                        <h4>Current Price: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.current_price[store.currency].toLocaleString() : null}</h4>
-                        <h4>24H High: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.high_24h[store.currency].toLocaleString() : null}</h4>
-                        <h4>24H Low: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.low_24h[store.currency].toLocaleString() : null}</h4>
-                        <h4 style={{ display: "flex" }}>24H Change: <div style={{
-                            marginLeft: '8px',
-                            color: store.currentCoinData.market_data?.price_change_percentage_24h < 0 ? 'red' : 'green',
-                        }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_24h.toFixed(2) : null}%</div></h4>
-                        <h4 style={{ display: "flex" }}>30D Change: <div style={{
-                            marginLeft: '8px',
-                            color: store.currentCoinData.market_data?.price_change_percentage_30d < 0 ? 'red' : '#39ff14',
-                        }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_30d.toFixed(2) : null}%</div></h4>
-                        <h4 style={{ display: "flex" }}>1Y Change: <div style={{
-                            marginLeft: '8px',
-                            color: store.currentCoinData.market_data?.price_change_percentage_1y < 0 ? 'red' : '#39ff14',
-                        }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_1y.toFixed(2) : null}%</div></h4>
-                        <h4>Market Cap rank: {store.currentCoinData.market_data ? store.currentCoinData.market_data.market_cap_rank : null}</h4>
-                        <button
-                            type="submit"
-                            id="submitBtn"
-                            onClick={() => actions.setShowTradeModal(store.currentCoinData)}
-                            style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}
-                        >
-                            Trade
-                        </button>
+                    <div id="morInfMktDta">
+                        <div id="marketData">
+                            <h3 style={{paddingLeft: "5vw", color: "#39ff14", paddingBottom: "2vh"}}>Market Data:</h3>
+                            <h4>Current Price: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.current_price[store.currency].toLocaleString() : null}</h4>
+                            <h4>24H High: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.high_24h[store.currency].toLocaleString() : null}</h4>
+                            <h4>24H Low: {store.currency.toUpperCase()} {store.currentCoinData.market_data ? store.currentCoinData.market_data.low_24h[store.currency].toLocaleString() : null}</h4>
+                            <h4 style={{ display: "flex" }}>24H Change: <div style={{
+                                marginLeft: '8px',
+                                color: store.currentCoinData.market_data?.price_change_percentage_24h < 0 ? 'red' : 'green',
+                            }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_24h.toFixed(2) : null}%</div></h4>
+                            <h4 style={{ display: "flex" }}>30D Change: <div style={{
+                                marginLeft: '8px',
+                                color: store.currentCoinData.market_data?.price_change_percentage_30d < 0 ? 'red' : '#39ff14',
+                            }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_30d.toFixed(2) : null}%</div></h4>
+                            <h4 style={{ display: "flex" }}>1Y Change: <div style={{
+                                marginLeft: '8px',
+                                color: store.currentCoinData.market_data?.price_change_percentage_1y < 0 ? 'red' : '#39ff14',
+                            }}> {store.currentCoinData.market_data ? store.currentCoinData.market_data.price_change_percentage_1y.toFixed(2) : null}%</div></h4>
+                            <h4>Market Cap rank: {store.currentCoinData.market_data ? store.currentCoinData.market_data.market_cap_rank : null}</h4>
+                        </div>
+                        <div id="moreInfTrdBtnBox">
+                            <button
+                                type="btn"
+                                className="btn"
+                                id="moreInfTrdBtn"
+                                onClick={() => actions.setShowTradeModal(store.currentCoinData)}
+                                >Trade
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-               {/* Alert Configuration Section */}
-<div className="alert-configuration">
-    <h4>Set Price Alert</h4>
-    <input
-        id="alert_price"
-        type="number"
-        value={alertPrice}
-        onChange={(e) => setAlertPrice(e.target.value)}
-        placeholder="Enter target price"
-    />
-    <label>
-        <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("above")} /> Above
-    </label>
-    <label>
-        <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("below")} /> Below
-    </label>
-    <button onClick={handleSetAlert}>Set Alert</button>
-</div>
+                {/* Alert Configuration Section */}
+                <div className="alert-configuration">
+                    <h4>Set Price Alert</h4>
+                    <input
+                        id="alert_price"
+                        type="number"
+                        value={alertPrice}
+                        onChange={(e) => setAlertPrice(e.target.value)}
+                        placeholder="Enter target price"
+                    />
+                    <label>
+                        <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("above")} /> Above
+                    </label>
+                    <label>
+                        <input type="radio" name="aboveBelow" onClick={() => setAbove_Below("below")} /> Below
+                    </label>
+                    <button onClick={handleSetAlert}>Set Alert</button>
+                </div>
 
                 {/* Alerts List Section */}
-                    <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#1a1a1a", borderRadius: "5px" }}>
-                        <h4 style={{ color: "#39ff14" }}>Your Alerts</h4>
-                        {store.alerts && store.alerts.length > 0 ? (
-                            <ul style={{ listStyle: "none", padding: 0 }}>
-                                {store.alerts.map((alert) => {
-                                    return (
-                                        <li
-                                            key={alert.id}
+                <div style={{ marginTop: "20px", padding: "10px", backgroundColor: "#1a1a1a", borderRadius: "5px" }}>
+                    <h4 style={{ color: "#39ff14" }}>Your Alerts</h4>
+                    {store.alerts && store.alerts.length > 0 ? (
+                        <ul style={{ listStyle: "none", padding: 0 }}>
+                            {store.alerts.map((alert) => {
+                                return (
+                                    <li
+                                        key={alert.id}
+                                        style={{
+                                            marginBottom: "10px",
+                                            padding: "10px",
+                                            border: "1px solid #39ff14",
+                                            borderRadius: "5px",
+                                            backgroundColor: "#000",
+                                            color: "#39ff14",
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <span>
+                                            {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} {alert.above_below}
+                                        </span>
+                                        <button
+                                            onClick={() => {
+                                                const confirmRemoval = window.confirm("Are you sure you want to remove this alert?");
+                                                if (confirmRemoval) {
+                                                    actions.removeAlert(alert.id);
+                                                }
+                                            }}
                                             style={{
-                                                marginBottom: "10px",
-                                                padding: "10px",
-                                                border: "1px solid #39ff14",
+                                                backgroundColor: "red",
+                                                color: "white",
+                                                border: "none",
                                                 borderRadius: "5px",
-                                                backgroundColor: "#000",
-                                                color: "#39ff14",
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                                alignItems: "center",
+                                                padding: "5px 10px",
+                                                cursor: "pointer",
                                             }}
                                         >
-                                            <span>
-                                                {alert.coin_name} - Target: ${alert.target_price.toFixed(2)} {alert.above_below}
-                                            </span>
-                                            <button
-                                                onClick={() => {
-                                                    const confirmRemoval = window.confirm("Are you sure you want to remove this alert?");
-                                                    if (confirmRemoval) {
-                                                        actions.removeAlert(alert.id);
-                                                    }
-                                                }}
-                                                style={{
-                                                    backgroundColor: "red",
-                                                    color: "white",
-                                                    border: "none",
-                                                    borderRadius: "5px",
-                                                    padding: "5px 10px",
-                                                    cursor: "pointer",
-                                                }}
-                                            >
-                                                Remove
-                                            </button>
-                                        </li>
-                                    )
-                                })}
-                            </ul>
-                        ) : (
-                            <p style={{ color: "#39ff14" }}>No alerts set.</p>
-                        )}
-                    </div>
+                                            Remove
+                                        </button>
+                                    </li>
+                                )
+                            })}
+                        </ul>
+                    ) : (
+                        <p style={{ color: "#39ff14" }}>No alerts set.</p>
+                    )}
+                </div>
 
-                
+
 
                 {/* News Feed Section */}
                 <div className="news">
@@ -289,6 +299,6 @@ export const MoreInfo = () => {
                     )}
                 </div>
             </div>
-            </div>
+        </div>
     );
 };

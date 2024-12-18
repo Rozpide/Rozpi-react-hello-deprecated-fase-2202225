@@ -502,6 +502,8 @@ h1 {
   background-color: black;
   color: #39ff14;
   width: 11vw !important;
+  min-width: 11vw;
+  max-width: 11vw;
   height: 100%;
 }
 .nav-link {
@@ -628,9 +630,34 @@ h1 {
 }
 
 /* more info screen */
+
 .moreInfo {
   background-color: black;
   display: flex;
+}
+
+#moreInfTrdBtnBox {
+  justify-content: center;
+  display: flex;
+  margin: auto;
+  height: 23vh;
+}
+
+#moreInfTrdBtn {
+  height: 7vh;
+  width: 13vw;
+  margin:auto;
+  background-color: #39ff14;
+  border-color: black;
+  border-width: 1px;
+  color: black;
+  font-size: x-large;
+}
+
+#moreInfTrdBtn:hover {
+  box-shadow: 0px 0px 8px 5px #39ff14;
+  background-color: black;
+  color: #39ff14;
 }
 
 .mainInfo {
@@ -643,18 +670,31 @@ h1 {
   display: flex;
 }
 
+#morInfMktDta {
+  height: 75vh;
+}
+
 #marketData {
   color: white;
+  /* box-shadow: 25px 25px 30px 0px #1a8008; */
+  border: 1px solid #39ff14;
+  width: 30vw;
+  height: 52vh;
+  padding-left: 5vw;
+  padding-top: 3vw;
+  padding-bottom: 3vw;
 }
 
 .timeFrame {
   display: flex;
-  background-color: #0056b3;
+  /* background-color: #0056b3; */
+  border: 1px solid #39ff14;
 }
 
 .currency {
   display: flex;
   justify-content: end;
+  border: 1px solid #39ff14;
 }
 
 .backToList {
@@ -674,10 +714,12 @@ h1 {
 
 .graphButtonsBox {
   height: 40px;
-  background-color: #90978f;
+  background-color: black;
   display: flex;
   justify-content: space-between;
   color: black;
+  border: 1px solid #39ff14;
+  border-bottom: none;
 }
 
 .graphButtons {
@@ -705,7 +747,9 @@ h1 {
 
 .bigGraph {
   height: 70vh;
-  background-color: #90978f;
+  background-color: black;
+  border: 1px solid #39ff14;
+  border-top: none;
 }
 
 .news {
@@ -767,7 +811,7 @@ h1 {
 .holdingsGraph {
   width: 70vw;
   height: 80vh;
-  background-color: #90978f;
+  background-color: black;
   margin: auto;
   border: 1px solid #39ff14;
 }

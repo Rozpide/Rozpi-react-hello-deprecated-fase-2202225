@@ -8,7 +8,7 @@ import gear_colored from "../../img/gear_colored.png";
 export const Navbar = () => {
     const { store, actions } = useContext(Context);
     const username = store.username;
-    const token = store.userToken;
+    const token = store.token;
     const [showModal, setShowModal] = useState(false); // Control modal visibility
     const [searchQuery, setSearchQuery] = useState(""); // State for search query
     const [showSuggestions, setShowSuggestions] = useState(false); // State to control dropdown visibility

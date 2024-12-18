@@ -18,11 +18,8 @@ import { MoreInfo } from "./pages/moreInfo";
 import { TradeModal } from "./component/tradeModal";
 import { Wallet } from "./component/Wallet";
 import { SearchResults } from "./component/searchresults";
-<<<<<<< HEAD
 import { OverallHoldings } from "./component/overallHoldings";
-=======
 import { Profile } from "./component/profile";
->>>>>>> bade84c0960f1528374ce03c724f893c710865b6
 
 
 
