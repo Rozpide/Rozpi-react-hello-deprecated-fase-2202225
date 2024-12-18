@@ -48,11 +48,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             tradeCoin: [],
             username: null, // Initially no user is logged in
             userID: null,
-            userProfile: {},
-            wallet: [],
-            walletIds: [],
-            walletPriceData: [],
-            walletNormalData: [],
+            userProfile: {}
         },
         actions: {
             setFundsInCurrency: (money) => {
