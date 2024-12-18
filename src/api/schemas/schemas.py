@@ -42,9 +42,9 @@ class StudentSchema(SQLAlchemyAutoSchema):
     id = auto_field(dump_only=True)
     nombre = auto_field()
     apellido = auto_field()
-    fecha_nacimiento = auto_field()
+    fecha_nacimiento = fields.Date(input_formats=['%Y-%m-%d'], format='%Y-%m-%d')
     representante_id = auto_field(load_only=True)
-    fecha_ingreso = auto_field(dump_only=True)
+    fecha_ingreso = fields.Date(input_formats=['%Y-%m-%d'], format='%Y-%m-%d')
     is_active= auto_field(missing=True)
     grado_id = auto_field(required=True)
     
