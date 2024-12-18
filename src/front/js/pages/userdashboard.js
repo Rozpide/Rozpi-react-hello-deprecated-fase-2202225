@@ -51,10 +51,10 @@ export const Userdashboard = () => {
                     <li className="nav-item">
                         <Link
                             className={`toggleButton nav-link ${store.showFavorites ? "active" : ""}`}
-                            to="/userdashboard#favorites"
+                            to="/userdashboard#watchlist"
                             onClick={() => actions.setShowFavorites()}
                         >
-                            Favorites
+                            Watchlist
                         </Link>
                     </li>
                 </ul>

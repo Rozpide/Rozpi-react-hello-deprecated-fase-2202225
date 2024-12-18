@@ -10,8 +10,8 @@ export const Wallet = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [walletIds, setWalletIds] = useState(store.walletIds)
   const [addFundsModal, setAddFundsModal] = useState(false)
-  const [sortCriteria, setSortCriteria] = useState("name"); 
-  const [sortOrder, setSortOrder] = useState("asc"); 
+  const [sortCriteria, setSortCriteria] = useState("name");
+  const [sortOrder, setSortOrder] = useState("asc");
 
 
 
@@ -82,7 +82,7 @@ export const Wallet = () => {
       const bPrice = b.market_data.current_price[store.currency] || 0;
       return sortOrder === "asc" ? aPrice - bPrice : bPrice - aPrice;
     }
-    
+
 
     if (sortCriteria === "purchasedPrice") {
       const aTotal = store.walletIds.find((elm) => elm.coin_id === a.id)?.quantity_owned * store.walletIds.find((elm) => elm.coin_id === a.id)?.purchase_price || 0;
@@ -91,14 +91,14 @@ export const Wallet = () => {
     }
 
     if (sortCriteria === "quantityOwned") {
-      const aTotal = store.walletIds.find((elm) => elm.coin_id === a.id)?.quantity_owned  || 0;
-      const bTotal = store.walletIds.find((elm) => elm.coin_id === b.id)?.quantity_owned  || 0;
+      const aTotal = store.walletIds.find((elm) => elm.coin_id === a.id)?.quantity_owned || 0;
+      const bTotal = store.walletIds.find((elm) => elm.coin_id === b.id)?.quantity_owned || 0;
       return sortOrder === "asc" ? aTotal - bTotal : bTotal - aTotal;
     }
     return 0;
   });
-  
-  
+
+
 
   const handleSort = (criteria) => {
     if (sortCriteria === criteria) {
@@ -108,23 +108,27 @@ export const Wallet = () => {
       setSortOrder("asc");
     }
   };
-  
 
 
-  
+
+
   // if (!Array.isArray(store.walletNormalData) || store.walletNormalData.length === 0) {
   //   return <p>Loading wallet data...</p>;
   // }
 
-  const fundsCurrency =(pref)=> {
+  const fundsCurrency = (pref) => {
     if (pref == "cad") {
-      actions.setFundsInCurrency(Number(store.funds * 1.42))}
+      actions.setFundsInCurrency(Number(store.funds * 1.42))
+    }
     else if (pref == "eur") {
-      actions.setFundsInCurrency(Number(store.funds / 1.05))}
+      actions.setFundsInCurrency(Number(store.funds / 1.05))
+    }
     else if (pref == "gbp") {
-      actions.setFundsInCurrency(Number(store.funds / 1.21))}
+      actions.setFundsInCurrency(Number(store.funds / 1.21))
+    }
     else if (pref == "jpy") {
-      actions.setFundsInCurrency(Number(store.funds * 153.73))}
+      actions.setFundsInCurrency(Number(store.funds * 153.73))
+    }
     else if (pref == "usd") {
       actions.setFundsInCurrency(store.funds)
     }
@@ -220,7 +224,7 @@ export const Wallet = () => {
       {addFundsModal ? (
         <div className="modal show d-block" tabIndex="-1" style={{ background: "rgba(0, 0, 0, 0.5)" }}>
           <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div className="modal-content">
+            <div id="fundsModal" className="modal-content">
               <div className="modal-header col-12">
                 <legend className="bg-secondary-subtle ps-3">
                   <strong>Enter Payment Method to Add Funds</strong>
@@ -406,16 +410,18 @@ export const Wallet = () => {
                 <div className="col-3"></div>
               </form>
               <div className="modal-footer bg-secondary-subtle p-3 mx-right d-flex justify-content-end">
-                <button type="reset" onClick={() => { openFundsModal() }} className="btn btn-secondary mx-2">Cancel</button>
+                <button type="reset" onClick={() => { openFundsModal() }} className="btn logoutButton mx-2">Cancel</button>
                 <button id="submit" type="submit" for="fund-form" onClick={
-                  (e)=> {e.preventDefault();
-                  const errorList = document.querySelector("#errorList");
-                  errorList.innerHTML = "";
-                  validator();
-                  if (errorList.childElementCount === 0) {
-                    addFunds();
-                    openFundsModal();
-                  }}} className="btn btn-primary">Submit</button>
+                  (e) => {
+                    e.preventDefault();
+                    const errorList = document.querySelector("#errorList");
+                    errorList.innerHTML = "";
+                    validator();
+                    if (errorList.childElementCount === 0) {
+                      addFunds();
+                      openFundsModal();
+                    }
+                  }} className="btn trdBtn">Submit</button>
               </div>
             </div>
           </div>
@@ -440,25 +446,25 @@ export const Wallet = () => {
       </div>
       <table className="wallet-table" style={{ width: "88vw" }}>
         <thead>
-        <tr>
-          <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
-            Name {sortCriteria === "name" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
-          </th>
-          <th onClick={()=> handleSort("currentPrice")} style={{ cursor: "pointer" }}>
-            Current Price {sortCriteria === "currentPrice" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+          <tr>
+            <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+              Name {sortCriteria === "name" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
             </th>
-          <th onClick={()=> handleSort("quantityOwned")} style={{ cursor: "pointer" }}>
-            Quantity Owned {sortCriteria === "quantityOwned" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+            <th onClick={() => handleSort("currentPrice")} style={{ cursor: "pointer" }}>
+              Current Price {sortCriteria === "currentPrice" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
             </th>
-          <th onClick={() => handleSort("purchasedPrice")} style={{ cursor: "pointer" }}>
-            Purchased Price {sortCriteria === "purchasedPrice" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
-          </th>
-          <th>Current Holdings</th>
-          <th>Return Value</th>
-          <th>Graph (7d)</th>
-          <th>Quick Actions</th>
-          <th>Market Details</th>
-        </tr>
+            <th onClick={() => handleSort("quantityOwned")} style={{ cursor: "pointer" }}>
+              Quantity Owned {sortCriteria === "quantityOwned" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+            </th>
+            <th onClick={() => handleSort("purchasedPrice")} style={{ cursor: "pointer" }}>
+              Purchased Price {sortCriteria === "purchasedPrice" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+            </th>
+            <th>Current Holdings</th>
+            <th>Return Value</th>
+            <th>Graph (7d)</th>
+            <th>Quick Actions</th>
+            <th>Market Details</th>
+          </tr>
         </thead>
         <tbody>
           {sortedWalletData.map((walletArray, index) => {
@@ -467,7 +473,7 @@ export const Wallet = () => {
               <tr key={walletArray.id}>
                 <td>
                   <div className="wallet-info">
-                    <img src={walletArray.image.small} alt={walletArray.name} className="wallet-image"/>
+                    <img src={walletArray.image.small} alt={walletArray.name} className="wallet-image" />
                     <div className="wallet-name">{walletArray.name}</div>
                     <div className="wallet-symbol" style={{ color: "#39ff14" }}>
                       {walletArray.symbol.toUpperCase()}
@@ -490,7 +496,7 @@ export const Wallet = () => {
                 </td>
                 <td>
                   {(
-                    (((walletId.quantity_owned * walletArray.market_data.current_price[store.currency]) / (walletId.purchase_price))-1) * 100 || 0
+                    (((walletId.quantity_owned * walletArray.market_data.current_price[store.currency]) / (walletId.purchase_price)) - 1) * 100 || 0
                   ).toLocaleString()}%
                 </td>
                 <td>
@@ -514,8 +520,8 @@ export const Wallet = () => {
         </tbody>
       </table>
 
-      
-    
+
+
     </div>
   );
 };

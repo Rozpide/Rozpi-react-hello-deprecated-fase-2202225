@@ -805,6 +805,10 @@ h1 {
 
 /* Login/singup modal */
 
+#logModal {
+  background-color: #90978f;
+}
+
 /* Contact us modal */
 
 /* about us page CSS */
@@ -1055,6 +1059,17 @@ trade-button.btn-success {
 
 
 /* WALLET */
+
+#fundsModal {
+  background: #90978f;
+  color: black;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+  border: 2px solid #39ff14;
+}
+
 /* Wallet Page Container */
 .wallet-page {
   background-color: black; /* Matches dark theme */

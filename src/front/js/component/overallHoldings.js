@@ -22,7 +22,7 @@ export const OverallHoldings = () => {
     return (
         <div id="overallHoldings">
             <h2 className="holdingsTitle">Overall Portfolio Performance</h2>
-            <h3 className="holdingspct">Overall Return {totalReturn}%</h3>
+            <h3 className="holdingspct">Overall Return +{totalReturn}%</h3>
             <div className="holdingsGraph">
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartdata} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
