@@ -17,48 +17,59 @@ export const Navbar = () => {
     const handleInputChange = (e) => {
         const query = e.target.value;
         setSearchQuery(query);
-
-        if (query.trim()) {
+    
+        // Prevent search suggestions when not logged in
+        if (!token) {
+            setShowSuggestions(false); // Hide suggestions if not logged in
+        } else if (query.trim()) {
             actions.searchCoins(query); // Trigger search action with the query
             setShowSuggestions(true); // Show suggestions when query is not empty
         } else {
             setShowSuggestions(false); // Hide suggestions when query is empty
         }
     };
-
+    
     const handleSearch = (e) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
+        
+        if (!token) { // Prevent search if not logged in
+            alert("You are not logged in. Please register or sign in.");
+            setShowSuggestions(false); // Hide suggestions if not logged in
+        } else if (searchQuery.trim()) { // Only perform search if logged in and query is not empty
             actions.searchCoins(searchQuery); // Trigger search action with the query
             navigate("/searchresults"); // Navigate to the search results page
             setShowSuggestions(false); // Hide suggestions on search
         }
     };
+    
+    const handleSuggestionClick = (coin) => {
+        if (!token) { // Prevent navigation to coin details if not logged in
+            alert("You are not logged in. Please register or sign in.");
+            return; // Stop the action if not logged in
+        }
+        setSearchQuery(coin.name); // Update the input with the selected suggestion
+        setShowSuggestions(false); // Hide suggestions after selecting
+        navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
+    };
+    
     const handleUnauthorizedAction = (e) => {
         if (!token) {
             e.preventDefault(); // Prevent navigation
             alert("You are not logged in. Please register or sign in.");
         }
     };
-
+    
     const handleLoginSuccess = (username, password) => {
         actions.login(username, password); // Update global store with logged-in user
         setShowModal(false); // Close the modal
     };
-
+    
     const handleBlur = () => {
         setTimeout(() => {
             setShowSuggestions(false); // Delay to allow clicks on suggestions before hiding
         }, 150);
     };
-
-    const handleSuggestionClick = (coin) => {
-        setSearchQuery(coin.name); // Update the input with the selected suggestion
-        setShowSuggestions(false); // Hide suggestions after selecting
-        console.log(coin.id);
-        navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
-    };
-
+    
     const handleLogout = () => {
         const isConfirmed = window.confirm(`Are you sure you want to log out, ${username}?`);
         if (isConfirmed) {
@@ -66,15 +77,7 @@ export const Navbar = () => {
             navigate('/'); // Navigate to home page after logout
         }
     };
-
-    // Combine both logic (show alert or navigate) in one function
-    const handleListOfCoinsClick = (e) => {
-        if (!token) {
-            e.preventDefault(); // Prevent navigation
-            alert("You are not logged in. Please register or sign in.");
-        }
-    };
-
+    
     return (
         <>
             <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "black" }}>
@@ -88,7 +91,7 @@ export const Navbar = () => {
                                 <Link 
                                     className="listButton btn" 
                                     to="/listingpage"
-                                    onClick={handleListOfCoinsClick} // Combined handler for both alert and navigation
+                                    
                                 >
                                     List of Coins
                                 </Link>
@@ -105,9 +108,9 @@ export const Navbar = () => {
                                 placeholder="Crypto: Name/Symbol"
                                 aria-label="Search"
                                 value={searchQuery}
-                                onChange={handleInputChange} // Update search query
-                                onBlur={handleBlur} // Hide suggestions when input loses focus
-                                onFocus={() => searchQuery && setShowSuggestions(true)} // Show suggestions on focus if query exists
+                                onChange={handleInputChange}
+                                onBlur={handleBlur}
+                                onFocus={() => searchQuery && setShowSuggestions(true)}
                             />
                             <button className="searchButton btn" type="submit">Search</button>
 
