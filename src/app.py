@@ -198,22 +198,29 @@ def buy_coin(coin_id):
     db.session.commit() 
     return jsonify(get_wallets(user_id))
 
-@app.route('/wallet/<coin_id>', methods=['PATCH, DELETE'])
-def sell_coin(coin_id):
+@app.route('/wallet/<coin_id>', methods=['PATCH'])
+def sell_some_coin(coin_id):
     user_id = request.json['user_id']
     name = request.json['name']
-    purchase_quantity = request.json['purchase_quantity']
-    sell_crypto = Wallet(name=name, user_id=user_id, coin_id=coin_id, quantity_owned=purchase_quantity)
-    db.session.add(sell_crypto)
+    remaining_quantity = request.json['remaining_quantity']
+    sold_crypto = Wallet.query.filter_by(coin_id = coin_id).first()
+    sold_crypto.quantity_owned = remaining_quantity
     db.session.commit() 
     return jsonify(get_wallets(user_id))
 
-@app.route('/wallet/<int:user_id>/<int:wallet_id>', methods=['DELETE'])
-def delete_wallet(wallet_id, user_id):
-    wallet_crypto = Wallet.query.get(wallet_id)
-    db.session.delete(wallet_crypto)
-    db.session.commit()
+@app.route('/wallet/<int:user_id>/<coin_id>', methods=['DELETE'])
+def sell_coin(coin_id, user_id):
+    sold_crypto = Wallet.query.filter_by(coin_id = coin_id).first()
+    db.session.delete(sold_crypto)
+    db.session.commit() 
     return jsonify(get_wallets(user_id))
+
+# @app.route('/wallet/<int:user_id>/<int:wallet_id>', methods=['DELETE'])
+# def delete_wallet(wallet_id, user_id):
+#     wallet_crypto = Wallet.query.get(wallet_id)
+#     db.session.delete(wallet_crypto)
+#     db.session.commit()
+#     return jsonify(get_wallets(user_id))
 
 def get_wallets(id):
     wallet = Wallet.query.filter_by(user_id=id)

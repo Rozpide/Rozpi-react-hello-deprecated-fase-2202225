@@ -10,6 +10,9 @@ export const Wallet = () => {
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [walletIds, setWalletIds] = useState(store.walletIds)
   const [addFundsModal, setAddFundsModal] = useState(false)
+  const [sortCriteria, setSortCriteria] = useState("name"); 
+  const [sortOrder, setSortOrder] = useState("asc"); 
+
 
 
   // useEffect(() => {
@@ -63,8 +66,52 @@ export const Wallet = () => {
   const uniqueWalletData = store.walletNormalData.filter(
     (wallet, index, self) =>
       index === self.findIndex((w) => w.id === wallet.id)
+
   );
 
+
+  const sortedWalletData = [...uniqueWalletData].sort((a, b) => {
+    if (sortCriteria === "name") {
+      return sortOrder === "asc"
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name);
+    }
+
+    if (sortCriteria === "currentPrice") {
+      const aPrice = a.market_data.current_price[store.currency] || 0;
+      const bPrice = b.market_data.current_price[store.currency] || 0;
+      return sortOrder === "asc" ? aPrice - bPrice : bPrice - aPrice;
+    }
+    
+
+    if (sortCriteria === "purchasedPrice") {
+      const aTotal = store.walletIds.find((elm) => elm.coin_id === a.id)?.quantity_owned * store.walletIds.find((elm) => elm.coin_id === a.id)?.purchase_price || 0;
+      const bTotal = store.walletIds.find((elm) => elm.coin_id === b.id)?.quantity_owned * store.walletIds.find((elm) => elm.coin_id === b.id)?.purchase_price || 0;
+      return sortOrder === "asc" ? aTotal - bTotal : bTotal - aTotal;
+    }
+
+    if (sortCriteria === "quantityOwned") {
+      const aTotal = store.walletIds.find((elm) => elm.coin_id === a.id)?.quantity_owned  || 0;
+      const bTotal = store.walletIds.find((elm) => elm.coin_id === b.id)?.quantity_owned  || 0;
+      return sortOrder === "asc" ? aTotal - bTotal : bTotal - aTotal;
+    }
+    return 0;
+  });
+  
+  
+
+  const handleSort = (criteria) => {
+    if (sortCriteria === criteria) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortCriteria(criteria);
+      setSortOrder("asc");
+    }
+  };
+  
+
+
+  
   // if (!Array.isArray(store.walletNormalData) || store.walletNormalData.length === 0) {
   //   return <p>Loading wallet data...</p>;
   // }
@@ -393,51 +440,77 @@ export const Wallet = () => {
       </div>
       <table className="wallet-table" style={{ width: "88vw" }}>
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Current Price</th>
-            <th>Quantity Owned</th>
-            <th>Total Spent</th>
-            <th>Graph (7d)</th>
-            <th>Quick Actions</th>
-            <th>Market Details</th>
-          </tr>
+        <tr>
+          <th onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+            Name {sortCriteria === "name" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+          </th>
+          <th onClick={()=> handleSort("currentPrice")} style={{ cursor: "pointer" }}>
+            Current Price {sortCriteria === "currentPrice" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+            </th>
+          <th onClick={()=> handleSort("quantityOwned")} style={{ cursor: "pointer" }}>
+            Quantity Owned {sortCriteria === "quantityOwned" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+            </th>
+          <th onClick={() => handleSort("purchasedPrice")} style={{ cursor: "pointer" }}>
+            Purchased Price {sortCriteria === "purchasedPrice" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
+          </th>
+          <th>Current Holdings</th>
+          <th>Return Value</th>
+          <th>Graph (7d)</th>
+          <th>Quick Actions</th>
+          <th>Market Details</th>
+        </tr>
         </thead>
         <tbody>
-          {uniqueWalletData.map((walletArray, index) => (
-            <tr key={walletArray.id}>
-              <td>
-                <div className="wallet-info">
-                  <img src={walletArray.image.small} alt={walletArray.name} className="wallet-image"/>
-                  <div className="wallet-name">{walletArray.name}</div>
-                  <div className="wallet-symbol" style ={{color: "#39ff14"}}>{walletArray.symbol.toUpperCase()}</div>
-                </div>
-              </td>
-              <td>${walletArray.market_data.current_price[store.currency]?.toLocaleString() || ""}</td>
-              <td>{walletArray.quantity_owned || 0}</td>
-              <td>
-                ${(
-                  walletArray.quantity_owned * walletArray.purchase_price ||
-                  0
-                ).toLocaleString()}
-              </td>
-              <td>
-                <SparklineChart
-                  data={walletArray.market_data.sparkline_7d?.price || []}
-                  width={150}
-                  height={50}
-                />
-              </td>
-              <td>
-              <button type="submit" id="submitBtn" onClick={() => actions.setShowTradeModal(walletArray)} style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
-              </td>
-              <td>
-                <Link to={`/moreInfo/${walletArray.id}`} className="btn btn-secondary">
-                  More Information
-                </Link>
-              </td>
-            </tr>
-          ))}
+          {sortedWalletData.map((walletArray, index) => {
+            const walletId = store.walletIds.find((elm) => elm.coin_id === walletArray.id);
+            return (
+              <tr key={walletArray.id}>
+                <td>
+                  <div className="wallet-info">
+                    <img src={walletArray.image.small} alt={walletArray.name} className="wallet-image"/>
+                    <div className="wallet-name">{walletArray.name}</div>
+                    <div className="wallet-symbol" style={{ color: "#39ff14" }}>
+                      {walletArray.symbol.toUpperCase()}
+                    </div>
+                  </div>
+                </td>
+                <td>${walletArray.market_data.current_price[store.currency]?.toLocaleString() || ""}</td>
+                <td>{walletId.quantity_owned}</td>
+                <td>
+                  ${(
+                    walletId.quantity_owned * walletId.purchase_price ||
+                    0
+                  ).toLocaleString()}
+                </td>
+                <td>
+                  ${(
+                    walletId.quantity_owned * walletArray.market_data.current_price[store.currency] ||
+                    0
+                  ).toLocaleString()}
+                </td>
+                <td>
+                  {(
+                    (((walletId.quantity_owned * walletArray.market_data.current_price[store.currency]) / (walletId.purchase_price))-1) * 100 || 0
+                  ).toLocaleString()}%
+                </td>
+                <td>
+                  <SparklineChart
+                    data={walletArray.market_data.sparkline_7d?.price || []}
+                    width={150}
+                    height={50}
+                  />
+                </td>
+                <td>
+                  <button type="submit" id="submitBtn" onClick={() => actions.setShowTradeModal(walletArray)} style={{ backgroundColor: "#39ff14", borderRadius: "5px", height: "38px", width: "90px", border: "1px solid black" }}>Trade</button>
+                </td>
+                <td>
+                  <Link to={`/moreInfo/${walletArray.id}`} className="btn btn-secondary">
+                    More Information
+                  </Link>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 

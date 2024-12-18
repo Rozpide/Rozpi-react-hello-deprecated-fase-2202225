@@ -130,15 +130,7 @@ export const Listing = () => {
                                 >
                                     Trade
                                 </button>
-                                <button
-                                    className="btn btn-primary"
-                                    onClick={(e) => {
-                                        e.stopPropagation(); // Prevent the event from propagating to the row
-                                        handleAddToWallet(coin);
-                                    }}
-                                >
-                                    Add to Wallet
-                                </button>
+                                
                                 <button
                                     className={`star-button ${
                                         store.favoriteIds.some((favCoin) => favCoin.id === coin.id)
