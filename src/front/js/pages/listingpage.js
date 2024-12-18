@@ -14,7 +14,7 @@ export const Listing = () => {
 
     // Function to show an alert if user is not logged in
     const showAlertIfNotLoggedIn = (action) => {
-        if (!store.userToken) {
+        if (!store.token) {
             alert("You are not logged in! Please register or sign in.");
             return;
         }

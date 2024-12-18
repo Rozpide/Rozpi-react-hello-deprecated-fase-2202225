@@ -14,7 +14,7 @@ export const Landing = () => {
     const navigate = useNavigate();
 
     const handleUnauthorizedAction = (actionName) => {
-        if (!store.userToken) {
+        if (!store.token) {
             alert(`You need to be logged in to ${actionName}.`);
             return true;
         }
