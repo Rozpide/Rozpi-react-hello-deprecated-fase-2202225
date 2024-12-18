@@ -32,7 +32,7 @@ export const Favorites = () => {
             {!hasFavorites ? (
                 <div className="col-12 d-flex flex-column justify-content-center align-items-center" style={{ height: "60vh" }}>
                     <h3 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}>
-                        You don't have any favorites yet! Start adding your favorite coins.
+                        You don't have any coin on your watchlist yet! Start adding your favorite coins.
                     </h3>
                 </div>
             ) : (

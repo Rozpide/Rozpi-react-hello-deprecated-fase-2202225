@@ -2,16 +2,20 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Context } from "../store/appContext";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
     const [isLogin, setIsLogin] = useState(isLoginDefault); // Control Login/Sign-Up toggle
     const [error, setError] = useState(null); // Track errors
     const { store, actions, setStore } = useContext(Context);
+    let navigate = useNavigate()
 
     const handleLogin = async (e) => {
         e.preventDefault();
         const { username, password } = e.target.elements;
-        actions.login(username.value, password.value)
+        actions.login(username.value, password.value);
+        navigate('/userdashboard#overallHoldings');
+        actions.setShowOverallHoldings()
         onClose()
     };
 
@@ -61,7 +65,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
     return (
         <div className="modal show d-block" tabIndex="-1" style={{ background: "rgba(0, 0, 0, 0.5)" }}>
             <div className="modal-dialog">
-                <div className="modal-content" style={{ background: "silver" }}>
+                <div id="logModal" className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" style={{ color: "#39ff14" }}>{isLogin ? "Login" : "Sign Up"}</h5>
                         <button
@@ -73,8 +77,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                     <div className="modal-body">
                         <div className="d-flex justify-content-center mb-3">
                             <button
-                                id="button-for-login"
-                                className={`btn ${isLogin ? "btn-primary inactive" : "btn-outline-primary "} me-2`}
+                                className={`btn ${isLogin ? "trdBtnSlctd" : "trdBtn"} me-2`}
                                 onClick={() => {
                                     setError(null);
                                     setIsLogin(true);
@@ -85,8 +88,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                                 Login
                             </button>
                             <button
-                                id="button-for-signup"
-                                className={`btn ${!isLogin ? "btn-primary inactive" : "btn-outline-primary  "}`}
+                                className={`btn ${!isLogin ? "trdBtnSlctd" : "trdBtn"}`}
                                 onClick={() => {
                                     setError(null);
                                     setIsLogin(false);
@@ -106,7 +108,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                                     <label htmlFor="password" className="form-label">Password</label>
                                     <input type="password" className="form-control" id="password" name="password" required />
                                 </div>
-                                <button type="submit" className="btn btn-primary" style={{ background: "#39ff14", color: "black", border: "none" }}>Login</button>
+                                <button type="submit" className="btn trdBtn">Login</button>
                             </form>
                         ) : (
                             <form onSubmit={handleSignUp} id="signup">
@@ -130,7 +132,7 @@ export const Login = ({ isLoginDefault, onClose, onLoginSuccess }) => {
                                     <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
                                     <input type="password" className="form-control" id="confirmPassword" name="confirmPassword" required />
                                 </div>
-                                <button type="submit" className="btn btn-primary" style={{ background: "#39ff14", color: "black", border: "none" }}>Sign Up</button>
+                                <button type="submit" className="btn trdBtn">Sign Up</button>
                             </form>
                         )}
                     </div>
