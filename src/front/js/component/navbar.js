@@ -8,7 +8,7 @@ import gear_colored from "../../img/gear_colored.png";
 export const Navbar = () => {
     const { store, actions } = useContext(Context);
     const username = store.username;
-    const token = store.token;
+    const token = store.userToken;
     const [showModal, setShowModal] = useState(false); // Control modal visibility
     const [searchQuery, setSearchQuery] = useState(""); // State for search query
     const [showSuggestions, setShowSuggestions] = useState(false); // State to control dropdown visibility
@@ -181,7 +181,7 @@ export const Navbar = () => {
                             <li>
                                 <Link
                                     className="dropdown-item"
-                                    to="/userdashboard#favorites"
+                                    to="/userdashboard#watchlist"
                                     onClick={!token ? handleUnauthorizedAction : actions.setShowFavorites} // Check if logged in
                                 >
                                     Watchlist
