@@ -10,6 +10,12 @@ class User(db.Model):
     username = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     funds = db.Column(db.Numeric(10,3), default=0)
+    first_name = db.Column(db.String(50), nullable=True)
+    last_name = db.Column(db.String(50), nullable=True)  
+    address = db.Column(db.String(200), nullable=True)
+    city = db.Column(db.String(100), nullable=True)
+    state = db.Column(db.String(50), nullable=True)
+    zip = db.Column(db.String(10), nullable=True)
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -20,6 +26,12 @@ class User(db.Model):
             "email": self.email,
             "username": self.username,
             "funds": self.funds,
+            "first_name":self.first_name,
+            "last_name":self.last_name,
+            "address":self.address,
+            "city":self.city,
+            "state":self.state,
+            "zip":self.zip,
         }
 
     def set_password(self, password):
@@ -98,3 +110,6 @@ class Alert(db.Model):
             "target_price": self.target_price,
             "above_below": self.above_below
         }
+    
+
+    

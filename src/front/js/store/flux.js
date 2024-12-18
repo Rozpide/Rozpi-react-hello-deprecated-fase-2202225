@@ -3,6 +3,7 @@ import { symbol } from "prop-types";
 const getState = ({ getStore, getActions, setStore }) => {
     return {
         store: {
+            alerts: [], // Array to store alerts { id: coinId, name: coinName, targetPrice: number }
             message: null,
             demo: [
                 {
@@ -16,37 +17,36 @@ const getState = ({ getStore, getActions, setStore }) => {
                     initial: "white"
                 }
             ],
-            searchSuggestions: [], // Initialize as an empty array
-            username: null, // Initially no user is logged in
-            userID: null,
-            token: null,
+            coins: [],
+            currentCoinId: null,
+            currency: "usd",
+            currentCoinPriceData: [],
+            currentCoinData: [],
             favorites: [],
             favoriteIds: [],
             favoriteData: [],
             favoritePriceData: [],
-            wallet: [],
-            walletIds: [],
-            walletPriceData: [],
-            walletNormalData: [],
             funds: 0,
             fundsInCurrency: 0,
             fundsCurrency: "usd",
-            coins: [],
             loadingCoins: true,
-            currentCoinId: null,
-            currency: "usd",
-            timeFrame: "7",
-            currentCoinPriceData: [],
-            currentCoinData: [],
+            searchSuggestions: [], // Initialize as an empty array
             showContactModal: false,
             showTradeModal: false,
-            tradeCoin: [],
             showModal: false,
             showOverallHoldings: false,
             showWallet: false,
             showFavorites: false,
-            alerts: [], // Array to store alerts { id: coinId, name: coinName, targetPrice: number }
-
+            token: null,
+            timeFrame: "7",
+            tradeCoin: [],
+            username: null, // Initially no user is logged in
+            userID: null,
+            userProfile: {},
+            wallet: [],
+            walletIds: [],
+            walletPriceData: [],
+            walletNormalData: [],
         },
         actions: {
             setFundsInCurrency: (money) => {
@@ -144,7 +144,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
             setToken: () => {
-                setStore({ userToken: localStorage.token })
+                setStore({ token: localStorage.token })
             },
 
 
@@ -323,9 +323,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         localStorage.setItem('token', response.access_token);
                         localStorage.setItem('username', response.username);
                         localStorage.setItem('userID', response.userID);
+                        localStorage.setItem('userProfile', JSON.stringify(response.user));
+
                         // localStorage.setItem('userToken', response.access_token);
 
-                        setStore({ userToken: response.access_token, userEmail: response.user.email, userID: response.userID, username: response.username, funds: Number(response.user.funds) });
+                        setStore({ token: response.access_token, userProfile: response.user, userEmail: response.user.email, userID: response.userID, username: response.username, funds: Number(response.user.funds) });
                         getActions().getFavoriteIds(response.userID)
                         getActions().getWalletIds(response.userID)
                     })
@@ -348,7 +350,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             // Logout action to clear token and user data
             logout: () => {
                 localStorage.removeItem("token"); // Clear the token
-                setStore({ username: null, userID: null, userToken: null, funds: 0 }); // Clear store data
+                localStorage.removeItem('username');
+                localStorage.removeItem('userID');
+                localStorage.removeItem('userProfile');
+                setStore({ username: "", userID: "", userToken: "", funds: 0, userProfile: {} }); // Clear store data
                 console.log("User logged out");
             },
             search: (query) => {
@@ -643,6 +648,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                 }
             },
+
+            updateProfile: async (profile) => {
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + "profile/" + getStore().userID, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${getStore().token}`,
+                        },
+                        body: JSON.stringify(profile),
+                    });
+
+                    if (!response.ok) throw new Error("Update failed.");
+
+                    const data = await response.json();
+                    console.log("Profile: ", data);
+
+                    setStore({ userProfile: data.profile })
+                    localStorage.setItem('userProfile', JSON.stringify(data.profile));
+
+                    setSuccess("Profile updated successfully!");
+                    setShowModal(false);
+                } catch (err) {
+                    setError(err.message);
+                }
+            },
+
             addFundsToWallet: (funds) => {
                 fetch(process.env.BACKEND_URL + `users/funds`, {
                     method: 'PATCH',
