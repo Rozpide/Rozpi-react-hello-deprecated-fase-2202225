@@ -9,6 +9,7 @@ import { DashboardAdmin } from "./pages/dashboardAdmin";
 import { DashboardTeacher } from "./pages/dashboardTeacher";
 import { UpdateStudent } from "./pages/updateStudent";
 import { UpdateTeacher } from "./pages/updateTeacher";
+import { UpdateTest } from "./pages/updateTest";
 import RegistrationForm from './component/RegistrationForm';
 import LoginForm from './component/LoginForm';
 import ParentDashboard from "./pages/ParentDashboard.jsx";
@@ -68,6 +69,14 @@ const Layout = () => {
                             element={
                                 <ProtectedRoute roles={["docente"]}>
                                     <DashboardTeacher />
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/update-test/:testId"
+                            element={
+                                <ProtectedRoute roles={["docente"]}>
+                                    <UpdateTest />
                                 </ProtectedRoute>
                             }
                         />
