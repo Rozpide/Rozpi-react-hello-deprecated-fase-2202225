@@ -49,10 +49,10 @@ export const Home = () => {
             <div className="text-content p-5">
               <h1>Bienvenidos a SchoolHub</h1>
               <p className="Parrafos">
-                Una plataforma de uso múltiple donde cada usuario podrá aprovecharla de diferente manera.
-                Como Directivo podrás distribuir carga horaria, validar usuarios y supervisar todo a detalle.
-                Como Docente, serás capaz de ver tus horarios, asignar notas al alumnado e interactuar con los "responsables" de los niños.
-                El Responsable del alumno podrá divisar las notas, anotarlo a actividades extracurriculares y más.
+                Una plataforma de usos múltiples donde cada usuario podrá aprovecharla de diferente manera.
+                Como <strong>Directivo</strong> podrás distribuir carga horaria, validar usuarios y supervisar todo a detalle.
+                Desde el rol de <strong>Docente</strong>, serás capaz de ver tus horarios, asignar notas al alumnado e interactuar con los responsables de los niños.
+                El <strong>Representante</strong> del alumno podrá divisar las notas, anotarlo a actividades extracurriculares y más.
               </p>
             </div>
             <div className="image-content">
@@ -66,7 +66,7 @@ export const Home = () => {
             <div className="text-content">
               <h2>Nuestro Profesorado</h2>
               <p className="Parrafos">
-                Conoce a los expertos que forman parte de nuestro equipo. Cada Docente es elegido con cautela y múltiple evaluaciones para demostrar que es apto para el cargo.
+                Conoce a los expertos que forman parte de nuestro equipo. Cada docente es elegido con cautela y múltiple evaluaciones para demostrar que es apto para el cargo.
               </p>
             </div>
             <CardDocente />
@@ -80,8 +80,8 @@ export const Home = () => {
               <h2>Características</h2>
               <p className="Parrafos">
                 Descubre todas las funcionalidades y beneficios de nuestra plataforma.
-                Facilidad de uso e interactividad es uno de los beneficios más importante de nuestra plataforma.
-                Por otro lado, se podrá llevar de manera exhaustiva el control por parte de cada rol, de lo que a éste se le permita.
+                La facilidad de uso e interactividad es uno de los más importante.
+                Por otro lado, se podrá llevar a cabo un seguimiento por parte de cada usuario.
                 Los feriados no se te pasarán, podrás saber qué días la Institución permanecerá cerrada a causa de fechas patrias, para poder proyectar con antelación cualquier inconveniente.
               </p>
             </div>
@@ -94,7 +94,7 @@ export const Home = () => {
         <section id="registro" className="section">
           <div className="container-Form">
             <h2>Regístrese!</h2>
-            <p className="Parrafos">No dudes en registrarte y obtener los beneficios de un Sistema ideado para su comodidad, tranquilidad y supervisión de desempeño Escolar.</p>
+            <p className="Parrafos">No dudes en registrarte y obtener los beneficios de un sistema ideado para tu comodidad, tranquilidad y supervisión de desempeño escolar.</p>
             <Link to="/register">
               <button className="button" id="btn-reg">Click aquí!</button>
             </Link>
