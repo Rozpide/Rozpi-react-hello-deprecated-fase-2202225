@@ -18,7 +18,6 @@ const NavBar = () => {
 
   const handleLogout = () => {
     actions.handleLogout();
-    navigate("/home");
   };
 
   const handleMessaging = () => {

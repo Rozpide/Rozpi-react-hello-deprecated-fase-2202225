@@ -97,6 +97,7 @@ def get_students_info(parent_id):
                 "id": child.id,
                 "nombre": f"{child.nombre} {child.apellido}",
                 "fecha_nacimiento": child.fecha_nacimiento,
+                "fecha_ingreso": child.fecha_ingreso,
                 "grado": child.grado.nombre,
                 "materias": [[materia.nombre, materia.id] for materia in child.grado.materias],
                 "calificaciones": [
@@ -107,6 +108,7 @@ def get_students_info(parent_id):
                         "descripcion": calificacion.evaluacion.descripcion,
                         "nota": calificacion.nota,
                         "fecha": calificacion.evaluacion.fecha,
+                        "finalizada": calificacion.evaluacion.finalizada,
                         "profesor": f"{calificacion.evaluacion.profesor.nombre} {calificacion.evaluacion.profesor.apellido}"
                     }
                     for calificacion in child.calificaciones

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Collapse from 'react-bootstrap/Collapse';
 import { Context } from "../../store/appContext";
 import { Link } from "react-router-dom";
-
+import { Spinner } from "react-bootstrap";
 const calculateAVGMateria = arr =>
   arr.map(materia => ({
     nombre: materia.nombre,
@@ -120,6 +120,11 @@ const ParentDashboardTable = ({ materias, studentId }) => {
                 (<Collapse in={openRows[index]}>
                   <div className="w-100 m-0 p-0">
                     <hr className="dropdown-divider text-light" />
+                    <StyledRow className="fw-bold">
+                      <Column>Evaluación</Column>
+                      <Column>Fecha</Column>
+                      <Column>Nota</Column>
+                    </StyledRow>
 
                     {getMateriaInfo(materia.materia)}
                     <hr className="dropdown-divider text-light" />
@@ -129,7 +134,11 @@ const ParentDashboardTable = ({ materias, studentId }) => {
           </div>
         ))
       ) : (
-        <h1 className="text-center">Cargando contenido</h1>
+        <div className="container-fluid d-flex flex-column justify-content-center align-items-center mt3">
+          <Spinner animation="grow" variant="light" className="mt-2" />
+          <h2 className="text-center text-light mt-0">Estamos cargando el contenido</h2>
+          <h6 className="text-center text-light">Por favor espere un momento...</h6>
+        </div>
       )}
     </StyledTable>
   );
