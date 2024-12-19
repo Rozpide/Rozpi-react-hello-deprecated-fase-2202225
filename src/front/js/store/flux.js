@@ -250,7 +250,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ token: null, role: null, userAvatar: null, personalInfo: null });
 					localStorage.removeItem("token");
 					localStorage.removeItem("role");
-					window.location.href = '/'
+					window.location.href = '/login'
 				} catch (error) {
 					console.error("Error al cerrar sesión:", error);
 				}

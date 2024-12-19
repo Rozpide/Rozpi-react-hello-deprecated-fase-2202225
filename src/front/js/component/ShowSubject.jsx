@@ -34,10 +34,6 @@ export const Progress = (value = 5, min = 0, max = 20) => {
 const ShowSubjectTests = ({ name, grade, description, date }) => {
     const [isOpen, setIsOpen] = useState(false)
 
-
-
-
-
     return (
         <div className="container-fluid ">
             <div className="row mb-2 mt-2">
@@ -54,11 +50,13 @@ const ShowSubjectTests = ({ name, grade, description, date }) => {
             <Collapse in={isOpen}>
                 <div className='row'>
                     <div className='col-8'>
-                        <p className="text-light">
-                            {description}
+                        <p className="text-light ">
+                            Descripcion: <br />
+                            <span className='fw-light'>
+                                {description}</span>
                         </p>
                     </div>
-                    <div className="col-4 text-end">
+                    <div className="col-4 text-end fw-light">
                         {date.split(" ").slice(0, 4).join(" ")}
                     </div>
                 </div>

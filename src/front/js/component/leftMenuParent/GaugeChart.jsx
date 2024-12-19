@@ -12,7 +12,7 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
         { limit: 18 },
         { limit: 20 },
       ]
-      : [{}, {}, {}, {}, {}, {}];
+      : [{}, {}, {}];
 
   return (
     <GaugeComponent
@@ -20,7 +20,13 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
       arc={{
         colorArray: ["#FF2121", "#00FF15"],
         padding: 0.02,
-        subArcs: subArcs,
+        subArcs: max == 10 ? [
+          { limit: 2 },
+          { limit: 4 },
+          { limit: 6 },
+          { limit: 8 },
+          { limit: 10 },
+        ] : subArcs,
       }}
       labels={{
         valueLabel: { formatTextValue: value => `${value}/${max}` },
