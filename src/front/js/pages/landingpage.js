@@ -10,7 +10,7 @@ import snapshot from "../../img/snapshot.png";
 import crypto from "../../img/crypto.png";
 
 export const Landing = () => {
-    const { store } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
     const handleUnauthorizedAction = (actionName) => {

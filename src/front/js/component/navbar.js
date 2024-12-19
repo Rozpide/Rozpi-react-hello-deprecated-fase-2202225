@@ -47,9 +47,10 @@ export const Navbar = () => {
             alert("You are not logged in. Please register or sign in.");
             return; // Stop the action if not logged in
         }
-        setSearchQuery(coin.name); // Update the input with the selected suggestion
-        setShowSuggestions(false); // Hide suggestions after selecting
-        navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
+        setSearchQuery(coin.name); 
+        setShowSuggestions(false); 
+        navigate(`/moreinfo/${coin.id}`); 
+        window.location.reload();
     };
     
     const handleUnauthorizedAction = (e) => {
@@ -134,7 +135,8 @@ export const Navbar = () => {
                                             className="dropdown-item"
                                             style={{ cursor: "pointer", color: "white" }}
                                             onMouseDown={() => {
-                                                navigate(`/moreinfo/${coin.id}`);
+                                                handleSuggestionClick(coin)
+
                                             }}
                                         >
                                             {coin.name} ({coin.symbol.toUpperCase()})
@@ -176,7 +178,7 @@ export const Navbar = () => {
                                 <Link
                                     className="dropdown-item"
                                     to="/profile"
-                                    onClick={!token ? handleUnauthorizedAction : null} // Check if logged in
+                                    onClick={!token ? handleUnauthorizedAction : null}
                                 >
                                     Profile
                                 </Link>
@@ -185,7 +187,7 @@ export const Navbar = () => {
                                 <Link
                                     className="dropdown-item"
                                     to="/userdashboard#watchlist"
-                                    onClick={!token ? handleUnauthorizedAction : actions.setShowFavorites} // Check if logged in
+                                    onClick={!token ? handleUnauthorizedAction : actions.setShowFavorites} 
                                 >
                                     Watchlist
                                 </Link>
@@ -194,7 +196,7 @@ export const Navbar = () => {
                                 <Link
                                     className="dropdown-item"
                                     to="/userdashboard#wallet"
-                                    onClick={!token ? handleUnauthorizedAction : actions.setShowWallet} // Check if logged in
+                                    onClick={!token ? handleUnauthorizedAction : actions.setShowWallet} 
                                 >
                                     Wallet
                                 </Link>
