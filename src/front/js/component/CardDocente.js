@@ -30,13 +30,11 @@ const CardDocente = () => {
                 return response.json();
             })
             .then(data => {
-                // Prioriza los datos de la API y complementa con los ficticios si es necesario
                 const combinedDocentes = [...data, ...fakeDocentes.slice(data.length)];
                 setDocentes(combinedDocentes);
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Si hay un error o no hay docentes cargados, usa solo los docentes ficticios
                 setDocentes(fakeDocentes);
             });
     }, []);
@@ -44,18 +42,18 @@ const CardDocente = () => {
     return (
         <Container className={styles.container}>
             <Row>
-                {docentes.map(docente => (
-                    <Col key={docente.id} md={6} lg={3} className="mb-4">
+                {docentes.map((docente, index) => (
+                    <Col key={index} md={6} lg={3} className="mb-4">
                         <Card className={styles.card}>
                             <Card.Img
                                 variant="top"
-                                src={docente.img}
-                                alt={`Foto de ${docente.name}`}
+                                src={docente.foto}
+                                alt={`Foto de ${docente.fullName}`}
                                 className={styles.cardImg}
                             />
                             <Card.Body className={styles.cardBody}>
-                                <Card.Title className={styles.cardTitle}>{docente.name}</Card.Title>
-                                <Card.Text className={styles.cardText}>{docente.description}</Card.Text>
+                                <Card.Title className={styles.cardTitle}>{docente.fullName}</Card.Title>
+                                <Card.Text className={styles.cardText}>{docente.descripcion}</Card.Text>
                             </Card.Body>
                         </Card>
                     </Col>

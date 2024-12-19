@@ -40,8 +40,44 @@
 
 .welcome-message {
   /* position: absolute; */
-  overflow: auto;
+  overflow-y: auto;
+
 }
+
+/* estilos para la barra de scroll */
+.welcome-message::-webkit-scrollbar {
+  width: 14px;
+  display: none;
+}
+
+.welcome-message::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.welcome-message::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #0d47a1, #0d47a1 25%, #3e7cc3 50%, #6094c8 75%, #8eb0ce);
+  border-radius: 10px;
+  border: 3px solid black;
+}
+
+.welcome-message::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg,
+      #0A74DA,
+      /* Azul brillante (primario) */
+      #00A3FF 25%,
+      /* Azul cian vibrante */
+      #0066FF 50%,
+      /* Azul medio clásico */
+      #0052CC 75%,
+      /* Azul profundo */
+      #002244
+      /* Azul marino oscuro */
+    );
+  border: 3px solid gainsboro;
+}
+
+/* ---------------- */
 
 .welcome-icon {
   max-width: 60%;
@@ -162,6 +198,98 @@
 }
 
 .btn-outline-register:active {
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: box-shadow 0.2s ease-in;
+  -moz-transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-in;
+}
+
+/* Estilo para botón de retorno del formulario */
+
+.btn-outline-cancel {
+  position: relative;
+  padding: 10px 20px;
+  border-radius: 3rem;
+  border: 1px solid rgb(61, 106, 255);
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: transparent;
+  color: #fff;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 transparent;
+  -webkit-transition: all 0.2s ease-in;
+  -moz-transition: all 0.2s ease-in;
+  transition: all 0.2s ease-in;
+}
+
+.btn-outline-cancel {
+  background: rgb(31, 135, 80);
+  box-shadow: 0 0 6px 3px rgba(0, 142, 236, 0.815);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.btn-outline-cancel:hover {
+  background: rgb(231, 236, 255);
+  color: black;
+  box-shadow: 0 0 30px 5px rgba(0, 142, 236, 0.815);
+  -webkit-transition: all 0.2s ease-out;
+  -moz-transition: all 0.2s ease-out;
+  transition: all 0.2s ease-out;
+}
+
+.btn-outline-cancel:hover::before {
+  background-color: #fff;
+  -webkit-animation: sh02 0.5s 0s linear;
+  -moz-animation: sh02 0.5s 0s linear;
+  animation: sh02 0.5s 0s linear;
+}
+
+.btn-outline-cancel::before {
+  content: '';
+  display: block;
+  width: 0px;
+  height: 86%;
+  position: absolute;
+  top: 7%;
+  left: 0%;
+  opacity: 0;
+  background: #fff;
+  box-shadow: 0 0 50px 30px #fff;
+  -webkit-transform: skewX(-20deg);
+  -moz-transform: skewX(-20deg);
+  -ms-transform: skewX(-20deg);
+  -o-transform: skewX(-20deg);
+  transform: skewX(-20deg);
+}
+
+.btn-outline-cancel:focus {
+  outline-style: solid;
+  outline-color: #2b2d42;
+  outline-width: 2px;
+  outline-offset: 2px;
+}
+
+@keyframes sh02 {
+  from {
+    opacity: 0;
+    left: 0%;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    left: 100%;
+  }
+}
+
+.btn-outline-cancel:active {
   box-shadow: 0 0 0 0 transparent;
   -webkit-transition: box-shadow 0.2s ease-in;
   -moz-transition: box-shadow 0.2s ease-in;
@@ -297,6 +425,10 @@
   color: rgb(0, 0, 0);
 }
 
+.custom-select>option {
+  color: #000000;
+}
+
 /* Estilos para tablas */
 
 .table-styles {
@@ -305,4 +437,14 @@
   width: 100%;
   height: auto;
   padding: 2rem;
+  overflow: auto;
+}
+
+.react-datepicker-wrapper {
+  width: 100% !important;
+}
+
+.form-control::placeholder {
+  color: rgb(177, 165, 165);
+  opacity: 1;
 }

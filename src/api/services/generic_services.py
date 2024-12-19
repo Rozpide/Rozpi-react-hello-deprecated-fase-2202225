@@ -118,6 +118,7 @@ def get_schedule():
         fechas_evaluaciones = [{"date": format_date(evaluacion.fecha),
                 "title": evaluacion.nombre,
                 "holiday": False,
+                "finalizada": evaluacion.finalizada,
                 "profesor": f"{evaluacion.profesor.nombre} {evaluacion.profesor.apellido}",
                 "materia": evaluacion.materia.nombre,
                 "grado": evaluacion.materia.grado.nombre} for evaluacion in evaluaciones]

@@ -20,10 +20,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			evaluaciones: [],
 			calificaciones: [],
 			personalInfo: null,
-			contactos: null,
+			contactos: [],
 			userAvatar: null,
 			mensajes: [],
+			unreadCount: 0,
 			isChatVisible: false,
+			isClosingChat: false,
 			successMessage: '',
 			errorMessage: '',
 		},
@@ -62,14 +64,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					if (!response.ok) {
 						let error = await response.json()
-						if (error.msg?.includes("Token has expired")) {
+						if (error?.msg?.includes("Token has expired") || error.msg == "Token has been revoked") {
 							localStorage.removeItem("token")
 							localStorage.removeItem("role")
 							window.location.href = '/'
 							return { "msg": "Session Expired" }
 						}
-
-
 						throw new Error(`Error con la solicitud: ${error.msg ?? error.error}`)
 					}
 
@@ -128,6 +128,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			}, userOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('user/auth', method, { id, body, bluePrint: 'admin' })
+			}, allUsersOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('users', method, { id, body, bluePrint: 'admin' })
+			}, setAllUsers: async () => {
+				const response = await getActions().allUsersOperations('GET')
+				setStore({ usuarios: response })
 			}, setUsers: async () => {
 				const response = await getActions().userOperations('GET')
 				setStore({ usuarios: response })
@@ -247,9 +252,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 
-					setStore({ token: null, role: null, userAvatar: null }); /// agregando el userAvatar acá
+					setStore({ token: null, role: null, userAvatar: null, personalInfo: null });
 					localStorage.removeItem("token");
 					localStorage.removeItem("role");
+					window.location.href = '/login'
 				} catch (error) {
 					console.error("Error al cerrar sesión:", error);
 				}
@@ -288,50 +294,100 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, getContacts: async () => {
 				try {
 					let response = await getActions().fetchRoute("contacts", { isPrivate: true, bluePrint: "messages" })
-					setStore({ "contactos": response })
+					if (response && Array.isArray(response)) {
+						setStore({ "contactos": response })
+					}
 				} catch (error) {
-					console.error(error.message)
+					console.error("Error al obtener contactos:", error.message)
 					return
 				}
 			}, getMessages: async () => {
 				try {
 					let response = await getActions().fetchRoute("get", { isPrivate: true, bluePrint: "messages" })
-					setStore({ "mensajes": response })
+					if (response && Array.isArray(response)) {
+						const unReadMessages = response.filter(msg => !msg.read);
+
+						setStore({
+							"mensajes": response,
+							"unreadCount": unReadMessages.length
+						});
+					}
 				} catch (error) {
-					console.error(error.message)
+					console.error("Error al obtener mensajes:", error.message)
 					return
 				}
-			}, changePassword: async (newPassword) => {
+			}, changePassword: async (newPassword, token = null) => {
 				const actions = getActions()
 
 				try {
+					if (token) {
+						console.log("Se detecto Token")
+						setStore({ token: token })
+					}
+
+
+
 					const response = await actions.fetchRoute("reset", { method: 'PUT', isPrivate: true, bluePrint: "password", body: { "newPassword": newPassword } })
 
 					return response
 				} catch (error) {
 					console.error(error.message)
 					throw error
+				} finally {
+					if (token) {
+						setStore({ token: null })
+						console.log("Se eliminó el token del store")
+					}
 				}
 			},
 			handleUserAvatarUpdate: (avatarUrl) => {
-				setStore({ userAvatar: avatarUrl }); // Actualiza el avatar del usuario
+				setStore({ userAvatar: avatarUrl });
 			},
 			toggleChat: () => {
 				const store = getStore();
-				setStore({ isChatVisible: !store.isChatVisible }); // Alterna el estado del chat
+
+				if (store.isChatVisible) {
+					setStore({ isClosingChat: true });
+
+					setTimeout(() => {
+						setStore({ isChatVisible: false, isClosingChat: false });
+					}, 500);
+				} else {
+					setStore({ isChatVisible: true });
+				}
 			},
 			sendMessage: async (message) => {
 				try {
-					await getActions().fetchRoute("messages", {
+					const response = await getActions().fetchRoute("send", {
 						method: "POST",
-						body: {},
+						body: message, //para enviar el msj al backend
+						isPrivate: true,
+						bluePrint: "messages"
+					});
+					if (response) {
+						return response
+					}
+					await getActions().getMessages();
+				} catch (error) {
+					console.error("Error al enviar mensaje:", error);
+				}
+			},
+			markMessageAsRead: async (messageId) => {
+				try {
+					console.log("Marcando mensaje como leído con message_id:", messageId);
+
+					let response = await getActions().fetchRoute("read", {
+						method: "PUT",
+						body: { message_id: messageId },
 						isPrivate: true,
 						bluePrint: "messages"
 					});
 
+					console.log("Respuesta de la API para markMessageAsRead:", response);
+
 					await getActions().getMessages();
 				} catch (error) {
-					console.error("Error al enviar mensaje:", error);
+					console.error("Error al marcar mensaje como leído:", error.message);
 				}
 			},
 			postPicture: async (file) => {
@@ -353,7 +409,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						throw new Error(error.msg || "Error al subir la imagen");
 					}
 					let data = await response.json()
-					await getActions().getParentInfo()
+					await getActions().getPersonalInfo()
 					return data
 				} catch (error) {
 					console.error("Error al subir la imagen:", error.message);
@@ -362,7 +418,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, updateProfile: async (body) => {
 				try {
 					const response = await getActions().fetchRoute("update", { method: 'PUT', isPrivate: true, bluePrint: "profile", body: body })
-					await getActions().getParentInfo()
+					await getActions().getPersonalInfo()
 					return response
 				} catch (error) {
 					console.error(error.message)
@@ -377,6 +433,62 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					throw error
 				}
+			}, getStudentData: (id) => {
+				const { personalInfo } = getStore()
+
+				try {
+					if (personalInfo) {
+
+
+						let student = personalInfo.estudiantes.find((estudiante => estudiante.id == id))
+						if (!student) {
+							throw new Error("Estudiante no encontrado");
+
+						}
+						return student
+					}
+
+				} catch (error) {
+					console.error(error.message)
+					throw error
+				}
+
+
+			}, getStudents: () => {
+				const { personalInfo } = getStore()
+
+				if (personalInfo) {
+					return personalInfo.estudiantes
+
+				}
+				return []
+
+			}, getAdminInfo: async () => {
+
+				try {
+					let adminData = await getActions().fetchRoute("info", { isPrivate: true, bluePrint: "admin" })
+					setStore({ "personalInfo": adminData })
+				}
+				catch (error) {
+					console.error(error.message)
+					throw error
+				}
+			}, getPersonalInfo: async () => {
+				const { role } = getStore()
+				const actions = getActions()
+
+				switch (role.toLowerCase()) {
+					case "admin":
+						await actions.getAdminInfo()
+						break;
+					case "representante":
+						await actions.getParentInfo()
+					case "docente":
+						await actions.getTeacherInfo()
+					default:
+						break;
+				}
+
 			}
 		}
 	}

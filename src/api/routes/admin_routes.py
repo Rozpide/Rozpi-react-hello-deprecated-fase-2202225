@@ -7,11 +7,12 @@ from sqlalchemy.exc import IntegrityError
 from api.models import db, User, EmailAuthorized, Estudiante, Role, Docente, Materias, Grados, DocenteMaterias
 from flask_cors import CORS
 from api.utils import bcrypt
-from flask_jwt_extended import get_jwt, verify_jwt_in_request
+from flask_jwt_extended import get_jwt, verify_jwt_in_request, get_jwt_identity
 from api.schemas.schemas import TeacherSchema, UserSchema, AuthorizedEmailSchema, StudentSchema, MateriasSchema, DocenteMateriaSchema, GradoSchema, RoleSchema
 from datetime import datetime
 from api.services.generic_services import create_instance, delete_instance, get_all_instances, update_instance, get_instance_by_id
-
+from api.services.external_services import get_image
+from sqlalchemy.exc import SQLAlchemyError
 
 app = Flask(__name__)
 
@@ -48,6 +49,8 @@ authorized_emails_schema = AuthorizedEmailSchema(many=True)
 
 student_schema = StudentSchema()
 students_schema = StudentSchema(many=True)
+add_student_schema = StudentSchema(exclude=['fecha_nacimiento', 'fecha_ingreso'])
+
 
 materia_schema = MateriasSchema()
 materias_schema = MateriasSchema(many=True)
@@ -75,6 +78,28 @@ def email_authorization():
 @admin_routes.route('/user/auth', methods=['GET'])
 def get_email_authorizations():
     return get_all_instances(EmailAuthorized,authorized_emails_schema)
+
+
+@admin_routes.route('/users', methods=['GET'])
+def get_users():
+    return get_all_instances(User, users_schema)
+
+
+@admin_routes.route('/info', methods=['GET'])
+def get_user_info():
+    user = User.query.get(get_jwt_identity())
+    
+    if not user:
+        return jsonify({"msg": "User not found"}),401
+    
+    user_data = user_schema.dump(user)
+    user_data.pop("id")
+    user_data.pop("is_active")
+    user_data.pop("role_id")
+    user_data["foto"] = get_image(user.foto) if user.foto else ""
+    
+    
+    return jsonify(user_data),200
 
 # ////////////////////////////// Teachers Endpoints CRUD ////////////////////
 @admin_routes.route('/teachers', methods=['POST'])
@@ -121,7 +146,7 @@ def update_teacher(id):
     except ValidationError as err:
         return jsonify(err.messages)
 
-    return update_instance(Docente,id,body)
+    return update_instance(Docente,id,body, teacher_schema)
     
 @admin_routes.route('/teachers/<int:id>', methods=['DELETE'])
 def remove_teacher(id):
@@ -131,31 +156,50 @@ def remove_teacher(id):
 @admin_routes.route('/students', methods=['POST'])
 def add_student():
     body = request.get_json()
+    
+    fecha_nacimiento = body.pop('fecha_nacimiento', None)
+    fecha_ingreso = body.pop('fecha_ingreso', None)
 
     representante = User.query.get(body.get('representante_id'))
 
-    if not representante or representante.rol.nombre.lower() != "representante":
+    if not representante or representante.role.nombre.lower() != "representante":
         return jsonify({"msg": "Representante no encontrado o con rol diferente"})
+    
+    
+    if not fecha_nacimiento:
+        return jsonify({"msg": "Fecha de nacimiento requerida"}),400
+    
+    if not fecha_ingreso:
+        fecha_ingreso = datetime.now()
+        fecha_ingreso = fecha_ingreso.strftime('%Y-%m-%d')
 
     try:
-        student = student_schema.load(body) 
+        student = add_student_schema.load(body) 
     except ValidationError as err:
-        return jsonify(err.messages)
+        return jsonify(err.messages),400
     
     existing_student = Estudiante.query.filter_by(
-        nombre=student.nombre, 
-        apellido=student.apellido, 
-        representante_id=student.representante_id
+        nombre=student["nombre"], 
+        apellido=student["apellido"], 
+        representante_id=student["representante_id"]
     ).first()
 
     if existing_student:
         return jsonify({"error": "Student already exists with the same name, surname, and representative"}), 409
+    student["fecha_ingreso"] = fecha_ingreso
+    student["fecha_nacimiento"] = fecha_nacimiento
+    try:
+        newStudent = Estudiante(**student)
+        db.session.add(newStudent)
+        db.session.commit()
+    except IntegrityError as e:
+        print(str(e))
+        return jsonify({"error": "IntegrityError raised"}),500
+    except Exception as e:
+        print(str(e))
+        return jsonify({"error": "IntegrityError raised"}),500
     
-    fecha_actual = datetime.now()
-    fecha_formateada = fecha_actual.strftime("%Y-%m-%d")
-    student['fecha_ingreso'] = fecha_formateada
-
-    return create_instance(Estudiante, student, student_schema)
+    return jsonify({"msg": "Estudiante Creado"}),201
 
 @admin_routes.route('/students', methods=['GET'])
 def get_students():
@@ -170,7 +214,36 @@ def update_student(id):
     body = request.get_json()
     if not body:
         return jsonify({"msg": "request body not found"}),400
-    return update_instance(Estudiante,id,body)
+    
+    student = Estudiante.query.get(id)
+    if not student:
+        return jsonify({"msg": "Student not found"}),404
+    
+    fecha_nacimiento = body.pop('fecha_nacimiento', None) 
+    fecha_ingreso = body.pop('fecha_ingreso', None)
+    
+    try:
+        student_data = add_student_schema.load(body, partial=True)
+        
+        if fecha_nacimiento:
+            student_data["fecha_nacimiento"] = fecha_nacimiento
+            
+        if fecha_ingreso:
+            student_data["fecha_ingreso"] = fecha_ingreso
+        
+        for key, value in student_data.items():
+            setattr(student, key, value) 
+        db.session.commit()
+        return jsonify({"msg": "Estudiante actualizado con éxito"}), 200
+    
+    except ValidationError as e:
+        db.session.rollback()
+        return jsonify({"msg": e.messages}),400
+    
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
+    
     
 @admin_routes.route('/students/<int:student_id>', methods=['DELETE'])
 def remove_student(student_id):

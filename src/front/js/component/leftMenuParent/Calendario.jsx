@@ -108,22 +108,22 @@ const Calendario = ({ eventos }) => {
           containerPadding={20}>
           <Popover id="popover-basic">
             <Popover.Header as="h3">
-              {popoverInfo.event?.map(e => e.title + " ") ||
-                "Información del Evento"}
+
+              {popoverInfo.event?.map((e) => e.holiday ? e.title : e.materia + ", ")}
             </Popover.Header>
             <Popover.Body>
-              {popoverInfo.event?.map(e => {
+              {popoverInfo.event?.map((e, index) => {
                 if (e.holiday) {
                   return (
-                    <div>
+                    <div key={`holiday-${index}`}>
                       {e.title} <br /> {e.date}
                     </div>
                   );
                 }
 
                 return (
-                  <p>
-                    {e.materia} - Grado: {e.grado} <br /> {e.profesor}
+                  <p key={`event-${index}`}>
+                    {e.title} - {e.materia} <br /> Grado: {e.grado}
                   </p>
                 );
               })}

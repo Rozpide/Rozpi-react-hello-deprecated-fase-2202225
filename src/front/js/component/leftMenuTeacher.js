@@ -1,15 +1,19 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, Route, Routes, useLocation } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import backgroundForViews from "../../img/background.jpg";
 import imgWelcome from "../../img/wellcomeicon.png"
 import "../../styles/components.css";
 import Swal from 'sweetalert2';
+import ChatComponent from "../component/chatComponent";
+import ProfileForm from "./ProfileForm.jsx"
+
 
 const FormCommon = ({ type }) => {
     const { store, actions } = useContext(Context)
+    const navigate = useNavigate()
     const [startDate, setStartDate] = useState(new Date());
     const [selectedCourse, setSelectedCourse] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('');
@@ -31,13 +35,7 @@ const FormCommon = ({ type }) => {
         setGrades(initialGrades);
     }, [store.calificaciones]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await actions.getTeacherInfo();
-            console.log('Fetched teacher info:', store.profesorPersonalInfo);
-        };
-        fetchData();
-    }, []);
+
 
     const handleChange = (e, studentId) => {
         const { name, value } = e.target;
@@ -89,6 +87,9 @@ const FormCommon = ({ type }) => {
             if (selectedCourse) {
                 actions.setGradeStudents(selectedCourse);
             }
+        }
+        if (type === 'updateEvaluation') {
+            actions.setTests();
         }
         if (type === 'editar') {
             actions.setScores();
@@ -157,6 +158,7 @@ const FormCommon = ({ type }) => {
             });
             setGrades({});
             setStartDate(new Date());
+
         } catch (error) {
             console.error("Error submitting data", error)
             Swal.fire({
@@ -170,28 +172,28 @@ const FormCommon = ({ type }) => {
         <div className="container ms-2">
 
             <form onSubmit={(e) => submitFormData(e)} className="container-welcome-teacher">
-                <h4 className="text-title d-flex justify-content-center mb-4">{`${type === 'crear' ? 'Crear' : type === 'calificar' ? 'Calificar' : type === 'editar' ? 'Editar' : ''} evaluación`}</h4>
+                <h4 className="text-title d-flex justify-content-center mb-4">{`${type === 'crear' ? 'Crear' : type === 'calificar' ? 'Calificar' : type === 'updateEvaluation' ? 'Modificar' : type === 'editar' ? 'Editar' : ''} evaluación`}</h4>
 
                 {/* Formulario para crear evaluaciones */}
 
                 {type === 'crear' && <div className="mb-3">
                     <label className="form-label text-form">Nombre:</label>
-                    <input type="text" name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
+                    <input type="text" placeholder="Examen parcial..." name="name" className="form-control rounded-pill" required value={formBody.name} onChange={handleChange} />
                 </div>}
                 {type === 'crear' && (
                     <div className="mb-3">
                         <label className="form-label text-form">Descripción:</label>
-                        <textarea type="text" name="description" rows="3" className="form-control teacher-description" required value={formBody.description} onChange={handleChange}></textarea>
+                        <textarea type="text" name="description" placeholder="Descripción del conocimiento que será evaluado..." rows="3" className="form-control teacher-description" required value={formBody.description} onChange={handleChange}></textarea>
 
                     </div>
                 )}
                 {type === 'crear' && <div className="mb-3">
-                    <div className="d-flex justify-content-between">
-                        <div className="d-flex flex-column">
+                    <div className="d-flex row g-3">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige el curso:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="grado_id"
                                     id="inputGroupSelect04"
                                     onChange={handleChange}>
@@ -205,11 +207,11 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="d-flex flex-column">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige la materia:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill  w-100"
                                     name="materia_id"
                                     id="inputGroupSelect04"
                                     onChange={handleChange}
@@ -225,14 +227,12 @@ const FormCommon = ({ type }) => {
                                 </select>
                             </div>
                         </div>
+                        <div className="mb-3 col w-100">
+                            <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
+                            <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
+                        </div>
                     </div>
                 </div>}
-
-                {type === 'crear' && <div className="mb-3">
-                    <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
-                    <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
-                </div>}
-
                 {type === 'crear' && (
                     <div className="mb-3">
                         <label className="form-label text-form me-3">Estado:</label>
@@ -250,18 +250,18 @@ const FormCommon = ({ type }) => {
                 {/* Formulario para calificar las evaluaciones */}
 
                 {type === 'calificar' && (
-                    <div className="d-flex justify-content-between">
-                        <div className="d-flex flex-column">
+                    <div className="d-flex row g-3">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige el curso:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="grado_id"
                                     id="inputGroupSelect04"
                                     required
                                     onChange={handleChange}>
 
-                                    <option value="" disabled selected>Opciones...</option>
+                                    <option value="" disabled selected>Opciones</option>
 
                                     {store.profesorPersonalInfo.grados.map(grado =>
                                         <option key={grado.id} value={grado.id}>{grado.nombre}</option>
@@ -270,16 +270,16 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="mb-3 me-5">
+                        <div className="mb-3 col">
                             <label className="form-label text-form">Elige una materia:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="materia_id"
                                     required
                                     disabled={!selectedCourse}
                                     id="inputGroupSelect04">
-                                    <option selected>Materia...</option>
+                                    <option selected>Materia</option>
                                     {store.profesorPersonalInfo.materias.map(materia =>
                                         <option key={materia.id} value={materia.id}>{materia.nombre}</option>
                                     )}
@@ -287,16 +287,16 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="mb-3">
+                        <div className="mb-3 col">
                             <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="evaluacion_id"
                                     id="inputGroupSelect04"
                                     required
                                     disabled={!selectedSubject}>
-                                    <option selected>Pendientes...</option>
+                                    <option selected>Pendientes</option>
                                     {filteredEvaluaciones.map(evaluacion =>
                                         <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
                                     )}
@@ -340,37 +340,134 @@ const FormCommon = ({ type }) => {
 
                 {/* Formulario para editar las evaluaciones */}
 
-                {type === 'editar' && (
+                {type === 'updateEvaluation' && (
                     <div>
-                        <div className="d-flex justify-content-between">
-                            <div className="mb-3 me-5">
-                                <label className="form-label text-form">Elige una materia:</label> <br></br>
-                                <div className="input-group" onChange={handleChange}>
+                        <div className="mb-3">
+                            <span className="text-white">Para ver la lista de calificaciones, primero selecciona la materia y la evaluación en las opciones a continuación:</span>
+                        </div>
+                        <div className="row g-3">
+                            <div className="d-flex flex-column col">
+                                <label className="form-label text-form">Elige el curso:</label>
+                                <div className="input-group" required>
                                     <select
-                                        className="custom-select rounded-pill"
+                                        className="custom-select rounded-pill w-100"
+                                        name="grado_id"
+                                        id="inputGroupSelect04"
+                                        onChange={handleChange}>
+
+                                        <option value="" disabled selected>Opciones...</option>
+
+                                        {store.profesorPersonalInfo.grados.map(grado =>
+                                            <option key={grado.id} value={grado.id}>{grado.nombre}</option>
+                                        )}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="mb-3 col-6 ">
+                                <label className="form-label text-form">Elige una materia:</label> <br></br>
+
+                                <select
+                                    className="custom-select rounded-pill w-100"
+                                    name="materia_id"
+                                    required
+                                    onChange={handleChange}
+                                    id="inputGroupSelect04">
+                                    onChange={(e) => handleChange(e)}
+                                    <option selected>Materia</option>
+                                    {store.profesorPersonalInfo.materias.map(materia =>
+                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                    )}
+                                </select>
+                            </div>
+                        </div>
+
+
+                        {selectedCourse && selectedSubject && (
+
+                            <div className="table-styles mt-3">
+                                <table className="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" className="text-center">Evaluación</th>
+                                            <th scope="col" className="text-center">Descripción</th>
+                                            <th scope="col" className="text-center">Fecha</th>
+                                            <th scope="col" className="text-center">Estado</th>
+                                            <th scope="col" className="text-center">Editar/Eliminar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {store.evaluaciones
+                                            .filter((test) => test.materia.id === parseInt(selectedSubject))
+                                            .map((test) => (
+                                                <tr key={test.id}>
+                                                    <td scope="row" className="w-25">{test.nombre}</td>
+                                                    <td className="w-25">{test.descripcion}</td>
+                                                    <td className="text-center">{test.fecha}</td>
+                                                    <td className="text-center">{test.finalizada}</td>
+
+                                                    <td className="d-flex justify-content-center">
+                                                        <Link to={`/update-test/${test.id}`}>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-outline-info me-3"
+                                                            >
+                                                                <i class="bi bi-pen"></i>
+                                                            </button>
+                                                        </Link>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-outline-danger"
+                                                            onClick={() => handleDeleteScore(score.id)}>
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                )
+                }
+
+                {/* Formulario para editar las notas o calificaciones */}
+
+                {
+                    type === 'editar' && (
+                        <div>
+                            <div className="mb-3">
+                                <span className="text-white">Para ver la lista de calificaciones, primero selecciona la materia y la evaluación en las opciones a continuación:</span>
+                            </div>
+                            <div className="row g-3">
+                                <div className="mb-3 col-6 ">
+                                    <label className="form-label text-form">Elige una materia:</label> <br></br>
+
+                                    <select
+                                        className="custom-select rounded-pill w-100"
                                         name="materia_id"
                                         required
+                                        onChange={handleChange}
                                         id="inputGroupSelect04">
                                         onChange={(e) => handleChange(e)}
-                                        <option selected>Materia...</option>
+                                        <option selected>Materia</option>
                                         {store.profesorPersonalInfo.materias.map(materia =>
                                             <option key={materia.id} value={materia.id}>{materia.nombre}</option>
                                         )}
                                     </select>
                                 </div>
-                            </div>
 
-                            <div className="mb-3">
-                                <label className="form-label text-form me-3">Selecciona una evaluación:</label> <br></br>
-                                <div className="input-groupjustify-content-center" onChange={handleChange}>
+                                <div className="mb-3 col-6  ">
+                                    <label className="form-label text-form me-3">Selecciona una evaluación:</label> <br></br>
                                     <select
-                                        className="custom-select rounded-pill"
+                                        className="custom-select rounded-pill w-100"
                                         name="evaluacion_id"
                                         id="inputGroupSelect04"
                                         required
+                                        onChange={handleChange}
                                         disabled={!selectedSubject}
                                     >
-                                        <option selected>Pendientes...</option>
+                                        <option selected>Pendientes</option>
                                         {store.calificaciones
                                             .filter((score) => score.evaluacion.materia.id === parseInt(selectedSubject))
                                             .map(score => score.evaluacion)
@@ -381,63 +478,73 @@ const FormCommon = ({ type }) => {
                                     </select>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="table-styles mt-3">
-                            <table className="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>Apellido</th>
-                                        <th>Calificación</th>
-                                        <th>Editar</th>
-                                        <th>Eliminar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {store.calificaciones
-                                        .filter((score) => score.evaluacion.id === parseInt(selectedTest))
-                                        .map((score) => (
-                                            <tr key={score.id}>
-                                                <td>{score.estudiante.nombre}</td>
-                                                <td>{score.estudiante.apellido}</td>
-                                                <td>{score.nota}</td>
-                                                <td>
-                                                    <input
-                                                        required
-                                                        type="number"
-                                                        name={`grade-${score.id}`}
-                                                        className="form-control"
-                                                        value={grades[score.estudiante.id] !== undefined ? grades[score.estudiante.id] : score.nota}
-                                                        onChange={(e) => handleChange(e, score.estudiante.id)}
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-outline-danger"
-                                                        onClick={() => handleDeleteScore(score.id)}>
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </td>
+                            {selectedSubject && selectedTest && (
+                                <div className="table-styles mt-3">
+                                    <table className="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Nombre</th>
+                                                <th scope="col">Apellido</th>
+                                                <th scope="col" className="text-center">Calificación</th>
+                                                <th scope="col" className="text-center">Editar</th>
+                                                <th scope="col" className="text-center">Eliminar</th>
                                             </tr>
-                                        ))}
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody>
+                                            {store.calificaciones
+                                                .filter((score) => score.evaluacion.id === parseInt(selectedTest))
+                                                .map((score) => (
+                                                    <tr key={score.id}>
+                                                        <td scope="row" className="w-25">{score.estudiante.nombre}</td>
+                                                        <td className="w-25">{score.estudiante.apellido}</td>
+                                                        <td className="text-center">{score.nota}</td>
+                                                        <td className="text-center w-25">
+                                                            <input
+                                                                required
+                                                                type="number"
+                                                                name={`grade-${score.id}`}
+                                                                className="form-control text-center"
+                                                                value={grades[score.estudiante.id] !== undefined ? grades[score.estudiante.id] : score.nota}
+                                                                onChange={(e) => handleChange(e, score.estudiante.id)}
+                                                            />
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-outline-danger"
+                                                                onClick={() => handleDeleteScore(score.id)}>
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                         </div>
-                    </div>
-                )}
+                    )
+                }
 
                 <div className="d-flex justify-content-center mt-5">
                     <button type="submit" className="btn btn-outline-register">Registrar</button>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     );
 };
 
 export const LeftMenuTeacher = () => {
+    const location = useLocation()
     const [activeContent, setActiveContent] = useState(null);
+    const { store, actions } = useContext(Context)
+    const messagingDivRef = useRef(null);
+    useEffect(() => {
+        if (location.state?.scrollTo === "Mensajería" && messagingDivRef.current) {
+            messagingDivRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [location]);
 
     const handleCreateEvaluation = () => {
         setActiveContent("crear");
@@ -447,21 +554,39 @@ export const LeftMenuTeacher = () => {
         setActiveContent("calificar");
     };
 
+    const handleUpdateEvaluation = () => {
+        setActiveContent("updateEvaluation");
+    };
+
     const handleEditGrades = () => {
         setActiveContent("editar");
     };
 
+    const handleEditProfile = (edit = true) => {
+        setActiveContent(edit ? "profile" : "");
+    };
+
     const renderContent = () => {
+        if (location.pathname.includes("profile")) {
+            return (<Routes>
+                <Route path={"/profile"} element={<ProfileForm user={store.profesorPersonalInfo} />} />
+            </Routes>
+            )
+        }
+
+
         switch (activeContent) {
             case "crear":
                 return <FormCommon type="crear" />;
             case "calificar":
                 return <FormCommon type="calificar" />;
+            case "updateEvaluation":
+                return <FormCommon type="updateEvaluation" />;
             case "editar":
                 return <FormCommon type="editar" />;
             default:
                 return (
-                    <div className="container-fluid container-welcome-parent mt-3">
+                    <div className="container-fluid container-welcome-parent mt-2">
                         <div className="container-welcome-teacher d-flex">
                             <img src={imgWelcome} alt="welcome image" className="welcome-icon" />
                             <div>
@@ -474,22 +599,35 @@ export const LeftMenuTeacher = () => {
         }
     };
 
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await actions.getTeacherInfo();
+
+        };
+        fetchData();
+    }, []);
+
+
+
+
     return (
         <div className="mt-0">
             <div className="row flex-nowrap mt-5">
                 <div className="col-auto col-md-3 col-xl-2 px-sm-2 mt-1 px-0 left-menu-background">
                     <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
-                        <Link to="/" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                            <span className="fs-5 d-none d-sm-inline ">Menú</span>
+                        <Link to="/dashboard/teacher" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                            <span className="fs-5 d-none d-sm-inline ms-4">M e n ú</span>
                         </Link>
                         <ul className="nav nav-pills list-group flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                            <li className="list-menu-item">
+                            <li className="list-menu-item mt-4 mb-2 ms-5">
                                 <Link to="#submenu1" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-card-checklist"></i>
                                     <span className="ms-1 d-none d-sm-inline">Pruebas</span>
                                 </Link>
                                 <ul className="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                                    <li className="w-100 list-menu-item">
+                                    <li className="w-100 list-menu-item ">
                                         <Link to="#" className="nav-link px-0 text-white" onClick={handleCreateEvaluation}>
                                             <i className="fs-4 bi-file-earmark-plus"></i>
                                             <span className="ms-2 d-none d-sm-inline" >Crear</span>
@@ -504,13 +642,27 @@ export const LeftMenuTeacher = () => {
                                 </ul>
 
                             </li>
-                            <li className="list-menu-item">
-                                <Link to="#submenuEditar" data-bs-toggle="collapse" onClick={handleEditGrades} className="nav-link px-0 align-middle text-white">
+                            <li className="list-menu-item ms-5">
+                                <Link to="#submenuEditar" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white ">
                                     <i className="fs-4 bi-pen"></i>
                                     <span className="ms-1 d-none d-sm-inline ">Editar</span>
                                 </Link>
+                                <ul className="collapse nav flex-column ms-1" id="submenuEditar" data-bs-parent="#menu">
+                                    <li className="w-100 list-menu-item ">
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleUpdateEvaluation}>
+                                            <i className="fs-4 bi-file-earmark-plus"></i>
+                                            <span className="ms-2 d-none d-sm-inline" >Pruebas</span>
+                                        </Link>
+                                    </li>
+                                    <li className="list-menu-item">
+                                        <Link to="#" className="nav-link px-0 text-white" onClick={handleEditGrades}>
+                                            <i className="fs-4 bi-file-earmark-check"></i>
+                                            <span className="ms-2 d-none d-sm-inline" >Notas</span>
+                                        </Link>
+                                    </li>
+                                </ul>
                             </li>
-                            <li className="list-menu-item">
+                            {/* <li className="list-menu-item">
                                 <Link to="#submenu2" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-calendar2-date"></i>
                                     <span className="ms-1 d-none d-sm-inline">Eventos</span>
@@ -527,21 +679,28 @@ export const LeftMenuTeacher = () => {
                                         </Link>
                                     </li>
                                 </ul>
-                            </li>
-                            <li className="list-menu-item">
+                            </li> */}
+                            {/* <li className="list-menu-item">
                                 <Link to="#submenu3" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-chat-left-text"></i>
                                     <span className="ms-1 d-none d-sm-inline ">Chat</span>
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                         <hr />
                     </div>
                 </div>
-                <div className="d-flex justify-content-center render-content col py-3"
+                <div className="container-fluid render-content col py-3"
                     style={{ backgroundImage: `url(${backgroundForViews})` }}>
-                    <div className="welcome-message mt-3">
-                        {renderContent()}
+                    <div className="container-fluid d-flex flex-column w-100 gap-5">
+                        {location.pathname.includes("profile") ? renderContent() :
+                            <div className="welcome-message mt-4">
+                                {renderContent()}
+                            </div>
+                        }
+                        <div id="Mensajería" ref={messagingDivRef}>
+                            {store.isChatVisible && <ChatComponent />}
+                        </div>
                     </div>
                 </div>
             </div>

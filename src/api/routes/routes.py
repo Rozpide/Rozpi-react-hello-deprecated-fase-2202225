@@ -108,11 +108,11 @@ def handle_logout():
 
     return jsonify({"msg": "Logged Out"}),200
 
+
 @api.route('/profile/picture', methods=['PUT'])
 @jwt_required()
 def handle_profile_pic():
     user = User.query.get(get_jwt_identity())
-    print(request.files)
     body = request.files["profilePicture"]
     
     if not user:
@@ -167,9 +167,9 @@ def get_teachers_cards():
      if not teachers:
          return jsonify({"docentes": []}),404
      
-     return jsonify({"docentes": [{"fullName": f"{teacher.nombre} {teacher.apellido}",
+     return jsonify( [{"fullName": f"{teacher.nombre} {teacher.apellido}",
                                    "descripcion": teacher.descripcion,
-                                   "foto": get_image(teacher.foto) if teacher.foto else ""} for teacher in teachers]}),200
+                                   "foto": get_image(teacher.foto) if teacher.foto else ""} for teacher in teachers]),200
 
 @api.route('/password/recovery', methods=['POST'])
 def handle_change_password_request():
@@ -291,7 +291,7 @@ def send_message():
 @api.route("/messages/get", methods=['GET'])
 @jwt_required()
 def get_messages():
-    schema = MessagesSchema(many=True)
+    schema = MessagesSchema()
     receiver_id = get_jwt_identity()
     
     user = User.query.get(receiver_id)
@@ -301,7 +301,18 @@ def get_messages():
     
     messages = Messages.query.filter_by(receiver_id=receiver_id).all()
     
-    return jsonify(schema.dump(messages))
+    messages_data = []
+    
+    for mensaje in messages:
+        message_data = schema.dump(mensaje)
+        
+        message_data["remitente"] = f"{mensaje.sender.nombre} {mensaje.sender.apellido}"
+        message_data["remitente_rol"] = mensaje.sender.role.nombre
+
+        messages_data.append(message_data)
+    
+    
+    return jsonify(messages_data)
     
 
 @api.route("/messages/read", methods=['PUT'])

@@ -60,8 +60,8 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                   className={
                     "d-flex gap-3 text-light text-center align-items-center"
                   }>
-                  <i className="bi bi-list-check fs-1"></i>
                   <h1>Promedio</h1>
+                  <i className="bi bi-list-check fs-1"></i>
                 </div>
                 <Carousel
                   style={{ width: "100%" }}
@@ -73,14 +73,12 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                     ? avgInfo.map((student, index) => {
                       return (
                         <Carousel.Item
-                          className="text-light text-center"
-                          key={index}
-                          style={{ width: "100%", height: "100%" }}>
+                          key={index}>
                           <ParentGaugeChart
-                            max={20}
+                            max={10}
                             value={student.promedio}
                           />
-                          <h5 className=" mb-2">
+                          <h5 className="mb-2 text-center text-light">
                             {" "}
                             <i className="bi bi-mortarboard-fill me-3"></i>
                             {student.nombre}
@@ -95,7 +93,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                     variant="light"
                     className={`w-25 fadeInLeft`}
                     onClick={() => handlePrevSlide(avgSlide, setAvgSlide)}>
-                    <i className="bi bi-arrow-bar-left"></i>
+                    <i class="fa-solid fa-arrow-left"></i>
                   </Button>
 
                   <Button
@@ -104,7 +102,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                     onClick={() =>
                       handleNextSlide(avgSlide, estudiantes.length, setAvgSlide)
                     }>
-                    <i className="bi bi-arrow-bar-right"></i>
+                    <i class="fa-solid fa-arrow-right"></i>
                   </Button>
                 </div>
               </>
@@ -124,11 +122,11 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                 {studentSlide > 0 ? (
                   <Button
                     variant="light"
-                    className={`ms-2 h-50 fadeInLeft`}
+                    className={`ms-2 h-25 fadeInLeft`}
                     onClick={() =>
                       handlePrevSlide(studentSlide, setStudentSlide)
                     }>
-                    <i className="bi bi-arrow-bar-left"></i>
+                    <i class="fa-solid fa-arrow-left"></i>
                   </Button>
                 ) : (
                   " "
@@ -145,7 +143,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                         <Carousel.Item key={index}>
                           <TableWrapper>
                             <div className={"d-flex gap-3 text-light"}>
-                              <h1 className="mb-5">{estudiante.nombre}</h1>
+                              <h1 className="mb-3">{estudiante.nombre}</h1>
                             </div>
                             <ParentDashboardTable
 
@@ -163,7 +161,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                 {studentSlide < estudiantes.length - 1 ? (
                   <Button
                     variant="light"
-                    className={`me-2 h-50 fadeInRight`}
+                    className={`me-2 h-25 fadeInRight`}
                     onClick={() =>
                       handleNextSlide(
                         studentSlide,
@@ -171,7 +169,8 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                         setStudentSlide
                       )
                     }>
-                    <i className="bi bi-arrow-bar-right"></i>
+                    <i class="fa-solid fa-arrow-right"></i>
+
                   </Button>
                 ) : (
                   " "
