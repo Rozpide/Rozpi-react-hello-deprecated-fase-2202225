@@ -183,12 +183,12 @@ const FormCommon = ({ type }) => {
                     </div>
                 )}
                 {type === 'crear' && <div className="mb-3">
-                    <div className="d-flex justify-content-between">
-                        <div className="d-flex flex-column">
+                    <div className="d-flex row g-3">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige el curso:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="grado_id"
                                     id="inputGroupSelect04"
                                     onChange={handleChange}>
@@ -202,11 +202,11 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="d-flex flex-column">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige la materia:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill  w-100"
                                     name="materia_id"
                                     id="inputGroupSelect04"
                                     onChange={handleChange}
@@ -222,14 +222,12 @@ const FormCommon = ({ type }) => {
                                 </select>
                             </div>
                         </div>
+                        <div className="mb-3 col w-100">
+                            <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
+                            <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
+                        </div>
                     </div>
                 </div>}
-
-                {type === 'crear' && <div className="mb-3">
-                    <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
-                    <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
-                </div>}
-
                 {type === 'crear' && (
                     <div className="mb-3">
                         <label className="form-label text-form me-3">Estado:</label>
@@ -247,18 +245,18 @@ const FormCommon = ({ type }) => {
                 {/* Formulario para calificar las evaluaciones */}
 
                 {type === 'calificar' && (
-                    <div className="d-flex justify-content-between">
-                        <div className="d-flex flex-column">
+                    <div className="d-flex row g-3">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige el curso:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="grado_id"
                                     id="inputGroupSelect04"
                                     required
                                     onChange={handleChange}>
 
-                                    <option value="" disabled selected>Opciones...</option>
+                                    <option value="" disabled selected>Opciones</option>
 
                                     {store.profesorPersonalInfo.grados.map(grado =>
                                         <option key={grado.id} value={grado.id}>{grado.nombre}</option>
@@ -267,16 +265,16 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="mb-3 me-5">
+                        <div className="mb-3 col">
                             <label className="form-label text-form">Elige una materia:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="materia_id"
                                     required
                                     disabled={!selectedCourse}
                                     id="inputGroupSelect04">
-                                    <option selected>Materia...</option>
+                                    <option selected>Materia</option>
                                     {store.profesorPersonalInfo.materias.map(materia =>
                                         <option key={materia.id} value={materia.id}>{materia.nombre}</option>
                                     )}
@@ -284,16 +282,16 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="mb-3">
+                        <div className="mb-3 col">
                             <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="evaluacion_id"
                                     id="inputGroupSelect04"
                                     required
                                     disabled={!selectedSubject}>
-                                    <option selected>Pendientes...</option>
+                                    <option selected>Pendientes</option>
                                     {filteredEvaluaciones.map(evaluacion =>
                                         <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
                                     )}
@@ -339,44 +337,43 @@ const FormCommon = ({ type }) => {
 
                 {type === 'editar' && (
                     <div>
-                        <div className="d-flex justify-content-between">
-                            <div className="mb-3 me-5">
+                        <div className="row g-3">
+                            <div className="mb-3 col-6 ">
                                 <label className="form-label text-form">Elige una materia:</label> <br></br>
-                                <div className="input-group" onChange={handleChange}>
-                                    <select
-                                        className="custom-select rounded-pill"
-                                        name="materia_id"
-                                        required
-                                        id="inputGroupSelect04">
-                                        onChange={(e) => handleChange(e)}
-                                        <option selected>Materia...</option>
-                                        {store.profesorPersonalInfo.materias.map(materia =>
-                                            <option key={materia.id} value={materia.id}>{materia.nombre}</option>
-                                        )}
-                                    </select>
-                                </div>
+
+                                <select
+                                    className="custom-select rounded-pill w-100"
+                                    name="materia_id"
+                                    required
+                                    onChange={handleChange}
+                                    id="inputGroupSelect04">
+                                    onChange={(e) => handleChange(e)}
+                                    <option selected>Materia</option>
+                                    {store.profesorPersonalInfo.materias.map(materia =>
+                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                    )}
+                                </select>
                             </div>
 
-                            <div className="mb-3">
+                            <div className="mb-3 col-6  ">
                                 <label className="form-label text-form me-3">Selecciona una evaluación:</label> <br></br>
-                                <div className="input-groupjustify-content-center" onChange={handleChange}>
-                                    <select
-                                        className="custom-select rounded-pill"
-                                        name="evaluacion_id"
-                                        id="inputGroupSelect04"
-                                        required
-                                        disabled={!selectedSubject}
-                                    >
-                                        <option selected>Pendientes...</option>
-                                        {store.calificaciones
-                                            .filter((score) => score.evaluacion.materia.id === parseInt(selectedSubject))
-                                            .map(score => score.evaluacion)
-                                            .filter((evaluacion, index, self) => index === self.findIndex(e => e.nombre === evaluacion.nombre))
-                                            .map(evaluacion =>
-                                                <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
-                                            )}
-                                    </select>
-                                </div>
+                                <select
+                                    className="custom-select rounded-pill w-100"
+                                    name="evaluacion_id"
+                                    id="inputGroupSelect04"
+                                    required
+                                    onChange={handleChange}
+                                    disabled={!selectedSubject}
+                                >
+                                    <option selected>Pendientes</option>
+                                    {store.calificaciones
+                                        .filter((score) => score.evaluacion.materia.id === parseInt(selectedSubject))
+                                        .map(score => score.evaluacion)
+                                        .filter((evaluacion, index, self) => index === self.findIndex(e => e.nombre === evaluacion.nombre))
+                                        .map(evaluacion =>
+                                            <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
+                                        )}
+                                </select>
                             </div>
                         </div>
 
@@ -510,16 +507,16 @@ export const LeftMenuTeacher = () => {
                 <div className="col-auto col-md-3 col-xl-2 px-sm-2 mt-1 px-0 left-menu-background">
                     <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
                         <Link to="/dashboard/teacher" className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                            <span className="fs-5 d-none d-sm-inline ">Menú</span>
+                            <span className="fs-5 d-none d-sm-inline ms-4">M e n ú</span>
                         </Link>
                         <ul className="nav nav-pills list-group flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                            <li className="list-menu-item">
+                            <li className="list-menu-item mt-4 mb-5 ms-5">
                                 <Link to="#submenu1" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-card-checklist"></i>
                                     <span className="ms-1 d-none d-sm-inline">Pruebas</span>
                                 </Link>
                                 <ul className="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
-                                    <li className="w-100 list-menu-item">
+                                    <li className="w-100 list-menu-item ">
                                         <Link to="#" className="nav-link px-0 text-white" onClick={handleCreateEvaluation}>
                                             <i className="fs-4 bi-file-earmark-plus"></i>
                                             <span className="ms-2 d-none d-sm-inline" >Crear</span>
@@ -534,13 +531,13 @@ export const LeftMenuTeacher = () => {
                                 </ul>
 
                             </li>
-                            <li className="list-menu-item">
-                                <Link to="#submenuEditar" data-bs-toggle="collapse" onClick={handleEditGrades} className="nav-link px-0 align-middle text-white">
+                            <li className="list-menu-item ms-5">
+                                <Link to="#submenuEditar" data-bs-toggle="collapse" onClick={handleEditGrades} className="nav-link px-0 align-middle text-white ">
                                     <i className="fs-4 bi-pen"></i>
                                     <span className="ms-1 d-none d-sm-inline ">Editar</span>
                                 </Link>
                             </li>
-                            <li className="list-menu-item">
+                            {/* <li className="list-menu-item">
                                 <Link to="#submenu2" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-calendar2-date"></i>
                                     <span className="ms-1 d-none d-sm-inline">Eventos</span>
@@ -557,22 +554,22 @@ export const LeftMenuTeacher = () => {
                                         </Link>
                                     </li>
                                 </ul>
-                            </li>
-                            <li className="list-menu-item">
+                            </li> */}
+                            {/* <li className="list-menu-item">
                                 <Link to="#submenu3" data-bs-toggle="collapse" className="nav-link px-0 align-middle text-white">
                                     <i className="fs-4 bi-chat-left-text"></i>
                                     <span className="ms-1 d-none d-sm-inline ">Chat</span>
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                         <hr />
                     </div>
                 </div>
-                <div className="render-content col mt-3 py-3"
+                <div className="container-fluid render-content col mt-3 py-3"
                     style={{ backgroundImage: `url(${backgroundForViews})` }}>
-                    <div className="d-flex flex-column w-100 gap-5">
+                    <div className="container-fluid d-flex flex-column w-100 gap-5">
                         {location.pathname.includes("profile") ? renderContent() :
-                            <div className="welcome-message mt-5 ms-auto me-auto">
+                            <div className="welcome-message mt-5">
                                 {renderContent()}
                             </div>
                         }

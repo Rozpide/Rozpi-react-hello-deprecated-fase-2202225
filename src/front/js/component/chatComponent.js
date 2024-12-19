@@ -3,6 +3,7 @@ import { Context } from "../store/appContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../../styles/Navbar.module.css";
 import Swal from "sweetalert2";
+// import { FormLabel } from "react-bootstrap";
 
 
 const ChatComponent = ({ userRole, userName, userAvatar }) => {
@@ -23,7 +24,12 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
 
     const handleSendMessage = async () => {
         if (!selectedContact) {
-            alert("Por favor selecciona un contacto antes de enviar el mensaje.");
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Por favor selecciona un contacto antes de enviar el mensaje.',
+                confirmButtonText: 'Entendido',
+            });
             return;
         }
 
@@ -37,6 +43,7 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
             const response = await actions.sendMessage(newMessage);
             setMessage("");
             setSubject("");
+            setSelectedContact(null);
             Swal.fire({
                 title: "Mensaje enviado",
                 text: response.msg,
@@ -99,7 +106,33 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                         )}
                     </div>
                 </div>
+
                 <div className={`${styles.chatCont} d-flex flex-column w-100`}>
+                    <div className={`${styles["card-footer"]} pt-3`}>
+                        <label className="w-100" style={{ color: "white", textAlign: "left", paddingLeft: "20px", fontWeight: "bold" }}>Asunto:</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={subject}
+                            onChange={(e) => setSubject(e.target.value)}
+                            style={{ borderRadius: "20px" }}
+                        />
+                        <label className="w-100" style={{ color: "white", textAlign: "left", paddingLeft: "20px", fontWeight: "bold" }}>Mensaje: </label>
+                        <textarea
+                            className="form-control"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            style={{ height: "100px", borderRadius: "25px", width: "90%" }}
+                        />
+                        <button
+                            className={`${styles.buttonChatComponent} rounded-pill`}
+                            onClick={handleSendMessage}
+                            disabled={message.trim() === "" || subject.trim() === ""}
+                        >
+                            Enviar
+                        </button>
+                        <hr className="w-100 my-3 border-white" />
+                    </div>
                     <div className={`${styles.chatMessages}`} style={{ overflowY: "scroll" }}>
                         <div className="card-body" style={{ height: "auto" }}>
                             {store.mensajes.length > 0 ? (
@@ -129,31 +162,6 @@ const ChatComponent = ({ userRole, userName, userAvatar }) => {
                                 <p className="text-muted text-center">No hay mensajes aún.</p>
                             )}
                         </div>
-                    </div>
-
-                    <div className={`${styles["card-footer"]}`}>
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Asunto"
-                            value={subject}
-                            onChange={(e) => setSubject(e.target.value)}
-                        />
-                        <input
-                            type="textarea"
-                            className="form-control"
-                            placeholder="Escribe tu mensaje..."
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            style={{ height: "100px" }}
-                        />
-                        <button
-                            className="btn btn-primary"
-                            onClick={handleSendMessage}
-                            disabled={!selectedContact || message.trim() === "" || subject.trim() === ""}
-                        >
-                            Enviar
-                        </button>
                     </div>
                 </div>
             </div>
