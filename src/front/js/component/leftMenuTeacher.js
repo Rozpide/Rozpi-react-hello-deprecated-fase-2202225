@@ -183,12 +183,12 @@ const FormCommon = ({ type }) => {
                     </div>
                 )}
                 {type === 'crear' && <div className="mb-3">
-                    <div className="d-flex justify-content-between">
-                        <div className="d-flex flex-column">
+                    <div className="d-flex row g-3">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige el curso:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="grado_id"
                                     id="inputGroupSelect04"
                                     onChange={handleChange}>
@@ -202,11 +202,11 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="d-flex flex-column">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige la materia:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill  w-100"
                                     name="materia_id"
                                     id="inputGroupSelect04"
                                     onChange={handleChange}
@@ -222,14 +222,12 @@ const FormCommon = ({ type }) => {
                                 </select>
                             </div>
                         </div>
+                        <div className="mb-3 col w-100">
+                            <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
+                            <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
+                        </div>
                     </div>
                 </div>}
-
-                {type === 'crear' && <div className="mb-3">
-                    <label className="form-label text-form">Fecha de evaluación:</label> <br></br>
-                    <DatePicker selected={startDate} onChange={handleDateChange} dateFormat="yyyy/MM/dd" className="form-control rounded-pill" required />
-                </div>}
-
                 {type === 'crear' && (
                     <div className="mb-3">
                         <label className="form-label text-form me-3">Estado:</label>
@@ -247,12 +245,12 @@ const FormCommon = ({ type }) => {
                 {/* Formulario para calificar las evaluaciones */}
 
                 {type === 'calificar' && (
-                    <div className="d-flex justify-content-between">
-                        <div className="d-flex flex-column me-3">
+                    <div className="d-flex row g-3">
+                        <div className="d-flex flex-column col">
                             <label className="form-label text-form">Elige el curso:</label>
                             <div className="input-group" required>
                                 <select
-                                    className="custom-select rounded-pill"
+                                    className="custom-select rounded-pill w-100"
                                     name="grado_id"
                                     id="inputGroupSelect04"
                                     required
@@ -267,11 +265,11 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="mb-3 me-3">
+                        <div className="mb-3 col">
                             <label className="form-label text-form">Elige una materia:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
                                 <select
-                                    className="custom-select rounded-pill ms-3"
+                                    className="custom-select rounded-pill w-100"
                                     name="materia_id"
                                     required
                                     disabled={!selectedCourse}
@@ -284,11 +282,11 @@ const FormCommon = ({ type }) => {
                             </div>
                         </div>
 
-                        <div className="mb-3">
+                        <div className="mb-3 col">
                             <label className="form-label text-form">Selecciona una evaluación:</label> <br></br>
                             <div className="input-group" onChange={handleChange}>
                                 <select
-                                    className="custom-select rounded-pill ms-4"
+                                    className="custom-select rounded-pill w-100"
                                     name="evaluacion_id"
                                     id="inputGroupSelect04"
                                     required
@@ -339,44 +337,43 @@ const FormCommon = ({ type }) => {
 
                 {type === 'editar' && (
                     <div>
-                        <div className="d-flex justify-content-between">
-                            <div className="mb-3 me-5">
+                        <div className="row g-3">
+                            <div className="mb-3 col-6 ">
                                 <label className="form-label text-form">Elige una materia:</label> <br></br>
-                                <div className="input-group" onChange={handleChange}>
-                                    <select
-                                        className="custom-select rounded-pill ms-3"
-                                        name="materia_id"
-                                        required
-                                        id="inputGroupSelect04">
-                                        onChange={(e) => handleChange(e)}
-                                        <option selected>Materia</option>
-                                        {store.profesorPersonalInfo.materias.map(materia =>
-                                            <option key={materia.id} value={materia.id}>{materia.nombre}</option>
-                                        )}
-                                    </select>
-                                </div>
+
+                                <select
+                                    className="custom-select rounded-pill w-100"
+                                    name="materia_id"
+                                    required
+                                    onChange={handleChange}
+                                    id="inputGroupSelect04">
+                                    onChange={(e) => handleChange(e)}
+                                    <option selected>Materia</option>
+                                    {store.profesorPersonalInfo.materias.map(materia =>
+                                        <option key={materia.id} value={materia.id}>{materia.nombre}</option>
+                                    )}
+                                </select>
                             </div>
 
-                            <div className="mb-3">
+                            <div className="mb-3 col-6  ">
                                 <label className="form-label text-form me-3">Selecciona una evaluación:</label> <br></br>
-                                <div className="input-groupjustify-content-center" onChange={handleChange}>
-                                    <select
-                                        className="custom-select rounded-pill ms-5"
-                                        name="evaluacion_id"
-                                        id="inputGroupSelect04"
-                                        required
-                                        disabled={!selectedSubject}
-                                    >
-                                        <option selected>Pendientes</option>
-                                        {store.calificaciones
-                                            .filter((score) => score.evaluacion.materia.id === parseInt(selectedSubject))
-                                            .map(score => score.evaluacion)
-                                            .filter((evaluacion, index, self) => index === self.findIndex(e => e.nombre === evaluacion.nombre))
-                                            .map(evaluacion =>
-                                                <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
-                                            )}
-                                    </select>
-                                </div>
+                                <select
+                                    className="custom-select rounded-pill w-100"
+                                    name="evaluacion_id"
+                                    id="inputGroupSelect04"
+                                    required
+                                    onChange={handleChange}
+                                    disabled={!selectedSubject}
+                                >
+                                    <option selected>Pendientes</option>
+                                    {store.calificaciones
+                                        .filter((score) => score.evaluacion.materia.id === parseInt(selectedSubject))
+                                        .map(score => score.evaluacion)
+                                        .filter((evaluacion, index, self) => index === self.findIndex(e => e.nombre === evaluacion.nombre))
+                                        .map(evaluacion =>
+                                            <option key={evaluacion.id} value={evaluacion.id}>{evaluacion.nombre}</option>
+                                        )}
+                                </select>
                             </div>
                         </div>
 
