@@ -119,7 +119,7 @@ export const MoreInfo = () => {
             actions.checkAlerts();
             // actions.getCurrentCoinPriceData();
 
-        }, 30000); // fetch new data every 30 seconds
+        }, 10000); // fetch new data every 30 seconds
 
         // Clean up the interval when the component unmounts
         // return () => clearInterval(intervalId);
@@ -251,7 +251,7 @@ export const MoreInfo = () => {
 
                 {/* News Feed Section */}
                 <div className="news">
-                    <h1>News feed for {store.currentCoinData.name}</h1>
+                    <h1>Latest news for {store.currentCoinData.name}</h1>
                     {loadingNews ? (
                         <p>Loading news...</p>
                     ) : news.length > 0 ? (

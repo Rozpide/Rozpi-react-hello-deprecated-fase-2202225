@@ -53,10 +53,10 @@ export const Favorites = () => {
                                 </div>
                                 <div className="favCardBody card-body">
                                     <h5 className="card-title">{favorite.name}</h5>
-                                    <p className="card-text">{favorite.symbol}</p>
+                                    <p className="card-text">Symbol: {favorite.symbol}</p>
                                     <p className="card-text"><strong>Current Price:</strong> ${favorite.market_data.current_price[store.currency]}</p>
                                     <Link to={"/moreInfo/" + favorite.id}>
-                                        <span className="favMoreInfoButton btn">More Information</span>
+                                        <span className="btn trdBtn">More Information</span>
                                     </Link>
                                     <button
                                         className="btn btn-danger ms-2"

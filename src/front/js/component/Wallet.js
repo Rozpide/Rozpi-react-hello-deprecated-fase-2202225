@@ -13,6 +13,7 @@ export const Wallet = () => {
   const [addFundsModal, setAddFundsModal] = useState(false)
   const [sortCriteria, setSortCriteria] = useState("name");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [currencySymbol, setCurrencySymbol] = useState("$");
 
 
 
@@ -31,11 +32,14 @@ export const Wallet = () => {
   }, []);
 
 
-
-
-
-
-
+  useEffect(() => {
+          setInterval(() => {
+            store.walletIds.forEach((wallet) => {
+              actions.getWalletPriceData(wallet.coin_id);
+              actions.getWalletNormalData(wallet.coin_id);
+            });
+          }, 10000); 
+      }, []);
 
   const walletCurrency = (id) => {
     document.querySelectorAll('.walletCurrencyBtns').forEach((button) => {
@@ -455,11 +459,11 @@ export const Wallet = () => {
         <div>
           <h5>Change Currency:</h5>
           <div className="walletCurrency" role="group" >
-            <button id="wc1" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("usd"); walletCurrency("wc1"); fundsCurrency("usd") }}>USD</button>
-            <button id="wc2" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("cad"); walletCurrency("wc2"); fundsCurrency("cad") }}>CAD</button>
-            <button id="wc3" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("eur"); walletCurrency("wc3"); fundsCurrency("eur") }}>EUR</button>
-            <button id="wc4" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("gbp"); walletCurrency("wc4"); fundsCurrency("gbp") }}>GBP</button>
-            <button id="wc5" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("jpy"); walletCurrency("wc5"); fundsCurrency("jpy") }}>JPY</button>
+            <button id="wc1" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("usd"); walletCurrency("wc1"); fundsCurrency("usd"); setCurrencySymbol("$") }}>USD</button>
+            <button id="wc2" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("cad"); walletCurrency("wc2"); fundsCurrency("cad"); setCurrencySymbol("C$") }}>CAD</button>
+            <button id="wc3" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("eur"); walletCurrency("wc3"); fundsCurrency("eur"); setCurrencySymbol("€") }}>EUR</button>
+            <button id="wc4" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("gbp"); walletCurrency("wc4"); fundsCurrency("gbp"); setCurrencySymbol("£") }}>GBP</button>
+            <button id="wc5" className="walletCurrencyBtns" onClick={() => { actions.setCurrency("jpy"); walletCurrency("wc5"); fundsCurrency("jpy"); setCurrencySymbol("¥") }}>JPY</button>
           </div>
         </div>
       </div>
@@ -475,6 +479,7 @@ export const Wallet = () => {
             <th onClick={() => handleSort("quantityOwned")} style={{ cursor: "pointer" }}>
               Quantity Owned {sortCriteria === "quantityOwned" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
             </th>
+            <th>Purchase Price Per Coin</th>
             <th onClick={() => handleSort("purchasedPrice")} style={{ cursor: "pointer" }}>
               Purchased Price {sortCriteria === "purchasedPrice" ? (sortOrder === "asc" ? "↑" : "↓") : ""}
             </th>
@@ -499,16 +504,14 @@ export const Wallet = () => {
                     </div>
                   </div>
                 </td>
-                <td>${walletArray.market_data.current_price[store.currency]?.toLocaleString() || ""}</td>
+                <td>{currencySymbol}{walletArray.market_data.current_price[store.currency]?.toLocaleString() || ""}</td>
                 <td>{walletId.quantity_owned}</td>
+                <td>{currencySymbol}{(((walletId.purchase_price / walletId.quantity_owned) * store.currencyMultiplier) || 0 ).toLocaleString()}</td>
                 <td>
-                  ${(
-                    walletId.quantity_owned * (walletId.purchase_price * store.currencyMultiplier) ||
-                    0
-                  ).toLocaleString()}
+                  {currencySymbol}{((walletId.purchase_price * store.currencyMultiplier) || 0 ).toLocaleString()}
                 </td>
                 <td>
-                  ${(
+                  {currencySymbol}{(
                     walletId.quantity_owned * walletArray.market_data.current_price[store.currency] ||
                     0
                   ).toLocaleString()}
@@ -541,3 +544,4 @@ export const Wallet = () => {
     </div>
   );
 };
+

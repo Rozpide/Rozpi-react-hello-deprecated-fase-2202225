@@ -172,7 +172,16 @@ export const TradeModal = (coin) => {
                             </div>
                             {buy ? (
                                 <form onSubmit={handleBuy}>
-                                    <div className="availFunds">{store.funds > 0 ? (`Available funds: ${store.funds.toLocaleString()}${store.currency.toUpperCase()}`) : ("You are broke")}</div>
+                                    <div className="availAsset">
+                                        {store.funds > 0 ? (
+                                            <div className="blah">
+                                                <div>Available Funds: </div>
+                                                <div className="assetBox">{store.funds.toLocaleString()} {store.currency.toUpperCase()}</div>
+                                            </div>
+                                        ) : (
+                                            "You are broke"
+                                        )}
+                                    </div>
                                     <div className="d-flex justify-content-center mb-3">
                                         <button
                                             className={`btn ${byCost ? "trdBtnSlctd" : "trdBtn"} me-2`}
@@ -235,7 +244,17 @@ export const TradeModal = (coin) => {
                                 </form>
                             ) : (
                                 <form>
-                                    <div className="qOwned">{ownedQuantity > 0 ? (`Available quantity: ${ownedQuantity}`) : ("You do not own this coin")}</div>
+                                    {/* <div className="availAsset">{ownedQuantity > 0 ? (`Available quantity: ${ownedQuantity}`) : ("You do not own this coin")}</div> */}
+                                    <div className="availAsset">
+                                        {ownedQuantity > 0 ? (
+                                            <div className="blah">
+                                                <div>Available Quantity: </div>
+                                                <div className="assetBox">{parseFloat(Number(ownedQuantity).toFixed(3))} {store.tradeCoin.name}</div>
+                                            </div>
+                                        ) : (
+                                            "You do not own this coin"
+                                        )}
+                                    </div>
                                     <div className="d-flex justify-content-center mb-3">
                                         <button
                                             className={`btn ${byCost ? "trdBtnSlctd" : "trdBtn"} me-2`}
@@ -257,7 +276,7 @@ export const TradeModal = (coin) => {
                                                     setPrice(e.target.value);
                                                     setQuantity(price /
                                                         ((location.pathname == '/listingpage') ?
-                                                             store.tradeCoin.current_price :
+                                                            store.tradeCoin.current_price :
                                                             store.tradeCoin.market_data.current_price[store.currency]))
 
 

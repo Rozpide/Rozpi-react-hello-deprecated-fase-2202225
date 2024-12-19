@@ -297,17 +297,17 @@ const getState = ({ getStore, getActions, setStore }) => {
                         response.prices.forEach((entry) => {
                             if (resultArray.length < 1) resultArray.push({
                                 date: entry[0],
-                                price: entry[1]
+                                Holdings: entry[1]
                             });
                             else {
                                 let exists = resultArray.find((elem, ind) => elem.date == entry[0]);
                                 if (!exists) {
                                     resultArray.push({
                                         date: entry[0],
-                                        price: entry[1]
+                                        Holdings: entry[1]
                                     });
                                 } else {
-                                    exists.price += entry[1]
+                                    exists.Holdings += entry[1]
                                 }
                             }
                         });

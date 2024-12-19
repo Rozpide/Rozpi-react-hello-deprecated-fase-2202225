@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
-import { AreaChart, linearGradient, defs, LineChart, Line, Area, YAxis, Tooltip, XAxis, ResponsiveContainer } from "recharts";
+import { AreaChart, linearGradient, defs, LineChart, Line, Area, YAxis, Tooltip, XAxis, ResponsiveContainer, Label } from "recharts";
 
 export const OverallHoldings = () => {
     const { store, actions } = useContext(Context);
@@ -16,7 +16,7 @@ export const OverallHoldings = () => {
             date: new Date(day.date).toDateString()
         }
         )))
-        setTotalReturn((((store.walletReturnsData[store.walletReturnsData.length - 1].price - store.walletReturnsData[0].price) / store.walletReturnsData[0].price) * 100).toFixed(2))
+        setTotalReturn((((store.walletReturnsData[store.walletReturnsData.length - 1].Holdings - store.walletReturnsData[0].Holdings) / store.walletReturnsData[0].Holdings) * 100).toFixed(2))
     }, [])
 
     return (
@@ -33,7 +33,7 @@ export const OverallHoldings = () => {
                             </linearGradient>
                         </defs>
                         <YAxis type="number" domain={['dataMin', 'dataMax']} width={0} />
-                        <Area type="monotone" dataKey="price" stroke="#39ff14" strokeWidth={2} dot={false} fill="url(#colorUv)" />
+                        <Area type="monotone" dataKey="Holdings" stroke="#39ff14" strokeWidth={2} dot={false} fill="url(#colorUv)" />
                         <XAxis dataKey="date" height={0} />
                         <Tooltip />
                     </AreaChart>
