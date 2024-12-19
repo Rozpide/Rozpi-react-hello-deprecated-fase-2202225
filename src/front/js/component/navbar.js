@@ -47,9 +47,9 @@ export const Navbar = () => {
             alert("You are not logged in. Please register or sign in.");
             return; // Stop the action if not logged in
         }
-        setSearchQuery(coin.name); 
-        setShowSuggestions(false); 
-        navigate(`/moreinfo/${coin.id}`); 
+        setSearchQuery(coin.name); // Update the input with the selected suggestion
+        setShowSuggestions(false); // Hide suggestions after selecting
+        navigate(`/moreinfo/${coin.id}`); // Navigate to the specific coin's route
         window.location.reload();
     };
     
@@ -134,10 +134,7 @@ export const Navbar = () => {
                                             key={coin.id}
                                             className="dropdown-item"
                                             style={{ cursor: "pointer", color: "white" }}
-                                            onMouseDown={() => {
-                                                handleSuggestionClick(coin)
-
-                                            }}
+                                            onMouseDown={() => handleSuggestionClick(coin)}
                                         >
                                             {coin.name} ({coin.symbol.toUpperCase()})
                                         </li>
