@@ -91,32 +91,34 @@ export const UpdateStudent = props => {
                 <div className="row">
                     <div className="col mt-5">
                         <div className="render-content mt-3" style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
-                            <div className="container-welcome-teacher mt-3">
+                            <div className="container container-welcome-teacher mt-3">
                                 <h1 className="text-white text-center mb-4">Editar la información de {currentStudent.nombre} {currentStudent.apellido}</h1>
 
-                                <div className="mb-3">
-                                    <label className="form-label text-form">Nombre:</label>
-                                    <input
-                                        type="text"
-                                        name="nombre"
-                                        className="form-control rounded-pill"
-                                        required
-                                        value={currentStudent.nombre}
-                                        onChange={handleChange} />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label text-form">Apellido:</label>
-                                    <input
-                                        type="text"
-                                        name="apellido"
-                                        className="form-control rounded-pill"
-                                        required
-                                        value={currentStudent.apellido}
-                                        onChange={handleChange} />
+                                <div className="row g-5 justify-content-center mb-3">
+                                    <div className="col-5">
+                                        <label className="form-label text-form">Nombre:</label>
+                                        <input
+                                            type="text"
+                                            name="nombre"
+                                            className="form-control rounded-pill"
+                                            required
+                                            value={currentStudent.nombre}
+                                            onChange={handleChange} />
+                                    </div>
+                                    <div className="col-5">
+                                        <label className="form-label text-form">Apellido:</label>
+                                        <input
+                                            type="text"
+                                            name="apellido"
+                                            className="form-control rounded-pill"
+                                            required
+                                            value={currentStudent.apellido}
+                                            onChange={handleChange} />
+                                    </div>
                                 </div>
 
-                                <div className="mb-3 d-flex justify-content-between">
-                                    <div>
+                                <div className="row g-5 justify-content-center mb-3">
+                                    <div className="col-5">
                                         <label className="form-label text-form">Fecha de nacimiento:</label> <br></br>
                                         <DatePicker
                                             selected={startDate}
@@ -126,7 +128,7 @@ export const UpdateStudent = props => {
                                             className="form-control rounded-pill"
                                             required />
                                     </div>
-                                    <div className="d-flex flex-column">
+                                    <div className="col-5 d-flex flex-column">
                                         <label className="form-label text-form">Asignar un grado:</label>
                                         <select
                                             className="custom-select rounded-pill"
@@ -143,19 +145,24 @@ export const UpdateStudent = props => {
                                         </select>
                                     </div>
                                 </div>
-
-                                <div className="d-flex justify-content-center mt-5">
-                                    <button
-                                        type="submit"
-                                        className="btn btn-outline-register me-5"
-                                        onClick={() => updateStudent()}
-                                    >Registrar</button>
-                                    <Link to="/dashboard/admin">
-                                        <button
-                                            type="submit"
-                                            className="btn btn-outline-cancel"
-                                        >Regresar</button>
-                                    </Link>
+                                <div className="d-flex justify-content-center">
+                                    <div className="row g-5 mt-5">
+                                        <div className="col">
+                                            <button
+                                                type="submit"
+                                                className="btn btn-outline-register"
+                                                onClick={() => updateStudent()}
+                                            >Registrar</button>
+                                        </div>
+                                        <div className="col">
+                                            <Link to="/dashboard/admin">
+                                                <button
+                                                    type="submit"
+                                                    className="btn btn-outline-cancel"
+                                                >Regresar</button>
+                                            </Link>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>

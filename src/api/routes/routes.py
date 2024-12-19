@@ -108,6 +108,7 @@ def handle_logout():
 
     return jsonify({"msg": "Logged Out"}),200
 
+
 @api.route('/profile/picture', methods=['PUT'])
 @jwt_required()
 def handle_profile_pic():
