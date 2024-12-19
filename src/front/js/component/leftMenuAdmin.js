@@ -328,7 +328,7 @@ const FormCommon = ({ type }) => {
                                         <tr key={profesor.id}>
                                             <td>{profesor.nombre}</td>
                                             <td>{profesor.apellido}</td>
-                                            <td>{profesor.email}</td>
+                                            <td className="text-center">{profesor.email}</td>
                                             <td>{profesor.telefono}</td>
                                             <td>{profesor.direccion}</td>
                                             <td>{profesor.descripcion}</td>
