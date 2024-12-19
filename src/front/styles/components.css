@@ -425,6 +425,10 @@
   color: rgb(0, 0, 0);
 }
 
+.custom-select>option {
+  color: #000000;
+}
+
 /* Estilos para tablas */
 
 .table-styles {
@@ -433,4 +437,14 @@
   width: 100%;
   height: auto;
   padding: 2rem;
+  overflow: auto;
+}
+
+.react-datepicker-wrapper {
+  width: 100% !important;
+}
+
+.form-control::placeholder {
+  color: rgb(177, 165, 165);
+  opacity: 1;
 }

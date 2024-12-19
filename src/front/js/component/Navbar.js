@@ -106,7 +106,7 @@ const NavBar = () => {
                   }}
                   className={`${styles.ItemAvatarButtom} `}
                 >
-                  Mensajería
+                  Chat
                 </Dropdown.Item>
                 <Dropdown.Item onClick={handleLogout} className={`${styles.ItemAvatarButtom}`}>
                   Cerrar Sesión

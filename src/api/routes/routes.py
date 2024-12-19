@@ -167,9 +167,9 @@ def get_teachers_cards():
      if not teachers:
          return jsonify({"docentes": []}),404
      
-     return jsonify({"docentes": [{"fullName": f"{teacher.nombre} {teacher.apellido}",
+     return jsonify( [{"fullName": f"{teacher.nombre} {teacher.apellido}",
                                    "descripcion": teacher.descripcion,
-                                   "foto": get_image(teacher.foto) if teacher.foto else ""} for teacher in teachers]}),200
+                                   "foto": get_image(teacher.foto) if teacher.foto else ""} for teacher in teachers]),200
 
 @api.route('/password/recovery', methods=['POST'])
 def handle_change_password_request():

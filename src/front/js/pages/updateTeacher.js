@@ -81,74 +81,79 @@ export const UpdateTeacher = () => {
                 <div className="row">
                     <div className="col mt-5">
                         <div className="render-content mt-3" style={{ backgroundImage: `url(${backgroundForViews})`, backgroundSize: "cover" }}>
-                            <div className="container-welcome-teacher mt-3">
+                            <div className="container container-welcome-teacher mt-3">
                                 <h1 className="text-white text-center mb-4">Editar la información de {currentTeacher.nombre} {currentTeacher.apellido}</h1>
 
-                                <div className="mb-3">
-                                    <label className="form-label text-form">Nombre:</label>
-                                    <input
-                                        type="text"
-                                        name="nombre"
-                                        className="form-control rounded-pill"
-                                        required
-                                        value={currentTeacher.nombre}
-                                        onChange={handleChange} />
+                                <div className="row g-5 justify-content-center mb-3">
+                                    <div className="col-5">
+                                        <label className="form-label text-form">Nombre:</label>
+                                        <input
+                                            type="text"
+                                            name="nombre"
+                                            className="form-control rounded-pill"
+                                            required
+                                            value={currentTeacher.nombre}
+                                            onChange={handleChange} />
+                                    </div>
+                                    <div className="col-5">
+                                        <label className="form-label text-form">Apellido:</label>
+                                        <input
+                                            type="text"
+                                            name="apellido"
+                                            className="form-control rounded-pill"
+                                            required
+                                            value={currentTeacher.apellido}
+                                            onChange={handleChange} />
+                                    </div>
                                 </div>
-                                <div className="mb-3">
-                                    <label className="form-label text-form">Apellido:</label>
-                                    <input
-                                        type="text"
-                                        name="apellido"
-                                        className="form-control rounded-pill"
-                                        required
-                                        value={currentTeacher.apellido}
-                                        onChange={handleChange} />
-                                </div>
+                                <div className="row g-5 justify-content-center mb-3">
 
-                                <div className="mb-3">
-                                    <label className="form-label text-form">Email:</label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        className="form-control rounded-pill"
-                                        required
-                                        value={currentTeacher.email}
-                                        onChange={handleChange} />
-                                </div>
+                                    <div className="col-5">
+                                        <label className="form-label text-form">Email:</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            className="form-control rounded-pill"
+                                            required
+                                            value={currentTeacher.email}
+                                            onChange={handleChange} />
+                                    </div>
 
-                                <div className="mb-3">
-                                    <label className="form-label text-form">Telefono:</label>
-                                    <input
-                                        type="text"
-                                        name="telefono"
-                                        className="form-control rounded-pill"
-                                        required
-                                        value={currentTeacher.telefono}
-                                        onChange={handleChange} />
+                                    <div className="col-5">
+                                        <label className="form-label text-form">Telefono:</label>
+                                        <input
+                                            type="text"
+                                            name="telefono"
+                                            className="form-control rounded-pill"
+                                            required
+                                            value={currentTeacher.telefono}
+                                            onChange={handleChange} />
+                                    </div>
                                 </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label text-form">Direccion:</label>
-                                    <input
-                                        type="text"
-                                        name="direccion"
-                                        className="form-control rounded-pill"
-                                        required
-                                        value={currentTeacher.direccion}
-                                        onChange={handleChange} />
+                                <div className="row justify-content-center mb-3">
+                                    <div className="col-10">
+                                        <label className="form-label text-form">Direccion:</label>
+                                        <input
+                                            type="text"
+                                            name="direccion"
+                                            className="form-control rounded-pill"
+                                            required
+                                            value={currentTeacher.direccion}
+                                            onChange={handleChange} />
+                                    </div>
                                 </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label text-form">Descripcion:</label>
-                                    <textarea
-                                        type="text"
-                                        name="descripcion"
-                                        className="form-control teacher-description" rows="3"
-                                        required
-                                        value={currentTeacher.descripcion}
-                                        onChange={handleChange} />
+                                <div className="row justify-content-center mb-3">
+                                    <div className="col-10">
+                                        <label className="form-label text-form">Descripcion:</label>
+                                        <textarea
+                                            type="text"
+                                            name="descripcion"
+                                            className="form-control teacher-description" rows="3"
+                                            required
+                                            value={currentTeacher.descripcion}
+                                            onChange={handleChange} />
+                                    </div>
                                 </div>
-
 
                                 <div className="d-flex justify-content-center mt-5">
                                     <button
@@ -169,7 +174,7 @@ export const UpdateTeacher = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

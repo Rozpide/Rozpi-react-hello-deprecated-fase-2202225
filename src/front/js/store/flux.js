@@ -128,6 +128,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			}, userOperations: async (method, body = '', id = '') => {
 				return getActions().crudOperation('user/auth', method, { id, body, bluePrint: 'admin' })
+			}, allUsersOperations: async (method, body = '', id = '') => {
+				return getActions().crudOperation('users', method, { id, body, bluePrint: 'admin' })
+			}, setAllUsers: async () => {
+				const response = await getActions().allUsersOperations('GET')
+				setStore({ usuarios: response })
 			}, setUsers: async () => {
 				const response = await getActions().userOperations('GET')
 				setStore({ usuarios: response })
