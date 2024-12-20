@@ -545,7 +545,9 @@ const FormCommon = ({ type }) => {
                 }
 
                 <div className="d-flex justify-content-center mt-5">
-                    <button type="submit" className="btn btn-outline-register">Registrar</button>
+                    {type !== 'updateEvaluation' && (
+                        <button type="submit" className="btn btn-outline-register">Registrar</button>
+                    )}
                 </div>
             </form >
         </div >
