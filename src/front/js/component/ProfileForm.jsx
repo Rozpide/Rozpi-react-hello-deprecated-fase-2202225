@@ -109,6 +109,10 @@ const ProfileForm = ({ user }) => {
           title: "Perfil Actualizado",
           text: response.msg || "Actualizado Correctamente",
           icon: "success",
+          customClass: {
+            confirmButton: "btn-outline-register"
+          },
+          buttonsStyling: false
         });
       }
     } catch (error) {
@@ -169,6 +173,7 @@ const ProfileForm = ({ user }) => {
     } finally {
       setIsUploading(false);
       setPicturePreview(null);
+      setPictureFile(null)
     }
   };
 
@@ -205,102 +210,104 @@ const ProfileForm = ({ user }) => {
       reader.readAsDataURL(file);
       return;
     }
-    setPictureFile(null);
     setPicturePreview(null);
+    setPictureFile(null)
+
   };
 
   return user ? (
     <Container className="container-fluid fadeIn">
-      <div className="row ">
-        <div className="col-md-4 col-sm-auto text-center">
-          <Avatar
-            src={userData.foto || "https://placehold.co/400"}
-            alt={""}
-            height={"200px"}
-            className="mb-0 mt-3"
-          />
-        </div>
-        <div className="col-md-4 col-sm-auto d-flex flex-column align-items-center justify-content-around">
-          <label className="form-label">Subir foto:</label>
-          <StyledFileInput
-            type="file"
-            accept="image/*"
-            className="form-control select-image rounded-pill"
-            onChange={handleUploadPhoto}
-            required
-          />
-          {picturePreview && (
-            <div className="text-center">
-              <button
-                type="button"
-                className="btn btn-outline-register"
-                onClick={() => uploadPicture()}
-                disabled={isUploading}>
-                {isUploading ? (
-                  <>
-                    Subiendo <Spinner animation="border" size="sm" />
-                  </>
-                ) : (
-                  <>
-                    Enviar <i className="bi bi-save"></i>
-                  </>
-                )}
-              </button>
-            </div>
-          )}
+      <div className="row">
+        <div className="col-12 d-flex flex-column align-items-center">
+
+          <div className="text-center">
+            {!picturePreview ? <Avatar
+              src={user.foto || "https://placehold.co/400"}
+              alt={""}
+              height={"200px"}
+              className="mb-0 mt-3"
+            /> : <Avatar
+              src={picturePreview}
+              alt={""}
+              height={"200px"}
+              className="mb-0 mt-3"
+            />}
+          </div>
+          <div className="d-flex flex-column align-items-center">
+            <StyledFileInput
+              type="file"
+              accept="image/*"
+              className="form-control select-image rounded-pill"
+              onChange={handleUploadPhoto}
+              required
+
+            />
+            {picturePreview && (
+              <div className="text-center m-3">
+                <button
+                  type="button"
+                  className="btn btn-outline-register"
+                  onClick={() => uploadPicture()}
+                  disabled={isUploading}>
+                  {isUploading ? (
+                    <>
+                      Subiendo <Spinner animation="border" size="sm" />
+                    </>
+                  ) : (
+                    <>
+                      Enviar <i className="bi bi-save"></i>
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        {picturePreview && (
-          <div className="col-md-4 col-sm-auto d-flex justify-content-center">
-            <StyledImg
-              src={picturePreview}
-              alt="Preview"
-              className="mt-2"
-              style={{ width: "50vw", height: "auto", maxWidth: "150px" }}
-            />
-          </div>
-        )}
       </div>
 
-      <div className="row">
+      <div className="ms-3 me-2row mb-2">
+        <hr className="dropdown-divider mt-2 mb-2" />
         <div className="d-flex gap-2 jusitfy-content-center align-items-center">
           <i className="bi bi-person-circle fs-3"></i>
-          <h3 className="m-0">Informacion Personal </h3>
+          <h3 className="m-0">Información Personal </h3>
         </div>
-        <hr className="dropdown-divider mt-2" />
       </div>
 
       <form onSubmit={e => handleSubmit(e)}>
-        <div className="row">
-          <div className="col-md-4 col-sm-auto m-2">
-            <label htmlFor="nombre" className="form-label">
+        <div className="ms-2 me-2 row mb-4">
+          <div className="col-md-4 col-sm-auto ">
+            <label htmlFor="input-nombre" className="form-label">
               Nombre
             </label>
             <StyledInput
               type="text"
+              id="input-nombre"
               name="nombre"
               className="form-control"
               value={userData.nombre || ""}
               onChange={e => handleChange(e)}
             />
           </div>
-          <div className="col-md-4 col-sm-auto m-2">
-            <label htmlFor="apellido" className="form-label">
+          <div className="col-md-4 col-sm-auto ">
+            <label htmlFor="input-apellido" className="form-label">
               Apellido
             </label>
             <StyledInput
               type="text"
+              id="input-apellido"
               name="apellido"
               className="form-control"
               value={userData.apellido || ""}
               onChange={e => handleChange(e)}
             />
           </div>
-          <div className="col-md-4 col-sm-auto m-2">
-            <label htmlFor="email" className="form-label">
+          <div className="col-md-4 col-sm-auto ">
+            <label htmlFor="input-email" className="form-label">
               Correo Electronico
             </label>
             <StyledInput
+              id="input-email"
               type="email"
               name="email"
               className="form-control"
@@ -309,12 +316,13 @@ const ProfileForm = ({ user }) => {
             />
           </div>
         </div>
-        <div className="row">
-          <div className="col-md-4 col-sm-auto m-2">
-            <label htmlFor="telefono" className="form-label">
-              Telefono
+        <div className="ms-2 me-2 row mb-6 ">
+          <div className="col-md-4 col-sm-auto">
+            <label htmlFor="input-telefono" className="form-label">
+              Teléfono
             </label>
             <StyledInput
+              id="input-telefono"
               type="tel"
               name="telefono"
               className="form-control"
@@ -322,39 +330,45 @@ const ProfileForm = ({ user }) => {
               onChange={e => handleChange(e)}
             />
           </div>
-          <div className="col-md-6 col-sm-auto m-2">
-            <label htmlFor="direccion" className="form-label">
-              Direccion
+          <div className="col-md-8 col-sm-auto">
+            <label htmlFor="input-direccion" className="form-label">
+              Dirección
             </label>
             <StyledInput
               type="textarea"
+              id="input-direccion"
               name="direccion"
               className="form-control"
               value={userData.direccion || ""}
               onChange={e => handleChange(e)}
             />
           </div>
+        </div>
+        <div className="ms-2 me-2 row mt-3 mb-3">
+
           {isTeacher && (
-            <div className="col-md-6 col-sm-auto m-2">
-              <label htmlFor="descripcion" className="form-label">
-                Descripcion
+            <div className="col-md-12 col-sm-auto">
+              <label htmlFor="input-descripcion" className="form-label">
+                Descripción
               </label>
-              <StyledInput
+              <textarea
+                id="input-descripcion"
                 type="textarea"
                 name="descripcion"
                 className="form-control"
+                style={{ borderRadius: "1.5rem", height: " 6rem ", resize: "none" }}
                 value={userData.descripcion || ""}
                 onChange={e => handleChange(e)}
               />
             </div>
           )}
         </div>
-        <div className="row mt-2">
+        <div className="ms-2 me-2 row mt-2">
+          <hr className="dropdown-divider mb-2" />
           <div className="d-flex gap-2 jusitfy-content-center align-items-center">
             <i className="bi bi-file-lock-fill fs-3"></i>
             <h3 className="m-0">Seguridad </h3>
           </div>
-          <hr className="dropdown-divider mt-2" />
         </div>
         <div className="row d-flex justify-content-evenly mt-2">
           <div className="col-auto">
@@ -379,12 +393,12 @@ const ProfileForm = ({ user }) => {
           </div>
           <hr className="dropdown-divider mt-4" />
         </div>
-        <div className="row mt-5 mb-5">
+        <div className="ms-2 me-2 row mt-5 mb-5">
           <div className="col-md-3 col-sm-auto"></div>
           <div className="col-md-6 col-sm-auto text-center">
             <button
               type="submit"
-              className="btn btn-success w-75"
+              className="btn btn-outline-register w-75"
               disabled={isUploading}>
               Guardar
             </button>

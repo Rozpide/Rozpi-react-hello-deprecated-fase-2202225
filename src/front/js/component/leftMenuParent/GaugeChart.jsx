@@ -5,15 +5,14 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
   let subArcs =
     max == 20
       ? [
-        { limit: 3 },
-        { limit: 6 },
-        { limit: 9 },
+        { limit: 4 },
+        { limit: 8 },
         { limit: 12 },
         { limit: 15 },
         { limit: 18 },
-        {},
+        { limit: 20 },
       ]
-      : [{}, {}, {}, {}, {}, {}, {}];
+      : [{}, {}, {}];
 
   return (
     <GaugeComponent
@@ -21,12 +20,18 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
       arc={{
         colorArray: ["#FF2121", "#00FF15"],
         padding: 0.02,
-        subArcs: subArcs,
+        subArcs: max == 10 ? [
+          { limit: 2 },
+          { limit: 4 },
+          { limit: 6 },
+          { limit: 8 },
+          { limit: 10 },
+        ] : subArcs,
       }}
       labels={{
         valueLabel: { formatTextValue: value => `${value}/${max}` },
         tickLabels: {
-          type: "outer",
+          type: "inner",
           defaultTickValueConfig: {
             formatTextValue: value => value,
             style: { fontSize: 8, fill: "#F0F6FC" },
@@ -43,9 +48,6 @@ const ParentGaugeChart = ({ value = 50, min = 0, max = 100 }) => {
       style={{
         width: "100%",
         height: "100%",
-        maxWidth: "333px",
-        maxHeight: "165px",
-        margin: "0 auto"
       }}
     />
   );

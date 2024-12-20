@@ -51,8 +51,10 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
         <div className="col-md-4 col-sm-12 ">
           <BoxDisplay aspect="1/1" classname="align-items-center ">
             {estudiantes.length == 0 ? (
-              <div className="w-100 h-100 d-flex justify-content-center align-items-center ">
-                <Spinner animation="border" variant="light" />
+              <div className="container-fluid d-flex flex-column justify-content-center align-items-center mt3">
+                <Spinner animation="grow" variant="light" className="mt-2" />
+                <h3 className="text-center text-light mt-0">Estamos cargando su información</h3>
+                <h6 className="text-center text-light">Por favor espere un momento...</h6>
               </div>
             ) : (
               <>
@@ -60,8 +62,8 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                   className={
                     "d-flex gap-3 text-light text-center align-items-center"
                   }>
-                  <i className="bi bi-list-check fs-1"></i>
                   <h1>Promedio</h1>
+                  <i className="bi bi-list-check fs-1"></i>
                 </div>
                 <Carousel
                   style={{ width: "100%" }}
@@ -73,14 +75,12 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                     ? avgInfo.map((student, index) => {
                       return (
                         <Carousel.Item
-                          className="text-light text-center"
-                          key={index}
-                          style={{ width: "100%", height: "100%" }}>
+                          key={index}>
                           <ParentGaugeChart
-                            max={20}
+                            max={10}
                             value={student.promedio}
                           />
-                          <h5 className=" mb-2">
+                          <h5 className="mb-2 text-center text-light">
                             {" "}
                             <i className="bi bi-mortarboard-fill me-3"></i>
                             {student.nombre}
@@ -95,7 +95,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                     variant="light"
                     className={`w-25 fadeInLeft`}
                     onClick={() => handlePrevSlide(avgSlide, setAvgSlide)}>
-                    <i className="bi bi-arrow-bar-left"></i>
+                    <i class="fa-solid fa-arrow-left"></i>
                   </Button>
 
                   <Button
@@ -104,7 +104,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                     onClick={() =>
                       handleNextSlide(avgSlide, estudiantes.length, setAvgSlide)
                     }>
-                    <i className="bi bi-arrow-bar-right"></i>
+                    <i class="fa-solid fa-arrow-right"></i>
                   </Button>
                 </div>
               </>
@@ -116,8 +116,10 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
         <div className="col-12 d-flex justify-content-center align-items-center">
           <BoxDisplay classname="align-items-center pt-3" flex="row" aspect="16/9">
             {estudiantes.length == 0 ? (
-              <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-                <Spinner animation="border" variant="light" />
+              <div className="container-fluid d-flex flex-column justify-content-center align-items-center mt3">
+                <Spinner animation="grow" variant="light" className="mt-2" />
+                <h2 className="text-center text-light mt-0">Estamos cargando su información</h2>
+                <h6 className="text-center text-light">Por favor espere un momento...</h6>
               </div>
             ) : (
               <>
@@ -128,7 +130,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                     onClick={() =>
                       handlePrevSlide(studentSlide, setStudentSlide)
                     }>
-                    <i className="bi bi-arrow-bar-left"></i>
+                    <i class="fa-solid fa-arrow-left"></i>
                   </Button>
                 ) : (
                   " "
@@ -145,7 +147,7 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                         <Carousel.Item key={index}>
                           <TableWrapper>
                             <div className={"d-flex gap-3 text-light"}>
-                              <h1 className="mb-5">{estudiante.nombre}</h1>
+                              <h1 className="mb-3">{estudiante.nombre}</h1>
                             </div>
                             <ParentDashboardTable
 
@@ -171,7 +173,8 @@ const MainDashboard = ({ dataEvents, estudiantes }) => {
                         setStudentSlide
                       )
                     }>
-                    <i className="bi bi-arrow-bar-right"></i>
+                    <i class="fa-solid fa-arrow-right"></i>
+
                   </Button>
                 ) : (
                   " "

@@ -255,7 +255,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ token: null, role: null, userAvatar: null, personalInfo: null });
 					localStorage.removeItem("token");
 					localStorage.removeItem("role");
-					window.location.href = '/'
+					window.location.href = '/login'
 				} catch (error) {
 					console.error("Error al cerrar sesión:", error);
 				}
@@ -409,16 +409,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						throw new Error(error.msg || "Error al subir la imagen");
 					}
 					let data = await response.json()
-					let rol = getStore().role
-					switch (rol) {
-						case "representante":
-							await getActions().getParentInfo()
-						case "docente":
-							await getActions().getTeacherInfo()
-						default:
-							await getActions().getAdminInfo()
-
-					}
+					await getActions().getPersonalInfo()
 					return data
 				} catch (error) {
 					console.error("Error al subir la imagen:", error.message);
@@ -427,17 +418,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			}, updateProfile: async (body) => {
 				try {
 					const response = await getActions().fetchRoute("update", { method: 'PUT', isPrivate: true, bluePrint: "profile", body: body })
-					let rol = getStore().role
-					switch (rol) {
-						case "representante":
-							await getActions().getParentInfo()
-						case "docente":
-							await getActions().getTeacherInfo()
-						default:
-							await getActions().getAdminInfo()
-							break;
-					}
-
+					await getActions().getPersonalInfo()
 					return response
 				} catch (error) {
 					console.error(error.message)
@@ -492,7 +473,25 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error(error.message)
 					throw error
 				}
-			},
+			}, getPersonalInfo: async () => {
+				const { role } = getStore()
+				const actions = getActions()
+
+				switch (role.toLowerCase()) {
+					case "admin":
+						await actions.getAdminInfo()
+						break;
+					case "representante":
+						await actions.getParentInfo()
+						break;
+					case "docente":
+						await actions.getTeacherInfo()
+						break;
+					default:
+						break;
+				}
+
+			}
 		}
 	}
 };
