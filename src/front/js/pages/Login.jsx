@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
-import { Context } from "../store/appContext";
+import { Context } from "../store/appContext.js";
 import JourNaviLogo from "../../img/JourNavi Logo.png";
 import { useNavigate } from "react-router-dom";
 
 
 export const Login = () => {
-    const { store } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [visible, setVisible] = useState(false);
@@ -17,7 +17,7 @@ export const Login = () => {
         const dataToSend = { email, password };
         const success = await actions.login(dataToSend);
         if (success) {
-            alert(`Welcome, ${email}`);
+            alert(`Welcome, ${store.user.name ? store.user.name : store.user.email}`);
             navigate('/');
         } else {
             setErrorMessage(store.message)
@@ -31,11 +31,11 @@ export const Login = () => {
                 <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
                 <div className="form-floating mb-3">
                     <input type="email" className="form-control" id="floatingInput" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
-                    <label for="floatingInput">Email address</label>
+                    <label htmlFor="floatingInput">Email address</label>
                 </div>
                 <div className="form-floating">
                     <input type={visible ? 'text' : 'password'} className="form-control" id="floatingPassword" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
-                    <label for="floatingPassword">Password</label>
+                    <label htmlFor="floatingPassword">Password</label>
                     <div style={{ position: 'relative', left: '90%', transform: 'translateY(-170%)', color: '#FE5558', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
                         {visible ? <i className="fas fa-eye"></i> : <i className="fas fa-eye-slash"></i>}
                     </div>

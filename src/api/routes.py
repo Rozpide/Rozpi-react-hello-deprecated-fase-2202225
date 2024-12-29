@@ -5,14 +5,27 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from api.models import db, Users
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 
 api = Blueprint('api', __name__)
 CORS(api)  # Allow CORS requests to this API
 
 
-@api.route('/hello', methods=['GET'])
-def handle_hello():
+@api.route('/login', methods=['POST'])
+def login():
     response_body = {}
-    response_body['message'] = "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    return jsonify(response_body), 200
+    data = request.json
+    email = data.get('email', None)
+    password = data.get('password', None)
+    user = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password)).scalar()
+    if not user:
+        response_body['message'] = 'Email or password incorrect'
+        return response_body, 401
+    access_token = create_access_token(identity={'email': user.email, 'user_id': user.id})
+    response_body['message'] = f'Welcome, {email}'
+    response_body['access_token'] = access_token
+    response_body['results'] = user.serialize()
+    return response_body, 200

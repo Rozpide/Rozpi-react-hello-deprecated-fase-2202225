@@ -6,9 +6,12 @@ import ScrollToTop from "./component/ScrollToTop.jsx";
 import { BackendURL } from "./component/BackendURL.jsx";
 import { Navbar } from "./component/Navbar.jsx";
 import { Footer } from "./component/Footer.jsx";
+import { ProtectedRoutes } from "./component/ProtectedRoutes.jsx";
 // Custom pages / views
 import { Home } from "./pages/Home.jsx";
 import { Login } from "./pages/Login.jsx";
+import { Profile } from "./pages/Profile.jsx";
+import { Settings } from "./pages/Settings.jsx";
 import { Demo } from "./pages/Demo.jsx";
 import { Single } from "./pages/Single.jsx";
 
@@ -28,6 +31,10 @@ const Layout = () => {
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<Login />} path="/login" />
+                        <Route element={<ProtectedRoutes />}>
+                            <Route element={<Profile />} path="/profile" />
+                            <Route element={<Settings />} path="/settings" />
+                        </Route>
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single" />
                         <Route element={<h1>Not found!</h1>} path="*"/>
