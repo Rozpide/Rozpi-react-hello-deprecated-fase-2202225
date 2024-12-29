@@ -1,3 +1,13 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+
+.link-style {
+    text-decoration: none;
+    color: white;
+}
+
+.link-style:hover {
+    text-decoration: underline;
+    color: white;
+}
