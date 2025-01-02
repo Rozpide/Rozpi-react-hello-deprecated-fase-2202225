@@ -61,6 +61,23 @@
     transform: scale(1.05); /* Efecto de zoom */
 }
 
+/* Links activos */
+.active-link button {
+    background-color: #0056b3; /* Fondo azul para enlace activo */
+    color: #FFFFFF; /* Texto blanco */
+}
+
+/* Estilo para usuario */
+.navbar-user {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #FF1517;
+    padding: 5px 10px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
 /* Adaptación para dispositivos móviles */
 @media (max-width: 768px) {
     .navbar {
@@ -72,5 +89,17 @@
         width: 100%;
         justify-content: space-between;
         flex-wrap: wrap;
+        gap: 15px; /* Incrementar espacio */
     }
+
+    .btn {
+        width: 100%; /* Hacer que los botones ocupen el ancho completo */
+        text-align: center;
+    }
+}
+
+/* Estilo accesible para botones */
+.btn:focus {
+    outline: 3px solid #0056b3; /* Borde azul visible */
+    outline-offset: 2px;
 }

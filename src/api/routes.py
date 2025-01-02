@@ -11,77 +11,20 @@ import jwt
 import datetime
 from api.models import db, User, Product, Order, Notification, OrderItem
 from api.utils import APIException
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 
 load_dotenv()
 
 api = Blueprint('api', __name__)
-CORS(api)
+CORS(api, resources={r"/api/*": {"origins": "https://stunning-lamp-g45qpxg76p9gfpq4-3000.app.github.dev"}})
+
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 @api.route('/hello', methods=['GET'])
 def handle_hello():
     return jsonify({"message": "Hello! I'm a message from the backend"}), 200
-
-# Registro y login
-@api.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()# Esto me ayuda a obtener los datos que me va a enviar el cliente =)
-
-   # Valida los datos que enviaron
-    if not data.get('email') or not data.get('password') or not data.get('name'):
-        return jsonify({"message": "Todos los campos son obligatorios"}), 400
-
-    existing_user = User.query.filter_by(email=data['email']).first()
-    if existing_user:
-        return jsonify({"message": "El correo ya está registrado"}), 409
-# Crear un nuevo usuario con la contraseña encriptada, aquí es donde voy a usar el has
-    hashed_password = generate_password_hash(data['password'])
-    new_user = User(
-        name=data['name'],
-        email=data['email'], 
-        password=hashed_password,
-        is_active=True)# por defecto coloco esto para que el usuario este activooo ;)
-   # base de datos, ya te voy cogiendo cariño, guarda aquí el usuario
-
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({"message": "Usuario registrado exitosamente"}), 200
-
-
-@api.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()# Esto me ayuda a obtener los datos que me va a enviar el cliente =) al igual que arriba con el registro
-   # Valida que se envien email y contraseña 
-    if not data.get('email') or not data.get('password'):
-        return jsonify({"message": "Email y contraseña son obligatorios"}), 400
-   # Por aquí buscaría el usuario por email
-    user = User.query.filter_by(email=data['email']).first()
-    if not user or not check_password_hash(user.password, data['password']):
-        return jsonify({"message": "Email o contraseña incorrectos"}), 401
-   
-   # Aqui la magia donde se genera el token JWT =)
-    token = jwt.encode(
-        {"id": user.id, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)},
-        SECRET_KEY,
-        algorithm="HS256"
-    )
-    return jsonify({"token": token, "user": {"id": user.id, "email": user.email, "name": user.name}}), 200
-
-# Ahora voy con los productos
-@api.route('/products', methods=['GET'])
-def get_products():
-    products = Product.query.all()
-    return jsonify([product.serialize() for product in products]), 200
-
-# Obtener por el id del producto
-@api.route('/products/<int:id>', methods=['GET'])
-def get_product(id):
-    product = Product.query.get(id)
-    if not product:
-        return jsonify({"message": "Producto no encontrado"}), 404
-    return jsonify(product.serialize()), 200
 
 
 # Carrito de compras
