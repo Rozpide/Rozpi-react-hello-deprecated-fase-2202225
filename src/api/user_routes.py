@@ -12,11 +12,11 @@ from sqlalchemy.exc import IntegrityError
 logging.basicConfig(level=logging.DEBUG)
 
 # Configuración del Blueprint
-user_routes_v2 = Blueprint('user_routes_v2', __name__)
-CORS(user_routes_v2, resources={r"/api/user/*": {"origins": "*"}})
+user_routes = Blueprint('user_routes', __name__)
+CORS(user_routes, resources={r"/api/user/*": {"origins": "*"}})
 
 # Obtener información del usuario actual
-@user_routes_v2.route('/profile', methods=['GET'])
+@user_routes.route('/profile', methods=['GET'])
 @jwt_required()
 def get_profile():
     user_id = get_jwt_identity()
@@ -26,7 +26,7 @@ def get_profile():
     return jsonify(user.serialize()), 200
 
 # Actualizar perfil del usuario
-@user_routes_v2.route('/profile', methods=['PUT'])
+@user_routes.route('/profile', methods=['PUT'])
 @jwt_required()
 def update_profile():
     user_id = get_jwt_identity()
@@ -35,6 +35,18 @@ def update_profile():
         return jsonify({"message": "Usuario no encontrado"}), 404
 
     data = request.get_json()
+    if not data:
+        return jsonify({"error": "No se proporcionaron datos para actualizar"}), 400
+
+    logging.debug(f"Datos recibidos: {data}")  # Agregar para depuración
+
+    # Validación de campos
+    if "email" in data and not isinstance(data["email"], str):
+        return jsonify({'error': 'El correo electrónico debe ser una cadena de texto'}), 422
+    if "name" in data and not isinstance(data["name"], str):
+        return jsonify({'error': 'El nombre debe ser una cadena de texto'}), 422
+
+    # Actualización de campos
     user.name = data.get('name', user.name)
     user.email = data.get('email', user.email)
 
@@ -49,7 +61,7 @@ def update_profile():
         return jsonify({"error": "Error al actualizar el perfil"}), 500
 
 # Eliminar usuario autenticado
-@user_routes_v2.route('/delete', methods=['DELETE'])
+@user_routes.route('/profile', methods=['DELETE'])
 @jwt_required()
 def delete_user():
     user_id = get_jwt_identity()
@@ -66,7 +78,7 @@ def delete_user():
         return jsonify({"error": "Error al eliminar el usuario"}), 500
 
 # Obtener información del usuario autenticado y su rol
-@user_routes_v2.route('/current', methods=['GET'])
+@user_routes.route('/current', methods=['GET'])
 @jwt_required()
 def get_authenticated_user():
     user_id = get_jwt_identity()
@@ -78,5 +90,5 @@ def get_authenticated_user():
         "id": user.id,
         "email": user.email,
         "name": user.name,
-        "is_admin": user.is_admin
+        "is_admin": getattr(user, 'is_admin', False)  # Manejo de atributo opcional
     }), 200
