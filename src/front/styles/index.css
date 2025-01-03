@@ -2,6 +2,11 @@
     General Styles used on every website (Don't Repeat Yourself)
 */
 
+#dark {
+    background: black;
+    color: white;
+}
+
 .link-style {
     text-decoration: none;
     color: white;
@@ -10,4 +15,12 @@
 .link-style:hover {
     text-decoration: underline;
     color: white;
+}
+
+.navbar-drop:hover {
+    background: #f24c4e;
+}
+
+.btn-pink {
+    background: #FE5558;
 }

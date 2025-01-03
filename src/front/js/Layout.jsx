@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import injectContext from "./store/appContext.js";
 // Custom components
@@ -12,8 +12,6 @@ import { Home } from "./pages/Home.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { Settings } from "./pages/Settings.jsx";
-import { Demo } from "./pages/Demo.jsx";
-import { Single } from "./pages/Single.jsx";
 
 
 //Create your first component
@@ -23,20 +21,27 @@ const Layout = () => {
     const basename = process.env.BASENAME || "";
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
+    const [dark, setDark] = useState(() => {
+        const storedMode = localStorage.getItem("darkMode");
+        return storedMode ? JSON.parse(storedMode) : false;
+    });
+
+    useEffect(() => {
+        localStorage.setItem("darkMode", JSON.stringify(dark));
+    }, [dark]);
+
     return (
-        <div className="d-flex flex-column min-vh-100">
+        <div className="d-flex flex-column min-vh-100" id={dark ? 'dark' : 'light'}>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    <Navbar />
+                    <Navbar dark={dark} setDark={setDark} />
                     <Routes>
                         <Route element={<Home />} path="/" />
-                        <Route element={<Login />} path="/login" />
+                        <Route element={<Login dark={dark} setDark={setDark} />} path="/login" />
                         <Route element={<ProtectedRoutes />}>
                             <Route element={<Profile />} path="/profile" />
                             <Route element={<Settings />} path="/settings" />
                         </Route>
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Single />} path="/single" />
                         <Route element={<h1>Not found!</h1>} path="*"/>
                     </Routes>
                     <Footer />
