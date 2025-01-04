@@ -24,3 +24,14 @@
 .btn-pink {
     background: #FE5558;
 }
+
+.jourlink {
+    background: none;
+    border: none;
+    color: #FE5558;
+}
+
+.jourlink:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

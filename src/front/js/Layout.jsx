@@ -9,6 +9,7 @@ import { Footer } from "./component/Footer.jsx";
 import { ProtectedRoutes } from "./component/ProtectedRoutes.jsx";
 // Custom pages / views
 import { Home } from "./pages/Home.jsx";
+import { Signup } from "./pages/Signup.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { Settings } from "./pages/Settings.jsx";
@@ -37,6 +38,7 @@ const Layout = () => {
                     <Navbar dark={dark} setDark={setDark} />
                     <Routes>
                         <Route element={<Home />} path="/" />
+                        <Route element={<Signup dark={dark} setDark={setDark} />} path="/signup" />
                         <Route element={<Login dark={dark} setDark={setDark} />} path="/login" />
                         <Route element={<ProtectedRoutes />}>
                             <Route element={<Profile />} path="/profile" />
