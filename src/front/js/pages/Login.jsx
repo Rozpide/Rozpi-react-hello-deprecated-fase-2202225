@@ -41,8 +41,9 @@ export const Login = ({ dark, setDark }) => {
                         {visible ? <i className="fas fa-eye"></i> : <i className="fas fa-eye-slash"></i>}
                     </div>
                 </div>
+                <p className="mb-4" style={{ fontSize: '15px' }}>You don't have an account? Please, <span className="jourlink" onClick={() => navigate('/signup')}>sign up</span>!</p>
                 <button className={dark ? "btn btn-pink w-100 py-2" : "btn btn-dark w-100 py-2"} type="submit">Sign in</button>
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                {errorMessage && <p className="text-danger mt-3">{errorMessage}</p>}
             </form>
         </div>
     )
