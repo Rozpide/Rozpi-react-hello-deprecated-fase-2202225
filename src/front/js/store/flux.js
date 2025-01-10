@@ -1,31 +1,27 @@
 const getState = ({ getStore, getActions, setStore }) => {
-    const API_URL = process.env.BACKEND_URL.replace(/\/+$/, ""); // Corrige las barras finales
+    const API_URL = process.env.BACKEND_URL.replace(/\/+$|^\/+/g, "");
 
     return {
         store: {
             message: null,
-            demo: [
-                { title: "FIRST", background: "white", initial: "white" },
-                { title: "SECOND", background: "white", initial: "white" }
-            ],
             user: null,
-            products: [],
-            cart: [],
-            orders: [],
-            notifications: [], // Renombrado para consistencia en plural
+            isAdmin: false,
+            categories: [],
             featuredProducts: [],
             allProducts: [],
+            totalProducts: 0, // Total de productos para paginación
+            totalPages: 0,    // Total de páginas
         },
         actions: {
-            exampleFunction: () => {
-                getActions().changeColor(0, "green");
-            },
-
+            // Obtener mensaje desde el backend
             getMessage: async () => {
                 try {
                     const response = await fetch(`${API_URL}/api/hello`);
-                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error("Error del servidor:", errorText);
+                        throw new Error(`Error ${response.status}: ${errorText}`);
+                    }
                     const data = await response.json();
                     setStore({ message: data.message });
                 } catch (error) {
@@ -33,106 +29,135 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            changeColor: (index, color) => {
-                const store = getStore();
-                const demo = store.demo.map((item, i) => {
-                    if (i === index) item.background = color;
-                    return item;
-                });
-                setStore({ demo });
-            },
-
-            login: async (email, password) => {
+            // Verificar si el usuario es administrador
+            checkAdmin: async () => {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.error("No se encontró el token");
+                    return false;
+                }
+            
                 try {
-                    const response = await fetch(`${API_URL}/api/login`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ email, password }),
+                    const response = await fetch(`${process.env.BACKEND_URL}/auth/current`, {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
                     });
-                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-                    const data = await response.json();
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("user", JSON.stringify(data.user));
-                    setStore({ user: data.user });
+            
+                    if (!response.ok) {
+                        console.error("Error al verificar administrador:", response.status, response.statusText);
+                        if (response.status === 401 || response.status === 403) {
+                            localStorage.removeItem("token");
+                            window.location.href = "/login";
+                        }
+                        return false;
+                    }
+            
+                    const user = await response.json();
+                    setStore({ user, isAdmin: user.is_admin });
+                    return user.is_admin;
                 } catch (error) {
-                    console.error("Error durante el login:", error.message);
+                    console.error("Error al verificar administrador:", error.message);
+                    return false;
+                }
+            },            
+
+            // Obtener categorías
+            fetchCategories: async () => {
+                try {
+                    const response = await fetch(`${API_URL}/api/categories`);
+                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+            
+                    const categories = await response.json();
+                    console.log("Categories Loaded:", categories);
+                    setStore({ categories });
+                } catch (error) {
+                    console.error("Error al obtener categorías:", error.message);
+                    setStore({ categories: [] });
+                }
+            },            
+
+            // Crear un producto
+            createProduct: async (productData) => {
+                const token = localStorage.getItem("token");
+                try {
+                    const response = await fetch(`${API_URL}/api/products`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify(productData),
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        console.error("Error al crear el producto:", error.error);
+                        return { success: false, message: error.error };
+                    }
+
+                    const product = await response.json();
+                    console.log("Producto creado:", product);
+                    return { success: true, product };
+                } catch (error) {
+                    console.error("Error en la solicitud al crear producto:", error.message);
+                    return { success: false, message: error.message };
                 }
             },
 
+            // Obtener productos destacados
             getFeaturedProducts: async () => {
                 try {
-                    const response = await fetch(`${API_URL}/api/products?featured=true`);
-                    if (!response.ok) {
-                        throw new Error(`Error ${response.status}: ${response.statusText}`);
-                    }
-
-                    const contentType = response.headers.get("Content-Type");
-                    if (!contentType || !contentType.includes("application/json")) {
-                        throw new Error("La respuesta del servidor no es JSON válida");
-                    }
-
-                    const products = await response.json();
-                    setStore({ featuredProducts: products });
+                    const response = await fetch(`${API_URL}/api/products?featured=true&page=1&per_page=5`);
+                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+            
+                    const data = await response.json();
+                    setStore({ featuredProducts: data.products });
                 } catch (error) {
-                    console.error("Error al cargar los productos destacados:", error.message);
+                    console.error("Error al obtener productos destacados:", error.message);
                 }
             },
 
+            // Obtener todos los productos
             getAllProducts: async () => {
                 try {
-                    const response = await fetch(`${API_URL}/api/products`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/products`);
                     if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-
-                    const products = await response.json();
-                    setStore({ allProducts: products || [] }); // Asigna productos o array vacío
-                } catch (error) {
-                    console.error("Error al cargar los productos:", error.message);
-                    setStore({ allProducts: [] }); // Garantiza un estado válido
-                }
-            },
             
-
-            getCart: async () => {
-                try {
-                    const token = localStorage.getItem("token");
-                    if (!token) throw new Error("No se encontró un token válido");
-
-                    const response = await fetch(`${API_URL}/api/cart`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                    });
-                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-                    
-                    const contentType = response.headers.get("Content-Type");
-                    if (!contentType || !contentType.includes("application/json")) {
-                        throw new Error("La respuesta del servidor no es JSON válida");
-                    }
-
-                    const cart = await response.json();
-                    setStore({ cart });
+                    const products = await response.json();
+                    setStore({ allProducts: products });
                 } catch (error) {
-                    console.error("Error al cargar el carrito:", error.message);
+                    console.error("Error al obtener todos los productos:", error.message);
+                    setStore({ allProducts: [] });
                 }
-            },
+            },            
 
-            getNotifications: async () => {
+            // Buscar productos con filtros
+            searchProducts: async (search = '', categoryId = null, page = 1, perPage = 10) => {
                 try {
-                    const token = localStorage.getItem("token");
-                    if (!token) throw new Error("No se encontró un token válido");
-
-                    const response = await fetch(`${API_URL}/api/notifications`, {
-                        headers: { Authorization: `Bearer ${token}` },
+                    const params = new URLSearchParams({
+                        search,
+                        page,
+                        per_page: perPage,
                     });
-                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
 
-                    const contentType = response.headers.get("Content-Type");
-                    if (!contentType || !contentType.includes("application/json")) {
-                        throw new Error("La respuesta del servidor no es JSON válida");
+                    if (categoryId) {
+                        params.append('category_id', categoryId);
                     }
 
-                    const notifications = await response.json();
-                    setStore({ notifications });
+                    const response = await fetch(`${API_URL}/api/products?${params.toString()}`);
+                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+
+                    const data = await response.json();
+                    setStore({
+                        allProducts: data.products,
+                        totalProducts: data.total,
+                        totalPages: data.pages,
+                    });
                 } catch (error) {
-                    console.error("Error al cargar las notificaciones:", error.message);
+                    console.error("Error al buscar productos:", error.message);
                 }
             },
         },

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "../../styles/filters.css"; // Asegúrate de tener este archivo para estilos
+import "../../styles/filters.css";
 
-const Filters = ({ onApplyFilters }) => {
+const Filters = ({ onApplyFilters, categories }) => {
     const [category, setCategory] = useState("");
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
@@ -14,8 +14,10 @@ const Filters = ({ onApplyFilters }) => {
                 max: maxPrice || null,
             },
         };
+        console.log("Filters Applied:", filters);
         onApplyFilters(filters);
     };
+    
 
     return (
         <div className="filters-container">
@@ -30,9 +32,11 @@ const Filters = ({ onApplyFilters }) => {
                     onChange={(e) => setCategory(e.target.value)}
                 >
                     <option value="">Todas</option>
-                    <option value="pañales">Pañales</option>
-                    <option value="higiene">Higiene</option>
-                    <option value="juguetes">Juguetes</option>
+                    {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                        </option>
+                    ))}
                 </select>
             </div>
 

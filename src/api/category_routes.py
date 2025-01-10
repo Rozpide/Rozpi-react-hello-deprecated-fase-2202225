@@ -31,7 +31,7 @@ def create_category():
     except Exception as e:
         return jsonify({"error": f"Error al crear categoría: {str(e)}"}), 500
 
-# Obtener categorías
+# Obtener todas las categorías
 @category_routes.route('/', methods=['GET'])
 def get_categories():
     try:

@@ -1,41 +1,40 @@
-const API_BASE_URL = "/api";
+const backendUrl = process.env.BACKEND_URL?.endsWith("/")
+    ? process.env.BACKEND_URL.slice(0, -1)
+    : process.env.BACKEND_URL || "https://stunning-lamp-g45qpxg76p9gfpq4-3001.app.github.dev";
 
 const API_ENDPOINTS = {
-    USER: `${API_BASE_URL}/user`,
-    CATEGORIES: `${API_BASE_URL}/categories`,
-    PRODUCTS: `${API_BASE_URL}/products`,
+    USER: `${backendUrl}/auth`,
+    CATEGORIES: `${backendUrl}/api/categories`,
+    PRODUCTS: `${backendUrl}/api/products`,
 };
 
-// Método genérico para realizar solicitudes HTTP
-async function apiRequest(endpoint, method = "GET", body = null) {
+const apiRequest = async (endpoint, method = "GET", body = null) => {
+    const token = localStorage.getItem("token"); // Obtener el token del almacenamiento local
+    const fullUrl = endpoint.startsWith("http") ? endpoint : `${backendUrl}${endpoint}`;
+
     const options = {
         method,
         headers: {
             "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }), // Incluir token si existe
         },
+        ...(body && { body: JSON.stringify(body) }), // Incluir body si existe
     };
 
-    // Agregar token de autorización si existe
-    const token = localStorage.getItem("token");
-    if (token) {
-        options.headers.Authorization = `Bearer ${token}`;
-    }
-
-    if (body) {
-        options.body = JSON.stringify(body);
-    }
-
     try {
-        const response = await fetch(endpoint, options);
+        const response = await fetch(fullUrl, options);
+        const data = await response.json();
+
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Error desconocido");
+            console.error("API Error:", data);
+            throw new Error(data.message || "Error desconocido");
         }
-        return await response.json();
+
+        return data;
     } catch (error) {
-        console.error("API request error:", error.message);
+        console.error("Error en la solicitud:", error.message);
         throw error;
     }
-}
+};
 
 export { API_ENDPOINTS, apiRequest };

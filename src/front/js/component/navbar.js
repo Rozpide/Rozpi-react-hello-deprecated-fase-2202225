@@ -19,9 +19,10 @@ export const Navbar = () => {
                     Chikitin Express
                 </Link>
                 <div className="navbar-buttons">
-                    <Link to="/shop">
-                        <button className="btn modern-btn secondary-btn">Shop</button>
-                    </Link>
+                <Link to="/store">
+                    <button className="btn modern-btn secondary-btn">Tienda</button>
+                </Link>
+
                     <Link to="/cart">
                         <button className="btn modern-btn secondary-btn">Cart</button>
                     </Link>

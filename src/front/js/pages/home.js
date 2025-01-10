@@ -12,6 +12,7 @@ export const Home = () => {
         const fetchData = async () => {
             try {
                 await actions.getFeaturedProducts();
+                console.log("Productos destacados:", store.featuredProducts); // Verifica los datos aquí
             } catch (err) {
                 setError("Error al cargar productos");
             } finally {
@@ -19,7 +20,8 @@ export const Home = () => {
             }
         };
         fetchData();
-    }, []); // Omitir dependencias para evitar loops.
+    }, []);
+     // Omitir dependencias para evitar loops.
 
     // Función para manejar el renderizado de productos destacados
     const renderProducts = () => {

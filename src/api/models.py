@@ -12,7 +12,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     is_active = db.Column(db.Boolean(), nullable=False, default=True)  
-    is_admin = db.Column(db.Boolean(), nullable=False, default=False)  
+    is_admin = db.Column(db.Boolean(), nullable=False, default=False) 
     address = db.Column(db.String(250), nullable=True) 
     phone = db.Column(db.String(20), nullable=True)  
     is_deleted = db.Column(db.Boolean, default=False)
@@ -29,7 +29,7 @@ class User(db.Model):
             "name": self.name,
             "email": self.email,
             "is_active": self.is_active,
-            "is_admin": self.is_admin,  
+            "is_admin": self.is_admin,
             "address": self.address,
             "phone": self.phone,
             "orders": [order.serialize() for order in self.orders],

@@ -43,6 +43,11 @@ setup_commands(app)
 # Registrar rutas utilizando la función register_routes
 register_routes(app)
 
+# Ruta genérica para errores 404
+@app.errorhandler(404)
+def not_found_error(error):
+    return jsonify({"error": "Recurso no encontrado"}), 404
+
 # Configuración para depuración SQL
 app.config['SQLALCHEMY_ECHO'] = True
 
@@ -58,16 +63,21 @@ def sitemap():
         return generate_sitemap(app)
     return send_from_directory(static_file_dir, 'index.html')
 
-# Cualquier otro endpoint intentará servirlo como un archivo estático
+# Manejo de archivos estáticos
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
-    if not os.path.isfile(os.path.join(static_file_dir, path)):
-        path = 'index.html'
-    response = send_from_directory(static_file_dir, path)
-    response.cache_control.max_age = 0  # Evitar almacenamiento en caché
-    return response
+    # Evitar que las rutas de la API sean manejadas como archivos estáticos
+    if path.startswith("api/"):
+        return jsonify({"error": "Ruta no encontrada"}), 404
+    
+    full_path = os.path.join(static_file_dir, path)
+    if not os.path.isfile(full_path):
+        return send_from_directory(static_file_dir, 'index.html')
+    return send_from_directory(static_file_dir, path)
 
 # Esto solo se ejecuta si $ python src/main.py es ejecutado
 if __name__ == '__main__':
+    with app.app_context():
+        print(app.url_map)
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)

@@ -1,29 +1,31 @@
 from flask import Flask, jsonify
-from flask_cors import CORS
 from .auth_routes import auth_routes
-from .user_routes import user_routes
-from .product_routes import product_routes
+from .user_routes import user_routes_v2
+from .product_routes import product_routes  # Importa las rutas de productos
 from .category_routes import category_routes
 
-def create_app():
-    app = Flask(__name__)
-
-    # Configurar CORS globalmente para todas las rutas bajo /api/*
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
-
-    # Registrar blueprints
-    register_routes(app)
-
-    # Manejo global de excepciones
-    @app.errorhandler(Exception)
-    def handle_exception(e):
-        return jsonify({"error": str(e)}), 500
-
-    return app
+"""
+Este módulo inicializa y registra las rutas del API en la aplicación Flask.
+"""
 
 def register_routes(app: Flask):
-    # Registrar rutas con prefijos consistentes
+    # Rutas de autenticación
     app.register_blueprint(auth_routes, url_prefix='/auth')
-    app.register_blueprint(user_routes, url_prefix='/api/user')
+    
+    # Rutas de usuario
+    app.register_blueprint(user_routes_v2, url_prefix='/api/user')
+    
+    # Rutas de productos
     app.register_blueprint(product_routes, url_prefix='/api/products')
+    
+    # Ruta Categoria
     app.register_blueprint(category_routes, url_prefix='/api/categories')
+
+    # Manejo de errores global
+    @app.errorhandler(404)
+    def not_found_error(error):
+        return jsonify({"error": "Ruta no encontrada"}), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        return jsonify({"error": "Error interno del servidor"}), 500

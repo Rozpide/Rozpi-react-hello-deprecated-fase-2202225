@@ -1,94 +1,89 @@
-import os
 from flask import Blueprint, jsonify, request
 from api.models import db, User
 from werkzeug.security import generate_password_hash
+from flask_cors import cross_origin
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from flask_cors import CORS
-from api.utils import APIException
 import logging
 from sqlalchemy.exc import IntegrityError
 
-# Configuración de logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Configuración del Blueprint
-user_routes = Blueprint('user_routes', __name__)
-CORS(user_routes, resources={r"/api/user/*": {"origins": "*"}})
+user_routes_v2 = Blueprint('user_routes_v2', __name__)
 
-# Obtener información del usuario actual
-@user_routes.route('/profile', methods=['GET'])
-@jwt_required()
-def get_profile():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"message": "Usuario no encontrado"}), 404
-    return jsonify(user.serialize()), 200
-
-# Actualizar perfil del usuario
-@user_routes.route('/profile', methods=['PUT'])
-@jwt_required()
-def update_profile():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+# Ruta para actualizar usuario
+@user_routes_v2.route('/<int:id>', methods=['PUT'])  # Eliminado el prefijo '/user'
+def update_user(id):
+    user = User.query.get(id)
     if not user:
         return jsonify({"message": "Usuario no encontrado"}), 404
 
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "No se proporcionaron datos para actualizar"}), 400
 
-    logging.debug(f"Datos recibidos: {data}")  # Agregar para depuración
+    if 'email' in data:
+        if not isinstance(data['email'], str) or '@' not in data['email']:
+            return jsonify({"message": "Formato de email no válido"}), 400
+        existing_user = User.query.filter(User.email == data['email'], User.id != id).first()
+        if existing_user:
+            return jsonify({"message": "Email ya registrado por otro usuario"}), 409
 
-    # Validación de campos
-    if "email" in data and not isinstance(data["email"], str):
-        return jsonify({'error': 'El correo electrónico debe ser una cadena de texto'}), 422
-    if "name" in data and not isinstance(data["name"], str):
-        return jsonify({'error': 'El nombre debe ser una cadena de texto'}), 422
+    if 'password' in data:
+        if len(data['password']) < 8:
+            return jsonify({"message": "La contraseña debe tener al menos 8 caracteres"}), 400
+        user.password = generate_password_hash(data['password'])
 
-    # Actualización de campos
-    user.name = data.get('name', user.name)
-    user.email = data.get('email', user.email)
+    if 'name' in data:
+        if not isinstance(data['name'], str) or len(data['name']) == 0:
+            return jsonify({"message": "El nombre no puede estar vacío"}), 400
+        user.name = data['name']
 
-    try:
-        db.session.commit()
-        return jsonify(user.serialize()), 200
-    except IntegrityError:
-        db.session.rollback()
-        return jsonify({"error": "El correo electrónico ya está en uso"}), 400
-    except Exception as e:
-        logging.error(f"Error al actualizar perfil: {e}")
-        return jsonify({"error": "Error al actualizar el perfil"}), 500
+    db.session.commit()
+    return jsonify(user.serialize()), 200
 
-# Eliminar usuario autenticado
-@user_routes.route('/profile', methods=['DELETE'])
+# Ruta para eliminar usuario
+@user_routes_v2.route('/<int:id>', methods=['DELETE'])  # Mantén el prefijo consistente
 @jwt_required()
-def delete_user():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"message": "Usuario no encontrado"}), 404
-
+def delete_user(id):
     try:
+        current_user_id = get_jwt_identity()
+        logging.debug(f"Usuario autenticado: {current_user_id}")
+        logging.debug(f"Intentando eliminar usuario con ID: {id}")
+        print(id)
+
+        user = User.query.get(id)
+        if not user:
+            logging.warning("Usuario no encontrado.")
+            return jsonify({"message": "Usuario no encontrado"}), 404
+
         db.session.delete(user)
         db.session.commit()
-        return jsonify({"message": f"Usuario {user_id} eliminado correctamente"}), 200
+        logging.info(f"Usuario {id} eliminado correctamente.")
+        return jsonify({"message": "Usuario eliminado correctamente"}), 200
+
+    except IntegrityError as e:
+        logging.error(f"Error de integridad al eliminar usuario: {e}")
+        db.session.rollback()
+        return jsonify({"message": "No se puede eliminar el usuario porque tiene datos relacionados"}), 400
+
     except Exception as e:
-        logging.error(f"Error al eliminar usuario: {e}")
-        return jsonify({"error": "Error al eliminar el usuario"}), 500
+        logging.error(f"Error inesperado al eliminar usuario: {e}", exc_info=True)
+        return jsonify({"message": "Error inesperado en el servidor"}), 500
 
-# Obtener información del usuario autenticado y su rol
-@user_routes.route('/current', methods=['GET'])
+# Ruta para convertir un usuario en administrador
+@user_routes_v2.route('/<int:id>/make-admin', methods=['PUT'])
 @jwt_required()
-def get_authenticated_user():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"message": "Usuario no encontrado"}), 404
+def make_admin(id):
+    current_user_id = get_jwt_identity()
+    current_user = User.query.get(current_user_id)
 
-    return jsonify({
-        "id": user.id,
-        "email": user.email,
-        "name": user.name,
-        "is_admin": getattr(user, 'is_admin', False)  # Manejo de atributo opcional
-    }), 200
+    if not current_user or not current_user.is_admin:
+        logging.warning("Usuario autenticado no tiene permisos para esta acción.")
+        return jsonify({"error": "No tienes permiso para realizar esta acción"}), 403
+
+    user = User.query.get(id)
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    user.is_admin = True
+    db.session.commit()
+    logging.info(f"Usuario {user.email} ahora es administrador.")
+    return jsonify({"message": f"Usuario {user.email} ahora es administrador."}), 200

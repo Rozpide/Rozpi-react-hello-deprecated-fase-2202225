@@ -43,7 +43,7 @@ export const ProductAdmin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:5000/api/products/", {
+            const response = await fetch("https://stunning-lamp-g45qpxg76p9gfpq4-3001.app.github.dev/api/products/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
