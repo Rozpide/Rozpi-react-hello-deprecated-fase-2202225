@@ -3,7 +3,10 @@ import React, { useState } from "react";
 const Profile = () => {
     const user = JSON.parse(localStorage.getItem("user")); // Usuario autenticado
     const token = localStorage.getItem("token");
-
+    if (!token) {
+        alert("No estás autenticado");
+        return;
+    }
     const [name, setName] = useState(user?.name || "");
     const [email, setEmail] = useState(user?.email || "");
     const [password, setPassword] = useState("");
@@ -16,7 +19,7 @@ const Profile = () => {
     if (!backendUrl) {
         console.error("URL del backend no configurada.");
     }
-
+    
     const handleUpdate = async (e) => {
         e.preventDefault();
         if (!token || !user) {
@@ -68,7 +71,6 @@ const Profile = () => {
         }
     
         if (window.confirm("¿Estás seguro de que deseas eliminar tu cuenta?")) {
-            setLoading(true);
             try {
                 const response = await fetch(`${backendUrl}/api/user/${user.id}`, {
                     method: "DELETE",
@@ -88,11 +90,11 @@ const Profile = () => {
             } catch (error) {
                 console.error("Error:", error);
                 alert("Ocurrió un error al eliminar la cuenta.");
-            } finally {
-                setLoading(false);
             }
         }
     };
+    
+            
 
     return (
         <div className="profile-container">

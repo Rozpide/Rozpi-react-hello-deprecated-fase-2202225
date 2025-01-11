@@ -40,33 +40,21 @@ def update_user(id):
     return jsonify(user.serialize()), 200
 
 # Ruta para eliminar usuario
-@user_routes_v2.route('/<int:id>', methods=['DELETE'])  # Mantén el prefijo consistente
+@user_routes_v2.route('/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(id):
     try:
         current_user_id = get_jwt_identity()
-        logging.debug(f"Usuario autenticado: {current_user_id}")
-        logging.debug(f"Intentando eliminar usuario con ID: {id}")
-        print(id)
-
         user = User.query.get(id)
         if not user:
-            logging.warning("Usuario no encontrado.")
             return jsonify({"message": "Usuario no encontrado"}), 404
 
         db.session.delete(user)
         db.session.commit()
-        logging.info(f"Usuario {id} eliminado correctamente.")
         return jsonify({"message": "Usuario eliminado correctamente"}), 200
 
-    except IntegrityError as e:
-        logging.error(f"Error de integridad al eliminar usuario: {e}")
-        db.session.rollback()
-        return jsonify({"message": "No se puede eliminar el usuario porque tiene datos relacionados"}), 400
-
     except Exception as e:
-        logging.error(f"Error inesperado al eliminar usuario: {e}", exc_info=True)
-        return jsonify({"message": "Error inesperado en el servidor"}), 500
+        return jsonify({"message": f"Error al eliminar usuario: {str(e)}"}), 500
 
 # Ruta para convertir un usuario en administrador
 @user_routes_v2.route('/<int:id>/make-admin', methods=['PUT'])

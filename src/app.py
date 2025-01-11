@@ -81,3 +81,8 @@ if __name__ == '__main__':
         print(app.url_map)
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+
+# Validar que el identity sea string o número
+@jwt.user_identity_loader
+def user_identity_lookup(user_id):
+    return str(user_id)

@@ -26,7 +26,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 def handle_hello():
     return jsonify({"message": "Hello! I'm a message from the backend"}), 200
 
-
 # Carrito de compras
 @api.route('/cart', methods=['GET'])
 def get_cart():
