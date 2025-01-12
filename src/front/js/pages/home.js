@@ -1,18 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
-import "../../styles/home.css"; // Asegúrate de tener los estilos actualizados
+import "../../styles/home.css";
 import ProductCard from "../component/ProductCard";
 
 export const Home = () => {
     const { store, actions } = useContext(Context);
-    const [loading, setLoading] = useState(true); // Estado de carga
-    const [error, setError] = useState(null); // Estado de error
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 await actions.getFeaturedProducts();
-                console.log("Productos destacados:", store.featuredProducts); // Verifica los datos aquí
             } catch (err) {
                 setError("Error al cargar productos");
             } finally {
@@ -21,31 +20,26 @@ export const Home = () => {
         };
         fetchData();
     }, []);
-     // Omitir dependencias para evitar loops.
 
-    // Función para manejar el renderizado de productos destacados
     const renderProducts = () => {
         if (loading) return <p className="loading-text">Cargando productos...</p>;
         if (error) return <p className="error-text">{error}</p>;
-        if (store.featuredProducts?.length > 0) {
-            return (
-                <div className="product-grid">
-                    {store.featuredProducts.map((product) => (
-                        <ProductCard
-                            key={product.id}
-                            product={product}
-                            onAddToCart={(product) => actions.addToCart(product)}
-                        />
-                    ))}
-                </div>
-            );
-        }
-        return <p className="no-products-text">No hay productos destacados disponibles en este momento.</p>;
+
+        return (
+            <div className="product-grid">
+                {store.featuredProducts.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        onAddToCart={(product) => actions.addToCart(product)}
+                    />
+                ))}
+            </div>
+        );
     };
 
     return (
         <div className="home-container">
-            {/* Hero Section */}
             <header className="hero-section">
                 <h1 className="hero-title">¡Bienvenidos a Chikitin Express!</h1>
                 <p className="hero-subtitle">
@@ -53,13 +47,11 @@ export const Home = () => {
                 </p>
             </header>
 
-            {/* Featured Products Section */}
             <section className="featured-products">
                 <h2>Productos Destacados</h2>
                 {renderProducts()}
             </section>
 
-            {/* Benefits Section */}
             <section className="benefits">
                 <h2>¿Por qué elegirnos?</h2>
                 <ul>

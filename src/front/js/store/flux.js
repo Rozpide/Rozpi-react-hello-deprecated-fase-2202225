@@ -11,6 +11,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             allProducts: [],
             totalProducts: 0, // Total de productos para paginación
             totalPages: 0,    // Total de páginas
+            cart: [],         // Estado para almacenar los productos del carrito
+       
         },
         actions: {
             // Obtener mensaje desde el backend
@@ -158,6 +160,67 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
                 } catch (error) {
                     console.error("Error al buscar productos:", error.message);
+                }
+            },
+
+            addToCart: async (product) => {
+                const token = localStorage.getItem("token");
+                const userId = JSON.parse(localStorage.getItem("user")).id;
+                console.log("Enviando producto al carrito:", product);
+            
+                try {
+                    const response = await fetch(`${API_URL}/api/cart`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            product_id: product.id,
+                            quantity: 1,
+                            user_id: userId,
+                        }),
+                    });
+            
+                    if (!response.ok) {
+                        const error = await response.json();
+                        console.error("Error al añadir al carrito:", error.message);
+                        return { success: false, message: error.message };
+                    }
+            
+                    const data = await response.json();
+                    console.log("Producto añadido al carrito:", data); // Verifica que la respuesta sea la esperada
+            
+                    // Actualizar el carrito en el estado global
+                    setStore({ cart: [...getStore().cart, data] });
+                    alert("Producto añadido al carrito"); // Asegúrate de que se muestra la alerta
+                    return { success: true, message: "Producto añadido al carrito" };
+                } catch (error) {
+                    console.error("Error al realizar la solicitud:", error.message);
+                    return { success: false, message: error.message };
+                }
+            },            
+
+            // Obtener el carrito de compras del usuario
+            getCart: async () => {
+                const token = localStorage.getItem("token");
+                const userId = JSON.parse(localStorage.getItem("user")).id;
+                try {
+                    const response = await fetch(`${API_URL}/api/cart?user_id=${userId}`, {
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error("Error al obtener el carrito");
+                    }
+
+                    const cartItems = await response.json();
+                    setStore({ cart: cartItems });
+                } catch (error) {
+                    console.error("Error al obtener el carrito:", error.message);
+                    setStore({ cart: [] });
                 }
             },
         },

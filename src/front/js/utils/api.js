@@ -1,6 +1,6 @@
 const backendUrl = process.env.BACKEND_URL?.endsWith("/")
     ? process.env.BACKEND_URL.slice(0, -1)
-    : process.env.BACKEND_URL || "https://stunning-lamp-g45qpxg76p9gfpq4-3001.app.github.dev";
+    : process.env.BACKEND_URL || "https://special-funicular-pjgr67xp9qgv29w79-3001.app.github.dev";
 
 const API_ENDPOINTS = {
     USER: `${backendUrl}/auth`,

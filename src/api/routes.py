@@ -17,7 +17,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 load_dotenv()
 
 api = Blueprint('api', __name__)
-CORS(api, resources={r"/api/*": {"origins": "https://stunning-lamp-g45qpxg76p9gfpq4-3000.app.github.dev"}})
+CORS(api, resources={r"/api/*": {"origins": "https://special-funicular-pjgr67xp9qgv29w79-3001.app.github.dev/"}})
 
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -25,43 +25,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 @api.route('/hello', methods=['GET'])
 def handle_hello():
     return jsonify({"message": "Hello! I'm a message from the backend"}), 200
-
-# Carrito de compras
-@api.route('/cart', methods=['GET'])
-def get_cart():
-    user_id = request.args.get('user_id')
-    if not user_id:
-        return jsonify({"message": "El ID del usuario es obligatorio"}), 400
-
-    cart_items = OrderItem.query.filter_by(user_id=user_id).all()
-    return jsonify([item.serialize() for item in cart_items]), 200
-
-
-@api.route('/cart', methods=['POST'])
-def add_to_cart():
-    data = request.get_json()
-    if not data.get('product_id') or not data.get('quantity') or not data.get('user_id'):
-        return jsonify({"message": "Producto, cantidad e ID del usuario son requeridos"}), 400
-
-    product = Product.query.get(data['product_id'])
-    if not product:
-        return jsonify({"message": "Producto no encontrado"}), 404
-
-    new_cart_item = OrderItem(user_id=data['user_id'], product_id=data['product_id'], quantity=data['quantity'])
-    db.session.add(new_cart_item)
-    db.session.commit()
-    return jsonify({"message": "Producto agregado al carrito"}), 201
-
-
-@api.route('/cart/<int:id>', methods=['DELETE'])
-def remove_from_cart(id):
-    cart_item = OrderItem.query.get(id)
-    if not cart_item:
-        return jsonify({"message": "Producto no encontrado en el carrito"}), 404
-
-    db.session.delete(cart_item)
-    db.session.commit()
-    return jsonify({"message": "Producto eliminado del carrito"}), 200
 
 # Crear un nuevo pedido
 @api.route('/orders', methods=['POST'])
