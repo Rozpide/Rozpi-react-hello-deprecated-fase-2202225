@@ -199,7 +199,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al realizar la solicitud:", error.message);
                     return { success: false, message: error.message };
                 }
-            },            
+            },                        
 
             // Obtener el carrito de compras del usuario
             getCart: async () => {

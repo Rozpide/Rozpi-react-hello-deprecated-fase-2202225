@@ -25,8 +25,9 @@ def register_routes(app: Flask):
     # Rutas generales
     app.register_blueprint(api, url_prefix='/api')
 
-    # Otras rutas...
-    app.register_blueprint(cart_routes, url_prefix='/api')
+        # Rutas de carrito
+    app.register_blueprint(cart_routes, url_prefix='/api')  # Asegúrate de que esta ruta esté correctamente registrada
+
     # Manejo de errores global
     @app.errorhandler(404)
     def not_found_error(error):

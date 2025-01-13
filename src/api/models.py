@@ -108,14 +108,24 @@ class Cart(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, nullable=True, onupdate=db.func.current_timestamp())
 
-    def __repr__(self):
-        return f'<Cart user_id={self.user_id} product_id={self.product_id}>'
-
     def serialize(self):
+        product = Product.query.get(self.product_id)
+
+        if not product:
+            return {
+                "id": self.id,
+                "user_id": self.user_id,
+                "product_id": self.product_id,
+                "quantity": self.quantity,
+                "created_at": self.created_at,
+                "updated_at": self.updated_at,
+                "product": None  # Producto no encontrado
+            }
+
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "product_id": self.product_id,
+            "product": product.serialize(),  # Asegúrate de que el producto esté correctamente serializado
             "quantity": self.quantity,
             "created_at": self.created_at,
             "updated_at": self.updated_at,

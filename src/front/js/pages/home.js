@@ -29,10 +29,10 @@ export const Home = () => {
             <div className="product-grid">
                 {store.featuredProducts.map((product) => (
                     <ProductCard
-                        key={product.id}
-                        product={product}
-                        onAddToCart={(product) => actions.addToCart(product)}
-                    />
+                    key={product.id}
+                    product={product}
+                    onAddToCart={(product) => actions.addToCart(product)} // Verifica que se pase correctamente
+                />                
                 ))}
             </div>
         );
