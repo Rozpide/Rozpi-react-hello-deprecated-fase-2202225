@@ -33,16 +33,13 @@ export const Formulario = ({ type }) => {
 
         console.log("Submit data:", formData, "type:", type);
 
-        if (type === 'login') {
-            actions.login(formData);
-        } else {
-            actions.register(formData);
-        }
+        type === 'login' ? actions.login(formData) : actions.register(formData);
+
     };
 
     return (
         <form onSubmit={handleSubmit}>
-            <div>
+            <div className="m-3" >
                 <label htmlFor="email">Email</label>
                 <input
                     type="email"
@@ -54,8 +51,8 @@ export const Formulario = ({ type }) => {
                     required
                 />
             </div>
-            <div>
-                <label htmlFor="password">Password</label>
+            <div className="m-3">
+                <label htmlFor="password">Contraseña</label>
                 <input
                     type="password"
                     id="password"
@@ -68,8 +65,8 @@ export const Formulario = ({ type }) => {
             </div>
             {type !== 'login' && (
                 <>
-                    <div>
-                        <label htmlFor="name">Name</label>
+                    <div className="m-3">
+                        <label htmlFor="name">Nombre</label>
                         <input
                             type="text"
                             id="name"
@@ -80,15 +77,17 @@ export const Formulario = ({ type }) => {
                             required
                         />
                     </div>
-                    <div>
+                    <div className="m-3">
                         <label htmlFor="phoneNumber">Teléfono</label>
-                        <PhoneInput
-                            country={'es'}
-                            value={formData.phoneNumber}
-                            onChange={(phone) => setFormData({ ...formData, phoneNumber: phone })}
-                        />
+                        <div className="col-12 col-sm-6 col-md-4 mx-auto">
+                            <PhoneInput
+                                country={'es'}
+                                value={formData.phoneNumber}
+                                onChange={(phone) => setFormData({ ...formData, phoneNumber: phone })}
+                            />
+                        </div>
                     </div>
-                    <div>
+                    <div className="m-3">
                         <label htmlFor="gender">Género</label>
                         <select
                             id="gender"
