@@ -9,18 +9,73 @@ from flask_cors import CORS
 from werkzeug.security import check_password_hash, generate_password_hash
 import jwt
 import datetime
-from api.models import db, User, Product, Order, Notification, OrderItem
+import stripe
+from api.models import db, Product, Order, Notification, OrderItem
 from api.utils import APIException
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-
+# Cargar las variables de entorno
 load_dotenv()
 
+# Configuración de Stripe
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY", "sk_test_YOUR_SECRET_KEY")  # Asegúrate de que tu clave secreta está cargada desde .env
+
+# Inicializar Blueprint
 api = Blueprint('api', __name__)
 CORS(api, resources={r"/api/*": {"origins": "https://special-funicular-pjgr67xp9qgv29w79-3001.app.github.dev/"}})
 
-
+# Cargar SECRET_KEY desde el archivo de entorno
 SECRET_KEY = os.getenv("SECRET_KEY")
+
+# Endpoint para crear la sesión de pago con Stripe
+@api.route('/create-payment', methods=['POST'])
+@jwt_required()  # Asegura que el usuario esté autenticado
+def create_payment():
+    user_id = get_jwt_identity()  # Obtiene el ID del usuario desde el JWT
+    data = request.json
+    cart_data = data.get("cart", [])  # El carrito contiene un arreglo de objetos con los productos
+
+    line_items = []  # Necesitamos este arreglo para Stripe Checkout
+
+    # Validación del carrito
+    if not cart_data:
+        return jsonify({"message": "El carrito está vacío."}), 400
+
+    total_amount = 0
+    # Calcular el monto total del carrito y preparar los line_items
+    for item in cart_data:
+        product = Product.query.get(item['product_id'])  # Obtener el producto de la base de datos
+        if product:
+            line_items.append({
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': product.name,
+                    },
+                    'unit_amount': int(product.price * 100),  # El monto debe ser en centavos
+                },
+                'quantity': item['quantity'],
+            })
+            total_amount += product.price * item['quantity']  # Calcular el precio total
+
+    try:
+        # Crear la sesión de pago con Stripe Checkout
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=line_items,  # Usamos line_items aquí
+            mode='payment',
+            success_url='https://tu-sitio.com/success',
+            cancel_url='https://tu-sitio.com/cancel',
+        )
+        return jsonify({
+            'id': session.id,  # Devuelves la session id
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'error': str(e),
+        }), 500
+
+# Otros endpoints de la API
 
 @api.route('/hello', methods=['GET'])
 def handle_hello():
@@ -37,7 +92,7 @@ def create_order():
     if not product:
         return jsonify({"message": "Producto no encontrado"}), 404
    
-   # Crear un nuevo pedido
+    # Crear un nuevo pedido
     new_order = Order(
         user_id=data['user_id'],
         product_id=data['product_id'],
@@ -75,7 +130,7 @@ def create_or_update_notification():
     if not data.get('message') or not data.get('user_id'):
         return jsonify({"message": "El mensaje y el ID del usuario son requeridos"}), 400
 
-   # Crear o actualizar una notificación
+    # Crear o actualizar una notificación
     notification = Notification.query.filter_by(user_id=data['user_id']).first()
     if notification:
         notification.message = data['message']

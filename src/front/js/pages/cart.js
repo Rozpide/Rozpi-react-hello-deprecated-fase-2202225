@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
+import { loadStripe } from "@stripe/stripe-js";
 import "../../styles/cart.css";
+
+// Cargar la librería de Stripe
+const stripePromise = loadStripe("pk_live_pG6ixeQ1obX4sRyxfz40AiD5");
 
 export const Cart = () => {
     const { store, actions } = useContext(Context);
@@ -48,6 +52,60 @@ export const Cart = () => {
         fetchCart();
     }, [actions]);
 
+    // Función que se ejecuta cuando el usuario hace clic en el botón de pagar
+    const handlePayment = async () => {
+        console.log("Iniciando el proceso de pago");
+    
+        const userId = JSON.parse(localStorage.getItem("user")).id;
+        const token = localStorage.getItem("token");
+    
+        if (!token) {
+            console.error("Token no encontrado");
+            return;
+        }
+    
+        const items = cartItems.map(item => ({
+            product_id: item.product.id, // ID del producto
+            quantity: item.quantity, // Cantidad del producto
+        }));
+    
+        const requestBody = {
+            user_id: userId,
+            cart: items, // El carrito con la estructura correcta
+        };
+    
+        try {
+            const response = await fetch(`${process.env.BACKEND_URL}/api/create-payment`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify(requestBody),
+            });
+    
+            const session = await response.json();
+    
+            if (session.error) {
+                alert("Error al crear la sesión de pago.");
+                return;
+            }
+    
+            const stripe = await stripePromise;
+            const { error } = await stripe.redirectToCheckout({
+                sessionId: session.id, // Usar el id de sesión de Stripe
+            });
+    
+            if (error) {
+                console.error("Error al redirigir a Stripe", error);
+                alert("Hubo un error al procesar el pago.");
+            }
+        } catch (error) {
+            console.error("Error al procesar el pago:", error);
+            alert("Hubo un error al procesar el pago.");
+        }
+    };    
+                
     return (
         <div className="cart-container">
             <h1>Tu Carrito</h1>
@@ -70,6 +128,8 @@ export const Cart = () => {
             ) : (
                 <p>No hay productos en el carrito.</p>
             )}
+            {/* Botón de pago que llama a la función handlePayment */}
+            <button onClick={handlePayment}>Pagar con Stripe</button>
         </div>
     );
 };

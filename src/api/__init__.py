@@ -3,8 +3,9 @@ from .auth_routes import auth_routes
 from .user_routes import user_routes_v2
 from .product_routes import product_routes  # Importa las rutas de productos
 from .category_routes import category_routes
-from .routes import api  
-from .cart_routes import cart_routes 
+from .routes import api   
+from .cart_routes import cart_routes
+
 """
 Este módulo inicializa y registra las rutas del API en la aplicación Flask.
 """
@@ -25,9 +26,9 @@ def register_routes(app: Flask):
     # Rutas generales
     app.register_blueprint(api, url_prefix='/api')
 
-        # Rutas de carrito
+    # Rutas de carrito
     app.register_blueprint(cart_routes, url_prefix='/api')  # Asegúrate de que esta ruta esté correctamente registrada
-
+    
     # Manejo de errores global
     @app.errorhandler(404)
     def not_found_error(error):
