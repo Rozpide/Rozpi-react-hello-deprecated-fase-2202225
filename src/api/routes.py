@@ -28,21 +28,19 @@ def register():
     password = request.json.get('password', None)
     name = request.json.get ('name', None)
     phoneNumber = request.json.get ('phoneNumber', None)
-    gender = request.json.get ('gender', None)
+   
 
-    if not email or not password or not name or not phoneNumber or not gender:
+    if not email or not password or not name or not phoneNumber:
         return jsonify({'success': False, 'msg': 'Todos los campos son necesarios'}), 400
-    
-    if gender not in ['masculino', 'femenino']:
-        return jsonify({'success': False, 'msg': 'El género debe ser "masculino" o "femenino"'}), 400
-    
+
+
     exist = User.query.filter_by(email=email).first()
     if exist: 
         return jsonify({'success': False, 'msg': 'El correo electronico ya existe'}), 400
     
     hashed_password = generate_password_hash(password)
    
-    new_user = User(email=email, password=hashed_password, name=name, phoneNumber=phoneNumber, gender=gender, is_active= True)
+    new_user = User(email=email, password=hashed_password, name=name, phoneNumber=phoneNumber, is_active= True)
     
     db.session.add(new_user)
     db.session.commit()

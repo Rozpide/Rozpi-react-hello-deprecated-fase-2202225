@@ -12,7 +12,7 @@ export const Formulario = ({ type }) => {
         password: '',
         name: '',
         phoneNumber: '',
-        gender: ''
+        Role: ''
     });
 
     const handleChange = (e) => {
@@ -88,22 +88,10 @@ export const Formulario = ({ type }) => {
                         </div>
                     </div>
                     <div className="m-3">
-                        <label htmlFor="gender">Género</label>
-                        <select
-                            id="gender"
-                            name="gender"
-                            value={formData.gender}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="" disabled>
-                                Selecciona un género
-                            </option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
-                        </select>
+                    <label htmlFor="role">Escoge tu Rol</label>
+                    
                     </div>
-
+                   
                 </>
             )}
             <div>
