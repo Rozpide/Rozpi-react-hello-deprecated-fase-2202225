@@ -10,6 +10,7 @@ class Users(db.Model):
     player = db.Column(db.Boolean, nullable=False)
     host_id = db.Column(db.Integer, db.ForeignKey('hosts.id'))
     player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
+    phone = db.Column(db.Integer, unique=True, nullable=False)
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -19,6 +20,7 @@ class Users(db.Model):
             "id": self.id,
             "email": self.email,
             "player": self.player,
+            "phone": self.phone
         }
 
 class Hosts(db.Model):
@@ -51,6 +53,7 @@ class Players(db.Model):
     side = db.Column(db.String(), nullable=False)
     hand = db.Column(db.String(), nullable=False)
     tournament_participant = db.relationship('Participants', back_populates='player_relationship')
+    match_participant = db.relationship('Match_participants', back_populates='player_relationship')
 
     def __repr__(self):
         return '<Player %r>' % self.name
@@ -64,7 +67,8 @@ class Players(db.Model):
             "rating": self.rating,
             "age": self.age,
             "hand": self.hand,
-            "tournament_participant": [player.serialize() for player in self.tournament_participant] if self.tournament_participant else None
+            "tournament_participant": [player.serialize() for player in self.tournament_participant] if self.tournament_participant else None,
+            "match_participant": [participant.serialize() for participant in self.match_participant] if self.match_participant else None
     }
 
 class Tournaments(db.Model):
@@ -74,7 +78,7 @@ class Tournaments(db.Model):
     type = db.Column(db.String(), nullable=False)
     inscription_fee = db.Column(db.Integer, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    schedule = db.Column(db.Time, nullable=False)
+    schedule = db.Column(db.DateTime, nullable=False)
     award = db.Column(db.String(), nullable=False)
     tournament_winner = db.Column(db.String())
     hosts = db.relationship('Hosts', backref=('tournament'))
@@ -107,6 +111,7 @@ class Matches(db.Model):
     set_2= db.Column(db.String(), nullable=False)
     set_3 = db.Column(db.String(), nullable=False)
     resume = db.Column(db.Text)
+    participants_match = db.relationship('Match_participants', back_populates='match_relationship')
 
     def __repr__(self):
         return '<Match %r>' % self.id
@@ -119,6 +124,7 @@ class Matches(db.Model):
             "set_2": self.set_2,
             "set_3": self.set_3,
             "resume": self.resume,
+            "participants_match": [participant.serialize() for participant in self.participants_match] if self.participants_match else None
     }
 
 class Participants(db.Model):
@@ -138,3 +144,30 @@ class Participants(db.Model):
             "player_id" : self.player_id,
             "tournament_id" : self.tournament_id
     }
+
+class Match_participants(db.Model):
+    __tablename__ = 'match_participants'
+    id = db.Column(db.Integer, primary_key=True)
+    player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
+    player_relationship = db.relationship('Players', back_populates='match_participant')
+    match_id = db.Column(db.Integer, db.ForeignKey('matches.id'))
+    match_relationship = db.relationship('Matches', back_populates='participants_match')
+    position = db.Column(db.Boolean, nullable=False)
+    team = db.Column(db.Boolean, nullable=False)
+    winner = db.Column(db.Boolean, nullable=False)
+
+
+    def __repr__(self):
+         return '<Match_participants %r>' % self.id
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "player_id" : self.player_id,
+            "match_id" : self.match_id,
+            "position": self.position,
+            "team" : self.team,
+            "winner" : self.winner,
+    }
+
+
