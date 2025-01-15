@@ -30,7 +30,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     const data = await resp.json();
                     console.log("Usuario registrado:", data);
-
+                    localStorage.setItem ('token', data.token)
                     setStore({ user: data });
                 } catch (error) {
                     console.error("Error en register:", error);

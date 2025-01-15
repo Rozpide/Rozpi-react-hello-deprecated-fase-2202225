@@ -32,7 +32,7 @@ def register():
    
 
     if not email or not password or not name or not phoneNumber or not role:
-        return jsonify({'success': False, 'msg': 'Todos los campos son necesarios'}), 400
+        return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
 
     exist = Users.query.filter_by(email=email).first()
@@ -47,7 +47,7 @@ def register():
     db.session.commit()
     
     token = create_access_token(identity=str(new_user.id))
-    return jsonify({'success': True, 'users': new_user.serialize(), 'token': token}), 200
+    return jsonify({'users': new_user.serialize(), 'token': token}), 200
 
 @api.route('/login', methods=['POST'])
 def login():
@@ -62,7 +62,7 @@ def login():
     if user: 
         if check_password_hash(user.password, password):
             access_token = create_access_token(identity=user.id)
-            return jsonify({'success': True, 'users': Users.serialize(), 'token': access_token}), 200
+            return jsonify({'success': True, 'user': user.serialize(), 'token': access_token}), 200
         else:
             return jsonify({'success': False, 'msg': 'Usuario/Contraseña no válidos'}), 400
     
@@ -73,7 +73,7 @@ def login():
 def protected():
     identity = get_jwt_identity()
     users = Users.query.get(identity)   
-    if Users: 
+    if users: 
         print(users.serialize()) 
         return  jsonify({'success': True, 'msg': 'Has accedido a la ruta protegida '})
     return jsonify({'success': False, 'msg': 'Token erroneo'})
