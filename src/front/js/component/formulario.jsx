@@ -12,13 +12,20 @@ export const Formulario = ({ type }) => {
         password: '',
         name: '',
         phoneNumber: '',
-        Role: ''
+        Role: true,
     });
 
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
+        });
+    };
+
+    const handleRoleChange = (e) => {
+        setFormData({
+            ...formData,
+            role: e.target.value === "player"
         });
     };
 
@@ -88,8 +95,29 @@ export const Formulario = ({ type }) => {
                         </div>
                     </div>
                     <div className="m-3">
-                    <label htmlFor="role">Escoge tu Rol</label>
-                    
+                        <label htmlFor="role">Escoge tu Rol</label>
+                        <div>
+                                <input
+                                    type="radio"
+                                    id="player"
+                                    name="role"
+                                    value="player"
+                                    checked={formData.role === true}
+                                    onChange={handleRoleChange}
+                                />
+                                <label htmlFor="player" className="ms-2">Player</label>
+                        </div>
+                        <div>
+                                <input
+                                    type="radio"
+                                    id="host"
+                                    name="role"
+                                    value="host"
+                                    checked={formData.role === false}
+                                    onChange={handleRoleChange}
+                                />
+                                <label htmlFor="host" className="ms-2">Host</label>
+                        </div>
                     </div>
                    
                 </>
