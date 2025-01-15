@@ -1,4 +1,7 @@
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from flask import Flask, request, jsonify, send_from_directory
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -12,10 +15,17 @@ from flask_jwt_extended import JWTManager
 
 # Configuración del entorno
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
-static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
-app = Flask(__name__)
+static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../static/')  # Ruta de los archivos estáticos
+app = Flask(__name__, static_folder='static')  # Configura la carpeta estática para servir imágenes y otros archivos
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]}})
 app.url_map.strict_slashes = False
+
+# Configuración de Cloudinary
+cloudinary.config(
+    cloud_name="dp1hfcvss",  # Reemplaza con tu Cloud Name
+    api_key="725115499957141",  # Reemplaza con tu API Key
+    api_secret="JzankZwn5dURelzmy0DyyjvuUjw"  # Reemplaza con tu API Secret
+)
 
 # Configuración de la base de datos
 db_url = os.getenv("DATABASE_URL")
@@ -63,18 +73,37 @@ def sitemap():
         return generate_sitemap(app)
     return send_from_directory(static_file_dir, 'index.html')
 
-# Manejo de archivos estáticos
-@app.route('/<path:path>', methods=['GET'])
-def serve_any_other_file(path):
-    # Evitar que las rutas de la API sean manejadas como archivos estáticos
-    if path.startswith("api/"):
-        return jsonify({"error": "Ruta no encontrada"}), 404
-    
-    full_path = os.path.join(static_file_dir, path)
-    if not os.path.isfile(full_path):
-        return send_from_directory(static_file_dir, 'index.html')
-    return send_from_directory(static_file_dir, path)
+# Manejo de archivos estáticos (para imágenes y otros recursos)
+@app.route('/static/uploads/<filename>', methods=['GET'])
+def serve_file(filename):
+    try:
+        return send_from_directory(os.path.join(app.root_path, 'static', 'uploads'), filename)
+    except FileNotFoundError:
+        return jsonify({"error": "Archivo no encontrado"}), 404
 
+# Ruta para subir imágenes a Cloudinary
+@app.route('/upload', methods=['POST'])
+def upload_image():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    try:
+        # Subir la imagen a Cloudinary
+        upload_result = cloudinary.uploader.upload(file)
+        image_url = upload_result['secure_url']  # URL segura de la imagen subida
+
+        return jsonify({"message": "Imagen subida exitosamente", "image_url": image_url}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error al subir la imagen: {str(e)}"}), 500
+
+# Ejecutar la app
+if __name__ == "__main__":
+    app.run(debug=True)
+    
 # Esto solo se ejecuta si $ python src/main.py es ejecutado
 if __name__ == '__main__':
     with app.app_context():

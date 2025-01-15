@@ -1,3 +1,5 @@
+// src/front/js/component/ProductCard.js
+
 import React from "react";
 import PropTypes from "prop-types";
 import "../../styles/productCard.css"; // Asegúrate de crear y vincular los estilos específicos para este componente
@@ -11,7 +13,7 @@ const ProductCard = ({ product, onAddToCart }) => {
     return (
         <div className="product-card">
             <img
-                src={product.image || "https://via.placeholder.com/150"}
+                src={product.imagen_url || "https://via.placeholder.com/150"}  // Aquí ya no necesitamos modificar nada
                 alt={product.name || "Producto"}
                 loading="lazy"
             />
@@ -26,7 +28,7 @@ const ProductCard = ({ product, onAddToCart }) => {
 
 ProductCard.propTypes = {
     product: PropTypes.shape({
-        image: PropTypes.string,
+        imagen_url: PropTypes.string,
         name: PropTypes.string,
         price: PropTypes.number,
     }),

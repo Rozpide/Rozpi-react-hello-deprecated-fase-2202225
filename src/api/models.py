@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from enum import Enum
+import os
 
 db = SQLAlchemy()
 
@@ -94,7 +95,7 @@ class Product(db.Model):
             "featured": self.featured,
             "stock": self.stock,
             "categories": [category.serialize() for category in self.categories],
-            "imagen_url": self.imagen_url,
+            "imagen_url": f"{os.getenv('REACT_APP_BACKEND_URL')}{self.imagen_url}" if self.imagen_url else None,  
         }
 
 # Clase Cart

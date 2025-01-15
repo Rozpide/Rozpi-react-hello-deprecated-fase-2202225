@@ -1,8 +1,20 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.models import db, Product, Category, User
+import os
+from werkzeug.utils import secure_filename
 
 product_routes = Blueprint('product_routes', __name__)
+
+# Configuración para subir imágenes
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Ruta para obtener productos con soporte de paginación y productos destacados
 @product_routes.route('/', methods=['GET'])
@@ -49,11 +61,23 @@ def create_product():
         return jsonify({"error": "No tienes permiso para realizar esta acción"}), 403
 
     try:
-        data = request.get_json()
-        name = data.get("name")
-        price = data.get("price")
-        stock = data.get("stock", 0)
-        category_ids = data.get("categories", [])
+        # Verificar si se ha enviado un archivo de imagen
+        imagen_url = ""
+        if 'file' in request.files:
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(UPLOAD_FOLDER, filename))
+                imagen_url = f"/{UPLOAD_FOLDER}/{filename}"
+
+        # Obtener los datos del formulario
+        name = request.form.get("name")
+        price = request.form.get("price")
+        stock = request.form.get("stock", 0)
+
+        # Convertir las categorías a una lista de enteros
+        category_ids = request.form.getlist("categories")
+        category_ids = [int(cat_id) for cat_id in category_ids]  # Convertir a enteros
 
         if not name or not price:
             return jsonify({"error": "Los campos 'name' y 'price' son obligatorios"}), 400
@@ -61,17 +85,19 @@ def create_product():
         if not isinstance(category_ids, list):
             return jsonify({"error": "El campo 'categories' debe ser un arreglo"}), 400
 
+        # Obtener las categorías de la base de datos
         categories = Category.query.filter(Category.id.in_(category_ids)).all()
         if len(categories) != len(category_ids):
             return jsonify({"error": "Una o más categorías no existen"}), 400
 
+        # Crear el nuevo producto con la URL de la imagen
         new_product = Product(
             name=name,
-            description=data.get("description", ""),
+            description=request.form.get("description", ""),
             price=price,
             stock=stock,
-            imagen_url=data.get("imagen_url", ""),
-            featured=data.get("featured", False)
+            imagen_url=imagen_url,  # Almacenar la URL de la imagen subida
+            featured=request.form.get("featured", False)
         )
         new_product.categories.extend(categories)
 

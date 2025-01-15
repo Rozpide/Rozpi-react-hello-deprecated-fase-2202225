@@ -128,13 +128,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/products`);
                     if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
             
-                    const products = await response.json();
-                    setStore({ allProducts: products });
+                    const data = await response.json();
+                    console.log("Todos los productos:", data); // Verifica la estructura
+                    setStore({ allProducts: data.products }); // Solo guardar los productos
                 } catch (error) {
                     console.error("Error al obtener todos los productos:", error.message);
                     setStore({ allProducts: [] });
                 }
-            },            
+            },                   
 
             // Buscar productos con filtros
             searchProducts: async (search = '', categoryId = null, page = 1, perPage = 10) => {

@@ -121,3 +121,13 @@
 .apply-filters-btn:hover {
     background-color: #218838;
 }
+
+/* Agregar separación entre filtros y productos */
+.filters-container + .product-list {
+    margin-top: 30px;
+}
+
+/* Sección de productos */
+.product-grid {
+    padding-top: 20px;
+}

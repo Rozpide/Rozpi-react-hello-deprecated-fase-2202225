@@ -5,6 +5,7 @@ from .product_routes import product_routes  # Importa las rutas de productos
 from .category_routes import category_routes
 from .routes import api   
 from .cart_routes import cart_routes
+from .upload_routes import upload_routes  # Importa el blueprint para subir imágenes
 
 """
 Este módulo inicializa y registra las rutas del API en la aplicación Flask.
@@ -28,6 +29,9 @@ def register_routes(app: Flask):
 
     # Rutas de carrito
     app.register_blueprint(cart_routes, url_prefix='/api')  # Asegúrate de que esta ruta esté correctamente registrada
+    
+    # Registrar las rutas de subida de imágenes
+    app.register_blueprint(upload_routes, url_prefix='/api')  # Agregar esta línea para registrar el blueprint de subida de imágenes
     
     # Manejo de errores global
     @app.errorhandler(404)

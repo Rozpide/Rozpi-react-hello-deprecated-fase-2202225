@@ -22,7 +22,6 @@ export const Store = () => {
             try {
                 await actions.fetchCategories(); // Carga las categorías desde el backend
                 await actions.getAllProducts(); // Carga los productos desde el backend
-                console.log(store.allProducts); // Verifica el formato de los datos
             } catch (err) {
                 setError("Error al cargar productos o categorías");
             } finally {
@@ -33,39 +32,32 @@ export const Store = () => {
     }, []);
 
     useEffect(() => {
+        // Filtrar productos cada vez que cambian los productos o los filtros
+        const filterProducts = () => {
+            const { search, category, priceRange } = activeFilters;
+            const products = Array.isArray(store.allProducts) ? store.allProducts : [];
+
+            const filtered = products.filter((product) => {
+                const matchesSearch = search
+                    ? product.name.toLowerCase().includes(search.toLowerCase())
+                    : true;
+
+                const matchesCategory = category
+                    ? product.categories.some((cat) => cat.id === parseInt(category, 10))
+                    : true;
+
+                const matchesPrice =
+                    (!priceRange.min || product.price >= parseFloat(priceRange.min)) &&
+                    (!priceRange.max || product.price <= parseFloat(priceRange.max));
+
+                return matchesSearch && matchesCategory && matchesPrice;
+            });
+
+            setFilteredProducts(filtered);
+        };
+
         filterProducts();
     }, [store.allProducts, activeFilters]);
-
-    const filterProducts = () => {
-        const { search, category, priceRange } = activeFilters;
-        const products = Array.isArray(store.allProducts) ? store.allProducts : [];
-    
-        const filtered = products.filter((product) => {
-            const matchesSearch = search
-                ? product.name.toLowerCase().includes(search.toLowerCase())
-                : true;
-    
-            const matchesCategory = category
-                ? product.categories.some((cat) => cat.id === parseInt(category, 10))
-                : true;
-    
-            const matchesPrice =
-                (!priceRange.min || product.price >= parseFloat(priceRange.min)) &&
-                (!priceRange.max || product.price <= parseFloat(priceRange.max));
-    
-            console.log({
-                product: product.name,
-                matchesSearch,
-                matchesCategory,
-                matchesPrice,
-            });
-    
-            return matchesSearch && matchesCategory && matchesPrice;
-        });
-    
-        console.log("Filtered Products:", filtered);
-        setFilteredProducts(filtered);
-    };    
 
     const handleSearch = (searchTerm) => {
         setActiveFilters((prevFilters) => ({
@@ -88,8 +80,12 @@ export const Store = () => {
     return (
         <div className="store-container">
             <h1 className="store-title">Nuestra Tienda</h1>
+            {/* Barra de búsqueda */}
             <SearchBar onSearch={handleSearch} />
+            {/* Filtros */}
             <Filters onApplyFilters={handleFilters} categories={store.categories} />
+            
+            {/* Lista de productos */}
             <section className="product-list">
                 {loading ? (
                     <p className="loading-text">Cargando productos...</p>
