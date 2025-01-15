@@ -1,6 +1,6 @@
-const backendUrl = process.env.BACKEND_URL?.endsWith("/")
-    ? process.env.BACKEND_URL.slice(0, -1)
-    : process.env.BACKEND_URL || "https://special-funicular-pjgr67xp9qgv29w79-3001.app.github.dev";
+const backendUrl = process.env.REACT_APP_BACKEND_URL?.endsWith("/")
+    ? process.env.REACT_APP_BACKEND_URL.slice(0, -1)
+    : process.env.REACT_APP_BACKEND_URL || "https://fallback-url.com"; 
 
 const API_ENDPOINTS = {
     USER: `${backendUrl}/auth`,

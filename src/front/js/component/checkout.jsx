@@ -9,7 +9,9 @@ export const CheckoutForm = () => {
   
     useEffect(() => {
         const createPaymentSession = async () => {
-            const response = await fetch('https://special-funicular-pjgr67xp9qgv29w79-3001.app.github.dev/api/create-payment', {
+            const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://fallback-url.com';  // Valor por defecto
+
+            const response = await fetch(`${backendUrl}/api/create-payment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

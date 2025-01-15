@@ -20,9 +20,10 @@ load_dotenv()
 # Configuración de Stripe
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY", "sk_test_YOUR_SECRET_KEY")  # Asegúrate de que tu clave secreta está cargada desde .env
 
+backend_url = os.getenv("BACKEND_URL")
 # Inicializar Blueprint
 api = Blueprint('api', __name__)
-CORS(api, resources={r"/api/*": {"origins": "https://special-funicular-pjgr67xp9qgv29w79-3001.app.github.dev/"}})
+CORS(api, resources={r"/api/*": {"origins": backend_url}})
 
 # Cargar SECRET_KEY desde el archivo de entorno
 SECRET_KEY = os.getenv("SECRET_KEY")

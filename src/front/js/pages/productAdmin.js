@@ -43,8 +43,8 @@ export const ProductAdmin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://special-funicular-pjgr67xp9qgv29w79-3001.app.github.dev/api/products/", {
-                method: "POST",
+            const backendUrl = process.env.REACT_APP_BACKEND_URL || "https://fallback-url.com";  // Valor por defecto si la variable no está definida
+            const response = await fetch(`${backendUrl}/api/products/`, {                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },

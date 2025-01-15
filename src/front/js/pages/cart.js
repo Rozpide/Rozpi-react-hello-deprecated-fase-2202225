@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import "../../styles/cart.css";
 
 // Cargar la librería de Stripe
-const stripePromise = loadStripe("pk_live_pG6ixeQ1obX4sRyxfz40AiD5");
+const stripePromise = loadStripe("pk_test_y6j09buhEITjgLAbivNqMsbP");
 
 export const Cart = () => {
     const { store, actions } = useContext(Context);
@@ -22,7 +22,7 @@ export const Cart = () => {
 
             try {
                 // Verifica la URL base antes de hacer la solicitud
-                const baseUrl = process.env.BACKEND_URL || "https://special-funicular-pjgr67xp9qgv29w79-3001.app.github.dev";
+                const baseUrl = process.env.REACT_APP_BACKEND_URL || "https://fallback-url.com";  // Valor por defecto
                 const url = `${baseUrl}/api/cart?user_id=${userId}`;
                 console.log("URL de la solicitud:", url); // Verifica la URL completa
 
