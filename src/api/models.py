@@ -10,7 +10,7 @@ class Users(db.Model):
     player = db.Column(db.Boolean, nullable=False)
     host_id = db.Column(db.Integer, db.ForeignKey('hosts.id'))
     player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
-    phone = db.Column(db.Integer, unique=True, nullable=False)
+    phone = db.Column(db.String(15), unique=True)
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -53,7 +53,7 @@ class Players(db.Model):
     side = db.Column(db.String(), nullable=False)
     hand = db.Column(db.String(), nullable=False)
     tournament_participant = db.relationship('Participants', back_populates='player_relationship')
-    match_participant = db.relationship('Match_participants', back_populates='player_relationship')
+    
 
     def __repr__(self):
         return '<Player %r>' % self.name
@@ -68,7 +68,6 @@ class Players(db.Model):
             "age": self.age,
             "hand": self.hand,
             "tournament_participant": [player.serialize() for player in self.tournament_participant] if self.tournament_participant else None,
-            "match_participant": [participant.serialize() for participant in self.match_participant] if self.match_participant else None
     }
 
 class Tournaments(db.Model):
@@ -127,6 +126,29 @@ class Matches(db.Model):
             "participants_match": [participant.serialize() for participant in self.participants_match] if self.participants_match else None
     }
 
+
+class Teams(db.Model):
+    __tablename__ = 'teams'
+    id = db.Column(db.Integer, primary_key=True)
+    left = db.Column(db.Integer, db.ForeignKey('participants.id'))
+    right = db.Column(db.Integer, db.ForeignKey('participants.id'))
+    left_participant = db.relationship('Participants', foreign_keys=[left], back_populates='team_left')
+    right_participant = db.relationship('Participants', foreign_keys=[right], back_populates='team_right')
+    tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
+    matches_as_team_1 = db.relationship('Match_participants', foreign_keys='Match_participants.team_1', back_populates='team_1_relationship')
+    matches_as_team_2 = db.relationship('Match_participants', foreign_keys='Match_participants.team_2', back_populates='team_2_relationship')
+
+    def __repr__(self):
+        return '<Team %r>' % self.id
+    
+    def serialize(self):
+        return {
+        "id": self.id,
+        "left": self.left_participant.serialize() if self.left_participant else None,
+        "right": self.right_participant.serialize() if self.right_participant else None,
+        "tournament_id": self.tournament_id,
+    }
+
 class Participants(db.Model):
     __tablename__ = 'participants'
     id = db.Column(db.Integer, primary_key=True)
@@ -134,6 +156,8 @@ class Participants(db.Model):
     player_relationship = db.relationship('Players', back_populates='tournament_participant')
     tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
     tournament_relationship = db.relationship('Tournaments', back_populates='participants')
+    team_left = db.relationship('Teams', foreign_keys='Teams.left', back_populates='left_participant')
+    team_right = db.relationship('Teams', foreign_keys='Teams.right', back_populates='right_participant')
 
     def __repr__(self):
          return '<Participants %r>' % self.id
@@ -148,12 +172,12 @@ class Participants(db.Model):
 class Match_participants(db.Model):
     __tablename__ = 'match_participants'
     id = db.Column(db.Integer, primary_key=True)
-    player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
-    player_relationship = db.relationship('Players', back_populates='match_participant')
+    team_1 = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    team_2 = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    team_1_relationship = db.relationship('Teams', foreign_keys=[team_1], back_populates='matches_as_team_1')
+    team_2_relationship = db.relationship('Teams', foreign_keys=[team_2], back_populates='matches_as_team_2')
     match_id = db.Column(db.Integer, db.ForeignKey('matches.id'))
     match_relationship = db.relationship('Matches', back_populates='participants_match')
-    position = db.Column(db.Boolean, nullable=False)
-    team = db.Column(db.Boolean, nullable=False)
     winner = db.Column(db.Boolean, nullable=False)
 
 
@@ -163,10 +187,9 @@ class Match_participants(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "player_id" : self.player_id,
+            "team_1": self.team_1_relationship.serialize() if self.team_1_relationship else None,
+            "team_2": self.team_2_relationship.serialize() if self.team_2_relationship else None,
             "match_id" : self.match_id,
-            "position": self.position,
-            "team" : self.team,
             "winner" : self.winner,
     }
 
