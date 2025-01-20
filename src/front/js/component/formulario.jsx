@@ -10,7 +10,6 @@ export const Formulario = ({ type }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        phone: '',
         player: true,
     });
 
@@ -71,16 +70,6 @@ export const Formulario = ({ type }) => {
             </div>
             {type !== 'login' && (
                 <>
-                    <div className="m-3">
-                        <label htmlFor="phone">Teléfono</label>
-                        <div className="col-12 col-sm-6 col-md-4 mx-auto">
-                            <PhoneInput
-                                country={'es'}
-                                value={formData.phone}
-                                onChange={(phone) => setFormData({ ...formData, phone: phone })}
-                            />
-                        </div>
-                    </div>
                     <div className="m-3">
                         <label htmlFor="role">Escoge tu Rol</label>
                         <div>

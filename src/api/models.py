@@ -10,7 +10,7 @@ class Users(db.Model):
     player = db.Column(db.Boolean, nullable=False)
     host_id = db.Column(db.Integer, db.ForeignKey('hosts.id'))
     player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
-    phone = db.Column(db.String(15), unique=True, nullable=False)
+    phone = db.Column(db.String(15))
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -20,7 +20,6 @@ class Users(db.Model):
             "id": self.id,
             "email": self.email,
             "player": self.player,
-            "phone": self.phone
         }
 
 class Hosts(db.Model):

@@ -17,6 +17,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 			]
 		},
 		actions: {
+            getUserData: async () => {
+                try {
+                    const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/protected", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        },
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error("Error al obtener los datos del usuario");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del usuario:", data);
+
+                    setStore({ user: data.users});
+                } catch (error) {
+                    console.error("Error en getUserData:", error);
+                }
+            },
+
 			register: async (formData) => {
                 try {
                     const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/signup", {

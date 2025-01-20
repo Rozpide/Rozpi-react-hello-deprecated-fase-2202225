@@ -26,11 +26,10 @@ def handle_hello():
 def register():
     email = request.json.get('email', None)
     password = request.json.get('password', None)
-    phone = request.json.get ('phone', None)
     player = request.json.get ('player', None)
    
 
-    if not email or not password or not phone or not player:
+    if not email or not password or not player:
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
 
@@ -40,7 +39,7 @@ def register():
     
     hashed_password = generate_password_hash(password)
     print(hashed_password)
-    new_user = Users(email=email, password=hashed_password, phone=phone, player=player)
+    new_user = Users(email=email, password=hashed_password, player=player)
     
     db.session.add(new_user)
     db.session.commit()
@@ -76,5 +75,5 @@ def protected():
     users = Users.query.get(identity)   
     if users: 
         print(users.serialize()) 
-        return  jsonify({'success': True, 'msg': 'Has accedido a la ruta protegida '})
+        return jsonify({'success': True, 'msg': 'OK', 'user': users.serialize()})
     return jsonify({'success': False, 'msg': 'Token erroneo'})
