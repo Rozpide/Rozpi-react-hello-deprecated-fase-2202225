@@ -77,7 +77,7 @@ export const Formulario = ({ type }) => {
                             <PhoneInput
                                 country={'es'}
                                 value={formData.phone}
-                                onChange={(phone) => setFormData({ ...formData, phoneNumber: phone })}
+                                onChange={(phone) => setFormData({ ...formData, phone: phone })}
                             />
                         </div>
                     </div>

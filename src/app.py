@@ -23,7 +23,7 @@ app = Flask(__name__)
 app.config ['JWT SECRET KEY'] = os.getenv ('JWT SECRET KEY')
 jwt = JWTManager (app)
 app.url_map.strict_slashes = False
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "https://miniature-space-cod-wr99gvxjrvr539pg4-3000.app.github.dev"}})
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")

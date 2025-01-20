@@ -40,7 +40,7 @@ def register():
     
     hashed_password = generate_password_hash(password)
     print(hashed_password)
-    new_user = Users(email=email, password=hashed_password, phone=phone, player=player, is_active= True)
+    new_user = Users(email=email, password=hashed_password, phone=phone, player=player)
     
     db.session.add(new_user)
     db.session.commit()

@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			message: null,
+            auth: localStorage.getItem('token') || false,
 			demo: [
 				{
 					title: "FIRST",
@@ -21,7 +22,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(formData),
+                        body: JSON.stringify(formData)
                     });
 
                     if (!resp.ok) {
@@ -33,6 +34,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const data = await resp.json();
                     console.log("Usuario registrado:", data);
                     localStorage.setItem ('token', data.token)
+                    setStore({ auth: true, token: data.token });
                 } catch (error) {
                     console.error("Error en register:", error);
                 }
@@ -52,8 +54,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     const data = await resp.json();
                     console.log("Usuario logeado:", data);
-
-                    setStore({ user: data });
+                    localStorage.setItem ('token', data.token)
+                    setStore({ auth: true, token: data.token });
                 } catch (error) {
                     console.error("Error en login:", error);
                 }
