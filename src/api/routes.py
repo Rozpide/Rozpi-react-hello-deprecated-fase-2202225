@@ -26,12 +26,11 @@ def handle_hello():
 def register():
     email = request.json.get('email', None)
     password = request.json.get('password', None)
-    name = request.json.get ('name', None)
-    phoneNumber = request.json.get ('phoneNumber', None)
-    role = request.json.get ('role', None)
+    phone = request.json.get ('phone', None)
+    player = request.json.get ('player', None)
    
 
-    if not email or not password or not name or not phoneNumber or not role:
+    if not email or not password or not phone or not player:
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
 
@@ -40,8 +39,8 @@ def register():
         return jsonify({'success': False, 'msg': 'El correo electronico ya existe'}), 400
     
     hashed_password = generate_password_hash(password)
-   
-    new_user = Users(email=email, password=hashed_password, name=name, phoneNumber=phoneNumber, role=role, is_active= True)
+    print(hashed_password)
+    new_user = Users(email=email, password=hashed_password, phone=phone, player=player, is_active= True)
     
     db.session.add(new_user)
     db.session.commit()
@@ -54,19 +53,21 @@ def login():
     email = request.json.get('email', None)
     password = request.json.get('password', None)
 
-    user = Users.query.filter_by(email=email).first()
     
     if not email or not password:
-        return jsonify({'success': False, 'msg': 'Email y contraseña son obligatorios'}), 400
+        return jsonify({'msg': 'Email y contraseña son obligatorios'}), 400
     
-    if user: 
-        if check_password_hash(user.password, password):
-            access_token = create_access_token(identity=user.id)
-            return jsonify({'success': True, 'user': user.serialize(), 'token': access_token}), 200
-        else:
-            return jsonify({'success': False, 'msg': 'Usuario/Contraseña no válidos'}), 400
+    user = Users.query.filter_by(email=email).first()
     
-    return jsonify({'success': False, 'msg': 'El correo electronico no tiene una cuenta asociada'}), 404
+    if not user:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+    
+    if not check_password_hash (user.password, password):
+        return jsonify ({'msg': 'email/contraseña incorrectos'}), 404
+
+    
+    token = create_access_token(identity=str(user.id))
+    return jsonify({'msg': 'ok', 'token': token}), 200
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()

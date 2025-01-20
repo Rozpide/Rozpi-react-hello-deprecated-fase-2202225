@@ -5,6 +5,7 @@ import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
+from flask_cors import CORS
 from api.utils import APIException, generate_sitemap
 from api.models import db, Users, Hosts, Players, Tournaments, Matches, Participants, Match_participants
 from api.routes import api
@@ -22,6 +23,7 @@ app = Flask(__name__)
 app.config ['JWT SECRET KEY'] = os.getenv ('JWT SECRET KEY')
 jwt = JWTManager (app)
 app.url_map.strict_slashes = False
+CORS(app)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")

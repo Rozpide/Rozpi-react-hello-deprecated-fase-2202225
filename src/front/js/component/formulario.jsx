@@ -10,9 +10,8 @@ export const Formulario = ({ type }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        name: '',
-        phoneNumber: '',
-        Role: true,
+        phone: '',
+        player: true,
     });
 
     const handleChange = (e) => {
@@ -25,7 +24,7 @@ export const Formulario = ({ type }) => {
     const handleRoleChange = (e) => {
         setFormData({
             ...formData,
-            role: e.target.value === "player"
+            player: e.target.value === "player"
         });
     };
 
@@ -73,23 +72,11 @@ export const Formulario = ({ type }) => {
             {type !== 'login' && (
                 <>
                     <div className="m-3">
-                        <label htmlFor="name">Nombre</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Nombre Completo"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="m-3">
-                        <label htmlFor="phoneNumber">Teléfono</label>
+                        <label htmlFor="phone">Teléfono</label>
                         <div className="col-12 col-sm-6 col-md-4 mx-auto">
                             <PhoneInput
                                 country={'es'}
-                                value={formData.phoneNumber}
+                                value={formData.phone}
                                 onChange={(phone) => setFormData({ ...formData, phoneNumber: phone })}
                             />
                         </div>
@@ -102,7 +89,7 @@ export const Formulario = ({ type }) => {
                                     id="player"
                                     name="role"
                                     value="player"
-                                    checked={formData.role === true}
+                                    checked={formData.player === true}
                                     onChange={handleRoleChange}
                                 />
                                 <label htmlFor="player" className="ms-2">Player</label>
@@ -113,7 +100,7 @@ export const Formulario = ({ type }) => {
                                     id="host"
                                     name="role"
                                     value="host"
-                                    checked={formData.role === false}
+                                    checked={formData.player === false}
                                     onChange={handleRoleChange}
                                 />
                                 <label htmlFor="host" className="ms-2">Host</label>
@@ -125,7 +112,7 @@ export const Formulario = ({ type }) => {
             <div>
                 <input
                     type="submit"
-                    value={type === 'login' ? 'Iniciar sesión' : 'Registrarse'}
+                    value={type == 'login' ? 'Iniciar sesión' : 'Registrarse'}
                 />
             </div>
         </form>
