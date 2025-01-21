@@ -9,9 +9,9 @@ const getState = ({ getStore, getActions, setStore }) => {
             categories: [],
             featuredProducts: [],
             allProducts: [],
-            totalProducts: 0, // Total de productos para paginación
-            totalPages: 0,    // Total de páginas
-            cart: [],         // Estado para almacenar los productos del carrito
+            totalProducts: 0,
+            totalPages: 0,   
+            cart: [],       
        
         },
         actions: {

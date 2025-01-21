@@ -6,7 +6,7 @@ cart_routes = Blueprint('cart_routes', __name__)
 
 # Obtener los productos en el carrito de un usuario
 @cart_routes.route('/cart', methods=['GET'])
-@jwt_required()  # Asegura que el token esté presente y sea válido
+@jwt_required()  
 def get_cart():
     user_id = get_jwt_identity()  # Obtiene el ID del usuario desde el JWT
     if not user_id:
