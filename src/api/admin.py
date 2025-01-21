@@ -22,7 +22,7 @@ def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
     admin = Admin(app, name='4Geeks Admin', template_mode='bootstrap3')
-
+ 
     # Añadir modelos a la interfaz administrativa
     admin.add_view(ModelView(User, db.session))
     admin.add_view(ProductAdmin(Product, db.session))  # Usa la clase personalizada ProductAdmin
