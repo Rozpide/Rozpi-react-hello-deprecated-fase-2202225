@@ -77,3 +77,5 @@ def protected():
         print(users.serialize()) 
         return jsonify({'success': True, 'msg': 'OK', 'user': users.serialize()})
     return jsonify({'success': False, 'msg': 'Token erroneo'})
+
+
