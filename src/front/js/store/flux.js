@@ -20,7 +20,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
-					setStore({ message: data.message})
+					setStore({ message: data.message })
 					return false;
 				}
 				await getActions().login(dataToSend);
@@ -58,6 +58,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ isLogged: false, user: '' });
 				localStorage.removeItem('token');
 				localStorage.removeItem('user');
+			},
+			getData: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/users/${id}`;
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				const data = await response.json();
+				setStore({ user: data.results });
+			},
+			editData: async (id, dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/api/users/${id}`;
+				const options = {
+					method: 'PUT',
+					headers: {
+						"Content-Type": 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return false;
+				};
+				const data = await response.json();
+				getActions().getData(id);
+				return true;
+			},
+			removeAccount: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/users/${id}`;
+				const options = {
+					method: 'DELETE'
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return false;
+				};
+				const data = await response.json();
+				getActions().logout();
+				return true;
 			}
 		}
 	};
