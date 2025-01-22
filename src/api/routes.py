@@ -52,3 +52,28 @@ def login():
     response_body['access_token'] = access_token
     response_body['results'] = user.serialize()
     return response_body, 200
+
+
+@api.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+def user(id):
+    response_body = {}
+    row = db.session.execute(db.select(Users).where(Users.id == id)).scalar()
+    if request.method == 'GET':
+        response_body['message'] = f'This is the information about user no. {id}'
+        response_body['results'] = row.serialize()
+        return response_body, 200
+    if request.method == 'PUT':
+        data = request.json
+        row.name = data.get('name')
+        row.nationality = data.get('nationality')
+        row.residence = data.get('residence')
+        db.session.commit()
+        response_body['message'] = 'Your data are updated'
+        response_body['results'] = row.serialize()
+        return response_body, 200
+    if request.method == 'DELETE':
+        db.session.delete(row)
+        db.session.commit()
+        response_body['message'] = 'Your account was deleted'
+        response_body['results'] = {}
+        return response_body, 200
