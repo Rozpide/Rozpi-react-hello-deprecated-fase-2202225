@@ -1,7 +1,7 @@
   
 import os
 from flask_admin import Admin
-from .models import db, Users, Hosts, Players, Tournaments, Matches, Participants, Match_participants
+from .models import db, Users, Hosts, Players, Tournaments, Matches, Participants, Match_participants, Teams
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
@@ -18,6 +18,7 @@ def setup_admin(app):
     admin.add_view(ModelView(Matches, db.session))
     admin.add_view(ModelView(Participants, db.session))
     admin.add_view(ModelView(Match_participants, db.session))
+    admin.add_view(ModelView(Teams, db.session))
 
     # You can duplicate that line to add mew models
     # admin.add_view(ModelView(YourModelName, db.session))
