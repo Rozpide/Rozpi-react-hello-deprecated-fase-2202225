@@ -6,8 +6,9 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Login } from "./pages/login.js";
 import { SignUp } from "./pages/signUp.js";
-import { Player } from "./pages/player.js";
-
+import { Player } from "./pages/playerInfo.js";
+import { EditPlayer } from "./pages/editPlayerInfo.js";
+import { CompletePlayerInfo } from "./pages/completePlayerInfo.js";
 
 import injectContext from "./store/appContext";
 
@@ -31,7 +32,9 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<SignUp />} path="/signup" />
-                        <Route element={<Player />} path="/player" />
+                        <Route element={<Player />} path="/player/:id" />
+                        <Route element={<CompletePlayerInfo />} path="/completePlayer/:id" />
+                        <Route element={<EditPlayer />} path="/editPlayer/:id" />
                         <Route element={<h1>Not found!</h1>} path="/single/:theid" />
                     </Routes>
                     <Footer />

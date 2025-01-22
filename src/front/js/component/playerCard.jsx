@@ -32,7 +32,12 @@ export const PlayerCard = ({use}) => {
 
         console.log("Submit data:", playerData, "use:", use);
         
-        use === 'player' ? actions.playerPage(playerData) : actions.updatePlayer(playerData);
+        use === 'player'
+        ? actions.playerPage(playerData)
+        : use === 'update'
+        ? actions.updatePlayer(playerData) 
+        : actions.createPlayer(playerData);
+         
     };
 
     return (
@@ -42,17 +47,18 @@ export const PlayerCard = ({use}) => {
                 <img src="..." className="card-img-top" alt="..." />
                 <div className="card-body">
                     <h5 className="card-title">{playerData.name}</h5>
-                    <p className="card-text">Género: {playerData.gender}</p>
-                    <p className="card-text">Edad: {playerData.age}</p>
-                    <p className="card-text">Categoría: {playerData.rating}</p>
-                    <p className="card-text">Lado: {playerData.side}</p>
-                    <p className="card-text">Mano: {playerData.hand}</p>
+                    <p className="card-text"><b>Género:</b> {playerData.gender}</p>
+                    <p className="card-text"><b>Edad:</b> {playerData.age}</p>
+                    <p className="card-text"><b>Categoría:</b> {playerData.rating}</p>
+                    <p className="card-text"><b>Lado:</b> {playerData.side}</p>
+                    <p className="card-text"><b>Mano:</b> {playerData.hand}</p>
                 </div>
             </div>
         ) : (
+            
             <form onSubmit={handleSubmit}>
                 <div className="m-3">
-                    <label htmlFor="name">Nombre</label>
+                    <label htmlFor="name"><b>Nombre</b></label>
                     <input
                         type="text"
                         id="name"
@@ -64,7 +70,7 @@ export const PlayerCard = ({use}) => {
                         />
                 </div>
                 <div className="m-3">
-                        <label htmlFor="gender">Género</label>
+                        <label htmlFor="gender"><b>Género</b></label>
                         <select
                             id="gender"
                             name="gender"
@@ -79,7 +85,7 @@ export const PlayerCard = ({use}) => {
                         </select>
                 </div>
                 <div className="m-3">
-                    <label htmlFor="age">Edad</label>
+                    <label htmlFor="age"><b>Edad</b></label>
                     <input
                         type="number"
                         id="age"
@@ -88,22 +94,29 @@ export const PlayerCard = ({use}) => {
                         value={playerData.age}
                         onChange={handleChange}
                         required
+                        min="0"
+                        max= "99"
                         />
                 </div>
                 <div className="m-3">
-                    <label htmlFor="rating">Categoría</label>
-                    <input
-                        type="text"
-                        id="rating"
-                        name="rating"
-                        placeholder="Categoría"
-                        value={playerData.rating}
-                        onChange={handleChange}
-                        required
-                        />
-                </div>
+                        <label htmlFor="rating"><b>Categoría</b></label>
+                        <select
+                            id="rating"
+                            name="rating"
+                            value={playerData.rating}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Selecciona tu categoría</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
                 <div className="m-3">
-                        <label htmlFor="side">Lado</label>
+                        <label htmlFor="side"><b>Lado</b></label>
                         <select
                             id="side"
                             name="side"
@@ -118,7 +131,7 @@ export const PlayerCard = ({use}) => {
                         </select>
                     </div>
                     <div className="m-3">
-                        <label htmlFor="hand">Mano</label>
+                        <label htmlFor="hand"><b>Mano</b></label>
                         <select
                             id="hand"
                             name="hand"

@@ -78,4 +78,60 @@ def protected():
         return jsonify({'success': True, 'msg': 'OK', 'user': users.serialize()})
     return jsonify({'success': False, 'msg': 'Token erroneo'})
 
+@api.route('/completePlayer/<int:player_id>', methods=['POST'])
+def completePlayer(player_id):
+    name = request.json.get('name', None)
+    gender = request.json.get('gender', None)
+    age = request.json.get ('age', None)
+    rating = request.json.get ('rating', None)
+    side = request.json.get ('side', None)
+    hand = request.json.get ('hand', None)
+
+    if not name or not gender or not age or not rating or not side or not hand:
+        return jsonify({'msg': 'Todos los campos son necesarios'}), 400
+    
+    player = Players.query.get(player_id)
+    if not player:
+        return jsonify({'msg': 'El jugador no existe'}), 404
+
+    # Actualizar los datos del jugador
+    player.name = name
+    player.gender = gender
+    player.age = age
+    player.rating = rating
+    player.side = side
+    player.hand = hand
+    
+    db.session.commit()
+
+
+
+@api.route('/editPlayer/<int:player_id>', methods=['PUT'])
+def editPlayer(player_id):
+    data = request.json
+    name = data.get('name')
+    gender = data.get('gender')
+    age = data.get('age')
+    rating = data.get('rating')
+    side = data.get('side')
+    hand = data.get('hand')
+
+    if not name or not gender or not age or not rating or not side or not hand:
+        return jsonify({'msg': 'Todos los campos son necesarios'}), 400
+
+    # Buscar al jugador por ID
+    player = Players.query.get(player_id)
+    if not player:
+        return jsonify({'msg': 'El jugador no existe'}), 404
+
+    player.name = name
+    player.gender = gender
+    player.age = age
+    player.rating = rating
+    player.side = side
+    player.hand = hand
+
+    db.session.commit()
+    return jsonify({'msg': 'Jugador actualizado con éxito', 'player': player.serialize()}), 200
+
 
