@@ -34,9 +34,8 @@ export const PlayerCard = ({use}) => {
         
         use === 'player'
         ? actions.playerPage(playerData)
-        : use === 'update'
-        ? actions.updatePlayer(playerData) 
-        : actions.createPlayer(playerData);
+        : actions.updatePlayer(playerData) 
+        
          
     };
 

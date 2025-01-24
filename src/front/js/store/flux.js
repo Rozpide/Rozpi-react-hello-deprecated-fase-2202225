@@ -87,25 +87,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 console.log("Mensaje inicial cargado");
 			},
 
-            createPlayer: async (playerData) => {
-                try {
-                    const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/editPlayer", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(playerData)
-                    });
-
-                    if (!resp.ok) {
-                        throw new Error("Error al rellenar el perfil");
-                    }
-
-                    const data = await resp.json();
-                    console.log("Usuario copmletado:", data)
-                } catch (error) {
-                    console.error("Error al completar el perfil:", error);
-                }
-            },
-            
             updatePlayer: async (playerData) => {
                 try {
                     const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/editPlayer", {
