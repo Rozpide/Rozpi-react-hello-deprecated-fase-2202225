@@ -78,32 +78,63 @@ def protected():
         return jsonify({'success': True, 'msg': 'OK', 'user': users.serialize()})
     return jsonify({'success': False, 'msg': 'Token erroneo'})
 
-@api.route('/editPlayer/<int:player_id>', methods=['PUT'])
-def editPlayer(player_id):
-    data = request.json
-    name = data.get('name')
-    gender = data.get('gender')
-    age = data.get('age')
-    rating = data.get('rating')
-    side = data.get('side')
-    hand = data.get('hand')
+@api.route('/getPlayers/<int:id>', methods=['PUT'])
+def editPlayer(id):
+    name = request.json.get('name', None)
+    gender = request.json.get('gender', None)
+    age = request.json.get('age', None)
+    rating = request.json.get('rating', None)
+    side = request.json.get('side', None)
+    hand = request.json.get('hand', None)
+
 
     if not name or not gender or not age or not rating or not side or not hand:
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
     # Buscar al jugador por ID
-    player = Players.query.get(player_id)
+    player = Players.query.get(id)
     if not player:
         return jsonify({'msg': 'El jugador no existe'}), 404
+    
+    if name:
+        player.name = name
 
-    player.name = name
-    player.gender = gender
-    player.age = age
-    player.rating = rating
-    player.side = side
-    player.hand = hand
+    if gender:
+        player.gender = gender
+    if age:
+        player.age = age
+    if rating:
+        player.rating = rating
+    if side:
+        player.side = side
+    if hand:
+        player.hand = hand
+    
 
     db.session.commit()
     return jsonify({'msg': 'Jugador actualizado con éxito', 'player': player.serialize()}), 200
 
+@api.route('/getPlayers', methods=['GET'])
+def get_players():
+    try:
+        # Consultar todos los jugadores de la base de datos
+        players = Players.query.all()
+        
+        # Verificar si hay jugadores en la base de datos
+        if not players:
+            return jsonify({'msg': 'No hay jugadores registrados'}), 404
+        
+        # Serializar y retornar la lista de jugadores
+        return jsonify({'players': [player.serialize() for player in players]}), 200
+    except Exception as e:
+        # Manejo de errores
+        return jsonify({'msg': 'Error al obtener los jugadores', 'error': str(e)}), 500
+
+@api.route('/getPlayers/<int:id>', methods=['GET'])
+def get_player(id):
+
+    player = Players.query.get(id)
+    if not player:    
+        return jsonify({'msg': 'Host no encontrado'}), 404
+    return jsonify({'player': player.serialize()}), 200     # Devuelve la información serializada del host
 

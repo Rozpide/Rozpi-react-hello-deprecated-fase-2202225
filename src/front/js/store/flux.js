@@ -87,9 +87,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 console.log("Mensaje inicial cargado");
 			},
 
-            updatePlayer: async (playerData) => {
+            updatePlayer: async (playerData, playerId) => {
                 try {
-                    const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/editPlayer", {
+                    const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/getPlayers/${playerId}", {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(playerData)
@@ -104,7 +104,33 @@ const getState = ({ getStore, getActions, setStore }) => {
                 } catch (error) {
                     console.error("Error al actualizar el perfil:", error);
                 }
-            }
+            },
+            getPlayers: async () => {
+                try {
+                    const response = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/getPlayers", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    });
+            
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error("No hay jugadores registrados.");
+                        }
+                        throw new Error("Error al obtener los jugadores.");
+                    }
+            
+                    const data = await response.json();
+                    console.log("Jugadores obtenidos:", data.players);
+            
+                    // Aquí actualizamos el estado global con los jugadores obtenidos
+                    setStore({ players: data.players });
+                } catch (error) {
+                    console.error("Error al obtener los jugadores:", error.message);
+                }
+            },
+            
         },
     };
 };
