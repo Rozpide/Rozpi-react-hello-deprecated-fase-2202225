@@ -10,7 +10,6 @@ class Users(db.Model):
     player = db.Column(db.Boolean, nullable=False)
     host_id = db.Column(db.Integer, db.ForeignKey('hosts.id'))
     player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
-    phone = db.Column(db.String(15))
 
 
     def __repr__(self):
@@ -29,6 +28,8 @@ class Hosts(db.Model):
     name = db.Column(db.String(), unique=True, nullable=False)
     address = db.Column(db.Text, nullable=False)
     court_type = db.Column(db.String(), nullable=False)
+    image = db.Column(db.String())
+    phone = db.Column(db.String(15))
     tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
 
     def __repr__(self):
@@ -40,18 +41,22 @@ class Hosts(db.Model):
             "name": self.name,
             "address": self.address,
             "court_type": self.court_type,
+            "image": self.image,
             "tournament_id": self.tournament_id,
+            "phone": self.phone
     }
 
 class Players(db.Model):
     __tablename__ = 'players'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), nullable=False)
-    gender = db.Column(db.String(), nullable=False)
-    age = db.Column(db.Integer, nullable=False)
-    rating = db.Column(db.Integer, nullable=False)
-    side = db.Column(db.String(), nullable=False)
-    hand = db.Column(db.String(), nullable=False)
+    name = db.Column(db.String())
+    gender = db.Column(db.String())
+    age = db.Column(db.Integer)
+    rating = db.Column(db.Integer)
+    side = db.Column(db.String())
+    hand = db.Column(db.String())
+    image = db.Column(db.String())
+    phone = db.Column(db.String(15))
     tournament_participant = db.relationship('Participants', back_populates='player_relationship')
     
 
@@ -67,6 +72,9 @@ class Players(db.Model):
             "rating": self.rating,
             "age": self.age,
             "hand": self.hand,
+            "side": self.side,
+            "image": self.image,
+            "phone": self.phone,
             "tournament_participant": [player.serialize() for player in self.tournament_participant] if self.tournament_participant else None,
     }
 
@@ -80,6 +88,7 @@ class Tournaments(db.Model):
     schedule = db.Column(db.DateTime, nullable=False)
     award = db.Column(db.String(), nullable=False)
     tournament_winner = db.Column(db.String())
+    image = db.Column(db.String())
     hosts = db.relationship('Hosts', backref=('tournament'))
     tournament_match = db.relationship('Matches', backref=('tournament_match'))
     participants = db.relationship('Participants', back_populates='tournament_relationship')
@@ -97,6 +106,7 @@ class Tournaments(db.Model):
             "schedule": self.schedule,
             "award": self.award,
             "tournament_winner": self.tournament_winner,
+            "image": self.image,
             "hosts": [host.serialize() for host in self.hosts] if self.hosts else None,
             "tournament_match" : [match.serialize() for match in self.tournament_match] if self.tournament_match else None,
             "participants" : [participant.serialize() for participant in self.participants] if self.participants else None

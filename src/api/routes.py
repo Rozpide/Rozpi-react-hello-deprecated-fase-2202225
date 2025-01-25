@@ -40,12 +40,27 @@ def register():
     hashed_password = generate_password_hash(password)
     print(hashed_password)
     new_user = Users(email=email, password=hashed_password, player=player)
-    
-    db.session.add(new_user)
-    db.session.commit()
-    
-    token = create_access_token(identity=str(new_user.id))
-    return jsonify({'users': new_user.serialize(), 'token': token}), 200
+
+    if player: 
+        new_player = Players()
+        db.session.add(new_player)
+        db.session.flush()
+        new_user.player_id = new_player.id
+        db.session.add(new_user)
+        db.session.commit()
+        token = create_access_token(identity=str(new_user.id))
+        return jsonify({'user_info': new_user.serialize(), 'player_info': new_player.serialize(), 'token': token}), 200
+
+    if not player: 
+        new_host = Hosts()
+        db.session.add(new_host)
+        db.session.flush()
+        new_user.host_id = new_host.id
+        db.session.add(new_user)
+        db.session.commit()
+        token = create_access_token(identity=str(new_user.id))
+        return jsonify({'user_info': new_user.serialize(), 'host_info': new_host.serialize(), 'token': token}), 200
+
 
 @api.route('/login', methods=['POST'])
 def login():
