@@ -6,7 +6,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             token: null,
             player_info: null,
             host_info: null,
-
 		},
 		actions: {
             getUserData: async () => {

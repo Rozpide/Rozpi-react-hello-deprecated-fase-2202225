@@ -22,6 +22,8 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+# /////////////////////////////////////////USER/////////////////////////////////////////
+
 @api.route('/signup', methods=['POST'])
 def register():
     email = request.json.get('email', None)
@@ -92,3 +94,56 @@ def protected():
         print(users.serialize()) 
         return jsonify({'success': True, 'msg': 'OK', 'user': users.serialize()})
     return jsonify({'success': False, 'msg': 'Token erroneo'})
+
+# /////////////////////////////////////////HOST/////////////////////////////////////////
+
+@api.route('/host/profile', methods=['GET'])    # Mostrar lista de perfiles de todos los hosts
+def all_host_profile():
+    try:
+        all_hosts = Hosts.query.all()
+
+        if not Hosts:
+            return jsonify({'msg': 'Hosts no encontrados'}), 404
+        
+        serialized_hosts = [host.serialize() for host in all_hosts]
+
+        return jsonify({'hosts': serialized_hosts}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
+
+
+@api.route('/host/profile/<int:id>', methods=['GET'])   # Mostrar el perfil del host seleccionado
+def one_host_profile(id):
+    try:
+        host = Hosts.query.get(id)   
+        if not host:
+            return jsonify({'msg': 'Host no encontrado'}), 404 
+        
+        return jsonify({'host': host.serialize()}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
+
+
+@api.route('/host/profile/<int:id>', methods=['PUT'])    #Editar el perfil del host seleccionado
+def edit_host_profile(id):
+    try:
+        data = request.json
+
+        host = Hosts.query.get(id)
+        
+        if not host:
+            return jsonify({'msg': 'Host no encontrado'}), 404
+ 
+        host.name = data.get('name', host.name)
+        host.address = data.get('address', host.address)
+        host.court_type = data.get('court_type', host.court_type)
+        host.tournament_id = data.get('tournament_id', host.tournament_id)
+
+        db.session.commit()
+
+        return jsonify({'msg': 'Host actualizado con éxito', 'host': host.serialize()}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

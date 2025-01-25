@@ -6,6 +6,7 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Login } from "./pages/login.js";
 import { SignUp } from "./pages/signUp.js";
+import { HostProfile } from "./pages/hostProfile.js";
 
 
 import injectContext from "./store/appContext";
@@ -32,6 +33,7 @@ const Layout = () => {
                         <Route element={<Login />} path="/login" />
                         <Route element={<SignUp />} path="/signup" />
                         <Route element={<CreateTournament />} path="/create_tournament" />
+                        <Route element={<HostProfile />} path="/host/profile" />
                         <Route element={<h1>Not found!</h1>} path="/single/:theid" />
                     </Routes>
                     <Footer />

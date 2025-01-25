@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 
-
 export const Formulario = ({ type }) => {
     console.log("Formulario type:", type);
     const { store, actions } = useContext(Context);
