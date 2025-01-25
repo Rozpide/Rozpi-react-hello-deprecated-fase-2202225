@@ -2,11 +2,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
             auth: localStorage.getItem('token') || false,
+            user: null,
+            token: null,
+            player_info: null,
+            host_info: null,
 		},
 		actions: {
             getUserData: async () => {
                 try {
-                    const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/protected", {
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/protected", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -29,7 +33,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			register: async (formData) => {
                 try {
-                    const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/signup", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData)
@@ -44,7 +48,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const data = await resp.json();
                     console.log("Usuario registrado:", data);
                     localStorage.setItem ('token', data.token)
-                    setStore({ auth: true, token: data.token });
+                    setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
+
                 } catch (error) {
                     console.error("Error en register:", error);
                 }
@@ -52,7 +57,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             login: async (formData) => {
                 try {
-                    const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/login", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/login", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData),
@@ -65,7 +70,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const data = await resp.json();
                     console.log("Usuario logeado:", data);
                     localStorage.setItem ('token', data.token)
-                    setStore({ auth: true, token: data.token });
+                    setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
                 } catch (error) {
                     console.error("Error en login:", error);
                 }
