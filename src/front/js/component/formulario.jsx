@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
+
 
 export const Formulario = ({ type }) => {
     console.log("Formulario type:", type);
