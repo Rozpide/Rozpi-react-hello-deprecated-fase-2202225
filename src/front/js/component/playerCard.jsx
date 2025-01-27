@@ -6,12 +6,13 @@ export const PlayerCard = ({use}) => {
     const { store, actions } = useContext(Context);
     
     const [playerData, setPlayerData] = useState({
-        name:'',
-        gender:'',
-        age:'',
-        rating:'',
-        side:'',
-        hand:'',
+        name:store.player_info?.name || '',
+        gender:store.player_info?.gender ||'',
+        age:store.player_info?.age ||'',
+        rating:store.player_info?.rating ||'',
+        side:store.player_info?.side ||'',
+        hand:store.player_info?.hand ||'',
+        phone:store.player_info?.phone ||'',
     });
 
     const handleChange = (e) => {
@@ -45,12 +46,13 @@ export const PlayerCard = ({use}) => {
             <div className="card" style={{ width: "18rem" }}>
                 <img src="..." className="card-img-top" alt="..." />
                 <div className="card-body">
-                    <h5 className="card-title">{playerData.name}</h5>
-                    <p className="card-text"><b>Género:</b> {playerData.gender}</p>
+                    <h5 className="card-title">{playerData.name || ''}</h5>
+                    <p className="card-text"><b>Género:</b> {playerData.gender || ''}</p>
                     <p className="card-text"><b>Edad:</b> {playerData.age}</p>
                     <p className="card-text"><b>Categoría:</b> {playerData.rating}</p>
                     <p className="card-text"><b>Lado:</b> {playerData.side}</p>
                     <p className="card-text"><b>Mano:</b> {playerData.hand}</p>
+                    <p className="card-text"><b>Phone:</b> {playerData.phone}</p>
                 </div>
             </div>
         ) : (

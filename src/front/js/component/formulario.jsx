@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, } from "react";
 import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 
 export const Formulario = ({ type }) => {
     console.log("Formulario type:", type);
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -25,7 +27,7 @@ export const Formulario = ({ type }) => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
        
@@ -35,8 +37,13 @@ export const Formulario = ({ type }) => {
         }
 
         console.log("Submit data:", formData, "type:", type);
+        
+        if (type === "login") {
+            const aux = await actions.login(formData)
+            return navigate(aux)
 
-        type === 'login' ? actions.login(formData) : actions.register(formData);
+        } 
+        return actions.register(formData);
 
     };
 

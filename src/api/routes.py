@@ -68,8 +68,8 @@ def register():
 def login():
     email = request.json.get('email', None)
     password = request.json.get('password', None)
-
-    
+    player_info = ""
+    host_info = ""
     if not email or not password:
         return jsonify({'msg': 'Email y contraseña son obligatorios'}), 400
     
@@ -81,9 +81,17 @@ def login():
     if not check_password_hash (user.password, password):
         return jsonify ({'msg': 'email/contraseña incorrectos'}), 404
 
+    if user.player_id:
+        player_info = Players.query.get(user.player_id)
     
+    if user.host_id:
+        host_info = Hosts.query.get(user.host_id)
+    
+
+
     token = create_access_token(identity=str(user.id))
-    return jsonify({'msg': 'ok', 'token': token}), 200
+    return jsonify({'user_info': user.serialize(), 'player_info': player_info.serialize() if  player_info else None, 'host_info': host_info.serialize() if  host_info else None, 'token': token}), 200
+
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
@@ -95,8 +103,13 @@ def protected():
         return jsonify({'success': True, 'msg': 'OK', 'user': users.serialize()})
     return jsonify({'success': False, 'msg': 'Token erroneo'})
 
-@api.route('/getPlayers/<int:id>', methods=['PUT'])
-def editPlayer(id):
+
+# /////////////////////////////////////////PLAYER/////////////////////////////////////////
+
+@api.route('/getPlayers', methods=['PUT'])
+@jwt_required()
+def editPlayer():
+    id = get_jwt_identity()
     name = request.json.get('name', None)
     gender = request.json.get('gender', None)
     age = request.json.get('age', None)
@@ -109,13 +122,12 @@ def editPlayer(id):
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
     # Buscar al jugador por ID
-    player = Players.query.get(id)
+    player = Players.query.filter_by(user_id=id).first()
     if not player:
         return jsonify({'msg': 'El jugador no existe'}), 404
     
     if name:
         player.name = name
-
     if gender:
         player.gender = gender
     if age:
@@ -152,7 +164,7 @@ def get_player(id):
 
     player = Players.query.get(id)
     if not player:    
-        return jsonify({'msg': 'Host no encontrado'}), 404
+        return jsonify({'msg': 'Player no encontrado'}), 404
     return jsonify({'player': player.serialize()}), 200     # Devuelve la información serializada del host
 
 
@@ -164,7 +176,7 @@ def all_host_profile():
     try:
         all_hosts = Hosts.query.all()
 
-        if not Hosts:
+        if not all_hosts:
             return jsonify({'msg': 'Hosts no encontrados'}), 404
         
         serialized_hosts = [host.serialize() for host in all_hosts]

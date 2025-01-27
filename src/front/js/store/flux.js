@@ -71,6 +71,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Usuario logeado:", data);
                     localStorage.setItem ('token', data.token)
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
+                    localStorage.setItem('player', formData.player);
+                    if (formData.player) {
+                        return "/player";
+                    } 
+                    return "/host/profile";
                 } catch (error) {
                     console.error("Error en login:", error);
                 }
@@ -79,11 +84,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                 console.log("Mensaje inicial cargado");
 			},
 
-            updatePlayer: async (playerData, playerId) => {
+            updatePlayer: async (playerData) => {
                 try {
-                    const resp = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/getPlayers/${playerId}", {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/getPlayers`, {
                         method: "PUT",
-                        headers: { "Content-Type": "application/json" },
+                        headers: { "Content-Type": "application/json",
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                         },
                         body: JSON.stringify(playerData)
                     });
 
@@ -99,7 +106,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             getPlayers: async () => {
                 try {
-                    const response = await fetch("https://miniature-space-cod-wr99gvxjrvr539pg4-3001.app.github.dev/api/getPlayers", {
+                    const response = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
