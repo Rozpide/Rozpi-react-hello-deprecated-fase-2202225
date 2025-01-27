@@ -6,11 +6,15 @@ const getState = ({ getStore, getActions, setStore }) => {
             token: null,
             player_info: null,
             host_info: null,
+            url : process.env.BACKEND_URL,
 		},
 		actions: {
+
+            /////////////////////////////////////////USER/////////////////////////////////////////
+
             getUserData: async () => {
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL +"/api/protected", {
+                    const resp = await fetch(url +"/api/protected", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -33,7 +37,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			register: async (formData) => {
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL + "/api/signup", {
+                    const resp = await fetch(url + "/api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData)
@@ -57,7 +61,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             login: async (formData) => {
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL + "/api/login", {
+                    const resp = await fetch(url + "/api/login", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData),
@@ -84,9 +88,12 @@ const getState = ({ getStore, getActions, setStore }) => {
                 console.log("Mensaje inicial cargado");
 			},
 
+
+            /////////////////////////////////////////PLAYER/////////////////////////////////////////
+
             updatePlayer: async (playerData) => {
                 try {
-                    const resp = await fetch(`${process.env.BACKEND_URL}/api/getPlayers`, {
+                    const resp = await fetch(url + "/api/getPlayers", {
                         method: "PUT",
                         headers: { "Content-Type": "application/json",
                                     Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -106,7 +113,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             getPlayers: async () => {
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
+                    const response = await fetch(url + "/api/getPlayers", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -130,6 +137,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
             
+
+            /////////////////////////////////////////HOST/////////////////////////////////////////
         },
     };
 };
