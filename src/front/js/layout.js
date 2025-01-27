@@ -8,12 +8,14 @@ import { Login } from "./pages/login.js";
 import { SignUp } from "./pages/signUp.js";
 import { Player } from "./pages/playerInfo.js";
 import { EditPlayer } from "./pages/editPlayerInfo.js";
+import { HostProfile } from "./pages/hostProfile.js";
 
 
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import { CreateTournament } from "./pages/createTournament.js";
 
 //create your first component
 const Layout = () => {
@@ -34,6 +36,8 @@ const Layout = () => {
                         <Route element={<SignUp />} path="/signup" />
                         <Route element={<Player />} path="/player/:id" />
                         <Route element={<EditPlayer />} path="/editPlayer/:id" />
+                        <Route element={<CreateTournament />} path="/create_tournament" />
+                        <Route element={<HostProfile />} path="/host/profile" />
                         <Route element={<h1>Not found!</h1>} path="/single/:theid" />
                     </Routes>
                     <Footer />
