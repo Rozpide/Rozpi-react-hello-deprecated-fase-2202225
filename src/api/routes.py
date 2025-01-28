@@ -116,9 +116,11 @@ def editPlayer():
     rating = request.json.get('rating', None)
     side = request.json.get('side', None)
     hand = request.json.get('hand', None)
+    phone = request.json.get('phone', None)
+    image = request.json.get('image', None)
 
 
-    if not name or not gender or not age or not rating or not side or not hand:
+    if not name or not gender or not age or not rating or not side or not hand or not phone:
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
     # Conecta player con user y Buscar al jugador por ID
@@ -138,6 +140,10 @@ def editPlayer():
         player.side = side
     if hand:
         player.hand = hand
+    if phone:
+        player.phone = phone
+    if image:
+        player.image = image
     
 
     db.session.commit()
@@ -171,24 +177,22 @@ def get_player(id):
 
 # /////////////////////////////////////////HOST/////////////////////////////////////////
 
-@api.route('/host/profile', methods=['GET'])    # Mostrar lista de perfiles de todos los hosts
-def all_host_profile():
+@api.route('/getHost', methods=['GET'])    # Mostrar lista de perfiles de todos los hosts
+def get_hosts():
     try:
-        all_hosts = Hosts.query.all()
+        hosts = Hosts.query.all()
 
-        if not all_hosts:
+        if not hosts:
             return jsonify({'msg': 'Hosts no encontrados'}), 404
-        
-        serialized_hosts = [host.serialize() for host in all_hosts]
 
-        return jsonify({'hosts': serialized_hosts}), 200
+        return jsonify({'hosts': host.serialize() for host in hosts}), 200
     
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
 
 
-@api.route('/host/profile/', methods=['GET'])   # Mostrar el perfil del host seleccionado
-def one_host_profile(id):
+@api.route('/getHost/<int:id>', methods=['GET'])   # Mostrar el perfil del host seleccionado
+def get_host(id):
     try:
         host = Hosts.query.get(id)   
         if not host:
@@ -200,20 +204,36 @@ def one_host_profile(id):
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
 
 
-@api.route('/host/profile/', methods=['PUT'])    #Editar el perfil del host seleccionado
-def edit_host_profile(id):
+@api.route('/getHost', methods=['PUT'])    #Editar el perfil del host seleccionado
+@jwt_required()
+def edit_host():
     try:
-        data = request.json
+        id = get_jwt_identity()
 
-        host = Hosts.query.get(id)
+        name = request.json.get('name', None)
+        address = request.json.get('address', None)
+        court_type = request.json.get('court_type', None)
+        tournament_id = request.json.get('tournament_id', None)
+        phone = request.json.get('phone', None)
+        image = request.json.get('image', None)
+
+        host = Hosts.query.join(Users, Users.host_id == Hosts.id).filter(Users.id == id).first()
         
         if not host:
             return jsonify({'msg': 'Host no encontrado'}), 404
- 
-        host.name = data.get('name', host.name)
-        host.address = data.get('address', host.address)
-        host.court_type = data.get('court_type', host.court_type)
-        host.tournament_id = data.get('tournament_id', host.tournament_id)
+        
+        if name:
+            host.name = name
+        if address:
+            host.address = address
+        if court_type:
+            host.court_type = court_type
+        if tournament_id:
+            host.tournament_id = tournament_id
+        if phone:
+            host.phone = phone
+        if image:
+            host.image = image
 
         db.session.commit()
 
@@ -221,3 +241,6 @@ def edit_host_profile(id):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    
+    # /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
