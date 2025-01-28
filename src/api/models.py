@@ -25,9 +25,9 @@ class Users(db.Model):
 class Hosts(db.Model):
     __tablename__ = 'hosts'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), unique=True, nullable=False)
-    address = db.Column(db.Text, nullable=False)
-    court_type = db.Column(db.String(), nullable=False)
+    name = db.Column(db.String(), unique=True)
+    address = db.Column(db.Text)
+    court_type = db.Column(db.String())
     image = db.Column(db.String())
     phone = db.Column(db.String(15))
     tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
