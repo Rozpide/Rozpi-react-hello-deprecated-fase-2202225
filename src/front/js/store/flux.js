@@ -14,7 +14,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getUserData: async () => {
                 try {
-                    const resp = await fetch(url +"/api/protected", {
+                    const store = getStore();
+                    const resp = await fetch(store.url +"/api/protected", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -37,23 +38,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			register: async (formData) => {
                 try {
-                    const resp = await fetch(url + "/api/signup", {
+                    console.log("Form data antes de enviar:", formData);
+                    const store = getStore();
+                    const resp = await fetch(store.url + "api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData)
                     });
 
                     if (!resp.ok) {
-                        const errorData = await resp.json(); // Obtener los detalles de la respuesta de error
-                        console.error("Error en el registro:", errorData); // Imprimir la respuesta de error
-                        throw new Error("Error al registrar el usuario");
+                        const errorData = await resp.json();
+                        throw new Error(errorData.message || "Error al registrar el usuario");
                     }
 
                     const data = await resp.json();
                     console.log("Usuario registrado:", data);
                     localStorage.setItem ('token', data.token)
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
-
+                    if (formData.player) {
+                        return "/player/editProfile";
+                    } 
+                    return "/host/editProfile";
                 } catch (error) {
                     console.error("Error en register:", error);
                 }
@@ -61,7 +66,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             login: async (formData) => {
                 try {
-                    const resp = await fetch(url + "/api/login", {
+                    const store = getStore();
+                    const resp = await fetch(store.url + "/api/login", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData),
@@ -77,7 +83,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
                     localStorage.setItem('player', formData.player);
                     if (formData.player) {
-                        return "/player";
+                        return "/player/profile";
                     } 
                     return "/host/profile";
                 } catch (error) {
@@ -93,7 +99,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             updatePlayer: async (playerData) => {
                 try {
-                    const resp = await fetch(url + "/api/getPlayers", {
+                    const store = getStore();
+                    const resp = await fetch(store.url + "/api/player/editProfile", {
                         method: "PUT",
                         headers: { "Content-Type": "application/json",
                                     Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -113,7 +120,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             getPlayers: async () => {
                 try {
-                    const response = await fetch(url + "/api/getPlayers", {
+                    const store = getStore();
+                    const response = await fetch(store.url + "/api/getPlayers", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",

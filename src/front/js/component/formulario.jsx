@@ -23,7 +23,7 @@ export const Formulario = ({ type }) => {
     const handleRoleChange = (e) => {
         setFormData({
             ...formData,
-            player: e.target.value === "player"
+            player: e.target.value === "player",  // Si el valor es "player", se establece en true, de lo contrario, false
         });
     };
 
@@ -41,9 +41,10 @@ export const Formulario = ({ type }) => {
         if (type === "login") {
             const aux = await actions.login(formData)
             return navigate(aux)
-
-        } 
-        return actions.register(formData);
+        } else {
+            const aux1 = await actions.register(formData);
+            return navigate(aux1)
+        }
 
     };
 
@@ -75,31 +76,13 @@ export const Formulario = ({ type }) => {
             </div>
             {type !== 'login' && (
                 <>
-                    <div className="m-3">
-                        <label htmlFor="role">Escoge tu Rol</label>
-                        <div>
-                                <input
-                                    type="radio"
-                                    id="player"
-                                    name="role"
-                                    value="player"
-                                    checked={formData.player === true}
-                                    onChange={handleRoleChange}
-                                />
-                                <label htmlFor="player" className="ms-2">Player</label>
-                        </div>
-                        <div>
-                                <input
-                                    type="radio"
-                                    id="host"
-                                    name="role"
-                                    value="host"
-                                    checked={formData.player === false}
-                                    onChange={handleRoleChange}
-                                />
-                                <label htmlFor="host" className="ms-2">Host</label>
-                        </div>
-                    </div>
+                <div className="m-3">
+                    <label htmlFor="role">Role</label>
+                    <select name="role" value={formData.player ? "player" : "host"} onChange={handleRoleChange}>
+                        <option value="player">Player</option>
+                        <option value="host">Host</option>
+                </select>
+                </div>
                    
                 </>
             )}

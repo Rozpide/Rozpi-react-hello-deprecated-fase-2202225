@@ -31,7 +31,7 @@ def register():
     player = request.json.get ('player', None)
    
 
-    if not email or not password or not player:
+    if not email or not password:
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
 
@@ -121,8 +121,8 @@ def editPlayer():
     if not name or not gender or not age or not rating or not side or not hand:
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
-    # Buscar al jugador por ID
-    player = Players.query.filter_by(user_id=id).first()
+    # Conecta player con user y Buscar al jugador por ID
+    player = Players.query.join(Users, Users.player_id == Players.id).filter(Users.id == id).first()
     if not player:
         return jsonify({'msg': 'El jugador no existe'}), 404
     
@@ -187,7 +187,7 @@ def all_host_profile():
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
 
 
-@api.route('/host/profile/<int:id>', methods=['GET'])   # Mostrar el perfil del host seleccionado
+@api.route('/host/profile/', methods=['GET'])   # Mostrar el perfil del host seleccionado
 def one_host_profile(id):
     try:
         host = Hosts.query.get(id)   
@@ -200,7 +200,7 @@ def one_host_profile(id):
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
 
 
-@api.route('/host/profile/<int:id>', methods=['PUT'])    #Editar el perfil del host seleccionado
+@api.route('/host/profile/', methods=['PUT'])    #Editar el perfil del host seleccionado
 def edit_host_profile(id):
     try:
         data = request.json

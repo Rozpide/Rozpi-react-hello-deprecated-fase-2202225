@@ -34,8 +34,8 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<SignUp />} path="/signup" />
-                        <Route element={<Player />} path="/player" />
-                        <Route element={<EditPlayer />} path="/editPlayer" />
+                        <Route element={<Player />} path="/player/profile" />
+                        <Route element={<EditPlayer />} path="player/editProfile" />
                         <Route element={<CreateTournament />} path="/create_tournament" />
                         <Route element={<HostProfile />} path="/host/profile" />
                         <Route element={<h1>Not found!</h1>} path="/single/:theid" />
