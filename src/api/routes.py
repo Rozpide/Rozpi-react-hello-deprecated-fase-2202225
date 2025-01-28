@@ -102,7 +102,7 @@ def all_host_profile():
     try:
         all_hosts = Hosts.query.all()
 
-        if not Hosts:
+        if not all_hosts:
             return jsonify({'msg': 'Hosts no encontrados'}), 404
         
         serialized_hosts = [host.serialize() for host in all_hosts]
@@ -140,6 +140,7 @@ def edit_host_profile(id):
         host.address = data.get('address', host.address)
         host.court_type = data.get('court_type', host.court_type)
         host.tournament_id = data.get('tournament_id', host.tournament_id)
+        host.phone = data.get('phone', host.phone)
 
         db.session.commit()
 
@@ -147,3 +148,5 @@ def edit_host_profile(id):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    # /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////

@@ -6,11 +6,15 @@ const getState = ({ getStore, getActions, setStore }) => {
             token: null,
             player_info: null,
             host_info: null,
+            url: process.env.BACKEND_URL,
 		},
 		actions: {
-            getUserData: async () => {
+
+            /////////////////////////////////////////USER/////////////////////////////////////////
+
+            getUserData: async () => {  //GET USER
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL +"/api/protected", {
+                    const resp = await fetch(url +"/api/protected", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -31,9 +35,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-			register: async (formData) => {
+			register: async (formData) => { //POST USER SIGNUP
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL + "/api/signup", {
+                    const resp = await fetch(url + "/api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData)
@@ -55,9 +59,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            login: async (formData) => {
+            login: async (formData) => {    //POST USER LOGIN
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL + "/api/login", {
+                    const resp = await fetch(url + "/api/login", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData),
@@ -78,6 +82,76 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getMessage: () => {
                 console.log("Mensaje inicial cargado");
 			},
+
+
+            /////////////////////////////////////////USER/////////////////////////////////////////
+
+            getAllHostsData: async () => {  //GET HOST
+                try {
+                    const store = getStore();
+                    const resp = await fetch(store.url +"/api/host/profile", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error("Error al obtener los datos del host");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del host:", data);
+
+                } catch (error) {
+                    console.error("Error en getUserHost:", error);
+                }
+            },
+
+            getAllHostsData: async () => {  //GET ONE HOST
+                try {
+                    const store = getStore();
+                    const resp = await fetch(store.url +"/api/host/profile", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error("Error al obtener los datos del host");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del host:", data);
+
+                } catch (error) {
+                    console.error("Error en getUserHost:", error);
+                }
+            },
+
+            EditHostData: async () => {  //PUT ONE HOST
+                try {
+                    const store = getStore();
+                    const resp = await fetch(store.url +"/api/host/profile/", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error("Error al obtener los datos del host");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del host:", data);
+                    
+                } catch (error) {
+                    console.error("Error en getUserHost:", error);
+                }
+            },
+
         },
     };
 };

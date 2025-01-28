@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 0c1e80f97a95
+Revision ID: 8f2e8834bd6d
 Revises: 
-Create Date: 2025-01-25 12:50:28.543473
+Create Date: 2025-01-25 14:28:40.722026
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '0c1e80f97a95'
+revision = '8f2e8834bd6d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,6 +27,7 @@ def upgrade():
     sa.Column('side', sa.String(), nullable=True),
     sa.Column('hand', sa.String(), nullable=True),
     sa.Column('image', sa.String(), nullable=True),
+    sa.Column('phone', sa.String(length=15), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('tournaments',
@@ -47,6 +48,7 @@ def upgrade():
     sa.Column('address', sa.Text(), nullable=False),
     sa.Column('court_type', sa.String(), nullable=False),
     sa.Column('image', sa.String(), nullable=True),
+    sa.Column('phone', sa.String(length=15), nullable=True),
     sa.Column('tournament_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['tournament_id'], ['tournaments.id'], ),
     sa.PrimaryKeyConstraint('id'),
@@ -87,7 +89,6 @@ def upgrade():
     sa.Column('player', sa.Boolean(), nullable=False),
     sa.Column('host_id', sa.Integer(), nullable=True),
     sa.Column('player_id', sa.Integer(), nullable=True),
-    sa.Column('phone', sa.String(length=15), nullable=True),
     sa.ForeignKeyConstraint(['host_id'], ['hosts.id'], ),
     sa.ForeignKeyConstraint(['player_id'], ['players.id'], ),
     sa.PrimaryKeyConstraint('id'),
