@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, } from "react";
 import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 
 export const Formulario = ({ type }) => {
     console.log("Formulario type:", type);
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -21,11 +23,11 @@ export const Formulario = ({ type }) => {
     const handleRoleChange = (e) => {
         setFormData({
             ...formData,
-            player: e.target.value === "player"
+            player: e.target.value === "player",  // Si el valor es "player", se establece en true, de lo contrario, false
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
        
@@ -35,8 +37,14 @@ export const Formulario = ({ type }) => {
         }
 
         console.log("Submit data:", formData, "type:", type);
-
-        type === 'login' ? actions.login(formData) : actions.register(formData);
+        
+        if (type === "login") {
+            const aux = await actions.login(formData)
+            return navigate(aux)
+        } else {
+            const aux1 = await actions.register(formData);
+            return navigate(aux1)
+        }
 
     };
 
@@ -68,31 +76,13 @@ export const Formulario = ({ type }) => {
             </div>
             {type !== 'login' && (
                 <>
-                    <div className="m-3">
-                        <label htmlFor="role">Escoge tu Rol</label>
-                        <div>
-                                <input
-                                    type="radio"
-                                    id="player"
-                                    name="role"
-                                    value="player"
-                                    checked={formData.player === true}
-                                    onChange={handleRoleChange}
-                                />
-                                <label htmlFor="player" className="ms-2">Player</label>
-                        </div>
-                        <div>
-                                <input
-                                    type="radio"
-                                    id="host"
-                                    name="role"
-                                    value="host"
-                                    checked={formData.player === false}
-                                    onChange={handleRoleChange}
-                                />
-                                <label htmlFor="host" className="ms-2">Host</label>
-                        </div>
-                    </div>
+                <div className="m-3">
+                    <label htmlFor="role">Role</label>
+                    <select name="role" value={formData.player ? "player" : "host"} onChange={handleRoleChange}>
+                        <option value="player">Player</option>
+                        <option value="host">Host</option>
+                </select>
+                </div>
                    
                 </>
             )}
