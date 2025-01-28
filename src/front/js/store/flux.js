@@ -40,7 +40,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     console.log("Form data antes de enviar:", formData);
                     const store = getStore();
-                    const resp = await fetch(store.url + "api/signup", {
+                    const resp = await fetch(store.url + "/api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData)
