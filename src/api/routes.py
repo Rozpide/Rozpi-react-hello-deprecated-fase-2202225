@@ -102,7 +102,7 @@ def all_host_profile():
     try:
         all_hosts = Hosts.query.all()
 
-        if not Hosts:
+        if not all_hosts:
             return jsonify({'msg': 'Hosts no encontrados'}), 404
         
         serialized_hosts = [host.serialize() for host in all_hosts]
@@ -147,3 +147,50 @@ def edit_host_profile(id):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+# /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
+
+@api.route('/tournaments', methods=['POST'])    # Crear un torneo
+def create_tournament():
+    
+    data = request.json
+
+    name = data.get('name', None)
+    type = data.get('type', None)
+    inscription_fee = data.get('inscription_fee', None)
+    rating = data.get('rating', None)
+    schedule = data.get('schedule', None)
+    award = data.get('award', None)
+    image = data.get('image', None)
+    
+    if not name or not type or not inscription_fee or not rating or not schedule or not award or not image:
+        return jsonify({'msg': 'Completa los datos obligatorios'}), 400
+    
+    new_tournament = Tournaments(
+            name=name,
+            type=type,
+            inscription_fee=inscription_fee,
+            rating=rating,
+            schedule=schedule,
+            award=award,
+            image=image
+        )
+    db.session.add(new_tournament)
+    db.session.commit()
+
+    return jsonify({'msg': 'Torneo creado con éxito', 'tournament': new_tournament.serialize()}), 200
+    
+@api.route('/tournaments', methods=['GET'])    # Mostrar lista torneos
+def all_tournaments():
+    try:
+        all_tournaments = Tournaments.query.all()
+
+        if not all_tournaments:
+            return jsonify({'msg': 'Torneos no encontrados'}), 404
+        
+        serialized_tournaments = [tournament.serialize() for tournament in all_tournaments]
+
+        return jsonify({'Torneos': serialized_tournaments}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Ocurrió un error al obtener los torneos', 'error': str(e)}), 500
