@@ -38,7 +38,7 @@ const Layout = () => {
                         <Route element={<EditPlayer />} path="player/editProfile" />
                         <Route element={<CreateTournament />} path="/create_tournament" />
                         <Route element={<HostProfile />} path="/host/profile" />
-                        <Route element={<HostProfileEdit />} path="host/profile/edit" />
+                        <Route element={<HostProfileEdit />} path="/host/editProfile" />
                         <Route element={<h1>Not found!</h1>} path="/single/:theid" />
                     </Routes>
                     <Footer />

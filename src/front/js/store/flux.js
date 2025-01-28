@@ -40,7 +40,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     console.log("Form data antes de enviar:", formData);
                     const store = getStore();
-                    const resp = await fetch(store.url + "api/signup", {
+                    const resp = await fetch(store.url + "/api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData)
@@ -55,6 +55,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Usuario registrado:", data);
                     localStorage.setItem ('token', data.token)
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
+                    localStorage.setItem('player', formData.player);
                     if (formData.player) {
                         return "/player/editProfile";
                     } 
@@ -144,65 +145,20 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al obtener los jugadores:", error.message);
                 }
             },
-            
-
-            /////////////////////////////////////////HOST/////////////////////////////////////////
 
 
             /////////////////////////////////////////HOST/////////////////////////////////////////
 
-            getAllHostsData: async () => {  //GET HOST
+            updateHost: async (hostdata) => {  //PUT ONE HOST
                 try {
                     const store = getStore();
-                    const resp = await fetch(store.url +"/api/host/profile", {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                    });
-
-                    if (!resp.ok) {
-                        throw new Error("Error al obtener los datos del host");
-                    }
-
-                    const data = await resp.json();
-                    console.log("Datos del host:", data);
-
-                } catch (error) {
-                    console.error("Error en getUserHost:", error);
-                }
-            },
-
-            getAllHostsData: async () => {  //GET ONE HOST
-                try {
-                    const store = getStore();
-                    const resp = await fetch(store.url +"/api/host/profile", {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                    });
-
-                    if (!resp.ok) {
-                        throw new Error("Error al obtener los datos del host");
-                    }
-
-                    const data = await resp.json();
-                    console.log("Datos del host:", data);
-
-                } catch (error) {
-                    console.error("Error en getUserHost:", error);
-                }
-            },
-
-            EditHostData: async () => {  //PUT ONE HOST
-                try {
-                    const store = getStore();
-                    const resp = await fetch(store.url +"/api/host/profile/", {
+                    const resp = await fetch(store.url +"/api/getHost/", {
                         method: "PUT",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
                         },
+                        body: JSON.stringify(playerData)
                     });
 
                     if (!resp.ok) {
@@ -217,6 +173,32 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+            getHost: async () => {  //GET HOST
+                try {
+                    const store = getStore();
+                    const resp = await fetch(store.url +"/api/getHost", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    });
+
+                    if (!resp.ok) {
+                        if (response.status === 404) {
+                            throw new Error("No hay hosts registrados.");
+                        }
+                        throw new Error("Error al obtener los hots.");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del host:", data);
+
+                    setStore({ host: data.host });
+
+                } catch (error) {
+                    console.error("Error en getUserHost:", error);
+                }
+            },
         },
     };
 };

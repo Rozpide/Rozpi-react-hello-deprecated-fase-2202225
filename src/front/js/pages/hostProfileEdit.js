@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Context } from "../store/appContext.js";
 import "../../styles/hostProfileEdit.css";
-import { ProfileEdit } from "../component/hostProfileEdit.jsx";
+import { HostCard} from "../component/hostCard.jsx";
 
 
 export const HostProfileEdit = () => {
+    const { store, actions } = useContext(Context);
+
     return(
         <div className="container">
-            <p>holaaaa</p>
-            <ProfileEdit/>
+            <p>EDIT PROFILE</p>
+            <HostCard viewMode={'updatehost'}/>
         </div>
     );
 };
