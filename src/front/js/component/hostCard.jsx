@@ -29,7 +29,7 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
 
         viewMode === 'host'
             ? actions.hostPage(hostData)
-            : actions.updatehost(hostData);
+            : actions.updateHost(hostData);
     };
 
     return (

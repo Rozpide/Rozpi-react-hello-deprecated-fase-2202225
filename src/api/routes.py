@@ -120,7 +120,7 @@ def editPlayer():
     image = request.json.get('image', None)
 
 
-    if not name or not gender or not age or not rating or not side or not hand or not phone:
+    if not name or not gender or not age or not rating or not side or not hand:
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
     # Conecta player con user y Buscar al jugador por ID

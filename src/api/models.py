@@ -89,9 +89,11 @@ class Tournaments(db.Model):
     award = db.Column(db.String(), nullable=False)
     tournament_winner = db.Column(db.String())
     image = db.Column(db.String())
+    participants_amount = db.Column(db.Integer(), nullable=False)
     hosts = db.relationship('Hosts', backref=('tournament'))
     tournament_match = db.relationship('Matches', backref=('tournament_match'))
     participants = db.relationship('Participants', back_populates='tournament_relationship')
+    
 
     def __repr__(self):
         return '<Tournament %r>' % self.name
@@ -107,6 +109,7 @@ class Tournaments(db.Model):
             "award": self.award,
             "tournament_winner": self.tournament_winner,
             "image": self.image,
+            "participants_amount": self.participants_amount,
             "hosts": [host.serialize() for host in self.hosts] if self.hosts else None,
             "tournament_match" : [match.serialize() for match in self.tournament_match] if self.tournament_match else None,
             "participants" : [participant.serialize() for participant in self.participants] if self.participants else None
