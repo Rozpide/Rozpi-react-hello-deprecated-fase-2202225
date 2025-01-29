@@ -26,7 +26,7 @@ export const PlayerCard = ({use}) => {
         e.preventDefault();
 
        
-        if (!playerData.name || !playerData.gender || !playerData.age || !playerData.rating || !playerData.side || !playerData.hand || !playerData.phone) {
+        if (!playerData.name || !playerData.gender || !playerData.age || !playerData.rating || !playerData.side || !playerData.hand) {
             console.log("Por favor, completa los campos obligatorios.");
             return;
         }

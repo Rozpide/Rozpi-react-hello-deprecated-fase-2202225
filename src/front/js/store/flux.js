@@ -15,7 +15,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             getUserData: async () => {
                 try {
                     const store = getStore();
-                    const resp = await fetch(store.url +"/api/protected", {
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/protected", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     console.log("Form data antes de enviar:", formData);
                     const store = getStore();
-                    const resp = await fetch(store.url + "/api/signup", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData)
@@ -68,7 +68,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             login: async (formData) => {    //POST USER LOGIN
                 try {
                     const store = getStore();
-                    const resp = await fetch(store.url + "/api/login", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/login", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(formData),
@@ -82,8 +82,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Usuario logeado:", data);
                     localStorage.setItem ('token', data.token)
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
-                    localStorage.setItem('player', formData.player);
-                    if (formData.player) {
+                    localStorage.setItem('player', data.user_info.player);
+                    if (data.user_info.player) {
                         return "/player/profile";
                     } 
                     return "/host/profile";
@@ -100,8 +100,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             updatePlayer: async (playerData) => {
                 try {
-                    const store = getStore();
-                    const resp = await fetch(store.url + "/api/player/editProfile", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
                         method: "PUT",
                         headers: { "Content-Type": "application/json",
                                     Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -121,8 +120,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             getPlayers: async () => {
                 try {
-                    const store = getStore();
-                    const response = await fetch(store.url + "/api/getPlayers", {
+                    const response = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -149,16 +147,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             /////////////////////////////////////////HOST/////////////////////////////////////////
 
-            updateHost: async (hostdata) => {  //PUT ONE HOST
+            updateHost: async (hostData) => {  //PUT ONE HOST
                 try {
                     const store = getStore();
-                    const resp = await fetch(store.url +"/api/getHost/", {
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/getHost/", {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
                             Authorization: `Bearer ${localStorage.getItem("token")}`
                         },
-                        body: JSON.stringify(playerData)
+                        body: JSON.stringify(hostData)
                     });
 
                     if (!resp.ok) {
@@ -176,7 +174,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             getHost: async () => {  //GET HOST
                 try {
                     const store = getStore();
-                    const resp = await fetch(store.url +"/api/getHost", {
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/getHost", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json"
