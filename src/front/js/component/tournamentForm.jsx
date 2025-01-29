@@ -9,6 +9,7 @@ export const TournamentForm = () => {
         schedule: '',
         award: '',
         type: '',
+        image: '',
         tournament_winner: ''
 
     })
@@ -53,6 +54,9 @@ export const TournamentForm = () => {
                 <input className="mb-2" type="text" name="type" id="type" placeholder="Enter tournament type" onChange={handleChange} required />
                 <label htmlFor="tournament_winner">Tournament winner</label>
                 <input className="mb-2" type="text" name="tournament_winner" id="tournament_winner" placeholder="Enter tournament winner" onChange={handleChange} />
+                <label htmlFor="image">Image</label>
+                <input className="mb-2" type="text" name="image" id="image" placeholder="Enter image" onChange={handleChange} />
+
             </div>
             <div>
                 <button className="btn btn-primary mt-2" type="submit"><strong>Create</strong></button>

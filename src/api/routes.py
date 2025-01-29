@@ -242,5 +242,99 @@ def edit_host():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+# /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
+
+@api.route('/tournaments', methods=['POST'])    # Crear un torneo
+def create_tournament():
     
-    # /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
+    data = request.json
+
+    name = data.get('name', None)
+    type = data.get('type', None)
+    inscription_fee = data.get('inscription_fee', None)
+    rating = data.get('rating', None)
+    schedule = data.get('schedule', None)
+    award = data.get('award', None)
+    image = data.get('image', None)
+    
+    if not name or not type or not inscription_fee or not rating or not schedule or not award or not image:
+        return jsonify({'msg': 'Completa los datos obligatorios'}), 400
+    
+    new_tournament = Tournaments(
+            name=name,
+            type=type,
+            inscription_fee=inscription_fee,
+            rating=rating,
+            schedule=schedule,
+            award=award,
+            image=image
+        )
+    db.session.add(new_tournament)
+    db.session.commit()
+
+    return jsonify({'msg': 'Torneo creado con éxito', 'tournament': new_tournament.serialize()}), 200
+    
+@api.route('/tournaments', methods=['GET'])    # Mostrar lista torneos
+def all_tournaments():
+    try:
+        all_tournaments = Tournaments.query.all()
+
+        if not all_tournaments:
+            return jsonify({'msg': 'Torneos no encontrados'}), 404
+        
+        serialized_tournaments = [tournament.serialize() for tournament in all_tournaments]
+
+        return jsonify({'Torneos': serialized_tournaments}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Ocurrió un error al obtener los torneos', 'error': str(e)}), 500
+    
+
+@api.route('/tournaments/<int:id>', methods=['GET'])    # Mostrar un torneo
+def one_tournament(id):
+    try:
+        tournament = Tournaments.query.get(id)   
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404 
+        
+        return jsonify({'Torneo': tournament.serialize()}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Ocurrió un error al obtener el torneo', 'error': str(e)}), 500
+
+@api.route('/tournaments/<int:id>', methods=['PUT'])    #Editar el torneo seleccionado
+def edit_tournament(id):
+    try:
+        data = request.json
+
+        tournament = Tournaments.query.get(id)
+        
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+ 
+        tournament.name = data.get('name', tournament.name)
+        tournament.type = data.get('address', tournament.type)
+        tournament.inscription_fee = data.get('court_type', tournament.inscription_fee)
+        tournament.rating = data.get('tournament_id', tournament.rating)
+        tournament.schedule = data.get('address', tournament.schedule)
+        tournament.award = data.get('court_type', tournament.award)
+        tournament.tournament_winner = data.get('tournament_id', tournament.tournament_winner)
+        tournament.image = data.get('tournament_id', tournament.image)
+
+        db.session.commit()
+
+        return jsonify({'msg': 'Torneo actualizado con éxito', 'Torneo': tournament.serialize()}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@api.route('/tournaments/<int:id>', methods=['DELETE'])
+def delete_tournament(id):
+
+    data = Tournaments.query.get(id)
+
+    db.session.delete(data)
+    db.session.commit()
+
+    return jsonify({"msg": "Torneo eliminado con id " + str(id)}), 200
+
