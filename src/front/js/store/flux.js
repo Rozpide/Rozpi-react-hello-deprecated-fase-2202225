@@ -140,6 +140,32 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al obtener los jugadores:", error.message);
                 }
             },
+            getPlayer: async () => {
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + "/api/getPlayer", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")} `,
+                        },
+                    });
+            
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            throw new Error("No hay jugadores registrados.");
+                        }
+                        throw new Error("Error al obtener los jugadores.");
+                    }
+            
+                    const data = await response.json();
+                    console.log("Jugadores obtenidos:", data.players);
+            
+                    // Aquí actualizamos el estado global con los jugadores obtenidos
+                    setStore({ players: data.players });
+                } catch (error) {
+                    console.error("Error al obtener los jugadores:", error.message);
+                }
+            },
 
 
             /////////////////////////////////////////HOST/////////////////////////////////////////
