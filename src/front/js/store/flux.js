@@ -36,7 +36,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-			register: async (formData) => {
+			register: async (formData) => { //POST USER SIGNUP
                 try {
                     console.log("Form data antes de enviar:", formData);
                     const store = getStore();
@@ -55,6 +55,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Usuario registrado:", data);
                     localStorage.setItem ('token', data.token)
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
+                    localStorage.setItem('player', formData.player);
                     if (formData.player) {
                         return "/player/editProfile";
                     } 
@@ -64,7 +65,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            login: async (formData) => {
+            login: async (formData) => {    //POST USER LOGIN
                 try {
                     const store = getStore();
                     const resp = await fetch(store.url + "/api/login", {
@@ -144,9 +145,60 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al obtener los jugadores:", error.message);
                 }
             },
-            
+
 
             /////////////////////////////////////////HOST/////////////////////////////////////////
+
+            updateHost: async (hostdata) => {  //PUT ONE HOST
+                try {
+                    const store = getStore();
+                    const resp = await fetch(store.url +"/api/getHost/", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify(playerData)
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error("Error al obtener los datos del host");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del host:", data);
+                    
+                } catch (error) {
+                    console.error("Error en getUserHost:", error);
+                }
+            },
+
+            getHost: async () => {  //GET HOST
+                try {
+                    const store = getStore();
+                    const resp = await fetch(store.url +"/api/getHost", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    });
+
+                    if (!resp.ok) {
+                        if (response.status === 404) {
+                            throw new Error("No hay hosts registrados.");
+                        }
+                        throw new Error("Error al obtener los hots.");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del host:", data);
+
+                    setStore({ host: data.host });
+
+                } catch (error) {
+                    console.error("Error en getUserHost:", error);
+                }
+            },
         },
     };
 };
