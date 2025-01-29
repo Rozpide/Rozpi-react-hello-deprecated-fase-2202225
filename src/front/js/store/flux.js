@@ -14,7 +14,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getUserData: async () => {
                 try {
-                    const store = getStore();
                     const resp = await fetch(process.env.BACKEND_URL +"/api/protected", {
                         method: "GET",
                         headers: {
@@ -39,7 +38,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			register: async (formData) => { //POST USER SIGNUP
                 try {
                     console.log("Form data antes de enviar:", formData);
-                    const store = getStore();
                     const resp = await fetch(process.env.BACKEND_URL + "/api/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -67,7 +65,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             login: async (formData) => {    //POST USER LOGIN
                 try {
-                    const store = getStore();
                     const resp = await fetch(process.env.BACKEND_URL + "/api/login", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -149,7 +146,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             updateHost: async (hostData) => {  //PUT ONE HOST
                 try {
-                    const store = getStore();
                     const resp = await fetch(process.env.BACKEND_URL +"/api/getHost/", {
                         method: "PUT",
                         headers: {
@@ -173,7 +169,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getHost: async () => {  //GET HOST
                 try {
-                    const store = getStore();
                     const resp = await fetch(process.env.BACKEND_URL +"/api/getHost", {
                         method: "GET",
                         headers: {
