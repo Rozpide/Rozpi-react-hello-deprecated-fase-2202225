@@ -100,7 +100,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             updatePlayer: async (playerData) => {
                 try {
                     const store = getStore();
-                    const resp = await fetch(store.url + "/api/player/editProfile", {
+                    const resp = await fetch(store.url + "/player/editProfile", {
                         method: "PUT",
                         headers: { "Content-Type": "application/json",
                                     Authorization: `Bearer ${localStorage.getItem("token")}`
