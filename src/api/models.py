@@ -70,7 +70,6 @@ class Players(db.Model):
             "gender": self.gender,
             "age": self.age,
             "rating": self.rating,
-            "age": self.age,
             "hand": self.hand,
             "side": self.side,
             "image": self.image,
