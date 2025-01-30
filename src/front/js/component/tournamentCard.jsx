@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 
 
@@ -12,7 +13,10 @@ export const TournamentCard = (props) => {
                     <p className="card-text"><strong>Schedule:</strong> {new Date(props.schedule).toLocaleString()}</p>
                     <p className="card-text"><strong>Type:</strong> {props.type}</p>
                     <p className="card-text"><strong>Rating:</strong> {props.rating}</p>
-                    
+                    <br />
+                    <Link to={`/tournaments/${props.id}`}>
+                    <button className="btn btn-primary">Ver detalles</button>
+                    </Link>
                 </div>
             </div>
         </div>

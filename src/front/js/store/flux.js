@@ -7,7 +7,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             player_info: null,
             host_info: null,
             url : process.env.BACKEND_URL,
-            tournaments: []
+            tournaments: [],
+            torneo: {}
 		},
 		actions: {
 
@@ -188,6 +189,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     const data = await resp.json();
                     console.log("Datos del host:", data);
+
+                    return data.host
                     
                 } catch (error) {
                     console.error("Error en getUserHost:", error);
@@ -249,10 +252,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getTournaments: async () => {   //GET TOURNAMENTS
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments", {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-                    });   
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments");   
+
                     if (!resp.ok) {
                         if (response.status === 404) {
                             throw new Error("No hay torneos registrados.");
@@ -262,7 +263,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     const data = await resp.json(); // Obtener la lista de torneos
                     console.log("Torneos obtenidos:", data);
-            
+
                     setStore({ tournaments: data.tournaments }); // Guardarlos en el estado global
             
 
@@ -274,9 +275,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             getOneTournament: async (id) => {   //GET ONE TOURNAMENT
              try {
                 const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${id}` ,{
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
                 });   
+                
                 if (!resp.ok) {
                     if (response.status === 404) {
                         throw new Error("No hay torneo con ese id");
@@ -285,7 +285,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
 
                 const data = await resp.json();
-                return data;
+                setStore({torneo: data.torneo})
 
              } catch (error) {
                 console.error("Error en getOneTournament:", error);   

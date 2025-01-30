@@ -38,6 +38,8 @@ export const TournamentForm = () => {
         await actions.postTournament(tournamentData);
         await actions.getTournaments()
 
+        
+
         setTournamentData({
             name: '',
             inscription_fee: '',

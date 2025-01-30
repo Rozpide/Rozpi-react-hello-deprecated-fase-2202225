@@ -250,6 +250,7 @@ def create_tournament():
     data = request.json
 
     name = data.get('name', None)
+    host = data.get('host', None)
     type = data.get('type', None)
     inscription_fee = data.get('inscription_fee', None)
     rating = data.get('rating', None)
@@ -258,11 +259,15 @@ def create_tournament():
     image = data.get('image', None)
     participants_amount = data.get('participants_amount', None)
     
+    
     if not name or not type or not inscription_fee or not rating or not schedule or not award or not image or not participants_amount:
         return jsonify({'msg': 'Completa los datos obligatorios'}), 400
     
+
+    
     new_tournament = Tournaments(
             name=name,
+            host=host,
             type=type,
             inscription_fee=inscription_fee,
             rating=rating,
@@ -293,13 +298,14 @@ def all_tournaments():
     
 
 @api.route('/tournaments/<int:id>', methods=['GET'])    # Mostrar un torneo
+
 def one_tournament(id):
     try:
         tournament = Tournaments.query.get(id)   
         if not tournament:
             return jsonify({'msg': 'Torneo no encontrado'}), 404 
         
-        return jsonify({'Torneo': tournament.serialize()}), 200
+        return jsonify({'torneo': tournament.serialize()}), 200
     
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener el torneo', 'error': str(e)}), 500

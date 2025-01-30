@@ -7,7 +7,6 @@ export const TournamentList = () => {
 
     useEffect(() => {
         actions.getTournaments();
-        actions.getHost();   
     }, []);
 
     return (
@@ -18,6 +17,7 @@ export const TournamentList = () => {
                     store.tournaments.map((tournament) => (
                         <TournamentCard 
                             key={tournament.id}
+                            id={tournament.id}
                             name={tournament.name}
                             img={tournament.image}
                             type={tournament.type}
