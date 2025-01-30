@@ -1,6 +1,7 @@
 import React, { useContext, useState, } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
+import "../../styles/navbar.css";
 
 export const Formulario = ({ type }) => {
     console.log("Formulario type:", type);
@@ -49,7 +50,7 @@ export const Formulario = ({ type }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="bg-light w-50" onSubmit={handleSubmit}>
             <div className="m-3" >
                 <label htmlFor="email">Email</label>
                 <input

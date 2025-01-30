@@ -7,7 +7,7 @@ export const SignUp = () => {
 	const { store, actions } = useContext(Context);
 	console.log(store.user);
 	return (
-		<div className="text-center mt-5">
+		<div className="text-center">
 			<Formulario type={'register'}/>
 		</div>
 	);

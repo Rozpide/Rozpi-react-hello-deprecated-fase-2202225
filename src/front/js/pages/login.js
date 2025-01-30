@@ -8,7 +8,7 @@ export const Login = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <div className="text-center mt-5">
+        <div className="text-center">
             <Formulario type={'login'}/>
             <p className="fw-bold">¿Aún no tienes tu cuenta?</p>
             <Link to="/signup">
