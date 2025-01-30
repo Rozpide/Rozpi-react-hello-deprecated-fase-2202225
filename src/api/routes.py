@@ -256,8 +256,9 @@ def create_tournament():
     schedule = data.get('schedule', None)
     award = data.get('award', None)
     image = data.get('image', None)
+    participants_amount = data.get('participants_amount', None)
     
-    if not name or not type or not inscription_fee or not rating or not schedule or not award or not image:
+    if not name or not type or not inscription_fee or not rating or not schedule or not award or not image or not participants_amount:
         return jsonify({'msg': 'Completa los datos obligatorios'}), 400
     
     new_tournament = Tournaments(
@@ -267,7 +268,8 @@ def create_tournament():
             rating=rating,
             schedule=schedule,
             award=award,
-            image=image
+            image=image,
+            participants_amount=participants_amount
         )
     db.session.add(new_tournament)
     db.session.commit()
@@ -284,7 +286,7 @@ def all_tournaments():
         
         serialized_tournaments = [tournament.serialize() for tournament in all_tournaments]
 
-        return jsonify({'Torneos': serialized_tournaments}), 200
+        return jsonify({'tournaments': serialized_tournaments}), 200
     
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener los torneos', 'error': str(e)}), 500
