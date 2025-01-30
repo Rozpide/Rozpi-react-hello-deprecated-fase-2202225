@@ -1,6 +1,7 @@
 import React, {useContext,useState} from 'react';
 import { Context } from "../store/appContext";
 
+
 export const PlayerCard = ({use}) => {
     console.log("PlayerCard use:", use);
     const { store, actions } = useContext(Context);
@@ -44,7 +45,7 @@ export const PlayerCard = ({use}) => {
         <>
         {use === 'playerPage' ? (
             <div className="card" style={{ width: "18rem" }}>
-                <img src="..." className="card-img-top" alt="..." />
+                <img src={process.env.BACKEND_URL + "/tennis-ball.png"} className="card-img-top w-25" alt="..." />
                 <div className="card-body">
                     <h5 className="card-title">{playerData.name || ''}</h5>
                     <p className="card-text"><b>Género:</b> {playerData.gender || ''}</p>
@@ -144,6 +145,19 @@ export const PlayerCard = ({use}) => {
                             <option value="Diestro">Diestro</option>
                             <option value="Zurdo">Zurdo</option>
                         </select>
+                    </div>
+                    <div className="m-3">
+                        <label htmlFor="phone"><b>Teléfono</b></label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="Número de teléfono"
+                            value={playerData.phone}
+                            onChange={handleChange}
+                            required
+                            pattern="[0-9]{9}"
+                        />
                     </div>
                 <div>
                     <input type="submit" value={'Actualizar datos'} />
