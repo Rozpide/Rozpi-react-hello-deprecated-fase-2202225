@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import "../../styles/navbar.css";
+
 
 export const Navbar = () => {
 	const { store, actions } = useContext(Context);
@@ -25,7 +27,7 @@ export const Navbar = () => {
 						<button className="btn text-light">Torneos</button>
 					</Link>
 				</div>
-				<div className="ml-auto d-flex justify-content-center align-items-center">
+				<div className="ml-auto d-flex justify-content-center align-items-center ">
 					{store.user?
 					<Link to={store.user.player?"/player/profile":"/host/profile"}>
 					<div>
@@ -34,19 +36,13 @@ export const Navbar = () => {
 							<img
 							src={store.user.profilePicture}
 							alt="Perfil"
-							className="btn btn-primary rounded-circle"
-							style={{
-								width: "40px",
-								height: "40px",
-								objectFit: "cover",
-								borderRadius: "50%",
-							}}
+							className="btn btn-primary rounded-circle navbar__profileIcon"
 							/>
 						) : (
 							// Si no tiene foto de perfil, mostrar el icono
 							<FontAwesomeIcon
 							icon={faUser}
-							className="btn btn-primary rounded-circle"
+							className="btn btn-primary rounded-circle "
 							/>
 						)}
 					</div>	
