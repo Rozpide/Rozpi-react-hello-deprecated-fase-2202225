@@ -11,6 +11,8 @@ import { EditPlayer } from "./pages/editPlayerInfo.js";
 import { HostProfile } from "./pages/hostProfile.js";
 import { HostProfileEdit } from "./pages/hostProfileEdit.js";
 
+import { Pruebas } from "./pages/pruebas.js";
+
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
@@ -39,6 +41,7 @@ const Layout = () => {
                         <Route element={<CreateTournament />} path="/create_tournament" />
                         <Route element={<HostProfile />} path="/host/profile" />
                         <Route element={<HostProfileEdit />} path="/host/editProfile" />
+                        <Route element={<Pruebas />} path="/pruebas" />
                         <Route element={<h1>Not found!</h1>} path="/single/:theid" />
                     </Routes>
                     <Footer />
