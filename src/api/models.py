@@ -89,7 +89,8 @@ class Tournaments(db.Model):
     tournament_winner = db.Column(db.String())
     image = db.Column(db.String())
     participants_amount = db.Column(db.Integer(), nullable=False)
-    hosts = db.relationship('Hosts', backref=('tournament'))
+    host_id = db.Column(db.Integer, db.ForeignKey('hosts.id'), nullable=True)
+    host = db.relationship('Hosts', backref=('tournaments'),  foreign_keys=[host_id])
     tournament_match = db.relationship('Matches', backref=('tournament_match'))
     participants = db.relationship('Participants', back_populates='tournament_relationship')
     
@@ -109,7 +110,7 @@ class Tournaments(db.Model):
             "tournament_winner": self.tournament_winner,
             "image": self.image,
             "participants_amount": self.participants_amount,
-            "hosts": [host.serialize() for host in self.hosts] if self.hosts else None,
+            "host": self.host.serialize() if self.host else None,
             "tournament_match" : [match.serialize() for match in self.tournament_match] if self.tournament_match else None,
             "participants" : [participant.serialize() for participant in self.participants] if self.participants else None
     }

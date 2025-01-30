@@ -7,6 +7,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             player_info: null,
             host_info: null,
             url : process.env.BACKEND_URL,
+            tournaments: [],
+            torneo: {}
 		},
 		actions: {
 
@@ -187,6 +189,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     const data = await resp.json();
                     console.log("Datos del host:", data);
+
+                    return data.host
                     
                 } catch (error) {
                     console.error("Error en getUserHost:", error);
@@ -218,8 +222,81 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error en getUserHost:", error);
                 }
             },
+
+            /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
+        
+            postTournament: async (tournamentData) => {  //POST TOURNAMENT
+                try {
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(tournamentData)   
+                    });
+
+                    if (!resp.ok) {
+                        const errorData = await resp.json();
+                        throw new Error(errorData.message || "Error al crear el torneo");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Torneo creado:", data);
+
+                    const store = getStore();
+                    setStore({ tournaments: [...(store.tournaments), data] });
+                    return data;
+
+                } catch (error) {
+                    console.error("Error en postTournament:", error);
+                }
+            },
+
+            getTournaments: async () => {   //GET TOURNAMENTS
+                try {
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments");   
+
+                    if (!resp.ok) {
+                        if (response.status === 404) {
+                            throw new Error("No hay torneos registrados.");
+                        }
+                        throw new Error("Error al obtener los torneos.");
+                    }
+
+                    const data = await resp.json(); // Obtener la lista de torneos
+                    console.log("Torneos obtenidos:", data);
+
+                    setStore({ tournaments: data.tournaments }); // Guardarlos en el estado global
+            
+
+                } catch (error) {
+                    console.error("Error en getTournaments:", error)
+                }
+            },
+
+            getOneTournament: async (id) => {   //GET ONE TOURNAMENT
+             try {
+                const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${id}` ,{
+                });   
+                
+                if (!resp.ok) {
+                    if (response.status === 404) {
+                        throw new Error("No hay torneo con ese id");
+                    }
+                    throw new Error("Error al obtener el torneo.");
+                }
+
+                const data = await resp.json();
+                setStore({torneo: data.torneo})
+
+             } catch (error) {
+                console.error("Error en getOneTournament:", error);   
+             }
+            }
+    
         },
     };
 };
 
 export default getState;
+
+
+

@@ -16,6 +16,9 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { CreateTournament } from "./pages/createTournament.js";
+import { TournamentList } from "./pages/tournamentList.js";
+import { TournamentDetails } from "./pages/tournamentDetails.js";
+
 
 //create your first component
 const Layout = () => {
@@ -36,6 +39,8 @@ const Layout = () => {
                         <Route element={<SignUp />} path="/signup" />
                         <Route element={<Player />} path="/player/profile" />
                         <Route element={<EditPlayer />} path="player/editProfile" />
+                        <Route element={<TournamentList />} path="/tournaments" />
+                        <Route element={<TournamentDetails />} path="/tournaments/:id" />
                         <Route element={<CreateTournament />} path="/create_tournament" />
                         <Route element={<HostProfile />} path="/host/profile" />
                         <Route element={<HostProfileEdit />} path="/host/editProfile" />
