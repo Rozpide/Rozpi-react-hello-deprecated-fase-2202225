@@ -50,7 +50,7 @@ export const Formulario = ({ type }) => {
     };
 
     return (
-        <form className="bg-light w-50" onSubmit={handleSubmit}>
+        <form  onSubmit={handleSubmit}>
             <div className="m-3" >
                 <label htmlFor="email">Email</label>
                 <input
@@ -87,9 +87,10 @@ export const Formulario = ({ type }) => {
                    
                 </>
             )}
-            <div>
+            <div className="text-center">
                 <input
                     type="submit"
+                    
                     value={type == 'login' ? 'Iniciar sesión' : 'Registrarse'}
                 />
             </div>

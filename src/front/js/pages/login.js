@@ -8,11 +8,11 @@ export const Login = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <div className="text-center">
+        <div className="bg-light w-50 pt-2">
             <Formulario type={'login'}/>
-            <p className="fw-bold">¿Aún no tienes tu cuenta?</p>
+            <p className="fw-bold mt-5 mb-0">¿Aún no tienes tu cuenta?</p>
             <Link to="/signup">
-                <button className="btn text-warning text-decoration-underline">Crea la tuya aquí</button>
+                <button className="btn text-warning text-decoration-underline p-0 pb-2">Crea la tuya aquí</button>
             </Link>
         </div>
     );
