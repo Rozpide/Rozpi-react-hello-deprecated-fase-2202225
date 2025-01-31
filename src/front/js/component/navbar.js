@@ -8,19 +8,18 @@ import "../../styles/navbar.css";
 
 export const Navbar = () => {
 	const { store, actions } = useContext(Context);
-
+	console.log("Usuario:", store.user);
 	return (
 		<nav className="navbar navbar-light bg-dark">
 			<div className="container-fluid d-flex justify-content-between mx-0">
 				<Link to="/" className="text-decoration-none">
 					<span className="navbar-brand mb-0 h1 text-light">PadelZone</span>
 				</Link>
-				
-				{store.user && store.user.role !== 'player' && (
-					<Link to="/create_tournament" className="text-decoration-none">
-						<button className="btn btn-primary">Crear torneo</button>
-					</Link>
-    			)}
+				{store.user && store.user.player === false && (
+      			<Link to="/create_tournament" className="text-decoration-none">
+        			<button className="btn btn-primary">Crear torneo</button>
+      			</Link>
+    )}
 
 				<div className="d-flex">
 					<div className="ml-auto">
