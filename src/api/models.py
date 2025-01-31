@@ -89,6 +89,7 @@ class Tournaments(db.Model):
     tournament_winner = db.Column(db.String())
     image = db.Column(db.String())
     participants_amount = db.Column(db.Integer(), nullable=False)
+    participants_registered = db.Column(db.Integer())
     host_id = db.Column(db.Integer, db.ForeignKey('hosts.id'), nullable=True)
     host = db.relationship('Hosts', backref=('tournaments'),  foreign_keys=[host_id])
     tournament_match = db.relationship('Matches', backref=('tournament_match'))
@@ -110,6 +111,7 @@ class Tournaments(db.Model):
             "tournament_winner": self.tournament_winner,
             "image": self.image,
             "participants_amount": self.participants_amount,
+            "participants_registered": self.participants_registered,
             "host": self.host.serialize() if self.host else None,
             "tournament_match" : [match.serialize() for match in self.tournament_match] if self.tournament_match else None,
             "participants" : [participant.serialize() for participant in self.participants] if self.participants else None
@@ -143,6 +145,7 @@ class Matches(db.Model):
 class Teams(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
+    team_number = db.Column(db.Integer)
     left = db.Column(db.Integer, db.ForeignKey('participants.id'))
     right = db.Column(db.Integer, db.ForeignKey('participants.id'))
     left_participant = db.relationship('Participants', foreign_keys=[left], back_populates='team_left')
@@ -157,6 +160,7 @@ class Teams(db.Model):
     def serialize(self):
         return {
         "id": self.id,
+        "team_number": self.team_number,
         "left": self.left_participant.serialize() if self.left_participant else None,
         "right": self.right_participant.serialize() if self.right_participant else None,
         "tournament_id": self.tournament_id,

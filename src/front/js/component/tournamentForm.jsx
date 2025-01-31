@@ -33,12 +33,10 @@ export const TournamentForm = () => {
             return;
         }
 
-        console.log("Submit data:", tournamentData)
-
-        await actions.postTournament(tournamentData);
+        const info = await actions.postTournament(tournamentData);
         await actions.getTournaments()
-
-        
+        navigate('/tournaments/'+ info.tournament.id)
+       
 
         setTournamentData({
             name: '',
