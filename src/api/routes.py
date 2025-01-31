@@ -7,6 +7,8 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
+import cloudinary
+import cloudinary.uploader
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
@@ -213,7 +215,7 @@ def edit_host():
         name = request.json.get('name', None)
         address = request.json.get('address', None)
         court_type = request.json.get('court_type', None)
-        tournament_id = request.json.get('tournament_id', None)
+        id = request.json.get('id', None)
         phone = request.json.get('phone', None)
         image = request.json.get('image', None)
 
@@ -228,8 +230,8 @@ def edit_host():
             host.address = address
         if court_type:
             host.court_type = court_type
-        if tournament_id:
-            host.tournament_id = tournament_id
+        if id:
+            host.id = id
         if phone:
             host.phone = phone
         if image:
@@ -347,11 +349,11 @@ def edit_tournament(id):
         tournament.name = data.get('name', tournament.name)
         tournament.type = data.get('address', tournament.type)
         tournament.inscription_fee = data.get('court_type', tournament.inscription_fee)
-        tournament.rating = data.get('tournament_id', tournament.rating)
+        tournament.rating = data.get('id', tournament.rating)
         tournament.schedule = data.get('address', tournament.schedule)
         tournament.award = data.get('court_type', tournament.award)
-        tournament.tournament_winner = data.get('tournament_id', tournament.tournament_winner)
-        tournament.image = data.get('tournament_id', tournament.image)
+        tournament.tournament_winner = data.get('id', tournament.tournament_winner)
+        tournament.image = data.get('id', tournament.image)
 
         db.session.commit()
 
@@ -370,6 +372,50 @@ def delete_tournament(id):
 
     return jsonify({"msg": "Torneo eliminado con id " + str(id)}), 200
 
+# /////////////////////////////////////////PARTICIPANTS/////////////////////////////////////////
 
+@api.route('/tournaments/<int:id>/participate', methods=['POST'])
+@jwt_required()
+def participate_in_tournament(id):
+    try:
+        user_id = get_jwt_identity()
+        user = Users.query.get(user_id)
+
+        if not user or not user.player:
+            return jsonify({'msg': 'Solo los jugadores pueden participar en torneos'}), 403
+
+        player_id = user.player_id
+
+        tournament = Tournaments.query.get(id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+
+        existing_participation = Participants.query.filter_by(player_id=player_id, id=id).first()
+
+        if existing_participation:
+            return jsonify({'msg': 'Ya estás participando en este torneo'}), 400
+
+        new_participant = Participants(
+            player_id = player_id,
+            id = id
+        )
+        
+        db.session.add(new_participant)
+        db.session.commit()
+
+        return jsonify({'msg': 'Participación registrada con éxito', 'participant': new_participant.serialize()}), 201
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al registrar la participación', 'error': str(e)}), 500
+
+
+@api.route('/upload', methods=['POST'])
+def upload():
+    file_to_upload = request.files['file']
+    if file_to_upload:
+        upload = cloudinary.uploader.upload(file_to_upload)
+        print('-------------la url donde esta la imagen-------------', upload)
+        return jsonify(upload)
+    return jsonify({"error": "No file uploaded"}), 400
 
 
