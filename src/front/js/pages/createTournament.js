@@ -18,7 +18,7 @@ export const CreateTournament = () => {
             return;
         }
 
-        if (actions.checkUser) navigate('/')
+        if (!actions.checkUser) navigate('/')
 
 
     }, [navigate]);
