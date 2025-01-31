@@ -9,7 +9,6 @@ export const HostProfileEdit = () => {
 
     return(
         <div className="container">
-            <p>EDIT PROFILE</p>
             <HostCard viewMode={'updatehost'}/>
         </div>
     );

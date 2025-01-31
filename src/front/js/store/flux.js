@@ -6,7 +6,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             token: null,
             player_info: null,
             host_info: null,
-            url : process.env.BACKEND_URL,
             tournaments: [],
             torneo: {}
 		},
@@ -97,7 +96,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             /////////////////////////////////////////PLAYER/////////////////////////////////////////
 
-            updatePlayer: async (playerData) => {
+            updatePlayer: async (playerData) => {   //PUT ONE PLAYER
                 try {
                     const resp = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
                         method: "PUT",
@@ -112,11 +111,15 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
 
                     const data = await resp.json();
-                    console.log("Usuario actualizado:", data)
+                    console.log("Usuario actualizado:", data);
+
+                    setStore({ player_info: data.player});
+
                 } catch (error) {
                     console.error("Error al actualizar el perfil:", error);
                 }
             },
+
             getPlayers: async () => {
                 try {
                     const response = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
@@ -142,6 +145,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al obtener los jugadores:", error.message);
                 }
             },
+
             getPlayer: async () => {
                 try {
                     const response = await fetch(process.env.BACKEND_URL + "/api/getPlayer", {
@@ -190,7 +194,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const data = await resp.json();
                     console.log("Datos del host:", data);
 
-                    return data.host
+                    // 2 Soluciones para actualizar perfil
+                    setStore({ host_info: data.host});      //Mas eficiente en rendimiento pero menos robusta.
+                    // await actions.getHost();     //Menos optima pero mas segura.
                     
                 } catch (error) {
                     console.error("Error en getUserHost:", error);
@@ -229,7 +235,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
+                        headers: { 
+                            "Content-Type": "application/json", 
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
                         body: JSON.stringify(tournamentData)   
                     });
 
