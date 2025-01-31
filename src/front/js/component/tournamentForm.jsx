@@ -65,15 +65,23 @@ export const TournamentForm = () => {
                     </div>
                 </div>
                 <label htmlFor="rating">Rating</label>
-                <input className="mb-2" type="number" name="rating" id="rating" placeholder="Enter tournament rating" value={tournamentData.rating} onChange={handleChange} required />
+                <input className="mb-2" type="number" name="rating" id="rating" placeholder="Enter tournament rating" value={tournamentData.rating} onChange={handleChange} min="1" max="5" required />
                 <label htmlFor="schedule">Schedule</label>
                 <input className="mb-2" type="datetime-local" name="schedule" id="schedule" value={tournamentData.schedule} onChange={handleChange} required />
                 <label htmlFor="award">Award</label>
                 <input className="mb-2" type="text" name="award" id="award" placeholder="Enter tournament award" value={tournamentData.award} onChange={handleChange} required />
                 <label htmlFor="type">Type</label>
-                <input className="mb-2" type="text" name="type" id="type" placeholder="Enter tournament type" value={tournamentData.type} onChange={handleChange} required />
+                <select className="mb-2" type="text" name="type" id="type" placeholder="Enter tournament type" value={tournamentData.type} onChange={handleChange} required >
+                    <option value="Semifinales">Semifinales</option>
+                    <option value="Cuartos de final">Cuartos de final</option>
+                    <option value="Octavos de final">Octavos de final</option> 
+                </select>
                 <label htmlFor="participants_amount">Participants amount</label>
-                <input className="mb-2" type="number" name="participants_amount" id="participants_amount" placeholder="Enter participants amount" value={tournamentData.participants_amount} onChange={handleChange} required />
+                <select className="mb-2" type="number" name="participants_amount" id="participants_amount" placeholder="Enter participants amount" value={tournamentData.participants_amount} onChange={handleChange} required>
+                    <option value="8">8</option>
+                    <option value="16">16</option>
+                    <option value="32">32</option> 
+                </select>
                 <label htmlFor="image">Image</label>
                 <input className="mb-2" type="text" name="image" id="image" placeholder="Enter image" value={tournamentData.image} onChange={handleChange} />
 
