@@ -242,6 +242,20 @@ def edit_host():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+
+@api.route('/check', methods=['GET'])
+@jwt_required()
+def checkUser():
+    id = get_jwt_identity()
+
+    user = Users.query.get(id)
+
+    if  not user:
+            return jsonify({'msg': 'Usuario no encontrado.'}), 404
+    
+    return jsonify({'player': user.player }), 200
+    
+    
 # /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
 
 @api.route('/tournaments', methods=['POST'])    # Crear un torneo
@@ -272,14 +286,14 @@ def create_tournament():
         
         new_tournament = Tournaments(
             name=name,
-            host_id=user.host_id,
             type=type,
             inscription_fee=inscription_fee,
             rating=rating,
             schedule=schedule,
             award=award,
             image=image,
-            participants_amount=participants_amount
+            participants_amount=participants_amount,
+            host_id=user.host_id
         )
 
         db.session.add(new_tournament)
@@ -355,4 +369,7 @@ def delete_tournament(id):
     db.session.commit()
 
     return jsonify({"msg": "Torneo eliminado con id " + str(id)}), 200
+
+
+
 

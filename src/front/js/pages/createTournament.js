@@ -10,19 +10,17 @@ export const CreateTournament = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const token = localStorage.getItem('jwt_token');
+    useEffect( () => {
+        const token = localStorage.getItem('token');
 
         if (!token) {   //Si no hay token redirijo al login.
             navigate('/login');
             return;
         }
 
-        const decodedToken = jwt_decode(token);
+        if (actions.checkUser) navigate('/')
 
-        if (decodedToken.player) {  // Si es Player redirigir a la página principal.
-            navigate('/');  
-        }
+
     }, [navigate]);
 
     return (

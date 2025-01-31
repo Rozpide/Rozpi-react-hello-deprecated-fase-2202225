@@ -229,6 +229,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+
             /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
         
             postTournament: async (tournamentData) => {  //POST TOURNAMENT
@@ -299,13 +300,44 @@ const getState = ({ getStore, getActions, setStore }) => {
              } catch (error) {
                 console.error("Error en getOneTournament:", error);   
              }
-            }
-    
+            },
+            
+
+            /////////////////////////////////////////CHECK/////////////////////////////////////////
+        
+            checkUser: async () => {
+                try {
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/check", {
+                        method: "GET",
+                        headers: { 
+                            "Content-Type": "application/json", 
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },  
+                    });
+
+                    if (!resp.ok) {
+                        const errorData = await resp.json();
+                        throw new Error(errorData.message || "Error al checkear el usuario");
+                    }
+
+                    const data = await resp.json();
+                    console.log("user:", data);
+
+                    return data.player;
+
+                } catch (error) {
+                    console.error("Error en checkUser:", error)
+                }
+            },
         },
     };
 };
 
+
+
 export default getState;
+
+
 
 
 
