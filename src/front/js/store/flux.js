@@ -167,7 +167,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Jugadores obtenidos:", data.players);
             
                     // Aquí actualizamos el estado global con los jugadores obtenidos
-                    setStore({ players: data.players });
+                    setStore({ player_info: data.player});
                 } catch (error) {
                     console.error("Error al obtener los jugadores:", error.message);
                 }
@@ -222,7 +222,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const data = await resp.json();
                     console.log("Datos del host:", data);
 
-                    setStore({ host: data.host });
+                    setStore({ host_info: data.host});
 
                 } catch (error) {
                     console.error("Error en getUserHost:", error);
