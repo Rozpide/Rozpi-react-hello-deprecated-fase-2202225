@@ -185,7 +185,7 @@ def get_hosts():
         if not hosts:
             return jsonify({'msg': 'Hosts no encontrados'}), 404
 
-        return jsonify({'hosts': host.serialize() for host in hosts}), 200
+        return jsonify({'hosts': [host.serialize() for host in hosts]}), 200
     
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
@@ -242,44 +242,68 @@ def edit_host():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+
+@api.route('/check', methods=['GET'])
+@jwt_required()
+def checkUser():
+    id = get_jwt_identity()
+
+    user = Users.query.get(id)
+
+    if  not user:
+            return jsonify({'msg': 'Usuario no encontrado.'}), 404
+    
+    return jsonify({'player': user.player }), 200
+    
+    
 # /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
 
 @api.route('/tournaments', methods=['POST'])    # Crear un torneo
+@jwt_required()
 def create_tournament():
     
-    data = request.json
+    try:
+    
+        user_id = get_jwt_identity()    # Obtener el ID del usuario autenticado
+        user = Users.query.get(user_id)     # Obtener el usuario de la base de datos
 
-    name = data.get('name', None)
-    host = data.get('host', None)
-    type = data.get('type', None)
-    inscription_fee = data.get('inscription_fee', None)
-    rating = data.get('rating', None)
-    schedule = data.get('schedule', None)
-    award = data.get('award', None)
-    image = data.get('image', None)
-    participants_amount = data.get('participants_amount', None)
-    
-    
-    if not name or not type or not inscription_fee or not rating or not schedule or not award or not image or not participants_amount:
-        return jsonify({'msg': 'Completa los datos obligatorios'}), 400
-    
+        if user.player:
+            return jsonify({'msg': 'Los Players no estan autorizados para crear torneos.'}), 403
 
-    
-    new_tournament = Tournaments(
+        data = request.json
+
+        name = data.get('name', None)
+        type = data.get('type', None)
+        inscription_fee = data.get('inscription_fee', None)
+        rating = data.get('rating', None)
+        schedule = data.get('schedule', None)
+        award = data.get('award', None)
+        image = data.get('image', None)
+        participants_amount = data.get('participants_amount', None)
+              
+        if not name or not type or not inscription_fee or not rating or not schedule or not award or not image or not participants_amount:
+            return jsonify({'msg': 'Completa los datos obligatorios'}), 400
+        
+        new_tournament = Tournaments(
             name=name,
-            host=host,
             type=type,
             inscription_fee=inscription_fee,
             rating=rating,
             schedule=schedule,
             award=award,
             image=image,
-            participants_amount=participants_amount
+            participants_amount=participants_amount,
+            host_id=user.host_id
         )
-    db.session.add(new_tournament)
-    db.session.commit()
 
-    return jsonify({'msg': 'Torneo creado con éxito', 'tournament': new_tournament.serialize()}), 200
+        db.session.add(new_tournament)
+        db.session.commit()
+
+        return jsonify({'msg': 'Torneo creado con éxito', 'tournament': new_tournament.serialize()}), 201
+    
+    except Exception as e:
+        return jsonify({"msg": "Error al crear el torneo", "error": str(e)}), 500
+    
     
 @api.route('/tournaments', methods=['GET'])    # Mostrar lista torneos
 def all_tournaments():
@@ -345,4 +369,7 @@ def delete_tournament(id):
     db.session.commit()
 
     return jsonify({"msg": "Torneo eliminado con id " + str(id)}), 200
+
+
+
 
