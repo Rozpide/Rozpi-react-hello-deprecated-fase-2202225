@@ -7,6 +7,8 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
+import cloudinary
+import cloudinary.uploader
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
@@ -406,5 +408,14 @@ def participate_in_tournament(id):
     except Exception as e:
         return jsonify({'msg': 'Error al registrar la participación', 'error': str(e)}), 500
 
+
+@api.route('/upload', methods=['POST'])
+def upload():
+    file_to_upload = request.files['file']
+    if file_to_upload:
+        upload = cloudinary.uploader.upload(file_to_upload)
+        print('-------------la url donde esta la imagen-------------', upload)
+        return jsonify(upload)
+    return jsonify({"error": "No file uploaded"}), 400
 
 
