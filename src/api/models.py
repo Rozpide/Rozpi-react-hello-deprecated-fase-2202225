@@ -35,7 +35,9 @@ class Tournaments(db.Model):
     image = db.Column(db.String())
     participants_amount = db.Column(db.Integer(), nullable=False)
     participants_registered = db.Column(db.Integer())
+
     host_id = db.Column(db.Integer, db.ForeignKey('hosts.id'), nullable=True)
+    
     host = db.relationship('Hosts', backref=('tournaments'),  foreign_keys=[host_id])
     tournament_match = db.relationship('Matches', backref=('tournament_match'))
     participants = db.relationship('Participants', back_populates='tournament_relationship')

@@ -108,7 +108,7 @@ def protected():
 
 # /////////////////////////////////////////PLAYER/////////////////////////////////////////
 
-@api.route('/getPlayers', methods=['PUT'])
+@api.route('/editPlayers', methods=['PUT'])
 @jwt_required()
 def editPlayer():
     id = get_jwt_identity()
@@ -206,16 +206,14 @@ def get_host(id):
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
 
 
-@api.route('/getHost', methods=['PUT'])    #Editar el perfil del host seleccionado
+@api.route('/editHost', methods=['PUT'])    #Editar el perfil del host seleccionado
 @jwt_required()
 def edit_host():
     try:
         id = get_jwt_identity()
-
         name = request.json.get('name', None)
         address = request.json.get('address', None)
         court_type = request.json.get('court_type', None)
-        id = request.json.get('id', None)
         phone = request.json.get('phone', None)
         image = request.json.get('image', None)
 
@@ -230,8 +228,6 @@ def edit_host():
             host.address = address
         if court_type:
             host.court_type = court_type
-        if id:
-            host.id = id
         if phone:
             host.phone = phone
         if image:
@@ -244,6 +240,8 @@ def edit_host():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+
+# /////////////////////////////////////CHECK TIPO USUARIO/////////////////////////////////////
 
 @api.route('/check', methods=['GET'])
 @jwt_required()
@@ -282,6 +280,7 @@ def create_tournament():
         award = data.get('award', None)
         image = data.get('image', None)
         participants_amount = data.get('participants_amount', None)
+        participants_registered = data.get('participants_registered', None)
               
         if not name or not type or not inscription_fee or not rating or not schedule or not award or not image or not participants_amount:
             return jsonify({'msg': 'Completa los datos obligatorios'}), 400
@@ -295,6 +294,7 @@ def create_tournament():
             award=award,
             image=image,
             participants_amount=participants_amount,
+            participants_registered=participants_registered,
             host_id=user.host_id
         )
 

@@ -98,7 +98,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             updatePlayer: async (playerData) => {   //PUT ONE PLAYER
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/editPlayers", {
                         method: "PUT",
                         headers: { "Content-Type": "application/json",
                                     Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -178,7 +178,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             updateHost: async (hostData) => {  //PUT ONE HOST
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL +"/api/getHost/", {
+                    const resp = await fetch(process.env.BACKEND_URL +"/api/editHost/", {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -194,12 +194,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const data = await resp.json();
                     console.log("Datos del host:", data);
 
-                    // 2 Soluciones para actualizar perfil
-                    setStore({ host_info: data.host});      //Mas eficiente en rendimiento pero menos robusta.
-                    // await actions.getHost();     //Menos optima pero mas segura.
+                    setStore({ host_info: data.host});
                     
                 } catch (error) {
-                    console.error("Error en getUserHost:", error);
+                    console.error("Error al actualizar el perfil del Host:", error);
                 }
             },
 
@@ -225,7 +223,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ host_info: data.host});
 
                 } catch (error) {
-                    console.error("Error en getUserHost:", error);
+                    console.error("Error en getHost:", error);
                 }
             },
 
@@ -305,7 +303,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             /////////////////////////////////////////CHECK/////////////////////////////////////////
         
-            checkUser: async () => {
+            checkUser: async () => {    //Comprueba si el usuario logueado es player o Host. Devuelve True si es player
                 try {
                     const resp = await fetch(process.env.BACKEND_URL +"/api/check", {
                         method: "GET",
