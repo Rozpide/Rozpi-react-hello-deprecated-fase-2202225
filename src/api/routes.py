@@ -50,3 +50,5 @@ def about_us():
     }
 
     return jsonify(response_body), 200
+
+#
