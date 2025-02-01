@@ -21,11 +21,6 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
         });
     };
 
-    const handleCancel = e => {
-        resetInputData();
-        navigate('/host/profile');
-    };
-
     const handleSubmit = async(e) => {
         e.preventDefault();
 
@@ -42,14 +37,9 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
         navigate('/host/profile');
     };
 
-    const resetInputData = () => {
-        setHostData({
-            name: '',
-            address: '',
-            phone: '',
-            court_type: ''
-        });
-    }
+    const handleCancel = e => {
+        navigate('/host/profile');
+    };
 
     return (
         <>
