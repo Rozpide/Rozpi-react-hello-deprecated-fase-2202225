@@ -29,7 +29,7 @@ def handle_hello():
 
 
 
-@api.route("sign-up", methods=["POST"])
+@api.route("signup", methods=["POST"])
 def create_token():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
@@ -52,9 +52,9 @@ def login():
 
     user = User.query.filter_by(email=email, password=password).first()
     if not user:
-        return jsonify({"msg": "usuario o email incorrectos"})
+        return jsonify({"msg": "usuario o email incorrectos"}), 400
     access_token = create_access_token(identity=user.email)
-    return jsonify({"token": access_token})
+    return jsonify({"token": access_token}), 200
 
 
 @api.route("private", methods=["GET"])
@@ -65,16 +65,4 @@ def private():
     if not user:
         return jsonify({"msg": "usuario no encontrado"}), 400
     return jsonify({"msg": "usuario encontrado"}), 200
-    
 
-
-
-
-@api.route('about-us', methods=['GET'])
-def about_us():
-
-    response_body = {
-        "message": "aqui saldra el about us de todos nosotros"
-    }
-
-    return jsonify(response_body), 200
