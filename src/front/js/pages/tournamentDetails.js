@@ -16,6 +16,7 @@ export const TournamentDetails = () => {
         if (params.id) {
             actions.getOneTournament(params.id);
             console.log("Tournament ID:", params);
+            console.log("token:", localStorage.getItem("token"));
         }
     }, [params.id]);
 

@@ -415,6 +415,7 @@ def participate_in_tournament(tournament_id):
         # Comprobamos la cantidad de participantes en el torneo y lo registramos en la variable participants_registered
         tournament.participants_registered = Participants.query.filter_by(tournament_id=tournament.id).count()
 
+        # db.session.refresh(tournament)
         db.session.commit()
 
         return jsonify({
@@ -500,6 +501,59 @@ def remove_participant(tournament_id, player_id):
     
     except Exception as e:
         return jsonify({'msg': 'Error al eliminar el jugador', 'error': str(e)}), 500
+    
+
+# ////////////////////////////////////////////TEAMS////////////////////////////////////////////
+
+@api.route('/tournaments/<int:tournament_id>/teams', methods=['POST'])        #POST todos los equipos de un torneo
+@jwt_required()
+def create_team(tournament_id):
+    try:
+
+        # Conseguir datos del torneo
+        tournament = Tournaments.query.get(tournament_id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+        
+        # Conseguir datos de los participantes del torneo
+        participants = Participants.query.filter_by(tournament_id=tournament_id).all()
+        if not participants:
+            return jsonify({'msg': 'No hay participantes en este torneo'}), 404
+
+        #Verificamos si hay participantes no estan asignados
+        participants_unasigned = []
+        for participant in participants:
+            if not Teams.query.filter((Teams.left == participant.id) | (Teams.right == participant.id)).first():
+                participants_unasigned.append(participant)
+
+        # Si todos los participantes han sido asignados
+        if not participants_unasigned:
+            return jsonify({'msg': 'Todos los participantes ya están en un equipo'}), 400
+
+        existing_teams_count = Teams.query.filter_by(tournament_id=tournament_id).count()
+        team_number = existing_teams_count + 1
+        
+        while len(participants_unasigned) >= 2:
+            new_team = Teams(
+                team_number=team_number,
+                left=participants_unasigned[0].id,
+                right=participants_unasigned[1].id,
+                tournament_id=tournament_id
+            )
+
+            db.session.add(new_team)
+            db.session.commit()
+
+            #Elimina los 2 primeros participantes de la lista que ya han sido asignados a un equipo
+            participants_unasigned = participants_unasigned[2:]
+            team_number += 1
+
+        return jsonify({'msg': 'Equipos creados con éxito'}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'msg': 'Error al postera un equipo', 'error': str(e)}), 500
+
 
 
 # /////////////////////////////////////////CLOUDINARY/////////////////////////////////////////
