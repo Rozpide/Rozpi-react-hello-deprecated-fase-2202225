@@ -7,7 +7,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             player_info: null,
             host_info: null,
             tournaments: [],
-            torneo: {}
+            torneo: {},
+            participant: {}, 
 		},
 		actions: {
 
@@ -122,21 +123,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getPlayers: async () => {
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
                         },
                     });
             
-                    if (!response.ok) {
-                        if (response.status === 404) {
+                    if (!resp.ok) {
+                        if (resp.status === 404) {
                             throw new Error("No hay jugadores registrados.");
                         }
                         throw new Error("Error al obtener los jugadores.");
                     }
             
-                    const data = await response.json();
+                    const data = await resp.json();
                     console.log("Jugadores obtenidos:", data.players);
             
                     // Aquí actualizamos el estado global con los jugadores obtenidos
@@ -148,7 +149,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getPlayer: async () => {
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + "/api/getPlayer", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/getPlayer", {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -156,14 +157,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                         },
                     });
             
-                    if (!response.ok) {
-                        if (response.status === 404) {
+                    if (!resp.ok) {
+                        if (resp.status === 404) {
                             throw new Error("No hay jugadores registrados.");
                         }
                         throw new Error("Error al obtener los jugadores.");
                     }
             
-                    const data = await response.json();
+                    const data = await resp.json();
                     console.log("Jugadores obtenidos:", data.players);
             
                     // Aquí actualizamos el estado global con los jugadores obtenidos
@@ -211,7 +212,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
 
                     if (!resp.ok) {
-                        if (response.status === 404) {
+                        if (resp.status === 404) {
                             throw new Error("No hay hosts registrados.");
                         }
                         throw new Error("Error al obtener los hots.");
@@ -263,7 +264,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments");   
 
                     if (!resp.ok) {
-                        if (response.status === 404) {
+                        if (resp.status === 404) {
                             throw new Error("No hay torneos registrados.");
                         }
                         throw new Error("Error al obtener los torneos.");
@@ -280,13 +281,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            getOneTournament: async (id) => {   //GET ONE TOURNAMENT
+            getOneTournament: async (tournamentId) => {   //GET ONE TOURNAMENT
              try {
-                const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${id}` ,{
+                const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}` ,{
                 });   
                 
                 if (!resp.ok) {
-                    if (response.status === 404) {
+                    if (resp.status === 404) {
                         throw new Error("No hay torneo con ese id");
                     }
                     throw new Error("Error al obtener el torneo.");
@@ -327,12 +328,115 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error en checkUser:", error)
                 }
             },
+
+
+            /////////////////////////////////////////PARTICIPANTS/////////////////////////////////////////
+
+            registerParticipant: async (tournamentId) => {  //Post participantes
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}/participate`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                    });
+            
+                    const data = await resp.json();
+            
+                    if (resp.ok) {
+                        alert("Participación registrada con éxito");
+
+                        setStore({
+                            torneo: { ...getStore().torneo, participants_registered: data.participants_registered }
+                        });
+                    } else {
+                        alert(data.msg || 'Error al participar en el torneo');
+                    }
+                } catch (error) {
+                    alert("Ocurrió un error al participar en el torneo:", error)
+                }
+            },
+
+            getTournamentParticipants: async (tournamentId) => {    //Get todos los participantes de un torneo
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/tournaments/${tournamentId}/participants`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+            
+                    const data = await resp.json();
+            
+                    if (resp.ok) {
+                        setStore({
+                            torneo: { ...getStore().torneo, participants: data.participants },
+                        });
+                    } else {
+                        alert(data.msg || "Error al obtener los participantes");
+                    }
+                } catch (error) {
+                    console.error("Error en getTournamentParticipants:", error);
+                    alert("Ocurrió un error al obtener los participantes");
+                }
+            },        
+
+            getParticipantDetails: async (tournamentId, playerId) => {      //Get un participante de un torneo
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/tournaments/${tournamentId}/participants/${playerId}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+            
+                    const data = await resp.json();
+            
+                    if (resp.ok) {
+                        setStore({participant: data.participant});
+                    } else {
+                        alert(data.msg || "Error al obtener el participante");
+                    }
+                } catch (error) {
+                    console.error("Error en getParticipantDetails:", error);
+                }
+            },
+            
+
+            removeParticipant: async (tournamentId, playerId) => {      //Delete un participante de un torneo
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/tournaments/${tournamentId}/remove_player/${playerId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+            
+                    const data = await resp.json();
+            
+                    if (resp.ok) {
+                        alert("Jugador eliminado del torneo");
+            
+                        setStore({
+                            torneo: { ...getStore().torneo, participants_registered: data.participants_registered },
+                        });
+                    } else {
+                        alert(data.msg || "Error al eliminar el jugador del torneo");
+                    }
+                } catch (error) {
+                    console.error("Error en removeParticipant:", error);
+                }
+            }            
         },
+
+
+
     };
 };
-
-
-
 export default getState;
 
 

@@ -347,13 +347,13 @@ def edit_tournament(id):
             return jsonify({'msg': 'Torneo no encontrado'}), 404
  
         tournament.name = data.get('name', tournament.name)
-        tournament.type = data.get('address', tournament.type)
-        tournament.inscription_fee = data.get('court_type', tournament.inscription_fee)
-        tournament.rating = data.get('id', tournament.rating)
-        tournament.schedule = data.get('address', tournament.schedule)
-        tournament.award = data.get('court_type', tournament.award)
-        tournament.tournament_winner = data.get('id', tournament.tournament_winner)
-        tournament.image = data.get('id', tournament.image)
+        tournament.type = data.get('type', tournament.type)
+        tournament.inscription_fee = data.get('inscription_fee', tournament.inscription_fee)
+        tournament.rating = data.get('rating', tournament.rating)
+        tournament.schedule = data.get('schedule', tournament.schedule)
+        tournament.award = data.get('award', tournament.award)
+        tournament.tournament_winner = data.get('tournament_winner', tournament.tournament_winner)
+        tournament.image = data.get('image', tournament.image)
 
         db.session.commit()
 
@@ -374,40 +374,135 @@ def delete_tournament(id):
 
 # /////////////////////////////////////////PARTICIPANTS/////////////////////////////////////////
 
-@api.route('/tournaments/<int:id>/participate', methods=['POST'])
+@api.route('/tournaments/<int:tournament_id>/participate', methods=['POST'])        #POST todos los participantes de un torneo
 @jwt_required()
-def participate_in_tournament(id):
+def participate_in_tournament(tournament_id):
     try:
+        # Obtener el ID del jugador autenticado
         user_id = get_jwt_identity()
         user = Users.query.get(user_id)
 
         if not user or not user.player:
-            return jsonify({'msg': 'Solo los jugadores pueden participar en torneos'}), 403
+            return jsonify({'msg': 'Solo los Players registrados pueden participar en torneos'}), 403
 
+        # Verificamos si el Player existe
         player_id = user.player_id
+        if not player_id:
+            return jsonify({'msg': 'Player no encontrado'}), 404
 
-        tournament = Tournaments.query.get(id)
+        # Verificamos si el torneo existe
+        tournament = Tournaments.query.get(tournament_id)
         if not tournament:
             return jsonify({'msg': 'Torneo no encontrado'}), 404
 
-        existing_participation = Participants.query.filter_by(player_id=player_id, id=id).first()
+        # Verificamos si el jugador ya está participando en el torneo
+        existing_participation = Participants.query.filter_by(
+            player_id=player_id,
+            tournament_id=tournament_id
+        ).first()
 
         if existing_participation:
             return jsonify({'msg': 'Ya estás participando en este torneo'}), 400
 
         new_participant = Participants(
-            player_id = player_id,
-            id = id
+            player_id=player_id,
+            tournament_id=tournament_id
         )
-        
+
         db.session.add(new_participant)
         db.session.commit()
+        
+        # Comprobamos la cantidad de participantes en el torneo y lo registramos en la variable participants_registered
+        tournament.participants_registered = Participants.query.filter_by(tournament_id=tournament.id).count()
 
-        return jsonify({'msg': 'Participación registrada con éxito', 'participant': new_participant.serialize()}), 201
+        db.session.commit()
+
+        return jsonify({
+            'msg': 'Participación registrada con éxito', 
+            'participant': new_participant.serialize(),
+            'participants_registered': tournament.participants_registered
+        }), 201
 
     except Exception as e:
+        db.session.rollback() #Rollback por si hay algun error
         return jsonify({'msg': 'Error al registrar la participación', 'error': str(e)}), 500
+    
 
+@api.route('/tournaments/<int:tournament_id>/participants', methods=['GET'])    #GET todos los participantes de un torneo
+@jwt_required()
+def get_participants(tournament_id):
+    try:
+        # Obtener los participantes del torneo
+        participants = Participants.query.filter_by(tournament_id=tournament_id).all()
+
+        if not participants:
+            return jsonify({'msg': 'No hay participantes en este torneo'}), 404
+
+        # Lista con los datos de los participantes
+        participants_data = [{
+            'player_id': participant.player_id,
+            'name': participant.player.name
+        } for participant in participants]
+
+        return jsonify({'participants': participants_data}), 200
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al obtener los participantes', 'error': str(e)}), 500
+
+
+@api.route('/tournaments/<int:tournament_id>/participants/<int:player_id>', methods=['GET'])    #GET un participante de un torneo
+@jwt_required()
+def get_participant(tournament_id, player_id):
+    try:
+        # Buscar si el jugador está registrado en este torneo
+        participant = Participants.query.filter_by(tournament_id=tournament_id, player_id=player_id).first()
+
+        if not participant:
+            return jsonify({'msg': 'El jugador no está registrado en este torneo'}), 404
+
+        player = Users.query.get(player_id)
+
+        if not player:
+            return jsonify({'msg': 'Jugador no encontrado'}), 404
+
+        # Retornar detalles del participante
+        participant_data = {
+            'player_id': player.id,
+            'name': player.name,
+            'email': player.email,
+            'rank': player.rank,
+        }
+
+        return jsonify({'participant': participant_data}), 200
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al obtener el participante', 'error': str(e)}), 500
+
+    
+@api.route('/tournaments/<int:tournament_id>/remove_player/<int:player_id>', methods=['DELETE'])     #DELETE un participante de un torneo
+@jwt_required()
+def remove_participant(tournament_id, player_id):
+    try:
+        participant = Participants.query.filter_by(tournament_id=tournament_id, player_id=player_id).first()
+
+        if not participant:
+            return jsonify({'msg': 'El jugador no está registrado en este torneo'}), 404
+
+        db.session.delete(participant)
+        db.session.commit()
+
+        tournament = Tournaments.query.get(tournament_id)
+        tournament.participants_registered = Participants.query.filter_by(tournament_id=tournament.id).count()
+        
+        db.session.commit()
+
+        return jsonify({'msg': 'Jugador eliminado del torneo:', 'participants_registered': tournament.participants_registered}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Error al eliminar el jugador', 'error': str(e)}), 500
+
+
+# /////////////////////////////////////////CLOUDINARY/////////////////////////////////////////
 
 @api.route('/upload', methods=['POST'])
 def upload():

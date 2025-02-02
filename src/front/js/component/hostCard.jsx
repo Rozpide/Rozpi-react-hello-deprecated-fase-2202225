@@ -32,8 +32,6 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
             await actions.updateHost(hostData);
         }
 
-        resetInputData();
-
         navigate('/host/profile');
     };
 

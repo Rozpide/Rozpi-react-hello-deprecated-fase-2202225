@@ -1,20 +1,31 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 import { BracketsCard } from "../component/bracketsCard.jsx";
+import { TeamCard } from "../component/TeamsCard.jsx";
 
 export const TournamentDetails = () => {
 
     const { store, actions } = useContext(Context)
-
     const params = useParams()
 
     useEffect(() => {
-        // Solo llamamos a getOneTournament cuando el ID cambia
+        // Solo llamamos a getOneTournament cuando el Id cambia
         if (params.id) {
             actions.getOneTournament(params.id);
+            console.log("Tournament ID:", params);
         }
     }, [params.id]);
+
+    const handleSubmit = () => {
+        if (params.id) {
+            actions.registerParticipant(params.id);
+        } else {
+            console.error("Error: tournamentId está undefined");
+        }
+    };
 
     return (
         <>
@@ -38,11 +49,17 @@ export const TournamentDetails = () => {
                         {/* <p>{store.torneo?.image}</p> */}
                         <p>Total de participantes: {store.torneo?.participants_amount}</p>
                         {/* <p>{store.torneo?.host}</p> */}
+                        <p>Participantes registrados: {store.torneo?.participants_registered}</p>
                     </div>
+                    <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
                 </div>
             </div>
-
-            <BracketsCard />
+            <br/>
+            <div className="container d-flex text-bg-success">
+                <TeamCard tournament={store.torneo} />
+            </div>
+            <br/>
+            <BracketsCard tournament={store.torneo} />
         </>
     )
 }
