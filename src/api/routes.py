@@ -89,8 +89,6 @@ def login():
     if user.host_id:
         host_info = Hosts.query.get(user.host_id)
     
-
-
     token = create_access_token(identity=str(user.id))
     return jsonify({'user_info': user.serialize(), 'player_info': player_info.serialize() if  player_info else None, 'host_info': host_info.serialize() if  host_info else None, 'token': token}), 200
 
@@ -439,14 +437,16 @@ def get_participants(tournament_id):
 
         if not participants:
             return jsonify({'msg': 'No hay participantes en este torneo'}), 404
+        
+        users=[]
+
+        for participant in participants:
+            users.append(Players.query.get(participant.player_id))
+
+        users = [user.serialize() for user in users]
 
         # Lista con los datos de los participantes
-        participants_data = [{
-            'player_id': participant.player_id,
-            'name': participant.player.name
-        } for participant in participants]
-
-        return jsonify({'participants': participants_data}), 200
+        return jsonify({'participants': users}), 200
 
     except Exception as e:
         return jsonify({'msg': 'Error al obtener los participantes', 'error': str(e)}), 500

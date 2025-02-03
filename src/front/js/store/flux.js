@@ -295,6 +295,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                 const data = await resp.json();
                 setStore({torneo: data.torneo})
+                
+                getActions().getTournamentParticipants(tournamentId)
 
              } catch (error) {
                 console.error("Error en getOneTournament:", error);   
@@ -360,7 +362,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getTournamentParticipants: async (tournamentId) => {    //Get todos los participantes de un torneo
                 try {
-                    const resp = await fetch(`${process.env.BACKEND_URL}/tournaments/${tournamentId}/participants`, {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}/participants`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",

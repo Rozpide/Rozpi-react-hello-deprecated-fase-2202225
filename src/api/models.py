@@ -191,7 +191,6 @@ class Participants(db.Model):
             "id": self.id,
             "player_id" : self.player_id,
             "tournament_id" : self.tournament_id,
-            # "player_name": self.player_relationship.name if self.player_relationship else None,
     }
 
 class Match_participants(db.Model):
