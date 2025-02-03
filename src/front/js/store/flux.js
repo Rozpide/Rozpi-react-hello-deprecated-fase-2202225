@@ -430,11 +430,45 @@ const getState = ({ getStore, getActions, setStore }) => {
                 } catch (error) {
                     console.error("Error en removeParticipant:", error);
                 }
-            }            
+            },
+            
+
+            /////////////////////////////////////////TEAMS/////////////////////////////////////////
+            
+            getTournamentTeams: async (tournamentId) => {       //GET todos los equipos de un torneo
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}/teams`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+            
+                    const data = await resp.json();
+            
+                    if (resp.ok) {
+                        console.log("Equipos obtenidos:", data.teams);
+            
+                        setStore({
+                            torneo: { ...getStore().torneo, teams: data.teams }
+                        });
+
+                        console.log("Equipos guardados:", getStore().torneo.teams);
+                    } else {
+                        alert(data.msg || "Error al obtener los equipos del torneo");
+                    }
+                } catch (error) {
+                    console.error("Error en getTournamentTeams:", error);
+                    alert("Ocurrió un error al obtener los equipos");
+                }
+            },
+            
+            
+
+
+
         },
-
-
-
     };
 };
 export default getState;
