@@ -448,19 +448,15 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const data = await resp.json();
             
                     if (resp.ok) {
-                        console.log("Equipos obtenidos:", data.teams);
-            
                         setStore({
                             torneo: { ...getStore().torneo, teams: data.teams }
                         });
 
-                        console.log("Equipos guardados:", getStore().torneo.teams);
                     } else {
                         alert(data.msg || "Error al obtener los equipos del torneo");
                     }
                 } catch (error) {
                     console.error("Error en getTournamentTeams:", error);
-                    alert("Ocurrió un error al obtener los equipos");
                 }
             },
             

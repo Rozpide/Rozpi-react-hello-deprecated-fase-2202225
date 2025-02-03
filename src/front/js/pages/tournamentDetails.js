@@ -15,6 +15,8 @@ export const TournamentDetails = () => {
         // Solo llamamos a getOneTournament cuando el Id cambia
         if (params.id) {
             actions.getOneTournament(params.id);
+            actions.getTournamentTeams(params.id);
+
             console.log("Tournament ID:", params);
             console.log("token:", localStorage.getItem("token"));
             console.log("Equipos guardados:", store.torneo.teams);
@@ -60,7 +62,7 @@ export const TournamentDetails = () => {
 
             <br/>
 
-            <div className="container d-flex text-bg-success">
+            <div className="container d-flex flex-wrap gap-3 text-bg-success">
                 {store.torneo.teams && store.torneo.teams.length > 0 ? (
                     store.torneo.teams.map((team) => (
                         <TeamCard key={team.id} team={team} />
