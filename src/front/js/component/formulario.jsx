@@ -1,6 +1,7 @@
 import React, { useContext, useState, } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
+import "../../styles/navbar.css";
 
 export const Formulario = ({ type }) => {
     console.log("Formulario type:", type);
@@ -49,13 +50,14 @@ export const Formulario = ({ type }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form  onSubmit={handleSubmit}>
             <div className="m-3" >
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email" className="form-label m-1">Email</label>
                 <input
                     type="email"
                     id="email"
                     name="email"
+                    className="form-control"
                     placeholder="example@gmail.com"
                     value={formData.email}
                     onChange={handleChange}
@@ -63,11 +65,12 @@ export const Formulario = ({ type }) => {
                 />
             </div>
             <div className="m-3">
-                <label htmlFor="password">Contraseña</label>
+                <label htmlFor="password" className="form-label m-1">Contraseña</label>
                 <input
                     type="password"
                     id="password"
                     name="password"
+                    className="form-control"
                     placeholder="Contraseña"
                     value={formData.password}
                     onChange={handleChange}
@@ -77,8 +80,8 @@ export const Formulario = ({ type }) => {
             {type !== 'login' && (
                 <>
                 <div className="m-3">
-                    <label htmlFor="role">Role</label>
-                    <select name="role" value={formData.player ? "player" : "host"} onChange={handleRoleChange}>
+                    <label  id="role" htmlFor="role" className="form-label m-1">Role</label>
+                    <select name="role"  className="form-select" value={formData.player ? "player" : "host"} onChange={handleRoleChange}>
                         <option value="player">Player</option>
                         <option value="host">Host</option>
                 </select>
@@ -86,7 +89,7 @@ export const Formulario = ({ type }) => {
                    
                 </>
             )}
-            <div>
+            <div className="text-center pt-3">
                 <input
                     type="submit"
                     value={type == 'login' ? 'Iniciar sesión' : 'Registrarse'}
