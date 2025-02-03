@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import { AboutUs } from "../../aboutUs.jsx";
+import { Signup } from "../signup.jsx";
+import { Login } from "../login.jsx";
 
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
@@ -26,9 +28,9 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Routes>
-                        {/* <Route element={<Signup />} path="/signup" /> */}
-                        {/* <Route element={<Login />} path="/login" /> */}
-                        <Route element={<AboutUs />} path="/private" />
+                        <Route element={<Signup />} path="/signup" />
+                        <Route element={<Login />} path="/login" />
+                        <Route element={<AboutUs />} path="/aboutus" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

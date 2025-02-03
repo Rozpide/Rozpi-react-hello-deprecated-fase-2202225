@@ -2,6 +2,7 @@ import jose from "../src/front/img/jose.jpg"
 import david from "../src/front/img/david.jpg"
 import einar from "../src/front/img/einar.webp"
 import dorian from "../src/front/img/dorian.jpeg"
+import React from "react";
 
 export const AboutUs = () => {
   return (
