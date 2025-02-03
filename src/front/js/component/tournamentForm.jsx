@@ -38,16 +38,16 @@ export const TournamentForm = () => {
         navigate('/tournaments/'+ info.tournament.id)
        
 
-        setTournamentData({
-            name: '',
-            inscription_fee: '',
-            rating: '',
-            schedule: '',
-            award: '',
-            type: '',
-            image: '',
-            participants_amount: ''
-        });
+        // setTournamentData({
+        //     name: '',
+        //     inscription_fee: '',
+        //     rating: '',
+        //     schedule: '',
+        //     award: '',
+        //     type: '',
+        //     image: '',
+        //     participants_amount: ''
+        // });
     };
 
     return (

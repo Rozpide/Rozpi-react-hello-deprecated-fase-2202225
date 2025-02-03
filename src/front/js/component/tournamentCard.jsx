@@ -15,7 +15,7 @@ export const TournamentCard = (props) => {
                     <p className="card-text"><strong>Rating:</strong> {props.rating}</p>
                     <br />
                     <Link to={`/tournaments/${props.id}`}>
-                    <button className="btn btn-primary">Ver detalles</button>
+                        <button className="btn btn-primary">Ver detalles</button>
                     </Link>
                 </div>
             </div>
