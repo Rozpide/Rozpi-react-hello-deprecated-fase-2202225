@@ -1,6 +1,6 @@
 import React, {useContext,useState} from 'react';
 import { Context } from "../store/appContext";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 export const PlayerCard = ({use}) => {
@@ -45,11 +45,16 @@ export const PlayerCard = ({use}) => {
         navigate('/player/profile');       
     };
 
+    const handleCancel = e => {
+        navigate('/player/profile');
+    };
+
     return (
         <>
         {use === 'playerPage' ? (
             <div className="card" style={{ width: "18rem" }}>
                 <img src={process.env.BACKEND_URL + "/tennis-ball.png"} className="card-img-top w-25" alt="..." />
+
                 <div className="card-body">
                     <h5 className="card-title">{playerData.name || ''}</h5>
                     <p className="card-text"><b>Género:</b> {playerData.gender || ''}</p>
@@ -59,6 +64,10 @@ export const PlayerCard = ({use}) => {
                     <p className="card-text"><b>Mano:</b> {playerData.hand}</p>
                     <p className="card-text"><b>Phone:</b> {playerData.phone}</p>
                 </div>
+
+                <Link to="/player/editProfile">
+                    <button type="button" className="btn btn-primary">Editar Perfil</button>
+                </Link>
             </div>
         ) : (
             
@@ -165,6 +174,7 @@ export const PlayerCard = ({use}) => {
                     </div>
                 <div>
                     <input type="submit" value={'Actualizar datos'} />
+                    <button className="btn btn-danger" value="Cancelar" onClick={handleCancel}>Cancelar</button>
                 </div>
             </form>
         )}

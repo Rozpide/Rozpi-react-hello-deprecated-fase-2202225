@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Context } from "../store/appContext";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
     console.log("HostCard viewMode:", viewMode);
@@ -21,10 +21,7 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
         });
     };
 
-    // const handleCancel = e => {
-    // };
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
 
         console.log("Submit data:", hostData, "viewMode:", viewMode);
@@ -38,15 +35,22 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
         navigate('/host/profile');
     };
 
+    const handleCancel = e => {
+        navigate('/host/profile');
+    };
+
     return (
         <>
             {viewMode === 'hostPage' ? (
                 <div className="card-body">
-                    <p>FUNCIONAAA???</p>
                     <p className="card-text"><b>name:</b> {hostData.name || ''} </p>
                     <p className="card-text"><b>address:</b> {hostData.address || ''} </p>
                     <p className="card-text"><b>phone:</b> {hostData.phone || ''} </p>
                     <p className="card-text"><b>court_type:</b> {hostData.court_type || ''} </p>
+
+                    <Link to="/host/editProfile">
+                        <button type="button" className="btn btn-primary">Editar Perfil</button>
+                    </Link>
                 </div>
             ) : (
                 <form onSubmit={handleSubmit}>
@@ -56,7 +60,7 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
                     <input type="text" className="hostProfile__input" value={hostData.court_type} onChange={handleChange} placeholder="court type" name="court_type" />
 
                     <input className="btn btn-success" type="submit" value="Enviar" />
-                    {/* <input className="btn btn-danger" value="Cancelar" onClick={handleCancel}/> */}
+                    <button className="btn btn-danger" value="Cancelar" onClick={handleCancel}>Cancelar</button>
                 </form>
             )}
         </>

@@ -35,10 +35,13 @@ class Tournaments(db.Model):
     image = db.Column(db.String())
     participants_amount = db.Column(db.Integer(), nullable=False)
     participants_registered = db.Column(db.Integer())
+
     host_id = db.Column(db.Integer, db.ForeignKey('hosts.id'), nullable=True)
+    
     host = db.relationship('Hosts', backref=('tournaments'),  foreign_keys=[host_id])
     tournament_match = db.relationship('Matches', backref=('tournament_match'))
     participants = db.relationship('Participants', back_populates='tournament_relationship')
+    teams = db.relationship('Teams', backref='tournament')
     
 
     def __repr__(self):
@@ -59,7 +62,8 @@ class Tournaments(db.Model):
             "participants_registered": self.participants_registered,
             "host": self.host.serialize() if self.host else None,
             "tournament_match" : [match.serialize() for match in self.tournament_match] if self.tournament_match else None,
-            "participants" : [participant.serialize() for participant in self.participants] if self.participants else None
+            "participants" : [participant.serialize() for participant in self.participants] if self.participants else None,
+            "teams" : [team.serialize() for team in self.teams] if self.teams else []
     }
 
 class Hosts(db.Model):
@@ -149,9 +153,10 @@ class Teams(db.Model):
     team_number = db.Column(db.Integer)
     left = db.Column(db.Integer, db.ForeignKey('participants.id'))
     right = db.Column(db.Integer, db.ForeignKey('participants.id'))
+    tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
+    
     left_participant = db.relationship('Participants', foreign_keys=[left], back_populates='team_left')
     right_participant = db.relationship('Participants', foreign_keys=[right], back_populates='team_right')
-    tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
     matches_as_team_1 = db.relationship('Match_participants', foreign_keys='Match_participants.team_1', back_populates='team_1_relationship')
     matches_as_team_2 = db.relationship('Match_participants', foreign_keys='Match_participants.team_2', back_populates='team_2_relationship')
 
@@ -171,8 +176,9 @@ class Participants(db.Model):
     __tablename__ = 'participants'
     id = db.Column(db.Integer, primary_key=True)
     player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
-    player_relationship = db.relationship('Players', back_populates='tournament_participant')
     tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
+
+    player_relationship = db.relationship('Players', back_populates='tournament_participant')
     tournament_relationship = db.relationship('Tournaments', back_populates='participants')
     team_left = db.relationship('Teams', foreign_keys='Teams.left', back_populates='left_participant')
     team_right = db.relationship('Teams', foreign_keys='Teams.right', back_populates='right_participant')
@@ -184,7 +190,7 @@ class Participants(db.Model):
         return {
             "id": self.id,
             "player_id" : self.player_id,
-            "tournament_id" : self.tournament_id
+            "tournament_id" : self.tournament_id,
     }
 
 class Match_participants(db.Model):
