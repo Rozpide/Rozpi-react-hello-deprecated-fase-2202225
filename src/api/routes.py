@@ -7,6 +7,8 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
+import cloudinary
+import cloudinary.uploader
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
@@ -185,7 +187,7 @@ def get_hosts():
         if not hosts:
             return jsonify({'msg': 'Hosts no encontrados'}), 404
 
-        return jsonify({'hosts': host.serialize() for host in hosts}), 200
+        return jsonify({'hosts': [host.serialize() for host in hosts]}), 200
     
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
@@ -213,7 +215,7 @@ def edit_host():
         name = request.json.get('name', None)
         address = request.json.get('address', None)
         court_type = request.json.get('court_type', None)
-        tournament_id = request.json.get('tournament_id', None)
+        id = request.json.get('id', None)
         phone = request.json.get('phone', None)
         image = request.json.get('image', None)
 
@@ -228,8 +230,8 @@ def edit_host():
             host.address = address
         if court_type:
             host.court_type = court_type
-        if tournament_id:
-            host.tournament_id = tournament_id
+        if id:
+            host.id = id
         if phone:
             host.phone = phone
         if image:
@@ -242,37 +244,68 @@ def edit_host():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
+
+@api.route('/check', methods=['GET'])
+@jwt_required()
+def checkUser():
+    id = get_jwt_identity()
+
+    user = Users.query.get(id)
+
+    if  not user:
+            return jsonify({'msg': 'Usuario no encontrado.'}), 404
+    
+    return jsonify({'player': user.player }), 200
+    
+    
 # /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
 
 @api.route('/tournaments', methods=['POST'])    # Crear un torneo
+@jwt_required()
 def create_tournament():
     
-    data = request.json
+    try:
+    
+        user_id = get_jwt_identity()    # Obtener el ID del usuario autenticado
+        user = Users.query.get(user_id)     # Obtener el usuario de la base de datos
 
-    name = data.get('name', None)
-    type = data.get('type', None)
-    inscription_fee = data.get('inscription_fee', None)
-    rating = data.get('rating', None)
-    schedule = data.get('schedule', None)
-    award = data.get('award', None)
-    image = data.get('image', None)
-    
-    if not name or not type or not inscription_fee or not rating or not schedule or not award or not image:
-        return jsonify({'msg': 'Completa los datos obligatorios'}), 400
-    
-    new_tournament = Tournaments(
+        if user.player:
+            return jsonify({'msg': 'Los Players no estan autorizados para crear torneos.'}), 403
+
+        data = request.json
+
+        name = data.get('name', None)
+        type = data.get('type', None)
+        inscription_fee = data.get('inscription_fee', None)
+        rating = data.get('rating', None)
+        schedule = data.get('schedule', None)
+        award = data.get('award', None)
+        image = data.get('image', None)
+        participants_amount = data.get('participants_amount', None)
+              
+        if not name or not type or not inscription_fee or not rating or not schedule or not award or not image or not participants_amount:
+            return jsonify({'msg': 'Completa los datos obligatorios'}), 400
+        
+        new_tournament = Tournaments(
             name=name,
             type=type,
             inscription_fee=inscription_fee,
             rating=rating,
             schedule=schedule,
             award=award,
-            image=image
+            image=image,
+            participants_amount=participants_amount,
+            host_id=user.host_id
         )
-    db.session.add(new_tournament)
-    db.session.commit()
 
-    return jsonify({'msg': 'Torneo creado con éxito', 'tournament': new_tournament.serialize()}), 200
+        db.session.add(new_tournament)
+        db.session.commit()
+
+        return jsonify({'msg': 'Torneo creado con éxito', 'tournament': new_tournament.serialize()}), 201
+    
+    except Exception as e:
+        return jsonify({"msg": "Error al crear el torneo", "error": str(e)}), 500
+    
     
 @api.route('/tournaments', methods=['GET'])    # Mostrar lista torneos
 def all_tournaments():
@@ -284,20 +317,21 @@ def all_tournaments():
         
         serialized_tournaments = [tournament.serialize() for tournament in all_tournaments]
 
-        return jsonify({'Torneos': serialized_tournaments}), 200
+        return jsonify({'tournaments': serialized_tournaments}), 200
     
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener los torneos', 'error': str(e)}), 500
     
 
 @api.route('/tournaments/<int:id>', methods=['GET'])    # Mostrar un torneo
+
 def one_tournament(id):
     try:
         tournament = Tournaments.query.get(id)   
         if not tournament:
             return jsonify({'msg': 'Torneo no encontrado'}), 404 
         
-        return jsonify({'Torneo': tournament.serialize()}), 200
+        return jsonify({'torneo': tournament.serialize()}), 200
     
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener el torneo', 'error': str(e)}), 500
@@ -315,11 +349,11 @@ def edit_tournament(id):
         tournament.name = data.get('name', tournament.name)
         tournament.type = data.get('address', tournament.type)
         tournament.inscription_fee = data.get('court_type', tournament.inscription_fee)
-        tournament.rating = data.get('tournament_id', tournament.rating)
+        tournament.rating = data.get('id', tournament.rating)
         tournament.schedule = data.get('address', tournament.schedule)
         tournament.award = data.get('court_type', tournament.award)
-        tournament.tournament_winner = data.get('tournament_id', tournament.tournament_winner)
-        tournament.image = data.get('tournament_id', tournament.image)
+        tournament.tournament_winner = data.get('id', tournament.tournament_winner)
+        tournament.image = data.get('id', tournament.image)
 
         db.session.commit()
 
@@ -337,4 +371,51 @@ def delete_tournament(id):
     db.session.commit()
 
     return jsonify({"msg": "Torneo eliminado con id " + str(id)}), 200
+
+# /////////////////////////////////////////PARTICIPANTS/////////////////////////////////////////
+
+@api.route('/tournaments/<int:id>/participate', methods=['POST'])
+@jwt_required()
+def participate_in_tournament(id):
+    try:
+        user_id = get_jwt_identity()
+        user = Users.query.get(user_id)
+
+        if not user or not user.player:
+            return jsonify({'msg': 'Solo los jugadores pueden participar en torneos'}), 403
+
+        player_id = user.player_id
+
+        tournament = Tournaments.query.get(id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+
+        existing_participation = Participants.query.filter_by(player_id=player_id, id=id).first()
+
+        if existing_participation:
+            return jsonify({'msg': 'Ya estás participando en este torneo'}), 400
+
+        new_participant = Participants(
+            player_id = player_id,
+            id = id
+        )
+        
+        db.session.add(new_participant)
+        db.session.commit()
+
+        return jsonify({'msg': 'Participación registrada con éxito', 'participant': new_participant.serialize()}), 201
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al registrar la participación', 'error': str(e)}), 500
+
+
+@api.route('/upload', methods=['POST'])
+def upload():
+    file_to_upload = request.files['file']
+    if file_to_upload:
+        upload = cloudinary.uploader.upload(file_to_upload)
+        print('-------------la url donde esta la imagen-------------', upload)
+        return jsonify(upload)
+    return jsonify({"error": "No file uploaded"}), 400
+
 
