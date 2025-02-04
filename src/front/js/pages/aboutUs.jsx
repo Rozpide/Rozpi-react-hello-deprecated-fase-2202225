@@ -1,80 +1,70 @@
 import jose from "../../img/jose.jpg"
 import david from "../../img/david.jpg"
 import einar from "../../img/einar.webp"
-import dorian from "../../img/dorian.jpeg"
+import dorian from "../../img/dorian.png"
 import React from "react";
 
 export const AboutUs = () => {
   return (
-    <div className="container-cards">
-      <div className="card-about-us">
-        <div className="image-name">
-          <img className="image"
-            src={dorian}
-            alt="Perfil"
-          />
-          <h2 className="name">Dorian Zuluaga</h2>
+    <div className="card-container">
+      <h1 className="developer">DEVELOPER TEAM</h1>
+      <div className="card">
+        <img className="card-img" src={dorian} alt="Placeholder" />
+        <div className="card-content">
+          <h3 className="card-title">Dorian Z.</h3>
+          <p>Software Developer</p>
+          <p className="card-description">
+          "A veces desorganizado, a veces un desatre! Pero eso no me quita lo guapo"
+          </p>
+          <a href="https://linkedin.com/in/dorian-zuluaga-08132075">
+          <button className="card-button">About me</button> 
+          </a>
         </div>
-        <h4 className="alias">Alias: "El Bonito"</h4>
-        <h4 className="super-poder">"Dame un trabajo"</h4>
-        <h5 className="name">(solo si no es de programador)"</h5>
-        <p className="super-poder">
-          "A veces desorganizado, a veces un desatre!""
-        </p>
-        <button className="troll">Ver mis memes más recientes(pero no esperes nada)</button>
       </div>
 
-      <div className="card-about-us">
-        <div className="image-name">
-          <img className="image"
-            src={jose}
-            alt="Perfil"
-          />
-          <h2 className="name">Jose </h2>
-        </div>
-        <h4 className="alias">Alias: "El Procrastinador Profesional"</h4>
-        <h4 className="super-poder">"Dame un trabajo"</h4>
-        <h5 className="name">(Solo si no es de Profesor de procrastinación avanzada)"</h5>
-        <p className="super-poder">
-          "A veces soy un ninja de la programación, y otras veces un atleta de la procrastinación"!
-        </p>
-        <button className="troll">Ver mis memes más recientes(pero no esperes nada)</button>
-      </div>
-
-      <div className="card-about-us">
-        <div className="image-name">
-          <img className="image"
-            src={david}
-            alt="Perfil"
-          />
-          <h2 className="name">David</h2>
-        </div>
-        <h4 className="alias">Alias: "El Algoritmo Secreto"</h4>
-        <h4 className="super-poder">"Dame un trabajo"</h4>
-        <h5 className="name">(Solo si no es de Coach en cómo ignorar las tareas de Hans)"</h5>
-        <p className="super-poder">
-          "A veces la persona más puntual del mundo, y otras veces el rey del "llego en 5 minutos!"
-        </p>
-        <button className="troll">Ver mis memes más recientes(pero no esperes nada)</button>
-      </div>
-
-      <div className="card-about-us">
-        <div className="image-name">
-          <img className="image"
-            src={einar}
-            alt="Perfil"
-          />
-          <h2 className="name">Einar</h2>
-        </div>
-        <h4 className="alias">Alias: "El Ser Incomprendido"</h4>
-        <h4 className="super-poder">"Dame un trabajo"</h4>
-        <h5 className="name">(Solo si no es de Líder de los "mañana lo hago")"</h5>
-        <p className="super-poder">
+      <div className="card">
+        <img className="card-img" src={einar} alt="Placeholder" />
+        <div className="card-content">
+          <h3 className="card-title">Einar F.</h3>
+          <p>Software Developer</p>
+          <p className="card-description">
           "A veces el rey de la concentración, y otras veces el emperador de la distracción"
-        </p>
-        <button className="troll">Ver mis memes más recientes(pero no esperes nada)</button>
+          </p>
+          <a href="https://www.linkedin.com/in/dorian-zuluaga-14873b251/">
+          <button className="card-button">About me</button> 
+          </a>
+        </div>
       </div>
-      <div />
+
+      <div className="card">
+        <img className="card-img" src={david} alt="Placeholder" />
+        <div className="card-content">
+          <h3 className="card-title">David G.</h3>
+          <p>Software Developer</p>
+          <p className="card-description">
+          "A veces la persona más puntual del mundo, y otras veces el rey del "llego en 5 minutos!"
+          </p>
+          <a href="https://www.linkedin.com/in/dorian-zuluaga-14873b251/">
+          <button className="card-button">About me</button> 
+          </a>
+        </div>
+      </div>
+
+      <div className="card">
+        <img className="card-img" src={jose} alt="Placeholder" />
+        <div className="card-content">
+          <h3 className="card-title">Jose </h3>
+          <p>Software Developer</p>
+          <p className="card-description">
+          "A veces soy un ninja de la programación, y otras veces un atleta de la procrastinación!"
+          </p>
+          <a href="https://www.linkedin.com/in/dorian-zuluaga-14873b251/">
+          <button className="card-button">About me</button> 
+          </a>
+        </div>
+      </div>
     </div>
+
+    
   );
-};
+}

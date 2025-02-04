@@ -5,35 +5,35 @@ import logo from "../../img/logo.jpg"
 
 export const Navbar = () => {
 	return (
-		<nav className="navbar navbar-light">
+		<nav className="navbar">
 			<div className="container">
 				<Link className="logoHome" to="/">
-					<img className="image"src={logo}/>
+					<img className="image" src={logo} />
 				</Link>
 				<Link to="">
-				    <button className="btn ">Home</button>
+					<button className="btn ">Home</button>
 				</Link>
 				<Link to="">
-				    <button className="btn ">Cuídate</button>
+					<button className="btn ">Cuídate</button>
 				</Link>
 				<Link to="">
-				    <button className="btn ">Tienda</button>
+					<button className="btn ">Tienda</button>
 				</Link>
 				<Link to="">
-				    <button className="btn ">Blog</button>
+					<button className="btn ">Blog</button>
 				</Link>
 				<Link to="/aboutus">
 					<button className="btn">Conócenos</button>
 				</Link>
 				<div className="registerArea ml-auto">
-					<Link to="/signup">
-				    	<button className="btn btn-primary">Sign Up</button>
-					</Link>
-				</div>
-				<div className="registerArea ml-auto">
 					<Link to="/login">
-				    	<button className="btn btn-primary">Log In</button>
+						<button className="btn btn-primary">LogIn</button>
 					</Link>
+					<div className="registerArea ml-auto">
+						<Link to="/signup">
+							<button className="btn btn-primary">Sign Up</button>
+						</Link>
+					</div>
 				</div>
 			</div>
 		</nav>
