@@ -19,7 +19,8 @@ export const TournamentList = () => {
                             key={tournament.id}
                             id={tournament.id}
                             name={tournament.name}
-                            img={tournament.image}
+                            host={tournament.host}
+                            image={tournament.image}
                             type={tournament.type}
                             rating={tournament.rating}
                             schedule={tournament.schedule}

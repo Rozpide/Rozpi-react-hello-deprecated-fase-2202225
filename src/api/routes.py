@@ -256,33 +256,26 @@ def checkUser():
     
 # /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
 
-@api.route('/tournaments', methods=['POST'])    # Crear un torneo
+@api.route('/tournaments', methods=['POST'])
 @jwt_required()
 def create_tournament():
-    
     try:
-    
-        user_id = get_jwt_identity()    # Obtener el ID del usuario autenticado
-        user = Users.query.get(user_id)     # Obtener el usuario de la base de datos
+        user_id = get_jwt_identity()
+        user = Users.query.get(user_id)
 
         if user.player:
-            return jsonify({'msg': 'Los Players no estan autorizados para crear torneos.'}), 403
+            return jsonify({'msg': 'Los Players no están autorizados para crear torneos.'}), 403
 
-        data = request.json
+        name = request.json.get('name')  # Usar request.json para obtener el JSON
+        type = request.json.get('type')
+        inscription_fee = request.json.get('inscription_fee')
+        rating = request.json.get('rating')
+        schedule = request.json.get('schedule')
+        award = request.json.get('award')
+        participants_amount = request.json.get('participants_amount')
+        image = request.json.get('image')  # Aquí es donde recibes la URL de la imagen
 
-        name = data.get('name', None)
-        type = data.get('type', None)
-        inscription_fee = data.get('inscription_fee', None)
-        rating = data.get('rating', None)
-        schedule = data.get('schedule', None)
-        award = data.get('award', None)
-        image = data.get('image', None)
-        participants_amount = data.get('participants_amount', None)
-        participants_registered = data.get('participants_registered', None)
-              
-        if not name or not type or not inscription_fee or not rating or not schedule or not award or not image or not participants_amount:
-            return jsonify({'msg': 'Completa los datos obligatorios'}), 400
-        
+
         new_tournament = Tournaments(
             name=name,
             type=type,
@@ -292,7 +285,6 @@ def create_tournament():
             award=award,
             image=image,
             participants_amount=participants_amount,
-            participants_registered=participants_registered,
             host_id=user.host_id
         )
 
@@ -300,11 +292,11 @@ def create_tournament():
         db.session.commit()
 
         return jsonify({'msg': 'Torneo creado con éxito', 'tournament': new_tournament.serialize()}), 201
-    
+
     except Exception as e:
         return jsonify({"msg": "Error al crear el torneo", "error": str(e)}), 500
-    
-    
+
+
 @api.route('/tournaments', methods=['GET'])    # Mostrar lista torneos
 def all_tournaments():
     try:
@@ -578,17 +570,5 @@ def get_teams_by_tournament(tournament_id):
 
     except Exception as e:
         return jsonify({'msg': 'Error al obtener los equipos', 'error': str(e)}), 500
-
-
-# /////////////////////////////////////////CLOUDINARY/////////////////////////////////////////
-
-@api.route('/upload', methods=['POST'])
-def upload():
-    file_to_upload = request.files['file']
-    if file_to_upload:
-        upload = cloudinary.uploader.upload(file_to_upload)
-        print('-------------la url donde esta la imagen-------------', upload)
-        return jsonify(upload)
-    return jsonify({"error": "No file uploaded"}), 400
 
 

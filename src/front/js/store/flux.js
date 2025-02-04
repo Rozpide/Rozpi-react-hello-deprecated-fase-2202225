@@ -233,27 +233,27 @@ const getState = ({ getStore, getActions, setStore }) => {
         
             postTournament: async (tournamentData) => {  //POST TOURNAMENT
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/tournaments", {
                         method: "POST",
                         headers: { 
                             "Content-Type": "application/json", 
-                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
                         },
-                        body: JSON.stringify(tournamentData)   
+                        body: JSON.stringify(tournamentData),  // Enviar los datos como JSON
                     });
-
+            
                     if (!resp.ok) {
                         const errorData = await resp.json();
                         throw new Error(errorData.message || "Error al crear el torneo");
                     }
-
+            
                     const data = await resp.json();
                     console.log("Torneo creado:", data);
-
+            
                     const store = getStore();
-                    setStore({ tournaments: [...(store.tournaments), data] });
+                    setStore({ tournaments: [...store.tournaments, data] });
                     return data;
-
+            
                 } catch (error) {
                     console.error("Error en postTournament:", error);
                 }
@@ -461,11 +461,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error en getTournamentTeams:", error);
                 }
             },
+
             
-            
-
-
-
         },
     };
 };
