@@ -2,7 +2,8 @@ import React from "react";
 import "../../styles/login.css"
 import { useState } from "react";
 
-export const Login = ({setUser}) => {
+export const Login = () => {
+    
 
     const [nombre, setNombre] = useState("")
     const [contraseña, setContraseña] = useState("")
@@ -19,7 +20,7 @@ export const Login = ({setUser}) => {
       
       setError(false)
   
-      setUser([nombre])
+      // setUser([nombre])
   
     }
 

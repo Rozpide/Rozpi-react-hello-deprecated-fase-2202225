@@ -8,7 +8,10 @@ import { Login } from "./pages/login.jsx";
 import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
-import { home } from "./pages/home.jsx";
+import { Home } from "./pages/home.jsx";
+import { Session } from "./pages/session.jsx";
+import { ProtectedOne } from "./pages/protected/protected-one.jsx";
+import { ProtectedTwo } from "./pages/protected/protected-two.jsx";
 
 //create your first component
 const Layout = () => {
@@ -24,10 +27,14 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Routes>
-                        <Route element={<home />} path="/home" />
+                        <Route element={<Home />} path="/home" />
                         <Route element={<SignUp  />} path="/signup" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<AboutUs />} path="/aboutUs" />
+                        <Route element={<Session />} path="/session">
+                            {/* <Route path='/protected-one' element={<ProtectedOne />} />
+                            <Route path='/protected-two' element={<ProtectedTwo />} /> */}
+                        </Route>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
