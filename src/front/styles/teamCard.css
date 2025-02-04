@@ -1,5 +1,5 @@
 .TeamCard__card {
-    width: 220px;
+    width: 160px;
     height: flex;
 
     text-align: center;
@@ -22,10 +22,3 @@
     background-color: darkblue;
     color: white;
 }
-
-
-
-
-/* *{
-    border: solid 1px red
-} */

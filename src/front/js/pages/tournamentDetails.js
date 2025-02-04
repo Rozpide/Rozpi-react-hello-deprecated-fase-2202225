@@ -70,9 +70,8 @@ export const TournamentDetails = () => {
                         <TeamCard key={team.id} team={team} />
                     ))
                 ) : (
-                    <p>No hay equipos registrados aún.</p>
+                    <p className="m-3">Aun no hay equipos registrados aún.</p>
                 )}
-
             </div>
 
             <br/>
