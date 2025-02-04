@@ -5,24 +5,30 @@ import { useState } from "react";
 export const Login = () => {
     
 
-    const [nombre, setNombre] = useState("")
-    const [contraseña, setContraseña] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
   
     const [error, setError] = useState(false)
   
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault()
   
-      if(nombre === "" || contraseña === ""){
+      if(email === "" || password === ""){
         setError(true)
         return
       }
       
+      const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {method: "POST", body: JSON.stringify({email: email, password: password}), headers: {"Content-Type": "application/json"}})
+      const data = await response.json()
+      console.log(data)
+      localStorage.setItem("token", data.token)
+
       setError(false)
   
       // setUser([nombre])
   
     }
+
 
     return(
     <>
@@ -35,13 +41,13 @@ export const Login = () => {
       >
         <input 
         type="text"
-        value={nombre}
-        onChange={e => setNombre(e.target.value)} 
+        value={email}
+        onChange={e => setEmail(e.target.value)} 
         />
         <input 
           type="password"
-          value={contraseña}
-          onChange={e => setContraseña(e.target.value)} 
+          value={password}
+          onChange={e => setPassword(e.target.value)} 
         />
         <button> Entrar </button>
       </form>
