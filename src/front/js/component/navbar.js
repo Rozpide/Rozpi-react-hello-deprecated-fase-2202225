@@ -7,10 +7,8 @@ export const Navbar = () => {
 	return (
 		<nav className="navbar">
 			<div className="container">
-				<Link className="logoHome" to="/home">
-					<img className="image"
-						src={logo}
-					/>
+				<Link className="logoHome" to="/">
+					<img className="image" src={logo} />
 				</Link>
 				<Link to="">
 					<button className="btn ">Home</button>
@@ -31,6 +29,11 @@ export const Navbar = () => {
 					<Link to="/login">
 						<button className="btn btn-primary">LogIn</button>
 					</Link>
+					<div className="registerArea ml-auto">
+						<Link to="/signup">
+							<button className="btn btn-primary">Sign Up</button>
+						</Link>
+					</div>
 				</div>
 			</div>
 		</nav>
