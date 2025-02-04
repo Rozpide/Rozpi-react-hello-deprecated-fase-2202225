@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Context } from "../store/appContext.js";
 import "../../styles/hostProfile.css";
-import { ProfileEdit } from "../component/hostProfileEdit.jsx";
+import { HostCard } from "../component/hostCard.jsx";
 
 
 export const HostProfile = () => {
-    return(
+    const { store, actions } = useContext(Context);
+
+    return (
         <div className="container">
-            <p>holaaaa</p>
-            <ProfileEdit/>
+            <p>PROFILE</p>
+            <HostCard viewMode={'hostPage'} />
         </div>
     );
 };

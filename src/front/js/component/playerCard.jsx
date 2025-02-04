@@ -1,9 +1,12 @@
 import React, {useContext,useState} from 'react';
 import { Context } from "../store/appContext";
+import { Link, useNavigate } from 'react-router-dom';
+
 
 export const PlayerCard = ({use}) => {
     console.log("PlayerCard use:", use);
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
     
     const [playerData, setPlayerData] = useState({
         name:store.player_info?.name || '',
@@ -22,7 +25,7 @@ export const PlayerCard = ({use}) => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
        
@@ -33,18 +36,25 @@ export const PlayerCard = ({use}) => {
 
         console.log("Submit data:", playerData, "use:", use);
         
-        use === 'player'
-        ? actions.playerPage(playerData)
-        : actions.updatePlayer(playerData) 
+        if (use === 'player') {
+            await actions.playerPage(playerData);
+        } else {
+            await actions.updatePlayer(playerData);
+        }
         
-         
+        navigate('/player/profile');       
+    };
+
+    const handleCancel = e => {
+        navigate('/player/profile');
     };
 
     return (
         <>
         {use === 'playerPage' ? (
             <div className="card" style={{ width: "18rem" }}>
-                <img src="..." className="card-img-top" alt="..." />
+                <img src={process.env.BACKEND_URL + "/tennis-ball.png"} className="card-img-top w-25" alt="..." />
+
                 <div className="card-body">
                     <h5 className="card-title">{playerData.name || ''}</h5>
                     <p className="card-text"><b>Género:</b> {playerData.gender || ''}</p>
@@ -54,6 +64,10 @@ export const PlayerCard = ({use}) => {
                     <p className="card-text"><b>Mano:</b> {playerData.hand}</p>
                     <p className="card-text"><b>Phone:</b> {playerData.phone}</p>
                 </div>
+
+                <Link to="/player/editProfile">
+                    <button type="button" className="btn btn-primary">Editar Perfil</button>
+                </Link>
             </div>
         ) : (
             
@@ -145,8 +159,22 @@ export const PlayerCard = ({use}) => {
                             <option value="Zurdo">Zurdo</option>
                         </select>
                     </div>
+                    <div className="m-3">
+                        <label htmlFor="phone"><b>Teléfono</b></label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            placeholder="Número de teléfono"
+                            value={playerData.phone}
+                            onChange={handleChange}
+                            required
+                            pattern="[0-9]{9}"
+                        />
+                    </div>
                 <div>
                     <input type="submit" value={'Actualizar datos'} />
+                    <button className="btn btn-danger" value="Cancelar" onClick={handleCancel}>Cancelar</button>
                 </div>
             </form>
         )}

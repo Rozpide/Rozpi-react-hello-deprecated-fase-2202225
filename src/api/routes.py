@@ -7,6 +7,8 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
+import cloudinary
+import cloudinary.uploader
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
@@ -87,8 +89,6 @@ def login():
     if user.host_id:
         host_info = Hosts.query.get(user.host_id)
     
-
-
     token = create_access_token(identity=str(user.id))
     return jsonify({'user_info': user.serialize(), 'player_info': player_info.serialize() if  player_info else None, 'host_info': host_info.serialize() if  host_info else None, 'token': token}), 200
 
@@ -106,7 +106,7 @@ def protected():
 
 # /////////////////////////////////////////PLAYER/////////////////////////////////////////
 
-@api.route('/getPlayers', methods=['PUT'])
+@api.route('/editPlayers', methods=['PUT'])
 @jwt_required()
 def editPlayer():
     id = get_jwt_identity()
@@ -116,6 +116,8 @@ def editPlayer():
     rating = request.json.get('rating', None)
     side = request.json.get('side', None)
     hand = request.json.get('hand', None)
+    phone = request.json.get('phone', None)
+    image = request.json.get('image', None)
 
 
     if not name or not gender or not age or not rating or not side or not hand:
@@ -138,6 +140,10 @@ def editPlayer():
         player.side = side
     if hand:
         player.hand = hand
+    if phone:
+        player.phone = phone
+    if image:
+        player.image = image
     
 
     db.session.commit()
@@ -171,24 +177,22 @@ def get_player():
 
 # /////////////////////////////////////////HOST/////////////////////////////////////////
 
-@api.route('/host/profile', methods=['GET'])    # Mostrar lista de perfiles de todos los hosts
-def all_host_profile():
+@api.route('/getHost', methods=['GET'])    # Mostrar lista de perfiles de todos los hosts
+def get_hosts():
     try:
-        all_hosts = Hosts.query.all()
+        hosts = Hosts.query.all()
 
-        if not all_hosts:
+        if not hosts:
             return jsonify({'msg': 'Hosts no encontrados'}), 404
-        
-        serialized_hosts = [host.serialize() for host in all_hosts]
 
-        return jsonify({'hosts': serialized_hosts}), 200
+        return jsonify({'hosts': [host.serialize() for host in hosts]}), 200
     
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
 
 
-@api.route('/host/profile/', methods=['GET'])   # Mostrar el perfil del host seleccionado
-def one_host_profile(id):
+@api.route('/getHost/<int:id>', methods=['GET'])   # Mostrar el perfil del host seleccionado
+def get_host(id):
     try:
         host = Hosts.query.get(id)   
         if not host:
@@ -200,20 +204,32 @@ def one_host_profile(id):
         return jsonify({'msg': 'Ocurrió un error al obtener los hosts', 'error': str(e)}), 500
 
 
-@api.route('/host/profile/', methods=['PUT'])    #Editar el perfil del host seleccionado
-def edit_host_profile(id):
+@api.route('/editHost', methods=['PUT'])    #Editar el perfil del host seleccionado
+@jwt_required()
+def edit_host():
     try:
-        data = request.json
+        id = get_jwt_identity()
+        name = request.json.get('name', None)
+        address = request.json.get('address', None)
+        court_type = request.json.get('court_type', None)
+        phone = request.json.get('phone', None)
+        image = request.json.get('image', None)
 
-        host = Hosts.query.get(id)
+        host = Hosts.query.join(Users, Users.host_id == Hosts.id).filter(Users.id == id).first()
         
         if not host:
             return jsonify({'msg': 'Host no encontrado'}), 404
- 
-        host.name = data.get('name', host.name)
-        host.address = data.get('address', host.address)
-        host.court_type = data.get('court_type', host.court_type)
-        host.tournament_id = data.get('tournament_id', host.tournament_id)
+        
+        if name:
+            host.name = name
+        if address:
+            host.address = address
+        if court_type:
+            host.court_type = court_type
+        if phone:
+            host.phone = phone
+        if image:
+            host.image = image
 
         db.session.commit()
 
@@ -221,3 +237,358 @@ def edit_host_profile(id):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+# /////////////////////////////////////CHECK TIPO USUARIO/////////////////////////////////////
+
+@api.route('/check', methods=['GET'])
+@jwt_required()
+def checkUser():
+    id = get_jwt_identity()
+
+    user = Users.query.get(id)
+
+    if  not user:
+            return jsonify({'msg': 'Usuario no encontrado.'}), 404
+    
+    return jsonify({'player': user.player }), 200
+    
+    
+# /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
+
+@api.route('/tournaments', methods=['POST'])    # Crear un torneo
+@jwt_required()
+def create_tournament():
+    
+    try:
+    
+        user_id = get_jwt_identity()    # Obtener el ID del usuario autenticado
+        user = Users.query.get(user_id)     # Obtener el usuario de la base de datos
+
+        if user.player:
+            return jsonify({'msg': 'Los Players no estan autorizados para crear torneos.'}), 403
+
+        data = request.json
+
+        name = data.get('name', None)
+        type = data.get('type', None)
+        inscription_fee = data.get('inscription_fee', None)
+        rating = data.get('rating', None)
+        schedule = data.get('schedule', None)
+        award = data.get('award', None)
+        image = data.get('image', None)
+        participants_amount = data.get('participants_amount', None)
+        participants_registered = data.get('participants_registered', None)
+              
+        if not name or not type or not inscription_fee or not rating or not schedule or not award or not image or not participants_amount:
+            return jsonify({'msg': 'Completa los datos obligatorios'}), 400
+        
+        new_tournament = Tournaments(
+            name=name,
+            type=type,
+            inscription_fee=inscription_fee,
+            rating=rating,
+            schedule=schedule,
+            award=award,
+            image=image,
+            participants_amount=participants_amount,
+            participants_registered=participants_registered,
+            host_id=user.host_id
+        )
+
+        db.session.add(new_tournament)
+        db.session.commit()
+
+        return jsonify({'msg': 'Torneo creado con éxito', 'tournament': new_tournament.serialize()}), 201
+    
+    except Exception as e:
+        return jsonify({"msg": "Error al crear el torneo", "error": str(e)}), 500
+    
+    
+@api.route('/tournaments', methods=['GET'])    # Mostrar lista torneos
+def all_tournaments():
+    try:
+        all_tournaments = Tournaments.query.all()
+
+        if not all_tournaments:
+            return jsonify({'msg': 'Torneos no encontrados'}), 404
+        
+        serialized_tournaments = [tournament.serialize() for tournament in all_tournaments]
+
+        return jsonify({'tournaments': serialized_tournaments}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Ocurrió un error al obtener los torneos', 'error': str(e)}), 500
+    
+
+@api.route('/tournaments/<int:id>', methods=['GET'])    # Mostrar un torneo
+
+def one_tournament(id):
+    try:
+        tournament = Tournaments.query.get(id)   
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404 
+        
+        return jsonify({'torneo': tournament.serialize()}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Ocurrió un error al obtener el torneo', 'error': str(e)}), 500
+
+@api.route('/tournaments/<int:id>', methods=['PUT'])    #Editar el torneo seleccionado
+def edit_tournament(id):
+    try:
+        data = request.json
+
+        tournament = Tournaments.query.get(id)
+        
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+ 
+        tournament.name = data.get('name', tournament.name)
+        tournament.type = data.get('type', tournament.type)
+        tournament.inscription_fee = data.get('inscription_fee', tournament.inscription_fee)
+        tournament.rating = data.get('rating', tournament.rating)
+        tournament.schedule = data.get('schedule', tournament.schedule)
+        tournament.award = data.get('award', tournament.award)
+        tournament.tournament_winner = data.get('tournament_winner', tournament.tournament_winner)
+        tournament.image = data.get('image', tournament.image)
+
+        db.session.commit()
+
+        return jsonify({'msg': 'Torneo actualizado con éxito', 'Torneo': tournament.serialize()}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@api.route('/tournaments/<int:id>', methods=['DELETE'])
+def delete_tournament(id):
+
+    data = Tournaments.query.get(id)
+
+    db.session.delete(data)
+    db.session.commit()
+
+    return jsonify({"msg": "Torneo eliminado con id " + str(id)}), 200
+
+# /////////////////////////////////////////PARTICIPANTS/////////////////////////////////////////
+
+@api.route('/tournaments/<int:tournament_id>/participate', methods=['POST'])        #POST todos los participantes de un torneo
+@jwt_required()
+def participate_in_tournament(tournament_id):
+    try:
+        # Obtener el ID del jugador autenticado
+        user_id = get_jwt_identity()
+        user = Users.query.get(user_id)
+
+        if not user or not user.player:
+            return jsonify({'msg': 'Solo los Players registrados pueden participar en torneos'}), 403
+
+        # Verificamos si el Player existe
+        player_id = user.player_id
+        if not player_id:
+            return jsonify({'msg': 'Player no encontrado'}), 404
+
+        # Verificamos si el torneo existe
+        tournament = Tournaments.query.get(tournament_id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+
+        # Verificamos si el jugador ya está participando en el torneo
+        existing_participation = Participants.query.filter_by(
+            player_id=player_id,
+            tournament_id=tournament_id
+        ).first()
+
+        if existing_participation:
+            return jsonify({'msg': 'Ya estás participando en este torneo'}), 400
+
+        new_participant = Participants(
+            player_id=player_id,
+            tournament_id=tournament_id
+        )
+
+        db.session.add(new_participant)
+        db.session.commit()
+        
+        # Comprobamos la cantidad de participantes en el torneo y lo registramos en la variable participants_registered
+        tournament.participants_registered = Participants.query.filter_by(tournament_id=tournament.id).count()
+
+        db.session.commit()
+
+        create_team(tournament_id)
+
+        return jsonify({
+            'msg': 'Participación registrada con éxito', 
+            'participant': new_participant.serialize(),
+            'participants_registered': tournament.participants_registered
+        }), 201
+
+    except Exception as e:
+        db.session.rollback() #Rollback por si hay algun error
+        return jsonify({'msg': 'Error al registrar la participación', 'error': str(e)}), 500
+    
+
+@api.route('/tournaments/<int:tournament_id>/participants', methods=['GET'])    #GET todos los participantes de un torneo
+@jwt_required()
+def get_participants(tournament_id):
+    try:
+        # Obtener los participantes del torneo
+        participants = Participants.query.filter_by(tournament_id=tournament_id).all()
+
+        if not participants:
+            return jsonify({'msg': 'No hay participantes en este torneo'}), 404
+        
+        users=[]
+
+        for participant in participants:
+            users.append(Players.query.get(participant.player_id))
+
+        users = [user.serialize() for user in users]
+
+        # Lista con los datos de los participantes
+        return jsonify({'participants': users}), 200
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al obtener los participantes', 'error': str(e)}), 500
+
+
+@api.route('/tournaments/<int:tournament_id>/participants/<int:player_id>', methods=['GET'])    #GET un participante de un torneo
+@jwt_required()
+def get_participant(tournament_id, player_id):
+    try:
+        # Buscar si el jugador está registrado en este torneo
+        participant = Participants.query.filter_by(tournament_id=tournament_id, player_id=player_id).first()
+
+        if not participant:
+            return jsonify({'msg': 'El jugador no está registrado en este torneo'}), 404
+
+        player = Users.query.get(player_id)
+
+        if not player:
+            return jsonify({'msg': 'Jugador no encontrado'}), 404
+
+        # Retornar detalles del participante
+        participant_data = {
+            'player_id': player.id,
+            'name': player.name,
+            'email': player.email,
+            'rank': player.rank,
+        }
+
+        return jsonify({'participant': participant_data}), 200
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al obtener el participante', 'error': str(e)}), 500
+
+    
+@api.route('/tournaments/<int:tournament_id>/remove_player/<int:player_id>', methods=['DELETE'])     #DELETE un participante de un torneo
+@jwt_required()
+def remove_participant(tournament_id, player_id):
+    try:
+        participant = Participants.query.filter_by(tournament_id=tournament_id, player_id=player_id).first()
+
+        if not participant:
+            return jsonify({'msg': 'El jugador no está registrado en este torneo'}), 404
+
+        db.session.delete(participant)
+        db.session.commit()
+
+        tournament = Tournaments.query.get(tournament_id)
+        tournament.participants_registered = Participants.query.filter_by(tournament_id=tournament.id).count()
+        
+        db.session.commit()
+
+        return jsonify({'msg': 'Jugador eliminado del torneo:', 'participants_registered': tournament.participants_registered}), 200
+    
+    except Exception as e:
+        return jsonify({'msg': 'Error al eliminar el jugador', 'error': str(e)}), 500
+    
+
+# ////////////////////////////////////////////TEAMS////////////////////////////////////////////
+
+@api.route('/tournaments/<int:tournament_id>/teams', methods=['POST'])        #POST todos los equipos de un torneo
+@jwt_required()
+def create_team(tournament_id):
+    try:
+
+        # Conseguir datos del torneo
+        tournament = Tournaments.query.get(tournament_id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+        
+        # Conseguir datos de los participantes del torneo
+        participants = Participants.query.filter_by(tournament_id=tournament_id).all()
+        if not participants:
+            return jsonify({'msg': 'No hay participantes en este torneo'}), 404
+
+        #Verificamos si hay participantes no estan asignados
+        participants_unasigned = []
+        for participant in participants:
+            if not Teams.query.filter((Teams.left == participant.id) | (Teams.right == participant.id)).first():
+                participants_unasigned.append(participant)
+
+        # Si todos los participantes han sido asignados
+        if not participants_unasigned:
+            return jsonify({'msg': 'Todos los participantes ya están en un equipo'}), 400
+
+        existing_teams_count = Teams.query.filter_by(tournament_id=tournament_id).count()
+        team_number = existing_teams_count + 1
+        
+        while len(participants_unasigned) >= 2:
+            new_team = Teams(
+                team_number=team_number,
+                left=participants_unasigned[0].id,
+                right=participants_unasigned[1].id,
+                tournament_id=tournament_id
+            )
+
+            db.session.add(new_team)
+            db.session.commit()
+
+            #Elimina los 2 primeros participantes de la lista que ya han sido asignados a un equipo
+            participants_unasigned = participants_unasigned[2:]
+            team_number += 1
+
+        return jsonify({'msg': 'Equipos creados con éxito'}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'msg': 'Error al postera un equipo', 'error': str(e)}), 500
+
+
+@api.route('/tournaments/<int:tournament_id>/teams', methods=['GET'])        #GET todos los equipos de un torneo
+def get_teams_by_tournament(tournament_id):
+    try:
+        # Verificar si el torneo existe
+        tournament = Tournaments.query.get(tournament_id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+
+        # Obtener todos los equipos de ese torneo
+        teams = Teams.query.filter_by(tournament_id=tournament_id).all()
+
+        if not teams:
+            return jsonify({'msg': 'No hay equipos registrados en este torneo'}), 404
+
+        # Devolver los equipos en formato JSON
+        return jsonify({
+            'msg': 'Equipos obtenidos correctamente',
+            'teams': [team.serialize() for team in teams]
+        }), 200
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al obtener los equipos', 'error': str(e)}), 500
+
+
+# /////////////////////////////////////////CLOUDINARY/////////////////////////////////////////
+
+@api.route('/upload', methods=['POST'])
+def upload():
+    file_to_upload = request.files['file']
+    if file_to_upload:
+        upload = cloudinary.uploader.upload(file_to_upload)
+        print('-------------la url donde esta la imagen-------------', upload)
+        return jsonify(upload)
+    return jsonify({"error": "No file uploaded"}), 400
+
+
