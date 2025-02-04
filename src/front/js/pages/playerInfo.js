@@ -7,9 +7,9 @@ export const Player = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <div className="text-center mt-5">
+        <div className="mt-5 mx-5">
             <h1>Perfil</h1>
-            <hr></hr>
+            <hr className="mb-0"></hr>
             <PlayerCard use={'playerPage'}/>
         </div>
     );

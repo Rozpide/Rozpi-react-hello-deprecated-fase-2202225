@@ -1,21 +1,21 @@
-import React, {useContext,useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { Context } from "../store/appContext";
 import { Link, useNavigate } from 'react-router-dom';
 
 
-export const PlayerCard = ({use}) => {
+export const PlayerCard = ({ use }) => {
     console.log("PlayerCard use:", use);
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-    
+
     const [playerData, setPlayerData] = useState({
-        name:store.player_info?.name || '',
-        gender:store.player_info?.gender ||'',
-        age:store.player_info?.age ||'',
-        rating:store.player_info?.rating ||'',
-        side:store.player_info?.side ||'',
-        hand:store.player_info?.hand ||'',
-        phone:store.player_info?.phone ||'',
+        name: store.player_info?.name || '',
+        gender: store.player_info?.gender || '',
+        age: store.player_info?.age || '',
+        rating: store.player_info?.rating || '',
+        side: store.player_info?.side || '',
+        hand: store.player_info?.hand || '',
+        phone: store.player_info?.phone || '',
     });
 
     const handleChange = (e) => {
@@ -28,21 +28,21 @@ export const PlayerCard = ({use}) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-       
+
         if (!playerData.name || !playerData.gender || !playerData.age || !playerData.rating || !playerData.side || !playerData.hand) {
             console.log("Por favor, completa los campos obligatorios.");
             return;
         }
 
         console.log("Submit data:", playerData, "use:", use);
-        
+
         if (use === 'player') {
             await actions.playerPage(playerData);
         } else {
             await actions.updatePlayer(playerData);
         }
-        
-        navigate('/player/profile');       
+
+        navigate('/player/profile');
     };
 
     const handleCancel = e => {
@@ -51,40 +51,40 @@ export const PlayerCard = ({use}) => {
 
     return (
         <>
-        {use === 'playerPage' ? (
-            <div className="card" style={{ width: "18rem" }}>
-                <img src={process.env.BACKEND_URL + "/tennis-ball.png"} className="card-img-top w-25" alt="..." />
+            {use === 'playerPage' ? (
+                <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: "100vh" }}>
+                    <div className="card" style={{ width: "100vh" }}>                      
+                        <div className="card-body">
+                            <h5 className="card-title text-center text-uppercase">{playerData.name || ''}</h5>
+                            <p className="card-text"><b>Género:</b> {playerData.gender || ''}</p>
+                            <p className="card-text"><b>Edad:</b> {playerData.age}</p>
+                            <p className="card-text"><b>Categoría:</b> {playerData.rating}</p>
+                            <p className="card-text"><b>Lado:</b> {playerData.side}</p>
+                            <p className="card-text"><b>Mano:</b> {playerData.hand}</p>
+                            <p className="card-text"><b>Phone:</b> {playerData.phone}</p>
+                        </div>
 
-                <div className="card-body">
-                    <h5 className="card-title">{playerData.name || ''}</h5>
-                    <p className="card-text"><b>Género:</b> {playerData.gender || ''}</p>
-                    <p className="card-text"><b>Edad:</b> {playerData.age}</p>
-                    <p className="card-text"><b>Categoría:</b> {playerData.rating}</p>
-                    <p className="card-text"><b>Lado:</b> {playerData.side}</p>
-                    <p className="card-text"><b>Mano:</b> {playerData.hand}</p>
-                    <p className="card-text"><b>Phone:</b> {playerData.phone}</p>
+                        <Link to="/player/editProfile" className='text-center m-3'>
+                            <button type="button" className="btn btn-primary">Editar Perfil</button>
+                        </Link>
+                    </div>
                 </div>
+            ) : (
 
-                <Link to="/player/editProfile">
-                    <button type="button" className="btn btn-primary">Editar Perfil</button>
-                </Link>
-            </div>
-        ) : (
-            
-            <form onSubmit={handleSubmit}>
-                <div className="m-3">
-                    <label htmlFor="name"><b>Nombre</b></label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Nombre"
-                        value={playerData.name}
-                        onChange={handleChange}
-                        required
+                <form onSubmit={handleSubmit}>
+                    <div className="m-3">
+                        <label htmlFor="name"><b>Nombre</b></label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Nombre"
+                            value={playerData.name}
+                            onChange={handleChange}
+                            required
                         />
-                </div>
-                <div className="m-3">
+                    </div>
+                    <div className="m-3">
                         <label htmlFor="gender"><b>Género</b></label>
                         <select
                             id="gender"
@@ -98,22 +98,22 @@ export const PlayerCard = ({use}) => {
                             <option value="Masculino">Masculino</option>
                             <option value="Otro">Otro</option>
                         </select>
-                </div>
-                <div className="m-3">
-                    <label htmlFor="age"><b>Edad</b></label>
-                    <input
-                        type="number"
-                        id="age"
-                        name="age"
-                        placeholder="Edad"
-                        value={playerData.age}
-                        onChange={handleChange}
-                        required
-                        min="0"
-                        max= "99"
+                    </div>
+                    <div className="m-3">
+                        <label htmlFor="age"><b>Edad</b></label>
+                        <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            placeholder="Edad"
+                            value={playerData.age}
+                            onChange={handleChange}
+                            required
+                            min="0"
+                            max="99"
                         />
-                </div>
-                <div className="m-3">
+                    </div>
+                    <div className="m-3">
                         <label htmlFor="rating"><b>Categoría</b></label>
                         <select
                             id="rating"
@@ -130,7 +130,7 @@ export const PlayerCard = ({use}) => {
                             <option value="5">5</option>
                         </select>
                     </div>
-                <div className="m-3">
+                    <div className="m-3">
                         <label htmlFor="side"><b>Lado</b></label>
                         <select
                             id="side"
@@ -172,13 +172,13 @@ export const PlayerCard = ({use}) => {
                             pattern="[0-9]{9}"
                         />
                     </div>
-                <div>
-                    <input type="submit" value={'Actualizar datos'} />
-                    <button className="btn btn-danger" value="Cancelar" onClick={handleCancel}>Cancelar</button>
-                </div>
-            </form>
-        )}
+                    <div>
+                        <input type="submit" value={'Actualizar datos'} />
+                        <button className="btn btn-danger" value="Cancelar" onClick={handleCancel}>Cancelar</button>
+                    </div>
+                </form>
+            )}
         </>
-        
+
     );
 };
