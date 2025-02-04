@@ -1,8 +1,8 @@
-navBar {
-
+.navbar{
+    background-color: #32c9c9;
 }
 
-button {
+.btn{
 width: 7rem;
 }
 
