@@ -41,11 +41,13 @@ export const Login = () => {
         <input 
         type="text"
         value={email}
+        placeholder="Correo electrónico"
         onChange={e => setEmail(e.target.value)} 
         />
         <input 
           type="password"
           value={password}
+          placeholder="Contraseña"
           onChange={e => setPassword(e.target.value)} 
         />
         <button> Entrar </button>
