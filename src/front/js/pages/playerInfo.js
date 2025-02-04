@@ -7,7 +7,7 @@ export const Player = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <div className="mt-5 mx-5">
+        <div className="pt-5 px-5 bg-light">
             <h1>Perfil</h1>
             <hr className="mb-0"></hr>
             <PlayerCard use={'playerPage'}/>
