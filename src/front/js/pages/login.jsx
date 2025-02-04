@@ -1,32 +1,31 @@
 import React from "react";
 import "../../styles/login.css"
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
     
-
+    const navigate = useNavigate();
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
   
-    const [error, setError] = useState(false)
-  
     const handleSubmit = async (e) => {
       e.preventDefault()
-  
-      if(email === "" || password === ""){
-        setError(true)
-        return
-      }
       
-      const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {method: "POST", body: JSON.stringify({email: email, password: password}), headers: {"Content-Type": "application/json"}})
+      const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+        method: "POST", 
+        body: JSON.stringify({email: email, password: password}), 
+        headers: {"Content-Type": "application/json"}})
       const data = await response.json()
-      console.log(data)
-      localStorage.setItem("token", data.token)
-
-      setError(false)
-  
-      // setUser([nombre])
-  
+      if (!response.ok){
+        alert("Email o contraseña incorrecta")
+        console.log(data)
+      }
+      else{
+        console.log(data)
+        localStorage.setItem("token", data.token)
+        navigate("/session");
+      }
     }
 
 
@@ -51,7 +50,6 @@ export const Login = () => {
         />
         <button> Entrar </button>
       </form>
-      {error && <alert>Fill All</alert>}
     </section>
     </>
     )
