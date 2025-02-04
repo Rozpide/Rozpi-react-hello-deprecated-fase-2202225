@@ -83,9 +83,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
                     localStorage.setItem('player', data.user_info.player);
                     if (data.user_info.player) {
-                        return "/player/profile";
+                        return "/";
                     } 
-                    return "/host/profile";
+                    return "/";
                 } catch (error) {
                     console.error("Error en login:", error);
                 }
