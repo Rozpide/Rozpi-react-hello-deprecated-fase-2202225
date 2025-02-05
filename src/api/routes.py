@@ -45,12 +45,14 @@ def login():
     return jsonify({"token": access_token}), 200
 
 
-@api.route("private", methods=["GET"])
+@api.route("profile", methods=["GET"])
 @jwt_required()
-def private():
+def get_profile():
     user_email = get_jwt_identity()
     user = User.query.filter_by(email = user_email).first()
     if not user:
         return jsonify({"msg": "usuario no encontrado"}), 400
-    return jsonify({"msg": "usuario encontrado"}), 200
+    return jsonify(user.serialize()), 200
+
+
 

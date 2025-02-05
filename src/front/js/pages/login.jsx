@@ -1,30 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import "../../styles/login.css"
-import { useNavigate } from "react-router-dom";
+import { useNavigate  } from "react-router-dom";
+
+import { Context } from "../store/appContext";
 
 export const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const { actions } = useContext(Context)
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
-      method: "POST",
-      body: JSON.stringify({ email: email, password: password }),
-      headers: { "Content-Type": "application/json" }
-    })
-    const data = await response.json()
-    if (!response.ok) {
-      alert("Email o contraseña incorrecta")
-      console.log(data)
+    const isLoged = await actions.login(email, password) 
+    if (isLoged){
+      navigate("/session/home");
     }
-    else {
-      console.log(data)
-      localStorage.setItem("token", data.token)
-      navigate("/session");
+    else{
+      alert("Email o contraseña incorrecta")
     }
   }
 
