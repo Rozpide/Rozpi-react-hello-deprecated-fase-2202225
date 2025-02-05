@@ -97,6 +97,7 @@ export const Home = () => {
 								</div>
 							</div>
 						</div>
+
 					</div>
 				</div>
 			</section>
@@ -104,6 +105,7 @@ export const Home = () => {
 			<section className="section home__section-3  p-5">
 				<div className="container">
 					<div className="row">
+
 						<div className="col-md-4">
 							<div className="card h-100 d-flex flex-column bg-dark text-white">
 								<div className="card-body d-flex flex-column p-4">
@@ -115,6 +117,7 @@ export const Home = () => {
 								</div>
 							</div>
 						</div>
+
 						<div className="col-md-4">
 							<div className="card h-100 d-flex flex-column bg-dark text-white">
 								<div className="card-body d-flex flex-column">
@@ -126,6 +129,7 @@ export const Home = () => {
 								</div>
 							</div>
 						</div>
+
 						<div className="col-md-4">
 							<div className="card h-100 d-flex flex-column bg-dark text-white">
 								<div className="card-body d-flex flex-column">
@@ -135,6 +139,7 @@ export const Home = () => {
 								</div>
 							</div>
 						</div>
+						
 					</div>
 				</div>
 			</section>
