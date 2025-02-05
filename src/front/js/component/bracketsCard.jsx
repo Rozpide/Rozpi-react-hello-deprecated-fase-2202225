@@ -6,14 +6,14 @@ import "../../styles/bracketsCard.css";
 export const BracketsCard = () => {
 
     return (
-        <div className="tournament-bracket container-fluid p-4">
-            <div className="row justify-content-around">
+        <div className="tournament-bracket container p-4">
+            <div className="row justify-content-between d-flex mx-0">
                 
                 {/* ///////////////////////////// CUARTOS DE FINAL ///////////////////////////// */}
                 <div className="col-md-3 round mb-4">
 
                     <div>
-                        <h3 className="text-center mb-4 round-title">Quarter-Finals</h3>
+                        <h3 className="text-center mb-4 round-title">Cuartos de Final</h3>
                     </div>
 
                     <div className="align-items-center">
@@ -97,7 +97,7 @@ export const BracketsCard = () => {
                 <div className="col-md-3 round d-flex flex-column mb-4">
 
                     <div>
-                        <h3 className="text-center mb-4 round-title">Semi-Finals</h3>
+                        <h3 className="text-center mb-4 round-title">Semi Finales</h3>
                     </div>
 
                     <div className="d-flex flex-grow-1 align-items-center justify-content-center w-100 flex-column">
@@ -119,7 +119,7 @@ export const BracketsCard = () => {
                         </div>
 
                         {/* ///////////////// Segundo Partido ///////////////// */}
-                        <div className="w-100 mt-md-5 pt-md-5 ">                       
+                        <div className="w-100 mt-md-5 pt-md-5 mt-5">                       
                             <div>
                                 <div className="matchup card">
                                     <div className="d-flex align-items-center">
@@ -167,6 +167,17 @@ export const BracketsCard = () => {
                 </div>
 
             </div>
+            {/* ///////////////////////////// GANADOR ///////////////////////////// */}
+            <div className="round d-flex flex-column align-items-center justify-content-center w-100">
+                <div >
+                    <h3 className="text-center mb-4 round-title">GANADOR</h3>
+                </div>
+
+                <div>
+                    <h1 className="m-2 m-0 text-center team">Equipo Ganador del Torneo</h1>
+                </div>
+            </div>
+
         </div>
     );
 };

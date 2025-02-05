@@ -24,6 +24,8 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+
+
 # /////////////////////////////////////////USER/////////////////////////////////////////
 
 @api.route('/signup', methods=['POST'])
@@ -104,6 +106,7 @@ def protected():
     return jsonify({'success': False, 'msg': 'Token erroneo'})
 
 
+
 # /////////////////////////////////////////PLAYER/////////////////////////////////////////
 
 @api.route('/editPlayers', methods=['PUT'])
@@ -145,9 +148,9 @@ def editPlayer():
     if image:
         player.image = image
     
-
     db.session.commit()
     return jsonify({'msg': 'Jugador actualizado con éxito', 'player': player.serialize()}), 200
+
 
 @api.route('/getPlayers', methods=['GET'])
 def get_players():
@@ -164,6 +167,7 @@ def get_players():
     except Exception as e:
         # Manejo de errores
         return jsonify({'msg': 'Error al obtener los jugadores', 'error': str(e)}), 500
+    
 
 @api.route('/getPlayers/', methods=['GET'])
 def get_player():
@@ -239,6 +243,7 @@ def edit_host():
         return jsonify({'error': str(e)}), 500
     
 
+
 # /////////////////////////////////////CHECK TIPO USUARIO/////////////////////////////////////
 
 @api.route('/check', methods=['GET'])
@@ -254,6 +259,7 @@ def checkUser():
     return jsonify({'player': user.player }), 200
     
     
+
 # /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
 
 @api.route('/tournaments', methods=['POST'])    # Crear un torneo
@@ -334,6 +340,7 @@ def one_tournament(id):
     except Exception as e:
         return jsonify({'msg': 'Ocurrió un error al obtener el torneo', 'error': str(e)}), 500
 
+
 @api.route('/tournaments/<int:id>', methods=['PUT'])    #Editar el torneo seleccionado
 def edit_tournament(id):
     try:
@@ -370,6 +377,8 @@ def delete_tournament(id):
 
     return jsonify({"msg": "Torneo eliminado con id " + str(id)}), 200
 
+
+
 # /////////////////////////////////////////PARTICIPANTS/////////////////////////////////////////
 
 @api.route('/tournaments/<int:tournament_id>/participate', methods=['POST'])        #POST todos los participantes de un torneo
@@ -401,6 +410,12 @@ def participate_in_tournament(tournament_id):
 
         if existing_participation:
             return jsonify({'msg': 'Ya estás participando en este torneo'}), 400
+        
+        # Verificamos si el torneo ha alcanzado su capacidad máxima de jugadores
+        current_participants = Participants.query.filter_by(tournament_id=tournament_id).count()
+
+        if current_participants >= tournament.participants_amount:
+            return jsonify({'msg': 'El torneo ha alcanzado su capacidad máxima de jugadores'}), 400
 
         new_participant = Participants(
             player_id=player_id,
@@ -504,6 +519,7 @@ def remove_participant(tournament_id, player_id):
         return jsonify({'msg': 'Error al eliminar el jugador', 'error': str(e)}), 500
     
 
+
 # ////////////////////////////////////////////TEAMS////////////////////////////////////////////
 
 @api.route('/tournaments/<int:tournament_id>/teams', methods=['POST'])        #POST todos los equipos de un torneo
@@ -521,7 +537,7 @@ def create_team(tournament_id):
         if not participants:
             return jsonify({'msg': 'No hay participantes en este torneo'}), 404
 
-        #Verificamos si hay participantes no estan asignados
+        #Verificamos si hay participantes que no estan asignados
         participants_unasigned = []
         for participant in participants:
             if not Teams.query.filter((Teams.left == participant.id) | (Teams.right == participant.id)).first():
@@ -548,6 +564,8 @@ def create_team(tournament_id):
             #Elimina los 2 primeros participantes de la lista que ya han sido asignados a un equipo
             participants_unasigned = participants_unasigned[2:]
             team_number += 1
+        
+        create_matches(tournament_id)
 
         return jsonify({'msg': 'Equipos creados con éxito'}), 201
 
@@ -578,6 +596,94 @@ def get_teams_by_tournament(tournament_id):
 
     except Exception as e:
         return jsonify({'msg': 'Error al obtener los equipos', 'error': str(e)}), 500
+
+
+
+# //////////////////////////////////////MATCH & MATCH_PARTICIPANTS//////////////////////////////////////
+
+@api.route('/tournaments/<int:tournament_id>/matches', methods=['POST'])  # POST de las tablas de match de un torneo
+@jwt_required()
+def create_matches(tournament_id):
+    try:
+        # Conseguir datos del equipo
+        tournament = Tournaments.query.get(tournament_id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+
+        # Conseguir datos de los equipos del torneo
+        teams = Teams.query.filter_by(tournament_id=tournament_id).all()
+        if not teams:
+            return jsonify({'msg': 'No hay equipos en este torneo'}), 400
+        if len(teams) < 2:
+            return jsonify({'msg': 'No hay suficientes equipos para crear un match'}), 400
+
+        # Verificamos si hay equipos que no estan asignados
+        teams_unassigned = []
+        for team in teams:
+            if not Match_participants.query.filter(
+                (Match_participants.team_1 == team.id) | 
+                (Match_participants.team_2 == team.id)).first():
+                teams_unassigned.append(team)
+
+        # Si todos los equipos han sido asignados
+        if not teams_unassigned:
+            return jsonify({'msg': 'Todos los equipos ya están en un match'}), 400
+        if len(teams_unassigned) < 2:
+            return jsonify({'msg': 'Esperando la formación de otor equipo para crear un match'}), 400
+
+        # Crear matches con equipos no asignados
+        while len(teams_unassigned) >= 2:
+            new_match = Matches(
+                tournament_id=tournament_id,
+                set_1='0-0',
+                set_2='0-0',
+                set_3='0-0',
+                resume='A espera de jugar el partido'
+            )
+            db.session.add(new_match)
+            db.session.commit()
+
+            new_match_participants = Match_participants(
+                match_id=new_match.id,
+                team_1=teams_unassigned[0].id,
+                team_2=teams_unassigned[1].id,
+                winner=False
+            )
+            db.session.add(new_match_participants)
+            db.session.commit()
+
+            #Elimina los 2 primeros equipos de la lista que ya han sido asignados a un match
+            teams_unassigned = teams_unassigned[2:]
+
+        return jsonify({'msg': 'Matches creados con éxito'}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'msg': 'Error al crear matches', 'error': str(e)}), 500
+    
+@api.route('/tournaments/<int:tournament_id>/matches', methods=['GET'])        #GET todos los matches de un torneo
+def get_matches_by_tournament(tournament_id):
+    try:
+        # Verificar si el torneo existe
+        tournament = Tournaments.query.get(tournament_id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+
+        # Obtener todos los equipos de ese torneo
+        matches = Matches.query.filter_by(tournament_id=tournament_id).all()
+
+        if not matches:
+            return jsonify({'msg': 'No hay matches creados en este torneo'}), 404
+
+        # Devolver los matches en formato JSON
+        return jsonify({
+            'msg': 'Matches obtenidos correctamente',
+            'matches': [match.serialize() for match in matches]
+        }), 200
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al obtener los matches', 'error': str(e)}), 500
+
 
 
 # /////////////////////////////////////////CLOUDINARY/////////////////////////////////////////
