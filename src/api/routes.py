@@ -660,6 +660,29 @@ def create_matches(tournament_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'msg': 'Error al crear matches', 'error': str(e)}), 500
+    
+@api.route('/tournaments/<int:tournament_id>/teams', methods=['GET'])        #GET todos los matches de un torneo
+def get_teams_by_tournament(tournament_id):
+    try:
+        # Verificar si el torneo existe
+        tournament = Tournaments.query.get(tournament_id)
+        if not tournament:
+            return jsonify({'msg': 'Torneo no encontrado'}), 404
+
+        # Obtener todos los equipos de ese torneo
+        teams = Teams.query.filter_by(tournament_id=tournament_id).all()
+
+        if not teams:
+            return jsonify({'msg': 'No hay equipos registrados en este torneo'}), 404
+
+        # Devolver los equipos en formato JSON
+        return jsonify({
+            'msg': 'Equipos obtenidos correctamente',
+            'teams': [team.serialize() for team in teams]
+        }), 200
+
+    except Exception as e:
+        return jsonify({'msg': 'Error al obtener los equipos', 'error': str(e)}), 500
 
 
 
