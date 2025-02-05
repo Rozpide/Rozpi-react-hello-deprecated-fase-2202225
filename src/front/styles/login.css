@@ -1,0 +1,24 @@
+section {
+    display: flex;
+    flex-direction: column;
+    background-color: antiquewhite;
+    justify-content: center;
+}
+
+h1 {
+    align-self: center;
+    padding: 3rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    padding: 5rem;
+    gap: 1rem;
+}
+
+
+alert {
+    align-self: center;
+    padding: 2rem;
+}
