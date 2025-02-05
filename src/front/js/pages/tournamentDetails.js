@@ -64,7 +64,7 @@ export const TournamentDetails = () => {
 
             <br/>
 
-            <div className="container d-flex flex-wrap gap-3 text-bg-success">
+            <div className="container d-flex justify-content-center">
                 {store.torneo?.participants && store.torneo.teams?.length > 0 ? (
                     store.torneo.teams.map((team) => (
                         <TeamCard key={team.id} team={team} />
@@ -75,7 +75,7 @@ export const TournamentDetails = () => {
             </div>
 
             <br/>
-
+            {/* {store.torneo?.teams && store.torneo.matches?.length == store.torneo. ? ( */}
             <BracketsCard tournament={store.torneo} />
         </>
     )
