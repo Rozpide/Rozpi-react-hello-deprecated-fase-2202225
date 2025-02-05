@@ -35,6 +35,7 @@ export const PlayerCard = ({ use }) => {
         }
 
         console.log("Submit data:", playerData, "use:", use);
+        console.log("Token JWT:", localStorage.getItem("token"));
 
         if (use === 'player') {
             await actions.playerPage(playerData);
