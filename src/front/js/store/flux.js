@@ -108,6 +108,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
 
                     if (!resp.ok) {
+                        console.error("Error en la respuesta del servidor:", data);
                         throw new Error("Error al actualizar el perfil");
                     }
 
