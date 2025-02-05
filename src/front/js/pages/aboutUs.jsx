@@ -58,7 +58,7 @@ export const AboutUs = () => {
           <p className="card-description">
           "A veces soy un ninja de la programación, y otras veces un atleta de la procrastinación!"
           </p>
-          <a href="https://www.linkedin.com/in/dorian-zuluaga-14873b251/">
+          <a href="https://www.linkedin.com/in/jose-martin-perez-29b188139">
           <button className="card-button">About me</button> 
           </a>
         </div>
