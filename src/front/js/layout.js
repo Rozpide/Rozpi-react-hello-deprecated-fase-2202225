@@ -10,6 +10,8 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Home } from "./pages/home.jsx";
 import { Session } from "./pages/session.jsx";
+import { Newsletter } from "./pages/newsletter.jsx";
+import { Tienda } from "./pages/tienda.jsx";
 import { ProtectedOne } from "./pages/protected/protected-one.jsx";
 import { ProtectedTwo } from "./pages/protected/protected-two.jsx";
 

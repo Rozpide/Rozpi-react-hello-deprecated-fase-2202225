@@ -6,36 +6,35 @@ import logo from "../../img/logo.jpg"
 export const Navbar = () => {
 	return (
 		<nav className="navbar">
-			<div className="container">
-				<Link className="logoHome" to="/">
-					<img className="image" src={logo} />
-				</Link>
-				<Link to="">
-					<button className="btn ">Home</button>
-				</Link>
-				<Link to="">
-					<button className="btn ">Cuídate</button>
-				</Link>
-				<Link to="">
-					<button className="btn ">Tienda</button>
-				</Link>
-				<Link to="">
-					<button className="btn ">Blog</button>
-				</Link>
-				<Link to="/aboutus">
-					<button className="btn">Conócenos</button>
-				</Link>
-				<div className="registerArea ml-auto">
-					<Link to="/login">
-						<button className="btn btn-primary">LogIn</button>
-					</Link>
-					<div className="registerArea ml-auto">
-						<Link to="/signup">
-							<button className="btn btn-primary">Sign Up</button>
-						</Link>
-					</div>
-				</div>
+			<div className="navbar-brand">
+				<a href="/">
+					<img className="navbar-img" src={logo} alt="Placeholder" />
+				</a>
 			</div>
-		</nav>
+			<ul className="navbar">
+				<div className="navbar-menu">
+					<li className="navbar-item">
+						<a href="/" className="navbar-link">Inicio</a>
+					</li>
+					<li className="navbar-item">
+						<a href="/newsletter" className="navbar-link">NewsLetter</a>
+					</li>
+					<li className="navbar-item">
+						<a href="/tienda" className="navbar-link">Tienda</a>
+					</li>
+					<li className="navbar-item">
+						<a href="/aboutUs" className="navbar-link">Nosotros</a>
+					</li>
+				</div>
+				<div className="register-buttoms">
+					<Link to="/login">
+						<button className="btn">LogIn</button>
+					</Link>
+					<Link to="/signup">
+						<button className="btn">Sign Up</button>
+					</Link>
+				</div>
+			</ul>
+		</nav >
 	);
 };
