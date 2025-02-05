@@ -22,6 +22,7 @@ export const Home = () => {
 					</p>
 				</div>
 			</section>
+<<<<<<< HEAD
 
 			<section className="section home__section-2 bg-light">
 				<h1 className="text-center p-1">
@@ -32,16 +33,29 @@ export const Home = () => {
 
 						<div className="col-md-4">
 							<div className="card d-flex flex-column">
+=======
+			<section className="section home__section-2 bg-light py-5">
+				<h1 className="text-center p-3">
+					<i className="fa fa-trophy"></i> Últimos torneos añadidos <i className="fa fa-trophy"></i>
+				</h1>
+				<div className="container">
+					<div className="row g-4"> {/* Espaciado entre las cartas */}
+						{/* Torneo 1 */}
+						<div className="col-lg-4 col-md-6">
+							<div className="card shadow-lg rounded-3 overflow-hidden">
+>>>>>>> dd10b1d18493850fbf7c66487dfd47244ed4786c
 								<div className="card-body d-flex flex-column p-4">
-									<h1 className="card-title">
+									<h4 className="card-title mb-3">
 										{store.tournaments.length > 0 ? store.tournaments[store.tournaments.length - 1].name : "Torneo 1"}
-									</h1>
-									<p className="card-text flex-grow-1"> {store.tournaments.length > 0
-										? store.tournaments[store.tournaments.length - 1].host?.address || "Ubicación Torneo 1"
-										: "No hay torneos disponibles"}</p>
+									</h4>
+									<p className="card-text flex-grow-1 text-muted">
+										{store.tournaments.length > 0
+											? store.tournaments[store.tournaments.length - 1].host?.address || "Ubicación Torneo 1"
+											: "No hay torneos disponibles"}
+									</p>
 									<Link
 										to={`/tournaments/${store.tournaments.length > 0 ? store.tournaments[store.tournaments.length - 1].id : ""}`}
-										className="btn btn-primary align-self-center mt-auto"
+										className="btn btn-primary align-self-center mt-3 w-100"
 									>
 										Información
 									</Link>
@@ -49,24 +63,28 @@ export const Home = () => {
 							</div>
 						</div>
 
+<<<<<<< HEAD
 						<div className="col-md-4">
 							<div className="card d-flex flex-column">
+=======
+						{/* Torneo 2 */}
+						<div className="col-lg-4 col-md-6">
+							<div className="card shadow-lg rounded-3 overflow-hidden">
+>>>>>>> dd10b1d18493850fbf7c66487dfd47244ed4786c
 								<div className="card-body d-flex flex-column p-4">
-									<h1 className="card-title">
+									<h4 className="card-title mb-3">
 										{store.tournaments.length > 1
 											? store.tournaments[store.tournaments.length - 2].name
 											: "Torneo 2"}
-									</h1>
-
-									<p className="card-text flex-grow-1">
+									</h4>
+									<p className="card-text flex-grow-1 text-muted">
 										{store.tournaments.length > 1
 											? store.tournaments[store.tournaments.length - 2].host?.address || "Ubicación Torneo 2"
 											: "No hay torneos disponibles"}
 									</p>
-
 									<Link
 										to={`/tournaments/${store.tournaments.length > 1 ? store.tournaments[store.tournaments.length - 2].id : ""}`}
-										className="btn btn-primary align-self-center mt-auto"
+										className="btn btn-primary align-self-center mt-3 w-100"
 									>
 										Información
 									</Link>
@@ -74,24 +92,28 @@ export const Home = () => {
 							</div>
 						</div>
 
+<<<<<<< HEAD
 						<div className="col-md-4">
 							<div className="card d-flex flex-column">
+=======
+						{/* Torneo 3 */}
+						<div className="col-lg-4 col-md-6">
+							<div className="card shadow-lg rounded-3 overflow-hidden">
+>>>>>>> dd10b1d18493850fbf7c66487dfd47244ed4786c
 								<div className="card-body d-flex flex-column p-4">
-									<h1 className="card-title">
+									<h4 className="card-title mb-3">
 										{store.tournaments.length > 2
 											? store.tournaments[store.tournaments.length - 3].name
 											: "Torneo 3"}
-									</h1>
-
-									<p className="card-text flex-grow-1">
+									</h4>
+									<p className="card-text flex-grow-1 text-muted">
 										{store.tournaments.length > 2
 											? store.tournaments[store.tournaments.length - 3].host?.address || "Ubicación Torneo 3"
 											: "No hay torneos disponibles"}
 									</p>
-
 									<Link
 										to={`/tournaments/${store.tournaments.length > 2 ? store.tournaments[store.tournaments.length - 3].id : ""}`}
-										className="btn btn-primary align-self-center mt-auto"
+										className="btn btn-primary align-self-center mt-3 w-100"
 									>
 										Información
 									</Link>
@@ -103,7 +125,11 @@ export const Home = () => {
 				</div>
 			</section>
 
+<<<<<<< HEAD
 			<section className="section section-3  p-5">
+=======
+			<section className="section home__section-3  p-5">
+>>>>>>> dd10b1d18493850fbf7c66487dfd47244ed4786c
 				<div className="container">
 					<div className="row">
 
@@ -112,7 +138,9 @@ export const Home = () => {
 								<div className="card-body d-flex flex-column p-4">
 									<h5 className="card-title text-center">Encuentra Torneos</h5>
 									<p className="card-text flex-grow-1">Encuentra torneos en tu ciudad y participa de forma fácil y sencilla</p>
-									<a href="#" className="btn btn-warning align-self-center mt-auto">Explorar</a>
+									<Link to="/tournaments" className="btn btn-warning align-self-center mt-auto">
+										Explorar
+									</Link>
 								</div>
 							</div>
 						</div>
@@ -122,7 +150,9 @@ export const Home = () => {
 								<div className="card-body d-flex flex-column">
 									<h5 className="card-title text-center">Crea Eventos</h5>
 									<p className="card-text flex-grow-1">Crea eventos deportivos de forma sencilla gracias a nuestras herramientas de creación de eventos personalizados</p>
-									<a href="#" className="btn btn-warning align-self-center mt-auto">Explorar</a>
+									<Link to="/create_tournament" className="btn btn-warning align-self-center mt-auto">
+										Explorar
+									</Link>
 								</div>
 							</div>
 						</div>

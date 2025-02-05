@@ -8,8 +8,9 @@ export const HostProfile = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <div className="container">
-            <p>PROFILE</p>
+        <div className="pt-5 px-5 bg-light">
+        <h1>Perfil</h1>
+        <hr className="mb-0"></hr>
             <HostCard viewMode={'hostPage'} />
         </div>
     );

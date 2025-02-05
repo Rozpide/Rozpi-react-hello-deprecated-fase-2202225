@@ -7,8 +7,9 @@ export const EditPlayer = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <div className="text-center mt-5">
+        <div className="pt-5 px-5 bg-light">
             <h1>Editar Perfil</h1>
+            <hr className="mb-0"></hr>
             <PlayerCard use={'updateplayer'}/>
         </div>
     );

@@ -127,7 +127,7 @@ def editPlayer():
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
     # Conecta player con user y Buscar al jugador por ID
-    player = Players.query.join(Users, Users.player_id == Players.id).filter(Users.id == id).first()
+    player = Players.query.join(Users, Users.id == Players.id).filter(Users.id == id).first()
     if not player:
         return jsonify({'msg': 'El jugador no existe'}), 404
     
@@ -169,10 +169,10 @@ def get_players():
         return jsonify({'msg': 'Error al obtener los jugadores', 'error': str(e)}), 500
     
 
-@api.route('/getPlayers/<int:id>', methods=['GET'])
-def get_player(id):
+@api.route('/getPlayers/', methods=['GET'])
+def get_player():
 
-    player = Players.query.get(id)
+    player = Players.query.get()
     if not player:    
         return jsonify({'msg': 'Player no encontrado'}), 404
     return jsonify({'player': player.serialize()}), 200     # Devuelve la información serializada del host

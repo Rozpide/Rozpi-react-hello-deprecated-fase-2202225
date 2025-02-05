@@ -92,6 +92,7 @@ export const Formulario = ({ type }) => {
             <div className="text-center pt-3">
                 <input
                     type="submit"
+                    className="btn btn-primary"
                     value={type == 'login' ? 'Iniciar sesión' : 'Registrarse'}
                 />
             </div>
