@@ -52,27 +52,45 @@ export const PlayerCard = ({ use }) => {
     return (
         <>
             {use === 'playerPage' ? (
-                <div className="d-flex justify-content-center  bg-light" style={{ minHeight: "100vh" }}>
-                    <div className="card mt-5" style={{ width: "25rem", height: "20rem", minHeight: "15rem", minWidth: "20rem" }}>
+                <div className="d-flex justify-content-center bg-light" style={{ minHeight: "100vh" }}>
+                    <div className="card shadow-lg rounded-4 p-4 w-50 h-50 m-5" style={{ maxWidth: "500px" }} >
                         <div className="card-body">
-                            <h5 className="card-title text-center text-uppercase">{playerData.name || ''}</h5>
-                            <p className="card-text"><b>Género:</b> {playerData.gender || ''}</p>
-                            <p className="card-text"><b>Edad:</b> {playerData.age}</p>
-                            <p className="card-text"><b>Categoría:</b> {playerData.rating}</p>
-                            <p className="card-text"><b>Lado:</b> {playerData.side}</p>
-                            <p className="card-text"><b>Mano:</b> {playerData.hand}</p>
-                            <p className="card-text"><b>Phone:</b> {playerData.phone}</p>
-                        </div>
+                            <h5 className="card-title text-center text-uppercase mb-4 text-primary">{playerData.name || 'Nombre del Jugador'}</h5>
+                            <div className="mb-3">
+                                <p className="card-text">
+                                    <b>Género:</b> {playerData.gender || 'No disponible'}
+                                </p>
+                                <p className="card-text">
+                                    <b>Edad:</b> {playerData.age || 'No disponible'}
+                                </p>
+                                <p className="card-text">
+                                    <b>Categoría:</b> {playerData.rating || 'No disponible'}
+                                </p>
+                                <p className="card-text">
+                                    <b>Lado:</b> {playerData.side || 'No disponible'}
+                                </p>
+                                <p className="card-text">
+                                    <b>Mano:</b> {playerData.hand || 'No disponible'}
+                                </p>
+                                <p className="card-text">
+                                    <b>Teléfono:</b> {playerData.phone || 'No disponible'}
+                                </p>
+                            </div>
 
-                        <Link to="/player/editProfile" className='text-center p-2'>
-                            <button type="button" className="btn btn-primary">Editar Perfil</button>
-                        </Link>
+                            <div className="text-center">
+                                <Link to="/player/editProfile">
+                                    <button type="button" className="btn btn-primary w-100 rounded-pill shadow-sm">Editar Perfil</button>
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             ) : (
-                <div className="d-flex justify-content-center  bg-light" style={{ minHeight: "100vh" }}>
-                    <div className="card mt-5" style={{ width: "30rem", height: "45rem", minHeight: "45rem", minWidth: "30rem" }}>
+                <div className="d-flex justify-content-center bg-light" style={{ minHeight: "100vh" }}>
+                    <div className="card shadow-lg rounded-4 p-4 h-50 w-50 m-5" style={{ maxWidth: "500px" }}>
                         <div className="card-body">
+                            <h5 className="card-title text-center mb-4 text-primary">Actualizar Perfil</h5>
                             <form onSubmit={handleSubmit}>
                                 <div className="m-3">
                                     <label className='mb-1' htmlFor="name"><b>Nombre</b></label>
@@ -84,7 +102,7 @@ export const PlayerCard = ({ use }) => {
                                         value={playerData.name}
                                         onChange={handleChange}
                                         required
-                                        className="form-control"
+                                        className="form-control rounded-pill border-secondary"
                                     />
                                 </div>
                                 <div className="m-3">
@@ -95,7 +113,7 @@ export const PlayerCard = ({ use }) => {
                                         value={playerData.gender}
                                         onChange={handleChange}
                                         required
-                                        className="form-control"
+                                        className="form-control rounded-pill border-secondary"
                                     >
                                         <option value="">Selecciona un género</option>
                                         <option value="Femenino">Femenino</option>
@@ -115,7 +133,7 @@ export const PlayerCard = ({ use }) => {
                                         required
                                         min="0"
                                         max="99"
-                                        className="form-control"
+                                        className="form-control rounded-pill border-secondary"
                                     />
                                 </div>
                                 <div className="m-3">
@@ -126,7 +144,7 @@ export const PlayerCard = ({ use }) => {
                                         value={playerData.rating}
                                         onChange={handleChange}
                                         required
-                                        className="form-control"
+                                        className="form-control rounded-pill border-secondary"
                                     >
                                         <option value="">Selecciona tu categoría</option>
                                         <option value="1">1</option>
@@ -144,12 +162,12 @@ export const PlayerCard = ({ use }) => {
                                         value={playerData.side}
                                         onChange={handleChange}
                                         required
-                                        className="form-control"
+                                        className="form-control rounded-pill border-secondary"
                                     >
                                         <option value="">Selecciona un lado</option>
                                         <option value="Izquierdo">Drive</option>
                                         <option value="Derecho">Revés</option>
-                                        <option value="Derecho">Cualquiera</option>
+                                        <option value="Cualquiera">Cualquiera</option>
                                     </select>
                                 </div>
                                 <div className="m-3">
@@ -160,7 +178,7 @@ export const PlayerCard = ({ use }) => {
                                         value={playerData.hand}
                                         onChange={handleChange}
                                         required
-                                        className="form-control"
+                                        className="form-control rounded-pill border-secondary"
                                     >
                                         <option value="">Selecciona una mano</option>
                                         <option value="Diestro">Diestro</option>
@@ -178,17 +196,18 @@ export const PlayerCard = ({ use }) => {
                                         onChange={handleChange}
                                         required
                                         pattern="[0-9]{9}"
-                                        className="form-control"
+                                        className="form-control rounded-pill border-secondary"
                                     />
                                 </div>
-                                <div className='d-flex justify-content-center'>
-                                    <input type="submit" value={'Actualizar datos'} className="btn btn-primary m-2" />
-                                    <button className="btn btn-danger m-2" value="Cancelar" onClick={handleCancel}>Cancelar</button>
+                                <div className="d-flex justify-content-evenly">
+                                    <button type="submit" className="btn btn-primary w-48 rounded-pill shadow-sm">Actualizar Datos</button>
+                                    <button className="btn btn-danger w-48 rounded-pill shadow-sm" onClick={handleCancel}>Cancelar</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
+
 
             )}
         </>
