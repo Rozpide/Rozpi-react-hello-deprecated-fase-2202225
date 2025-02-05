@@ -62,6 +62,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 					localStorage.setItem("token", data.token)
 					return true
 				  }
+			},
+			getProfile: async() => {
+				const token = localStorage.getItem('token');
+				const response = await fetch(`${process.env.BACKEND_URL}/api/profile`, {
+					method: "GET",
+					headers: { "Content-Type": "application/json",
+						'Authorization': 'Bearer ' + token
+					 }
+				  })
+				const profile = await response.json()
+				const store = getStore()
+				if (!response.ok) {
+					setStore({...store, profile:null})
+				  }
+				  else {
+					setStore({...store, profile})
+				  }
 			}
 		}
 	};
