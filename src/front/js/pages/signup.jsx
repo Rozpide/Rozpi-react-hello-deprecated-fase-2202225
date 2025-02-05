@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../../styles/signup.css"
 
 export const SignUp = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -27,7 +28,7 @@ export const SignUp = () => {
       }
 
       alert("Registro exitoso");
-      setError(null); // Limpiar errores previos si los hay
+      setError(null); 
       navigate("/login");
     } catch (err) {
       setError(err.message);
@@ -37,7 +38,7 @@ export const SignUp = () => {
   return (
     <div className="container">
       <h4>Registro</h4>
-      <form onSubmit={handleSubmit}> {/* Se corrige el evento onSubmit */}
+      <form onSubmit={handleSubmit}> {}
         <input
           type="text"
           name="username"
