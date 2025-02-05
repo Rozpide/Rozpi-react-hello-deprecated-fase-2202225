@@ -1,12 +1,42 @@
-.navbar{
-    background-color: #32c9c9;
-}
+.navbar {
+    display: flex;
+    padding: 1rem;
+    background-color: #1D5B5B;
+    color: white;
+  }
 
-.btn{
-width: 7rem;
-}
+  .navbar-img{
+    height: 5rem;
+    width: 5rem;
+    border-radius: 50%;
+  }
 
-.image {
-height: 5rem;
-width: 5rem;
-}
+  .navbar-menu {
+    display: flex;
+    list-style: none;
+    padding-right: 65rem;
+  }
+  
+  .navbar-link {
+    color: #EEDDBF;
+    font-weight: 800;
+    font-size: larger;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+  
+  .navbar-link:hover {
+    background-color: #E6A233;
+    border-radius: 4px;
+    color: #231F20;
+  }
+
+  .register-buttoms {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .btn {
+    background-color: #E6A233;
+    width: 7rem;
+  }

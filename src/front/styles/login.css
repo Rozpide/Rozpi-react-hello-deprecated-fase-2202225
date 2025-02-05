@@ -1,7 +1,7 @@
 section {
     display: flex;
     flex-direction: column;
-    background-color: antiquewhite;
+    background-color: white;
     justify-content: center;
 }
 
@@ -17,8 +17,18 @@ form {
     gap: 1rem;
 }
 
+.btn{
+    display: flex;
+    justify-content: center;
+}
 
-alert {
+.btn:hover {
+    background-color: #E6A233;
+    border-radius: 4px;
+    color: #231F20;
+}
+
+.alert {
     align-self: center;
     padding: 2rem;
 }
