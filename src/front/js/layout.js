@@ -15,7 +15,7 @@ import { TournamentList } from "./pages/tournamentList.js";
 import { TournamentDetails } from "./pages/tournamentDetails.js";
 import { EditTournamentForm } from "./component/tournamentEditForm.jsx";
 import { TournamentHostDetails } from "./pages/tournamentHostDetails.js";
-import { PageNotFound } from "./pages/PageNotFound.js";
+import { PageNotFound } from "./pages/pageNotFound.js";
 
 import injectContext from "./store/appContext";
 
