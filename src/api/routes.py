@@ -129,6 +129,7 @@ def editPlayer():
 
     # Conecta player con user y Buscar al jugador por ID
     player = Players.query.join(Users, Users.id == Players.id).filter(Users.id == id).first()
+
     if not player:
         return jsonify({'msg': 'El jugador no existe'}), 404
     

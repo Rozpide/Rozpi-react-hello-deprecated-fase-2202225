@@ -58,9 +58,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
                     localStorage.setItem('player', formData.player);
                     if (formData.player) {
-                        return "/player/editProfile";
+                        return "/player/edit-profile";
                     } 
-                    return "/host/editProfile";
+                    return "/host/edit-profile";
                 } catch (error) {
                     console.error("Error en register:", error);
                 }
@@ -393,8 +393,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         alert("Participación registrada con éxito");
 
                         setStore({
-                            torneo: { ...getStore().torneo, participants_registered: data.participants_registered }
+                            torneo: {...getStore().torneo, ...data.torneo}
                         });
+
+                        getActions().getOneTournament(tournamentId)
+
                     } else {
                         alert(data.msg || 'Error al participar en el torneo');
                     }

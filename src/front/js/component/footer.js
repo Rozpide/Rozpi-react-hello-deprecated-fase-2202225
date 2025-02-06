@@ -9,7 +9,7 @@ export const Footer = () => (
 		<h5 className="mb-0">PadelZone</h5>
 
 
-		<p className="mb-0">© {new Date().getFullYear()} 4Geeks Academy Final Project · Alejandro, José Marcos · All right reserved</p>
+		<p className="mb-0">© {new Date().getFullYear()} 4Geeks Academy Final Project · Alejandro, José y Marcos · All right reserved</p>
 
 		<div>
 			<div className="d-flex gap-3">
