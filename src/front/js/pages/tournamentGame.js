@@ -7,7 +7,7 @@ import { BracketCard16 } from "../component/bracketCard16.jsx";
 import { BracketCard8 } from "../component/BracketCard8.jsx";
 import { TeamCard } from "../component/TeamsCard.jsx";
 
-export const TournamentDetails = () => {
+export const TournamentGame = () => {
 
     const { store, actions } = useContext(Context)
     const params = useParams()
@@ -62,8 +62,8 @@ export const TournamentDetails = () => {
                     </div>
                     <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
                     {store.host_info?.id === store.torneo?.host?.id && (
-                    <Link to={`/tournament/edit/${params.id}`} className="btn btn-warning">Editar</Link>
-                    )}  
+                        <Link to={`/edit-tournament/${params.id}`} className="btn btn-warning">Editar</Link>
+                    )}
                 </div>
             </div>
 

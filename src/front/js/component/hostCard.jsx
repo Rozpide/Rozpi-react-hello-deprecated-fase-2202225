@@ -88,7 +88,7 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
                             <p className="card-text"><b>Dirección Postal:</b> {hostData.address || 'No especificada'}</p>
                             <p className="card-text"><b>Teléfono:</b> {hostData.phone || 'No disponible'}</p>
                             <p className="card-text"><b>Tipo de Club:</b> {hostData.court_type || 'No definido'}</p>
-                            <Link to="/host/editProfile">
+                            <Link to="/host/edit-profile">
                                 <button type="button" className="btn btn-primary mt-3 w-100">Editar Perfil</button>
                             </Link>
                         </div>

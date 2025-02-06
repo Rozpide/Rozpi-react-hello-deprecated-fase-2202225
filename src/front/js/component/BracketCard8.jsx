@@ -91,7 +91,7 @@ export const BracketCard8 = () => {
 
                         {/* ///////////////// Partido Final ///////////////// */}
                         <div className="d-flex flex-grow-1 align-items-center w-100">
-                            <div className="matchup card mb-2">
+                            <div className="matchup card mb-2 w-100">
                                 <p className="team m-2 m-0">Ganador SF 1</p>
                             </div>
                         </div>

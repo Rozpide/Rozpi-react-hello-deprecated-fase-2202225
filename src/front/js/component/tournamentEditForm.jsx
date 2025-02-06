@@ -60,12 +60,12 @@ export const EditTournamentForm = () => {
         e.preventDefault();
 
         await actions.updateTournament(tournamentData, id);
-        navigate('/tournaments/' + id);
+        navigate('/tournament/view/' + id);
 
     };
 
     const handleCancel = () => {
-        navigate('/tournaments/' + id);
+        navigate('/tournament/view/' + id);
     };
 
     return (

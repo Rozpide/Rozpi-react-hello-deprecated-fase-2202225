@@ -10,15 +10,17 @@ import { Player } from "./pages/playerInfo.js";
 import { EditPlayer } from "./pages/editPlayerInfo.js";
 import { HostProfile } from "./pages/hostProfile.js";
 import { HostProfileEdit } from "./pages/hostProfileEdit.js";
+import { CreateTournament } from "./pages/createTournament.js";
+import { TournamentList } from "./pages/tournamentList.js";
+import { TournamentDetails } from "./pages/tournamentDetails.js";
+import { EditTournamentForm } from "./component/tournamentEditForm.jsx";
+import { TournamentGame } from "./pages/tournamentGame.js";
 
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
-import { CreateTournament } from "./pages/createTournament.js";
-import { TournamentList } from "./pages/tournamentList.js";
-import { TournamentDetails } from "./pages/tournamentDetails.js";
-import { EditTournamentForm } from "./component/tournamentEditForm.jsx";
+
 
 
 //create your first component
@@ -41,13 +43,14 @@ const Layout = () => {
                             <Route element={<Login />} path="/login" />
                             <Route element={<SignUp />} path="/signup" />
                             <Route element={<Player />} path="/player/profile" />
-                            <Route element={<EditPlayer />} path="player/editProfile" />
-                            <Route element={<TournamentList />} path="/tournaments" />
-                            <Route element={<TournamentDetails />} path="/tournaments/:id" />
-                            <Route element={<CreateTournament />} path="/create_tournament" />
-                            <Route element={<EditTournamentForm />} path="/edit-tournament/:id"/>
+                            <Route element={<EditPlayer />} path="player/edit-profile" />
                             <Route element={<HostProfile />} path="/host/profile" />
-                            <Route element={<HostProfileEdit />} path="/host/editProfile" />
+                            <Route element={<HostProfileEdit />} path="/host/edit-profile" />
+                            <Route element={<CreateTournament />} path="/tournament/create" />
+                            <Route element={<TournamentList />} path="/tournament/list" />
+                            <Route element={<TournamentDetails />} path="/tournament/view/:id" />
+                            <Route element={<TournamentGame />} path="/tournament/game/:id" />
+                            <Route element={<EditTournamentForm />} path="/tournament/edit/:id" />
                             <Route element={<h1>Not found!</h1>} path="/single/:theid" />
                         </Routes>
                     </div>
