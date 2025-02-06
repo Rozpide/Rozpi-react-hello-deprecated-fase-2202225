@@ -15,7 +15,7 @@ export const TournamentDetails = () => {
         // Solo llamamos a getOneTournament cuando el Id cambia
         if (params.id) {
             actions.getOneTournament(params.id);
-            
+
 
             console.log("Tournament ID:", params);
             console.log("token:", localStorage.getItem("token"));
@@ -59,14 +59,19 @@ export const TournamentDetails = () => {
                         <p>Total de participantes: {store.torneo?.participants_amount}</p>
                         <p>Participantes registrados: {store.torneo?.participants_registered}</p>
                     </div>
-                    <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
+                    {store.user?.player &&
+                        !store.torneo?.participants?.flatMap(p => p.tournament_participant || [])
+                            .some(p => p.player_id === store.player_info.id) && (
+                            <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
+                        )
+                    }
                     {store.host_info?.id === store.torneo?.host?.id && (
-                    <Link to={`/edit-tournament/${params.id}`} className="btn btn-warning">Editar</Link>
-                    )}  
+                        <Link to={`/edit-tournament/${params.id}`} className="btn btn-warning">Editar</Link>
+                    )}
                 </div>
             </div>
 
-            <br/>
+            <br />
 
             <div className="container d-flex justify-content-center">
                 {store.torneo?.participants && store.torneo.teams?.length > 0 ? (
@@ -78,7 +83,7 @@ export const TournamentDetails = () => {
                 )}
             </div>
 
-            <br/>
+            <br />
             {/* {store.torneo?.teams && store.torneo.matches?.length == store.torneo. ? ( */}
             <BracketsCard tournament={store.torneo} />
         </>
