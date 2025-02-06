@@ -393,8 +393,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         alert("Participación registrada con éxito");
 
                         setStore({
-                            torneo: { ...getStore().torneo, participants_registered: data.participants_registered }
+                            torneo: {...getStore().torneo, ...data.torneo}
                         });
+
+                        getActions().getOneTournament(tournamentId)
+
                     } else {
                         alert(data.msg || 'Error al participar en el torneo');
                     }
