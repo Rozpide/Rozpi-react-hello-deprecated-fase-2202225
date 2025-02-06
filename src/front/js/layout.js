@@ -9,7 +9,6 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Home } from "./pages/home.jsx";
-// import { Session } from "./pages/session.jsx";
 import { Newsletter } from "./pages/newsletter.jsx";
 import { Tienda } from "./pages/tienda.jsx";
 import { Profile } from "./pages/protected/profile.jsx";
