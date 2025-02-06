@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Context } from "../store/appContext";
 import { Link, useNavigate } from 'react-router-dom';
+import { LogoutButton } from './logout.jsx';
 
 export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
     console.log("HostCard viewMode:", viewMode);
@@ -73,32 +74,34 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
         <>
             {viewMode === 'hostPage' ? (
 
-                <div className="d-flex justify-content-center bg-light" style={{ minHeight: "100vh" }}>
-                    <div className="card shadow-lg border-0 rounded-4 w-50 h-50 overflow-auto p-4 m-5" style={{ maxWidth: "500px" }}>
+                <div className="d-flex justify-content-center bg-light">
+                    <div className="card shadow-lg border-0 rounded-4 w-50 h-50 overflow-auto p-4 m-5">
                         <div className="card-body text-center">
                             <div className="mb-3">
                                 <img
                                     src={hostData.image}
                                     alt="Profile-img"
                                     className="rounded-circle border border-3"
-                                    style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                                    style={{ width: "200px", height: "200px", objectFit: "cover" }}
                                 />
                             </div>
                             <h4 className="card-title text-uppercase fw-bold">{hostData.name || 'Nombre del Club'}</h4>
                             <p className="card-text"><b>Dirección Postal:</b> {hostData.address || 'No especificada'}</p>
                             <p className="card-text"><b>Teléfono:</b> {hostData.phone || 'No disponible'}</p>
                             <p className="card-text"><b>Tipo de Club:</b> {hostData.court_type || 'No definido'}</p>
-                            <Link to="/host/edit-profile">
-                                <button type="button" className="btn btn-primary mt-3 w-100">Editar Perfil</button>
-                            </Link>
+                            <div className="text-center d-flex justify-content-evenly">
+                                <Link to="/host/edit-profile">
+                                    <button type="button" className="btn btn-primary rounded-pill shadow-sm">Editar Perfil</button>
+                                </Link>
+                                <LogoutButton />
+                            </div>
                         </div>
                     </div>
                 </div>
             ) : (
-                <div className="d-flex justify-content-center bg-light" style={{ minHeight: "100vh" }}>
+                <div className="d-flex justify-content-center bg-light">
                     <div
                         className="card mt-5 shadow-lg border-0 rounded-4 w-50 h-50 overflow-auto"
-                        style={{ maxWidth: "500px" }}
                     >
                         <div className="card-body">
                             <h4 className="card-title text-center text-uppercase fw-bold mb-4">Editar Perfil</h4>

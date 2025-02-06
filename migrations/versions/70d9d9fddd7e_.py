@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 4e9875c04379
+Revision ID: 70d9d9fddd7e
 Revises: 
-Create Date: 2025-02-06 16:48:02.772333
+Create Date: 2025-02-06 17:17:05.573677
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4e9875c04379'
+revision = '70d9d9fddd7e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -62,4 +62,3 @@ def downgrade():
     op.drop_table('players')
     op.drop_table('tournaments')
     op.drop_table('hosts')
-    

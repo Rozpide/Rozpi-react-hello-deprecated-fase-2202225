@@ -86,15 +86,15 @@ export const PlayerCard = ({ use }) => {
     return (
         <>
             {use === 'playerPage' ? (
-                <div className="d-flex justify-content-center bg-light" style={{ minHeight: "100vh" }}>
-                    <div className="card shadow-lg rounded-4 p-4 w-50 h-50 m-5" style={{ maxWidth: "500px" }} >
+                <div className="d-flex justify-content-center bg-light">
+                    <div className="card shadow-lg rounded-4 p-4 w-50 h-50 m-5">
                         <div className="card-body text-center">
                             <div className="mb-3">
                                 <img
                                     src={playerData.image}
                                     alt="Profile-img"
                                     className="rounded-circle border border-3"
-                                    style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                                    style={{ width: "200px", height: "200px", objectFit: "cover" }}
                                 />
                             </div>
                             <h5 className="card-title text-center text-uppercase mb-4 text-primary">{playerData.name || 'Nombre del Jugador'}</h5>
@@ -130,8 +130,8 @@ export const PlayerCard = ({ use }) => {
                 </div>
 
             ) : (
-                <div className="d-flex justify-content-center bg-light" style={{ minHeight: "100vh" }}>
-                    <div className="card shadow-lg rounded-4 p-4 h-50 w-50 m-5" style={{ maxWidth: "500px" }}>
+                <div className="d-flex justify-content-center bg-light">
+                    <div className="card shadow-lg rounded-4 p-4 h-50 w-50 m-5">
                         <div className="card-body">
                             <h5 className="card-title text-center mb-4 text-primary">Actualizar Perfil</h5>
                             <form onSubmit={handleSubmit}>
