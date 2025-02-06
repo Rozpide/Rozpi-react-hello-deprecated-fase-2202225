@@ -70,7 +70,7 @@ export const Navbar = () => {
 				<ul className="gap-5">
 					<div className="navbar-menu mt-4">
 						<li className="navbar-item">
-							<a href="/" className="navbar-link">Inicio</a>
+							<a href="/home" className="navbar-link">Inicio</a>
 						</li>
 						<li className="navbar-item">
 							<a href="/newsletter" className="navbar-link">NewsLetter</a>
