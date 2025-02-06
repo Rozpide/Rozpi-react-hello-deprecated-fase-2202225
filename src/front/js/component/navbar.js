@@ -54,7 +54,7 @@ export const Navbar = () => {
 				<button className="button-search"><i className="fa-solid fa-magnifying-glass"></i></button>
 					<input className="input"></input>
 				</div>
-				<a href="/home">
+				<a href="/">
 					<img className="navbar-img" src={logo} />
 				</a>
 				<div className="register position-absolute end-0 p-3">
@@ -70,7 +70,7 @@ export const Navbar = () => {
 				<ul className="gap-5">
 					<div className="navbar-menu mt-4">
 						<li className="navbar-item">
-							<a href="/home" className="navbar-link">Inicio</a>
+							<a href="/" className="navbar-link">Inicio</a>
 						</li>
 						<li className="navbar-item">
 							<a href="/newsletter" className="navbar-link">NewsLetter</a>
