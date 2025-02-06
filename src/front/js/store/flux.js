@@ -37,6 +37,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+
 			register: async (formData) => { //POST USER SIGNUP
                 try {
                     console.log("Form data antes de enviar:", formData);
@@ -65,6 +66,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+
             login: async (formData) => {    //POST USER LOGIN
                 try {
                     const resp = await fetch(process.env.BACKEND_URL + "/api/login", {
@@ -83,9 +85,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ auth: true, token: data.token, user: data?.user_info, player_info: data?.player_info, host_info: data?.host_info});
                     localStorage.setItem('player', data.user_info.player);
                     if (data.user_info.player) {
-                        return "/player/profile";
+                        return "/";
                     } 
-                    return "/host/profile";
+                    return "/";
                 } catch (error) {
                     console.error("Error en login:", error);
                 }
@@ -93,6 +95,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getMessage: () => {
                 console.log("Mensaje inicial cargado");
 			},
+
 
 
             /////////////////////////////////////////PLAYER/////////////////////////////////////////
@@ -122,6 +125,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+
             getPlayers: async () => {
                 try {
                     const resp = await fetch(process.env.BACKEND_URL + "/api/getPlayers", {
@@ -147,6 +151,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al obtener los jugadores:", error.message);
                 }
             },
+
 
             getPlayer: async () => {
                 try {
@@ -176,6 +181,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 
+
             /////////////////////////////////////////HOST/////////////////////////////////////////
 
             updateHost: async (hostData) => {  //PUT ONE HOST
@@ -202,6 +208,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al actualizar el perfil del Host:", error);
                 }
             },
+
 
             getHost: async () => {  //GET HOST
                 try {
@@ -230,33 +237,61 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 
+
             /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
         
             postTournament: async (tournamentData) => {  //POST TOURNAMENT
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/tournaments", {
                         method: "POST",
                         headers: { 
                             "Content-Type": "application/json", 
-                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
                         },
-                        body: JSON.stringify(tournamentData)   
+                        body: JSON.stringify(tournamentData),  // Enviar los datos como JSON
                     });
-
+            
                     if (!resp.ok) {
                         const errorData = await resp.json();
                         throw new Error(errorData.message || "Error al crear el torneo");
                     }
-
+            
                     const data = await resp.json();
                     console.log("Torneo creado:", data);
-
+            
                     const store = getStore();
-                    setStore({ tournaments: [...(store.tournaments), data] });
+                    setStore({ tournaments: [...store.tournaments, data] });
                     return data;
-
+            
                 } catch (error) {
                     console.error("Error en postTournament:", error);
+                }
+            },
+
+            updateTournament: async (tournamentData, tournamentId) => {  //PUT TOURNAMENT 
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify(tournamentData)
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error("Error al obtener los datos del torneo");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del torneo:", data);
+
+                    setStore({ torneo: data.torneo});
+                    
+                    return data
+                    
+                } catch (error) {
+                    console.error("Error al actualizar el torneo:", error);
                 }
             },
 
@@ -282,6 +317,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+
             getOneTournament: async (tournamentId) => {   //GET ONE TOURNAMENT
              try {
                 const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}` ,{
@@ -304,6 +340,7 @@ const getState = ({ getStore, getActions, setStore }) => {
              }
             },
             
+
 
             /////////////////////////////////////////CHECK/////////////////////////////////////////
         
@@ -331,6 +368,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error en checkUser:", error)
                 }
             },
+
 
 
             /////////////////////////////////////////PARTICIPANTS/////////////////////////////////////////
@@ -361,6 +399,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+
             getTournamentParticipants: async (tournamentId) => {    //Get todos los participantes de un torneo
                 try {
                     const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}/participants`, {
@@ -385,6 +424,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     alert("Ocurrió un error al obtener los participantes");
                 }
             },        
+
 
             getParticipantDetails: async (tournamentId, playerId) => {      //Get un participante de un torneo
                 try {
@@ -436,6 +476,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
             
 
+
             /////////////////////////////////////////TEAMS/////////////////////////////////////////
             
             getTournamentTeams: async (tournamentId) => {       //GET todos los equipos de un torneo
@@ -462,10 +503,35 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error en getTournamentTeams:", error);
                 }
             },
-            
-            
 
 
+            /////////////////////////////////////////MATCHES/////////////////////////////////////////
+            
+            getTournamentMatches: async (tournamentId) => {       //GET todos los matches de un torneo
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}/matches`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        }
+                    });
+            
+                    const data = await resp.json();
+            
+                    if (resp.ok) {
+                        setStore({
+                            torneo: { ...getStore().torneo, matches: data.matches }
+                        });
+
+                    } else {
+                        alert(data.msg || "Error al obtener los matches del torneo");
+                    }
+                } catch (error) {
+                    console.error("Error en getTournamentMatches:", error);
+                }
+            },
+            
 
         },
     };

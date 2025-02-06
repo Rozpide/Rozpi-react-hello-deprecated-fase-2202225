@@ -12,6 +12,7 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
         address: store.host_info?.address || '',
         phone: store.host_info?.phone || '',
         court_type: store.host_info?.court_type || '',
+        image: store.host_info?.image || '',
     });
 
     const handleChange = e => {
@@ -19,6 +20,35 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
             ...hostData,
             [e.target.name]: e.target.value
         });
+    };
+
+    // Función para ejecutar la entrada del acrhivo
+    const handleFileChange = e => {
+        const file = e.target.files[0];
+        if (file) {
+            uploadImageToCloudinary(file);
+        }
+    };
+
+    // Función para cargar la imagen a Cloudinary
+    const uploadImageToCloudinary = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'my_upload_preset');
+
+        const response = await fetch("https://api.cloudinary.com/v1_1/dpo6yzyaz/image/upload", {
+            method: 'POST',
+            body: formData,
+        });
+
+        const data = await response.json();
+        if (data.secure_url) {
+            setHostData({
+                ...hostData,
+                image: data.secure_url,  // Aquí guardamos la URL de la imagen
+            });
+            console.log("Imagen cargada correctamente:", data.secure_url);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -35,7 +65,7 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
         navigate('/host/profile');
     };
 
-    const handleCancel = e => {
+    const handleCancel = () => {
         navigate('/host/profile');
     };
 
@@ -44,12 +74,12 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
             {viewMode === 'hostPage' ? (
 
                 <div className="d-flex justify-content-center bg-light" style={{ minHeight: "100vh" }}>
-                    <div className="card shadow-lg border-0 rounded-4 w-50 h-50 overflow-auto p-4 m-5"style={{ maxWidth: "500px" }}>
+                    <div className="card shadow-lg border-0 rounded-4 w-50 h-50 overflow-auto p-4 m-5" style={{ maxWidth: "500px" }}>
                         <div className="card-body text-center">
                             <div className="mb-3">
                                 <img
-                                    src={hostData.image || "https://via.placeholder.com/150"}
-                                    alt="Profile"
+                                    src={hostData.image}
+                                    alt="Profile-img"
                                     className="rounded-circle border border-3"
                                     style={{ width: "100px", height: "100px", objectFit: "cover" }}
                                 />
@@ -142,6 +172,14 @@ export const HostCard = ({ viewMode }) => {  // Cambié 'use' por 'viewMode'
                                         <option value="Indoor">Indoor</option>
                                         <option value="Outdoor">Outdoor</option>
                                     </select>
+                                </div>
+
+                                {/* Image */}
+                                <div className="m-3">
+                                    <label className="mb-1" htmlFor="court_type">Imagen JPG</label>
+                                    <div className="form-control shadow-sm border-0 rounded-3">
+                                        <input type="file" className="form-control" id="image" name="image" placeholder="Enter image JPG format" onChange={handleFileChange} />
+                                    </div>
                                 </div>
 
                                 {/* Botones */}
