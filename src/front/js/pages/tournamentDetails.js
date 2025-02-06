@@ -19,6 +19,10 @@ export const TournamentDetails = () => {
             actions.getTournamentParticipants(params.id)
 
 
+
+
+            
+
             console.log("Tournament ID:", params);
             console.log("token:", localStorage.getItem("token"));
             console.log("Equipos guardados:", store.torneo.teams);
@@ -26,8 +30,6 @@ export const TournamentDetails = () => {
             console.log("tournament", store.tournaments);
             console.log("User Data:", store.user);
             console.log("Tournament Participants:", store.torneo?.tournament_participant);
-
-
         }
     }, [params.id]);
 
@@ -94,7 +96,7 @@ export const TournamentDetails = () => {
             </div>
 
             <br />
-            {/* {store.torneo?.teams && store.torneo.matches?.length == store.torneo. ? ( */}
+
             <BracketCard16 tournament={store.torneo} />
 
             <BracketCard8 tournament={store.torneo} />
