@@ -16,6 +16,7 @@ export const PlayerCard = ({ use }) => {
         side: store.player_info?.side || '',
         hand: store.player_info?.hand || '',
         phone: store.player_info?.phone || '',
+        image: store.player_info?.image || '',
     });
 
     const handleChange = (e) => {
@@ -23,6 +24,35 @@ export const PlayerCard = ({ use }) => {
             ...playerData,
             [e.target.name]: e.target.value
         });
+    };
+
+    // Función para ejecutar la entrada del acrhivo
+    const handleFileChange = e => {
+        const file = e.target.files[0];
+        if (file) {
+            uploadImageToCloudinary(file);
+        }
+    };
+
+    // Función para cargar la imagen a Cloudinary
+    const uploadImageToCloudinary = async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', 'my_upload_preset');
+
+        const response = await fetch("https://api.cloudinary.com/v1_1/dpo6yzyaz/image/upload", {
+            method: 'POST',
+            body: formData,
+        });
+
+        const data = await response.json();
+        if (data.secure_url) {
+            setPlayerData({
+                ...playerData,
+                image: data.secure_url,  // Aquí guardamos la URL de la imagen
+            });
+            console.log("Imagen cargada correctamente:", data.secure_url);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -46,7 +76,7 @@ export const PlayerCard = ({ use }) => {
         navigate('/player/profile');
     };
 
-    const handleCancel = e => {
+    const handleCancel = () => {
         navigate('/player/profile');
     };
 
@@ -55,7 +85,15 @@ export const PlayerCard = ({ use }) => {
             {use === 'playerPage' ? (
                 <div className="d-flex justify-content-center bg-light" style={{ minHeight: "100vh" }}>
                     <div className="card shadow-lg rounded-4 p-4 w-50 h-50 m-5" style={{ maxWidth: "500px" }} >
-                        <div className="card-body">
+                        <div className="card-body text-center">
+                            <div className="mb-3">
+                                <img
+                                    src={playerData.image}
+                                    alt="Profile-img"
+                                    className="rounded-circle border border-3"
+                                    style={{ width: "100px", height: "100px", objectFit: "cover" }}
+                                />
+                            </div>
                             <h5 className="card-title text-center text-uppercase mb-4 text-primary">{playerData.name || 'Nombre del Jugador'}</h5>
                             <div className="mb-3">
                                 <p className="card-text">
@@ -199,6 +237,12 @@ export const PlayerCard = ({ use }) => {
                                         pattern="[0-9]{9}"
                                         className="form-control rounded-pill border-secondary"
                                     />
+                                </div>
+                                <div className="m-3">
+                                    <label className="mb-1" htmlFor="court_type">Imagen JPG</label>
+                                    <div className="form-control shadow-sm border-0 rounded-3">
+                                        <input type="file" className="form-control" id="image" name="image" placeholder="Enter image JPG format" onChange={handleFileChange} />
+                                    </div>
                                 </div>
                                 <div className="d-flex justify-content-evenly">
                                     <button type="submit" className="btn btn-primary w-48 rounded-pill shadow-sm">Actualizar Datos</button>
