@@ -14,7 +14,6 @@ import { CreateTournament } from "./pages/createTournament.js";
 import { TournamentList } from "./pages/tournamentList.js";
 import { TournamentDetails } from "./pages/tournamentDetails.js";
 import { EditTournamentForm } from "./component/tournamentEditForm.jsx";
-import { TournamentGame } from "./pages/tournamentGame.js";
 
 import injectContext from "./store/appContext";
 
@@ -49,7 +48,6 @@ const Layout = () => {
                             <Route element={<CreateTournament />} path="/tournament/create" />
                             <Route element={<TournamentList />} path="/tournament/list" />
                             <Route element={<TournamentDetails />} path="/tournament/view/:id" />
-                            <Route element={<TournamentGame />} path="/tournament/game/:id" />
                             <Route element={<EditTournamentForm />} path="/tournament/edit/:id" />
                             <Route element={<h1>Not found!</h1>} path="*" />
                         </Routes>
