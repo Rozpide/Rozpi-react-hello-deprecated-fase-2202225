@@ -29,17 +29,12 @@ export const BracketCard8 = () => {
                             <div>
                                 <div className="matchup card mb-2">
                                     <div className="d-flex align-items-center">
-                                        <p className="team m-2 m-0">Team {semiFinal1?.team_1?.team_number || ""}</p>
-                                        {/* {store.user.role === "host" && (
-                                            <button onClick={() => handleSelectWinner(match.id, team.id)}>
-                                                Seleccionar ganador
-                                            </button>
-                                        )} */}
+                                        <p className="team m-2 m-0">Equipo {semiFinal1?.team_1?.team_number || ""}</p>
                                     </div>
                                 </div>
                                 <div className="matchup card">
                                     <div className="d-flex align-items-center">
-                                        <p className="team m-2 m-0">Team {semiFinal1?.team_2?.team_number || ""}</p>
+                                        <p className="team m-2 m-0">Equipo {semiFinal1?.team_2?.team_number || ""}</p>
                                     </div>
                                 </div>
                             </div>
@@ -50,12 +45,12 @@ export const BracketCard8 = () => {
                             <div>
                                 <div className="matchup card mb-2">
                                     <div className="d-flex align-items-center">
-                                        <p className="team m-2 m-0">Team {semiFinal2?.team_1?.team_number || ""}</p>
+                                        <p className="team m-2 m-0">Equipo {semiFinal2?.team_1?.team_number || ""}</p>
                                     </div>
                                 </div>
                                 <div className="matchup card">
                                     <div className="d-flex align-items-center">
-                                        <p className="team m-2 m-0">Team {semiFinal2?.team_2?.team_number || ""}</p>
+                                        <p className="team m-2 m-0">Equipo {semiFinal2?.team_2?.team_number || ""}</p>
                                     </div>
                                 </div>
                             </div>
