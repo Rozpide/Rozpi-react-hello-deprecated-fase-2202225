@@ -1,21 +1,22 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FaEuroSign, FaStar, FaTrophy } from "react-icons/fa";
 
-export const TournamentForm = () => {
+export const EditTournamentForm = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const [tournamentData, setTournamentData] = useState({
-        name: '',
-        inscription_fee: '',
-        rating: '',
-        schedule: '',
-        award: '',
-        type: '',
-        image: '', // Aquí se guardará la URL de la imagen
-        participants_amount: ''
+        name: store.torneo?.name || '',
+        inscription_fee: store.torneo?.inscription_fee || '',
+        rating: store.torneo?.rating || '',
+        schedule: store.torneo?.schedule || '',
+        award: store.torneo?.award || '',
+        type: store.torneo?.type || '',
+        image: store.torneo?.image || '', // Aquí se guardará la URL de la imagen
+        participants_amount: store.torneo?.participants_amount || ''
     });
 
 
@@ -58,40 +59,28 @@ export const TournamentForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!tournamentData.name || !tournamentData.inscription_fee || !tournamentData.rating || !tournamentData.schedule || !tournamentData.award || !tournamentData.type || !tournamentData.participants_amount) {
-            console.log("Por favor, completa todos los campos obligatorios.");
-            return;
-        }
+        await actions.updateTournament(tournamentData, id);
+        navigate('/tournaments/' + id);
 
-        const info = await actions.postTournament(tournamentData);
-        await actions.getTournaments();
-        navigate('/tournaments/' + info.tournament.id);
+    };
 
-        setTournamentData({
-            name: '',
-            inscription_fee: '',
-            rating: '',
-            schedule: '',
-            award: '',
-            type: '',
-            image: '',
-            participants_amount: ''
-        });
+    const handleCancel = () => {
+        navigate('/tournaments/' + id);
     };
 
     return (
         <form onSubmit={handleSubmit} className="p-4 bg-light shadow rounded" style={{ maxWidth: "500px", margin: "auto" }}>
-            <h3 className="text-center mb-4">Crear Torneo</h3>
+            <h3 className="text-center mb-4">Editar Torneo</h3>
 
             <div className="mb-3">
                 <label htmlFor="name" className="form-label">Nombre del Torneo</label>
-                <input type="text" className="form-control" id="name" name="name" placeholder="Enter tournament name" value={tournamentData.name} onChange={handleChange} required />
+                <input type="text" className="form-control" id="name" name="name" placeholder="Enter tournament name" value={tournamentData.name} onChange={handleChange} />
             </div>
 
             <div className="mb-3">
                 <label htmlFor="inscription_fee" className="form-label">Inscripción</label>
                 <div className="input-group">
-                    <input type="number" className="form-control" id="inscription_fee" name="inscription_fee" placeholder="Enter fee" value={tournamentData.inscription_fee} onChange={handleChange} required />
+                    <input type="number" className="form-control" id="inscription_fee" name="inscription_fee" placeholder="Enter fee" value={tournamentData.inscription_fee} onChange={handleChange} />
                     <span className="input-group-text"><FaEuroSign /></span>
                 </div>
             </div>
@@ -114,21 +103,21 @@ export const TournamentForm = () => {
             <div className="mb-3">
                 <label htmlFor="schedule" className="form-label">Fecha del Torneo</label>
                 <div className="input-group">
-                    <input type="datetime-local" className="form-control" id="schedule" name="schedule" value={tournamentData.schedule} min={new Date().toISOString().slice(0, 16)} onChange={handleChange} required />
+                    <input type="datetime-local" className="form-control" id="schedule" name="schedule" value={tournamentData.schedule} min={new Date().toISOString().slice(0, 16)} onChange={handleChange} />
                 </div>
             </div>
 
             <div className="mb-3">
                 <label htmlFor="award" className="form-label">Premio</label>
                 <div className="input-group">
-                    <input type="text" className="form-control" id="award" name="award" placeholder="Enter award" value={tournamentData.award} onChange={handleChange} required />
+                    <input type="text" className="form-control" id="award" name="award" placeholder="Enter award" value={tournamentData.award} onChange={handleChange} />
                     <span className="input-group-text"><FaTrophy /></span>
                 </div>
             </div>
 
             <div className="mb-3">
                 <label htmlFor="type" className="form-label">Fases eliminatorias</label>
-                <select className="form-select" id="type" name="type" value={tournamentData.type} onChange={handleChange} required>
+                <select className="form-select" id="type" name="type" value={tournamentData.type} onChange={handleChange}  >
                     <option value="Selecciona tipo de torneo">Selecciona tipo de torneo</option>
                     <option value="Semifinales">Semifinales</option>
                     <option value="Cuartos de final">Cuartos de final</option>
@@ -137,7 +126,7 @@ export const TournamentForm = () => {
 
             <div className="mb-3">
                 <label htmlFor="participants_amount" className="form-label">Participantes</label>
-                <select className="form-select" id="participants_amount" name="participants_amount" value={tournamentData.participants_amount} onChange={handleChange} required>
+                <select className="form-select" id="participants_amount" name="participants_amount" value={tournamentData.participants_amount} onChange={handleChange}  >
                     <option value="Selecciona numero de participantes">Selecciona numero de participantes</option>
                     <option value="8">8</option>
                     <option value="16">16</option>
@@ -152,7 +141,10 @@ export const TournamentForm = () => {
             </div>
 
             <div className="text-center">
-                <button className="btn btn-primary w-100" type="submit"><strong>Crear</strong></button>
+                <button className="btn btn-primary w-100" type="submit"><strong>Guardar datos</strong></button>
+            </div>
+            <div className="text-center">
+                <button className="btn btn-danger w-100" value="cancelar" onClick={handleCancel}><strong>Cancelar</strong></button>
             </div>
         </form>
     )

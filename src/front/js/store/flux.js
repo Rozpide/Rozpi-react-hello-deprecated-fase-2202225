@@ -267,6 +267,32 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+            updateTournament: async (tournamentData, tournamentId) => {  //PUT TOURNAMENT 
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify(tournamentData)
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error("Error al obtener los datos del torneo");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del torneo:", data);
+
+                    setStore({ torneo: data.torneo});
+                    
+                    return data
+                    
+                } catch (error) {
+                    console.error("Error al actualizar el torneo:", error);
+                }
+            },
 
             getTournaments: async () => {   //GET TOURNAMENTS
                 try {

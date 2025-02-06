@@ -354,7 +354,7 @@ def edit_tournament(id):
 
         db.session.commit()
 
-        return jsonify({'msg': 'Torneo actualizado con éxito', 'Torneo': tournament.serialize()}), 200
+        return jsonify({'msg': 'Torneo actualizado con éxito', 'torneo': tournament.serialize()}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

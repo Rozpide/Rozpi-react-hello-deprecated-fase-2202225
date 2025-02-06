@@ -60,6 +60,9 @@ export const TournamentDetails = () => {
                         <p>Participantes registrados: {store.torneo?.participants_registered}</p>
                     </div>
                     <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
+                    {store.host_info?.id === store.torneo?.host?.id && (
+                    <Link to={`/edit-tournament/${params.id}`} className="btn btn-warning">Editar</Link>
+                    )}  
                 </div>
             </div>
 
