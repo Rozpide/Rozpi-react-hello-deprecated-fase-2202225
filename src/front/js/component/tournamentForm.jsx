@@ -65,7 +65,7 @@ export const TournamentForm = () => {
 
         const info = await actions.postTournament(tournamentData);
         await actions.getTournaments();
-        navigate('/tournaments/' + info.tournament.id);
+        navigate('/tournament/view/' + info.tournament.id);
 
         setTournamentData({
             name: '',
