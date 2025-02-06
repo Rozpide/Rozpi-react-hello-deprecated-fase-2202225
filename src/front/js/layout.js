@@ -9,13 +9,15 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Home } from "./pages/home.jsx";
-import { Session } from "./pages/session.jsx";
+// import { Session } from "./pages/session.jsx";
 import { Newsletter } from "./pages/newsletter.jsx";
 import { Tienda } from "./pages/tienda.jsx";
 import { Profile } from "./pages/protected/profile.jsx";
 import { Favorites } from "./pages/protected/favorites.jsx";
 import { Cart } from "./pages/protected/cart.jsx";
 import { Fade } from "react-reveal";
+
+import { ProtectedRoute } from "./pages/session.jsx";
 
 //create your first component
 const Layout = () => {
@@ -36,11 +38,10 @@ const Layout = () => {
                         <Route element={<SignUp  />} path="/signup" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<AboutUs />} path="/aboutUs" />
-                        <Route path="/session">
-                        <Route index element={<Session />}/>
-                            <Route path='profile' element={<Profile />} />
-                            <Route path='favorites' element={<Favorites />} />
-                            <Route path='cart' element={<Cart />} />
+                        <Route path="/session" element={<ProtectedRoute />}>
+                            <Route path="profile" element={<Profile />} />
+                            <Route path="favorites" element={<Favorites />} />
+                            <Route path="cart" element={<Cart />} />
                         </Route>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
