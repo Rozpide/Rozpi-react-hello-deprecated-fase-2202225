@@ -52,7 +52,7 @@ const Layout = () => {
                             <Route element={<TournamentDetails />} path="/tournament/view/:id" />
                             <Route element={<EditTournamentForm />} path="/tournament/edit/:id" />
                             <Route element={<TournamentHostDetails />} path="/tournament/view/:id/host" />
-                            <Route element={<PageNotFound>} path="*" />
+                            <Route element={<PageNotFound />} path="*" />
                         </Routes>
                     </div>
                     <Footer />
