@@ -18,6 +18,7 @@ import { Footer } from "./component/footer";
 import { CreateTournament } from "./pages/createTournament.js";
 import { TournamentList } from "./pages/tournamentList.js";
 import { TournamentDetails } from "./pages/tournamentDetails.js";
+import { EditTournamentForm } from "./component/tournamentEditForm.jsx";
 
 
 //create your first component
@@ -44,6 +45,7 @@ const Layout = () => {
                             <Route element={<TournamentList />} path="/tournaments" />
                             <Route element={<TournamentDetails />} path="/tournaments/:id" />
                             <Route element={<CreateTournament />} path="/create_tournament" />
+                            <Route element={<EditTournamentForm />} path="/edit-tournament/:id"/>
                             <Route element={<HostProfile />} path="/host/profile" />
                             <Route element={<HostProfileEdit />} path="/host/editProfile" />
                             <Route element={<h1>Not found!</h1>} path="/single/:theid" />

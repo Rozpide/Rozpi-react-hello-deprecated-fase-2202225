@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: ee7c06f4e2c8
+Revision ID: 5ec84f0bfc4f
 Revises: 
-Create Date: 2025-02-04 11:21:00.418408
+Create Date: 2025-02-05 13:33:26.494534
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ee7c06f4e2c8'
+revision = '5ec84f0bfc4f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,7 +28,6 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('name')
     )
-
     # Luego crear la tabla tournaments
     op.create_table('tournaments',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -44,7 +43,6 @@ def upgrade():
         sa.Column('participants_registered', sa.Integer(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
-
     # Crear las demás tablas
     op.create_table('players',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -59,7 +57,6 @@ def upgrade():
         sa.PrimaryKeyConstraint('id')
     )
     #...
-
 def downgrade():
     # Eliminar las tablas en orden inverso
     op.drop_table('players')

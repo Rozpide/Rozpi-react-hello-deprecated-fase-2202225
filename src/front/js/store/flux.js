@@ -241,32 +241,58 @@ const getState = ({ getStore, getActions, setStore }) => {
         
             postTournament: async (tournamentData) => {  //POST TOURNAMENT
                 try {
-                    const resp = await fetch(process.env.BACKEND_URL +"/api/tournaments", {
+                    const resp = await fetch(process.env.BACKEND_URL + "/api/tournaments", {
                         method: "POST",
                         headers: { 
                             "Content-Type": "application/json", 
-                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                            Authorization: `Bearer ${localStorage.getItem("token")}`,
                         },
-                        body: JSON.stringify(tournamentData)   
+                        body: JSON.stringify(tournamentData),  // Enviar los datos como JSON
                     });
-
+            
                     if (!resp.ok) {
                         const errorData = await resp.json();
                         throw new Error(errorData.message || "Error al crear el torneo");
                     }
-
+            
                     const data = await resp.json();
                     console.log("Torneo creado:", data);
-
+            
                     const store = getStore();
-                    setStore({ tournaments: [...(store.tournaments), data] });
+                    setStore({ tournaments: [...store.tournaments, data] });
                     return data;
-
+            
                 } catch (error) {
                     console.error("Error en postTournament:", error);
                 }
             },
 
+            updateTournament: async (tournamentData, tournamentId) => {  //PUT TOURNAMENT 
+                try {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        body: JSON.stringify(tournamentData)
+                    });
+
+                    if (!resp.ok) {
+                        throw new Error("Error al obtener los datos del torneo");
+                    }
+
+                    const data = await resp.json();
+                    console.log("Datos del torneo:", data);
+
+                    setStore({ torneo: data.torneo});
+                    
+                    return data
+                    
+                } catch (error) {
+                    console.error("Error al actualizar el torneo:", error);
+                }
+            },
 
             getTournaments: async () => {   //GET TOURNAMENTS
                 try {
