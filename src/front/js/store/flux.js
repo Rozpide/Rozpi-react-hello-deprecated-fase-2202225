@@ -424,7 +424,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             torneo: { ...getStore().torneo, participants: data.participants },
                         });
                     } else {
-                        alert(data.msg || "Error al obtener los participantes");
+                        console.error("mensaje:", data.msg);
                     }
                 } catch (error) {
                     console.error("Error en getTournamentParticipants:", error);
