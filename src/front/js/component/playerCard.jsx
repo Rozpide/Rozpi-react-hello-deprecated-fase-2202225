@@ -119,15 +119,9 @@ export const PlayerCard = ({ use }) => {
                                 </p>
                             </div>
 
-<<<<<<< HEAD
-                            <div className="text-center">
-                                <Link to="/player/edit-profile">
-                                    <button type="button" className="btn btn-primary w-100 rounded-pill shadow-sm">Editar Perfil</button>
-=======
                             <div className="text-center d-flex justify-content-evenly">
-                                <Link to="/player/editProfile">
+                                <Link to="/player/edit-profile">
                                     <button type="button" className="btn btn-primary rounded-pill shadow-sm">Editar Perfil</button>
->>>>>>> bdc9ac907f95ef8aed500d9234c839006a20bb6b
                                 </Link>
                                 <LogoutButton />
                             </div>
