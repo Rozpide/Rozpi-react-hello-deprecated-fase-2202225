@@ -1,14 +1,8 @@
 """empty message
 
-<<<<<<<< HEAD:migrations/versions/c4d083b81fea_.py
-Revision ID: c4d083b81fea
+Revision ID: 7fdb133185b7
 Revises: 
-Create Date: 2025-02-06 16:48:26.454689
-========
-Revision ID: 4e9875c04379
-Revises: 
-Create Date: 2025-02-06 16:48:02.772333
->>>>>>>> 15c5561be0e03b37b218dad0fb3726dabdbf5989:migrations/versions/4e9875c04379_.py
+Create Date: 2025-02-06 17:20:22.029156
 
 """
 from alembic import op
@@ -16,11 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-<<<<<<<< HEAD:migrations/versions/c4d083b81fea_.py
-revision = 'c4d083b81fea'
-========
-revision = '4e9875c04379'
->>>>>>>> 15c5561be0e03b37b218dad0fb3726dabdbf5989:migrations/versions/4e9875c04379_.py
+revision = '7fdb133185b7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -38,6 +28,7 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('name')
     )
+
     # Luego crear la tabla tournaments
     op.create_table('tournaments',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -53,6 +44,7 @@ def upgrade():
         sa.Column('participants_registered', sa.Integer(), nullable=True),
         sa.PrimaryKeyConstraint('id')
     )
+
     # Crear las demás tablas
     op.create_table('players',
         sa.Column('id', sa.Integer(), nullable=False),
@@ -67,9 +59,9 @@ def upgrade():
         sa.PrimaryKeyConstraint('id')
     )
     #...
+
 def downgrade():
     # Eliminar las tablas en orden inverso
     op.drop_table('players')
     op.drop_table('tournaments')
     op.drop_table('hosts')
-    
