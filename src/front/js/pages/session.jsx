@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate  } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 
@@ -24,5 +25,8 @@ export const Session = () => {
 
     return (<>
         <h1>Session</h1>
+        <Link to="profile">
+            <button>Go to profile</button>
+        </Link>
     </>)
 }
