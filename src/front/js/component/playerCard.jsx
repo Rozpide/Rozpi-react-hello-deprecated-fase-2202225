@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Context } from "../store/appContext";
 import { Link, useNavigate } from 'react-router-dom';
+import { LogoutButton } from '../component/logout.jsx';
 
 
 export const PlayerCard = ({ use }) => {
@@ -58,8 +59,10 @@ export const PlayerCard = ({ use }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        console.log("Enviando datos:", playerData);
+        
 
-        if (!playerData.name || !playerData.gender || !playerData.age || !playerData.rating || !playerData.side || !playerData.hand) {
+        if (!playerData.name || !playerData.gender || !playerData.age || !playerData.rating || !playerData.side || !playerData.hand || !playerData.phone) {
             console.log("Por favor, completa los campos obligatorios.");
             return;
         }
@@ -115,10 +118,11 @@ export const PlayerCard = ({ use }) => {
                                 </p>
                             </div>
 
-                            <div className="text-center">
+                            <div className="text-center d-flex justify-content-evenly">
                                 <Link to="/player/editProfile">
-                                    <button type="button" className="btn btn-primary w-100 rounded-pill shadow-sm">Editar Perfil</button>
+                                    <button type="button" className="btn btn-primary rounded-pill shadow-sm">Editar Perfil</button>
                                 </Link>
+                                <LogoutButton />
                             </div>
                         </div>
                     </div>

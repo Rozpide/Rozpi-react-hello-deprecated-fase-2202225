@@ -95,7 +95,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getMessage: () => {
                 console.log("Mensaje inicial cargado");
 			},
-
+            logout : () =>{
+                localStorage.removeItem('token');
+                setStore({auth: false, user: null, token: null, player_info: null, host_info: null});
+                console.log("Usuario deslogueado"); 
+            },
 
 
             /////////////////////////////////////////PLAYER/////////////////////////////////////////
@@ -111,6 +115,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
 
                     if (!resp.ok) {
+                        console.error("Error en la respuesta del servidor:", data);
                         throw new Error("Error al actualizar el perfil");
                     }
 

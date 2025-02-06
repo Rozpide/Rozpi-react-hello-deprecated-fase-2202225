@@ -5,12 +5,13 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, Users, Hosts, Players, Tournaments, Matches, Participants, Match_participants, Teams
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager, get_jwt
 from werkzeug.security import generate_password_hash, check_password_hash
 import cloudinary
 import cloudinary.uploader
-api = Blueprint('api', __name__)
 
+api = Blueprint('api', __name__)
+jwt = JWTManager()
 # Allow CORS requests to this API
 CORS(api)
 
@@ -690,3 +691,22 @@ def upload():
     return jsonify({"error": "No file uploaded"}), 400
 
 
+
+# /////////////////////////////////////////LOGOUT/////////////////////////////////////////
+blacklisted_tokens = set()
+
+@api.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    # Obtén el token del usuario actual
+    jti = get_jwt()['jti']  # jti es el identificador único del token
+    # Añade el token a la lista negra
+    blacklisted_tokens.add(jti)
+    # Devuelve un mensaje de éxito
+    return jsonify({'msg': 'Sesión cerrada exitosamente'}), 200
+
+# Verifica si un token está en la lista negra
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(jwt_header, jwt_payload):
+    jti = jwt_payload['jti']
+    return jti in blacklisted_tokens
