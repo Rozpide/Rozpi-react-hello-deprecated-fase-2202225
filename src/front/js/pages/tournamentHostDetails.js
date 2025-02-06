@@ -7,7 +7,7 @@ import { BracketCard16 } from "../component/bracketCard16.jsx";
 import { BracketCard8 } from "../component/BracketCard8.jsx";
 import { TeamCard } from "../component/TeamsCard.jsx";
 
-export const TournamentDetails = () => {
+export const TournamentHostDetails = () => {
 
     const { store, actions } = useContext(Context)
     const params = useParams()
@@ -65,14 +65,6 @@ export const TournamentDetails = () => {
                         <p>Participantes registrados: {store.torneo?.participants_registered}</p>
                     </div>
 
-                    {/* El botón de participar solo se muestra cuando el usuario es un player registrado no participante del torneo */}
-                    {store.user?.player &&
-                        !store.torneo?.participants?.flatMap(p => p.tournament_participant || [])
-                            .some(p => p.player_id === store.player_info.id) && (
-                            <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
-                        )
-                    }
-
                     {/* El botón de editar solo aparece si eres el host creador del torneo */}
                     {store.host_info?.id === store.torneo?.host?.id && (
                         <Link to={`/tournament/edit/${params.id}`} className="btn btn-warning">Editar</Link>
@@ -94,7 +86,7 @@ export const TournamentDetails = () => {
             </div>
 
             <br />
-            {/* {store.torneo?.teams && store.torneo.matches?.length == store.torneo. ? ( */}
+
             <BracketCard16 tournament={store.torneo} />
 
             <BracketCard8 tournament={store.torneo} />

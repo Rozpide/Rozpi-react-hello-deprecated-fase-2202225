@@ -16,14 +16,14 @@ export const Navbar = () => {
 					<span className="navbar-brand mb-0 h1 text-light">PadelZone</span>
 				</Link>
 				{store.user && store.user.player === false && (
-      			<Link to="/create_tournament" className="text-decoration-none">
+      			<Link to="/tournament/create" className="text-decoration-none">
         			<button className="btn btn-primary">Crear torneo</button>
       			</Link>
     )}
 
 				<div className="d-flex">
 					<div className="ml-auto">
-						<Link to="/tournaments">
+						<Link to="/tournament/list">
 							<button className="btn text-light">Torneos</button>
 						</Link>
 					</div>

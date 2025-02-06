@@ -68,6 +68,7 @@ export const PlayerCard = ({ use }) => {
         }
 
         console.log("Submit data:", playerData, "use:", use);
+        console.log("Token JWT:", localStorage.getItem("token"));
 
         if (use === 'player') {
             await actions.playerPage(playerData);
@@ -119,7 +120,7 @@ export const PlayerCard = ({ use }) => {
                             </div>
 
                             <div className="text-center d-flex justify-content-evenly">
-                                <Link to="/player/editProfile">
+                                <Link to="/player/edit-profile">
                                     <button type="button" className="btn btn-primary rounded-pill shadow-sm">Editar Perfil</button>
                                 </Link>
                                 <LogoutButton />
