@@ -51,7 +51,7 @@ export const Navbar = () => {
 		<nav className="navbar-top d-flex flex-column">
 			<div className="navbar-top d-flex">
 				<div className="navbar-search position-absolute start-0 p-3 gap-2">
-				<button class="button-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+				<button className="button-search"><i className="fa-solid fa-magnifying-glass"></i></button>
 					<input className="input"></input>
 				</div>
 				<a href="/home">
@@ -59,10 +59,10 @@ export const Navbar = () => {
 				</a>
 				<div className="register position-absolute end-0 p-3">
 					<Link to="/login">
-						<button class="button-register">Log In</button>
+						<button className="button-register">Log In</button>
 					</Link>
 					<Link to="/signup">
-						<button class="button-register">Sign In</button>
+						<button className="button-register">Sign In</button>
 					</Link>
 				</div>
 			</div>

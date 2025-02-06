@@ -16,7 +16,7 @@ export const Login = () => {
     e.preventDefault()
     const isLoged = await actions.login(email, password) 
     if (isLoged){
-      navigate("/session/home");
+      navigate("/session/profile");
     }
     else{
       alert("Email o contraseña incorrecta")

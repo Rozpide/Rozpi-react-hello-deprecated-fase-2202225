@@ -3,7 +3,7 @@ import React from 'react'
 export const Home = () => {
   return (
     <>
-      <Jumbotron>
+      {/* <Jumbotron>
         <h1>Hello, world!</h1>
         <p>
           This is a simple hero unit, a simple jumbotron-style component for calling
@@ -62,7 +62,7 @@ export const Home = () => {
             </Carousel.Caption>
           </Carousel.Item>
         </Carousel>;
-      </div>
+      </div> */}
     </>
   )
 }
