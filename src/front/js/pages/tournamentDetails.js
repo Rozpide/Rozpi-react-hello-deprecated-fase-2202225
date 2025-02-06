@@ -3,7 +3,8 @@ import { Context } from "../store/appContext";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import { BracketsCard } from "../component/bracketsCard.jsx";
+import { BracketCard16 } from "../component/bracketCard16.jsx";
+import { BracketCard8 } from "../component/BracketCard8.jsx";
 import { TeamCard } from "../component/TeamsCard.jsx";
 
 export const TournamentDetails = () => {
@@ -15,7 +16,7 @@ export const TournamentDetails = () => {
         // Solo llamamos a getOneTournament cuando el Id cambia
         if (params.id) {
             actions.getOneTournament(params.id);
-            
+
 
             console.log("Tournament ID:", params);
             console.log("token:", localStorage.getItem("token"));
@@ -62,7 +63,7 @@ export const TournamentDetails = () => {
                 </div>
             </div>
 
-            <br/>
+            <br />
 
             <div className="container d-flex justify-content-center">
                 {store.torneo?.participants && store.torneo.teams?.length > 0 ? (
@@ -74,9 +75,11 @@ export const TournamentDetails = () => {
                 )}
             </div>
 
-            <br/>
+            <br />
             {/* {store.torneo?.teams && store.torneo.matches?.length == store.torneo. ? ( */}
-            <BracketsCard tournament={store.torneo} />
+            <BracketCard16 tournament={store.torneo} />
+
+            <BracketCard8 tournament={store.torneo} />
         </>
     )
 }
