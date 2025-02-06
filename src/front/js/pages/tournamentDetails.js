@@ -16,6 +16,7 @@ export const TournamentDetails = () => {
         // Solo llamamos a getOneTournament cuando el Id cambia
         if (params.id) {
             actions.getOneTournament(params.id);
+            actions.getTournamentParticipants(params.id)
 
 
             console.log("Tournament ID:", params);
@@ -23,6 +24,9 @@ export const TournamentDetails = () => {
             console.log("Equipos guardados:", store.torneo.teams);
             console.log("torneo", store.torneo);
             console.log("tournament", store.tournaments);
+            console.log("User Data:", store.user);
+            console.log("Tournament Participants:", store.torneo?.tournament_participant);
+
 
         }
     }, [params.id]);
@@ -60,10 +64,20 @@ export const TournamentDetails = () => {
                         <p>Total de participantes: {store.torneo?.participants_amount}</p>
                         <p>Participantes registrados: {store.torneo?.participants_registered}</p>
                     </div>
-                    <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
+
+                    {/* El botón de participar solo se muestra cuando el usuario es un player registrado no participante del torneo */}
+                    {store.user?.player &&
+                        !store.torneo?.participants?.flatMap(p => p.tournament_participant || [])
+                            .some(p => p.player_id === store.player_info.id) && (
+                            <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
+                        )
+                    }
+
+                    {/* El botón de editar solo aparece si eres el host creador del torneo */}
                     {store.host_info?.id === store.torneo?.host?.id && (
-                    <Link to={`/tournament/edit/${params.id}`} className="btn btn-warning">Editar</Link>
-                    )}  
+                        <Link to={`/tournament/edit/${params.id}`} className="btn btn-warning">Editar</Link>
+                    )}
+
                 </div>
             </div>
 
