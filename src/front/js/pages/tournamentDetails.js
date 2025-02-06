@@ -85,6 +85,7 @@ export const TournamentDetails = () => {
             </div>
 
             <br />
+            
             {store.torneo?.participants_amount === 16 && <BracketCard16 tournament={store.torneo} />}  
             {store.torneo?.participants_amount === 8 && <BracketCard8 tournament={store.torneo} />}
         </>
