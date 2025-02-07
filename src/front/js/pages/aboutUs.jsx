@@ -3,6 +3,7 @@ import david from "../../img/david.jpg"
 import einar from "../../img/einar.webp"
 import dorian from "../../img/dorian.png"
 import React from "react";
+import '../../styles/aboutUs.css'
 
 export const AboutUs = () => {
   return (
