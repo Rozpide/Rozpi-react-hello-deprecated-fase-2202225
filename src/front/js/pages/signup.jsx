@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/signup.css"
+import { Loader } from "../component/loader";
+
 
 export const SignUp = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer); 
+  }, []);
 
   const actualizador = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -13,6 +24,7 @@ export const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
@@ -28,17 +40,32 @@ export const SignUp = () => {
       }
 
       alert("Registro exitoso");
-      setError(null); // Limpiar errores previos si los hay
-      navigate("/login");
+      setError(null); 
+      navigate("/login") ;
+      setIsLoading(false);
+      
     } catch (err) {
       setError(err.message);
     }
   };
 
-  return (
-    <section className="container">
+
+ 
+    const inicioLoader = async () => {
+      setIsLoading(true);
+        await waitingWearever();
+        setIsLoading(false);
+  
+    }
+  
+    useEffect(() => {
+        inicioLoader();
+    }, []) 
+
+  return (isLoading) ? <Loader /> : (
+    <div className="container">
       <h1>Registro</h1>
-      <form onSubmit={handleSubmit}> {/* Se corrige el evento onSubmit */}
+      <form onSubmit={handleSubmit}> {}
         <input
           type="text"
           name="username"
@@ -66,6 +93,7 @@ export const SignUp = () => {
         {error && <p className="error">{error}</p>}
         <button className="btn" type="submit">Registrarse</button>
       </form>
-    </section>
+    </div>
   );
 };
+

@@ -2,10 +2,36 @@ import jose from "../../img/jose.jpg"
 import david from "../../img/david.jpg"
 import einar from "../../img/einar.webp"
 import dorian from "../../img/dorian.png"
-import React from "react";
+import { Loader } from "../component/loader";
+import React, {  useState, useEffect } from "react";
+
+
+
 
 export const AboutUs = () => {
-  return (
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  const waitingWearever = async() => {
+    await new Promise((resolve) => {
+         setTimeout(() => resolve(), 1000)
+     })
+  }
+
+
+  const inicioLoader = async () => {
+        setIsLoading(true);
+          await waitingWearever();
+          setIsLoading(false);
+    
+      }
+    
+      useEffect(() => {
+          inicioLoader();
+      }, []) 
+
+
+  return (isLoading) ? <Loader /> :(
     <div className="card-container">
       <h1 className="developer">DEVELOPER TEAM</h1>
       <div className="card">

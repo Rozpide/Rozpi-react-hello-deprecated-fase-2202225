@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate  } from "react-router-dom";
-
+import { Loader } from "../component/loader";
 import { Context } from "../store/appContext";
 
 
@@ -20,9 +20,29 @@ export const Session = () => {
             // si existe ese valor me traigo el profile de BE, si no:
               // redirijo a login
     }, [])
+    const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+  
+      return () => clearTimeout(timer); 
+    }, []);
+
+    const inicioLoader = async () => {
+          setIsLoading(true);
+            await waitingWearever();
+            setIsLoading(false);
+      
+        }
+      
+        useEffect(() => {
+            inicioLoader();
+        }, []) 
 
 
-    return (<>
+    return (isLoading) ? <Loader /> : (<>
         <h1>Session</h1>
     </>)
 }
