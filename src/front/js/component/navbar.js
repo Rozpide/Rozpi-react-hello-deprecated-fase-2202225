@@ -10,10 +10,10 @@ export const Navbar = () => {
 	const { store, actions } = useContext(Context);
 	console.log("Usuario:", store.user);
 	return (
-		<nav className="navbar navbar-light bg-dark">
-			<div className="container-fluid d-flex justify-content-between mx-0">
+		<nav className="navbar navbar-light bg-dark py-3">
+			<div className="container-fluid d-flex justify-content-between mx-0 px-5">
 				<Link to="/" className="text-decoration-none">
-					<span className="navbar-brand mb-0 h1 text-light">PadelZone</span>
+					<span className="navbar-brand m-0 fs-2 text-light"><strong>PadelZone</strong></span>
 				</Link>
 				{store.user && store.user.player === false && (
       			<Link to="/tournament/create" className="text-decoration-none">

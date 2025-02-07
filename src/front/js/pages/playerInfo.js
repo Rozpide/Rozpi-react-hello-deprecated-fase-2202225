@@ -13,11 +13,9 @@ export const Player = () => {
 
     return (
         <div className="pt-5 px-5 bg-light">
-            <h1>Perfil</h1>
-            <hr className="mb-0"></hr>
             <PlayerCard use={'playerPage'} />
             <h2 className="d-flex justify-content-center bg-light"> Torneos en los que estás inscrito</h2>
-            <div className="d-flex justify-content-center bg-light row">
+            <div className="d-flex justify-content-center bg-light row py-5">
                 {store.tournaments.filter(
                     tournament => tournament.participants?.some(participant => participant.player_id === store.player_info?.id)).length > 0 ? 
                         (store.tournaments.filter(
@@ -35,7 +33,7 @@ export const Player = () => {
                             />
                         ))
                 ) : (
-                    <p className="d-flex justify-content-center bg-light">
+                    <p className="d-flex justify-content-center bg-light text-center">
                         No te has inscrito a ningún torneo todavía.
                     </p>
                 )
