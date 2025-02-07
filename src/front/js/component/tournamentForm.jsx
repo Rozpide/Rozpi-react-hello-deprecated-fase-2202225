@@ -58,7 +58,7 @@ export const TournamentForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!tournamentData.name || !tournamentData.inscription_fee || !tournamentData.rating || !tournamentData.schedule || !tournamentData.award || !tournamentData.type || !tournamentData.participants_amount) {
+        if (!tournamentData.name || !tournamentData.inscription_fee || !tournamentData.rating || !tournamentData.schedule || !tournamentData.award || !tournamentData.participants_amount) {
             console.log("Por favor, completa todos los campos obligatorios.");
             return;
         }
@@ -66,17 +66,6 @@ export const TournamentForm = () => {
         const info = await actions.postTournament(tournamentData);
         await actions.getTournaments();
         navigate('/tournament/view/' + info.tournament.id);
-
-        setTournamentData({
-            name: '',
-            inscription_fee: '',
-            rating: '',
-            schedule: '',
-            award: '',
-            type: '',
-            image: '',
-            participants_amount: ''
-        });
     };
 
     return (
@@ -124,15 +113,6 @@ export const TournamentForm = () => {
                     <input type="text" className="form-control" id="award" name="award" placeholder="Enter award" value={tournamentData.award} onChange={handleChange} required />
                     <span className="input-group-text"><FaTrophy /></span>
                 </div>
-            </div>
-
-            <div className="mb-3">
-                <label htmlFor="type" className="form-label">Fases eliminatorias</label>
-                <select className="form-select" id="type" name="type" value={tournamentData.type} onChange={handleChange} required>
-                    <option value="Selecciona tipo de torneo">Selecciona tipo de torneo</option>
-                    <option value="Semifinales">Semifinales</option>
-                    <option value="Cuartos de final">Cuartos de final</option>
-                </select>
             </div>
 
             <div className="mb-3">

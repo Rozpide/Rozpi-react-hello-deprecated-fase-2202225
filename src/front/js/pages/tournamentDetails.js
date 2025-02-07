@@ -1,16 +1,18 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { BracketCard16 } from "../component/bracketCard16.jsx";
 import { BracketCard8 } from "../component/BracketCard8.jsx";
 import { TeamCard } from "../component/TeamsCard.jsx";
+import { ParticipantCard } from "../component/participantCard.jsx";
 
 export const TournamentDetails = () => {
 
     const { store, actions } = useContext(Context)
     const params = useParams()
+    const navigate = useNavigate()
 
     useEffect( () => {
         const token = localStorage.getItem('token');
@@ -31,6 +33,7 @@ export const TournamentDetails = () => {
         }
     }, [params.id]);
 
+
     const handleSubmit = () => {
         if (params.id) {
             actions.registerParticipant(params.id);
@@ -42,7 +45,7 @@ export const TournamentDetails = () => {
     return (
         <>
             <div className="card">
-                <div className="d-flex justify-content-around">
+                <div className="d-flex justify-content-around align-items-center">
                     <div>
                         <figure>
                             <img src={store.torneo?.image} />
@@ -69,13 +72,13 @@ export const TournamentDetails = () => {
                     {store.user?.player &&
                         !store.torneo?.participants?.flatMap(p => p.tournament_participant || [])
                             .some(p => p.player_id === store.player_info.id) && (
-                            <button className="btn btn-primary" onClick={handleSubmit}>Participar</button>
+                            <button className="btn btn-primary h-25" onClick={handleSubmit}>Participar</button>
                         )
                     }
 
                     {/* El botón de editar solo aparece si eres el host creador del torneo */}
                     {store.host_info?.id === store.torneo?.host?.id && (
-                        <Link to={`/tournament/edit/${params.id}`} className="btn btn-warning">Editar</Link>
+                        <Link to={`/tournament/edit/${params.id}`} className="btn btn-warning h-25">Editar</Link>
                     )}
 
                 </div>
@@ -83,18 +86,36 @@ export const TournamentDetails = () => {
 
             <br />
 
-            <div className="container d-flex justify-content-center">
+            <div className="container d-flex flex-column justify-content-center">
                 {store.torneo?.participants && store.torneo.teams?.length > 0 ? (
                     store.torneo.teams.map((team) => (<TeamCard key={team.id} team={team} />))
                 ) : (
                     <p className="m-3">Aun no hay equipos registrados aún.</p>
                 )}
-            </div>
 
-            <br />
-            
-            {store.torneo?.participants_amount === 16 && <BracketCard16 tournament={store.torneo} />}  
-            {store.torneo?.participants_amount === 8 && <BracketCard8 tournament={store.torneo} />}
+                <div>
+                    {store.torneo?.participants_amount === 16 && <BracketCard16 tournament={store.torneo} />}
+                    {store.torneo?.participants_amount === 8 && <BracketCard8 tournament={store.torneo} />}
+                </div>
+
+                {store.host_info?.id === store.torneo?.host?.id && (
+                    <div className="container-fluid row">
+                        {store.torneo?.participants?.length > 0 ? (
+                            store.torneo.participants.map((participant) => (
+                                <ParticipantCard
+                                    key={participant.id}
+                                    participant={participant}
+                                    tournamentId={store.torneo.id}
+                                    playerId={participant.id}
+                                />
+                            ))
+                        ) : (
+                            <p>No hay participantes registrados.</p>  // Opcional, si quieres mostrar un mensaje
+                        )}
+                    </div>
+                )}
+
+            </div>
         </>
     )
 }

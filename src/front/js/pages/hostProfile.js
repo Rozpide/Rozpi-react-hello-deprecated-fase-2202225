@@ -15,10 +15,8 @@ export const HostProfile = () => {
 
     return (
         <div className="pt-5 px-5 bg-light">
-            <h1>Perfil</h1>
-            <hr className="mb-0"></hr>
             <HostCard viewMode={'hostPage'} />
-            <h2 className="d-flex justify-content-center bg-light"> Torneos creados </h2>
+            <h2 className="d-flex justify-content-center bg-light py-5"> Torneos creados </h2>
             <div className="d-flex justify-content-center bg-light row">
                 {store.tournaments?.some(tournament => tournament.host?.id === store.host_info?.id) ? (
                     store.tournaments
@@ -36,7 +34,7 @@ export const HostProfile = () => {
                             />
                         ))
                 ) : (
-                    <p>No has creado ningún torneo todavía.</p>
+                    <p className="text-center">No has creado ningún torneo todavía.</p>
                 )}
             </div>
 
