@@ -23,11 +23,12 @@ def has_no_empty_params(rule):
 def generate_sitemap(app):
     links = []
     for rule in app.url_map.iter_rules():
-        # Incluir rutas sin filtrar
+        if '/admin/' in str(rule):
+            continue
+        
         url = str(rule)
         methods = ", ".join(rule.methods)
 
-        # Agregar cada endpoint al sitemap
         links.append(f"<li><a href='{url}'>{url}</a> - Methods: {methods}</li>")
     
     links_html = "".join(links)

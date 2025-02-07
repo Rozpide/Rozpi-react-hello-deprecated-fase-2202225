@@ -23,7 +23,7 @@
 
 /* Estilo del logo */
 .navbar .navbar-brand img {
-    height: 60px !important; /* Aumentamos el tamaño del logo */
+    height: 90px !important; /* Aumentamos el tamaño del logo */
     transition: transform 0.3s ease, filter 0.3s ease; /* Efecto de transición al pasar el ratón */
 }
 

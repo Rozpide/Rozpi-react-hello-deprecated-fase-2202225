@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "../../styles/Profile.css"; // Verifica que esté importado correctamente
+
 
 const Profile = () => {
     const user = JSON.parse(localStorage.getItem("user")); // Usuario autenticado
