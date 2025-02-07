@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/signup.css"
+import { Button } from "react-bootstrap";
 
 export const SignUp = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -64,7 +65,7 @@ export const SignUp = () => {
           required
         />
         {error && <p className="error">{error}</p>}
-        <button className="btn" type="submit">Registrarse</button>
+        <Button className="button1" type="submit">Registrarse</Button>
       </form>
     </section>
   );

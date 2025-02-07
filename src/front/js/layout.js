@@ -6,7 +6,6 @@ import { AboutUs } from "./pages/aboutUs.jsx";
 import { SignUp  } from "./pages/signup.jsx";
 import { Login } from "./pages/login.jsx";
 import injectContext from "./store/appContext";
-import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Home } from "./pages/home.jsx";
 import { Newsletter } from "./pages/newsletter.jsx";
@@ -15,6 +14,7 @@ import { Profile } from "./pages/protected/profile.jsx";
 import { Favorites } from "./pages/protected/favorites.jsx";
 import { Cart } from "./pages/protected/cart.jsx";
 import { Fade } from "react-reveal";
+import { TopNavbar } from "./component/topNavbar.js";
 
 import { ProtectedRoute } from "./pages/session.jsx";
 
@@ -29,9 +29,9 @@ const Layout = () => {
     return (
         <Fade>
         <div>
+            <TopNavbar />
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    <Navbar />
                     <Routes>
                         <Route element={<Home />} path="/" />
                         <Route element={<SignUp  />} path="/signup" />
@@ -44,7 +44,6 @@ const Layout = () => {
                         </Route>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
-                    <Footer />
                 </ScrollToTop>
             </BrowserRouter>
         </div>
