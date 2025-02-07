@@ -74,7 +74,6 @@ class Hosts(db.Model):
     court_type = db.Column(db.String())
     image = db.Column(db.String())
     phone = db.Column(db.String(15))
-    tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'))
 
     def __repr__(self):
         return '<Host %r>' % self.name
@@ -86,7 +85,6 @@ class Hosts(db.Model):
             "address": self.address,
             "court_type": self.court_type,
             "image": self.image,
-            "tournament_id": self.tournament_id,
             "phone": self.phone
     }
 

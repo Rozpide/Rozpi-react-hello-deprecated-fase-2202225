@@ -128,7 +128,7 @@ def editPlayer():
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
     # Conecta player con user y Buscar al jugador por ID
-    player = Players.query.join(Users, Users.id == Players.id).filter(Users.id == id).first()
+    player = Players.query.join(Users, Users.player_id == Players.id).filter(Users.id == id).first()
 
     if not player:
         return jsonify({'msg': 'El jugador no existe'}), 404
@@ -544,7 +544,7 @@ def remove_participant(tournament_id, player_id):
     
 
 
-# ////////////////////////////////////////////TEAMS////////////////////////////////////////////
+# __________________________________________________TEAMS__________________________________________________
 
 @api.route('/tournaments/<int:tournament_id>/teams', methods=['POST'])        #POST todos los equipos de un torneo
 @jwt_required()
