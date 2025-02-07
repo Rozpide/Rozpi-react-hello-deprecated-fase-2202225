@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import "../../styles/login.css"
 import { useNavigate  } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 import { Context } from "../store/appContext";
 
@@ -47,7 +48,7 @@ export const Login = () => {
             required
           />
           {error && <p className="error">{error}</p>}
-          <button className="btn"> Entrar </button>
+          <Button className="button1"> Entrar </Button>
         </form>
       </section>
     </>
