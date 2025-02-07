@@ -510,22 +510,27 @@ def remove_participant(tournament_id, player_id):
 
         # Verificamos si un participante fue eliminado asignamos none como valor
         if team:
+            # Actualizar el equipo, eliminando al participante
             if team.left == participant.id:
                 team.left = None
             elif team.right == participant.id:
                 team.right = None
 
-            # Si el equipo tiene solo un miembro, lo dejamos abierto
-            if team.left is None or team.right is None:
-                pass
-
-            # Verificamos si ambos jugadores han sido eliminados
+            # Si ambos jugadores fueron eliminados, eliminamos el equipo
             if team.left is None and team.right is None:
-                db.session.delete(team)
+                db.session.delete(team)  # Eliminamos el equipo de la base de datos
+            else:
+                db.session.commit()
 
-            db.session.commit()
+            # Si el equipo tiene un hueco, llamamos a la función de crear equipo para rellenarlo
+            if team.left is None or team.right is None:
+                create_team(tournament_id)  # Llamamos a create_team para que se encargue de asignar el siguiente participante
 
-        # Actualizamos el conteo de participantes
+        # Eliminar al participante de la tabla de participantes
+        db.session.delete(participant)
+        db.session.commit()
+
+        # Actualizar el número de participantes registrados en el torneo
         tournament = Tournaments.query.get(tournament_id)
         tournament.participants_registered = Participants.query.filter_by(tournament_id=tournament.id).count()
         
