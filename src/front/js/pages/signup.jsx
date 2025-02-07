@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/signup.css"
+
 import { Loader } from "../component/loader";
+import { Button } from "react-bootstrap";
 
 
 export const SignUp = () => {
@@ -92,7 +94,7 @@ export const SignUp = () => {
           required
         />
         {error && <p className="error">{error}</p>}
-        <button className="btn" type="submit">Registrarse</button>
+        <Button className="button1" type="submit">Registrarse</Button>
       </form>
     </div>
   );

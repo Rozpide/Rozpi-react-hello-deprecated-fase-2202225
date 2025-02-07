@@ -3,21 +3,21 @@
     justify-content: center;
 }
 
-.btn{
-    display: flex;
-    align-self: center;
+.button1 {
+    background-color: #eef07a;
+    border-radius: 5px;
+    border: #DFF2E9;
+    color: #00444E;
+    font-weight: 600;
 }
 
-.btn:hover {
-    background-color: #E6A233;
-    border-radius: 4px;
-    color: #231F20;
-  }
+.button1:hover {
+    background-color: #F1F381;
+    color: #00444E;
+    border-radius: 10px;
+}
 
 h4 {
     display: flex;
     align-self: center;
-}
-
-.container {
 }

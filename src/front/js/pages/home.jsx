@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Loader } from "../component/loader";
+
+
+import React, { useEffect, useRef, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.css';
+import Carousel  from '../component/slider';
+import Button from 'react-bootstrap';
+import Slider from '../component/slider';
+import JumbotronFix from '../component/jumbotron';
+  import { Loader } from "../component/loader";
+
 
 export const Home = () => {
-  
-
   useEffect(() => {
       const timer = setTimeout(() => {
         setIsLoading(false);
@@ -25,8 +31,20 @@ export const Home = () => {
         }, []) 
     
 
-
   return (isLoading) ? <Loader /> : (
-    <h1>This is the home</h1>
+    <>
+    <Slider />
+    </>
+
   )
 }
+
+
+
+
+
+
+  
+
+
+  

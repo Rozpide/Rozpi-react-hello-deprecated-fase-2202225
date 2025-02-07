@@ -2,10 +2,15 @@ import jose from "../../img/jose.jpg"
 import david from "../../img/david.jpg"
 import einar from "../../img/einar.webp"
 import dorian from "../../img/dorian.png"
+
 import React, { useState, useEffect } from 'react';
 import { Loader } from "../component/loader";
 
 
+
+
+
+import '../../styles/aboutUs.css'
 
 
 export const AboutUs = () => {
@@ -93,7 +98,5 @@ export const AboutUs = () => {
         </div>
       </div>
     </div>
-
-    
   );
 }

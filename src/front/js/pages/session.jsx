@@ -1,18 +1,21 @@
+
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate  } from "react-router-dom";
 import { Loader } from "../component/loader";
 import { Context } from "../store/appContext";
 
 
-export const Session = () => {
-    const { store, actions } = useContext(Context)
-    useEffect(() => {
-        if (!!store.profile){
-            return 
-        }
-        else if (!!localStorage.getItem("token")){
-            actions.getProfile()
-        }
+import { Navigate, Outlet } from "react-router-dom";
+
+export const ProtectedRoute = () => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  const isAuthenticated = token !== null && token !== undefined && token !== "";
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+
 
         // voy a comprobar que en el context existe un valor de profile
         //si existe dejo que el usuario navegue, si no:
@@ -46,3 +49,6 @@ export const Session = () => {
         <h1>Session</h1>
     </>)
 }
+
+  return <Outlet />;
+};

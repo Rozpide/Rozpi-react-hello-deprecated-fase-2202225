@@ -6,14 +6,17 @@ import { AboutUs } from "./pages/aboutUs.jsx";
 import { SignUp  } from "./pages/signup.jsx";
 import { Login } from "./pages/login.jsx";
 import injectContext from "./store/appContext";
-import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Home } from "./pages/home.jsx";
-import { Session } from "./pages/session.jsx";
 import { Newsletter } from "./pages/newsletter.jsx";
 import { Tienda } from "./pages/tienda.jsx";
-import { ProtectedOne } from "./pages/protected/protected-one.jsx";
-import { ProtectedTwo } from "./pages/protected/protected-two.jsx";
+import { Profile } from "./pages/protected/profile.jsx";
+import { Favorites } from "./pages/protected/favorites.jsx";
+import { Cart } from "./pages/protected/cart.jsx";
+import { Fade } from "react-reveal";
+import { TopNavbar } from "./component/topNavbar.js";
+
+import { ProtectedRoute } from "./pages/session.jsx";
 
 //create your first component
 
@@ -46,25 +49,27 @@ const Layout = () => {
     if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
 
     return (
+        <Fade>
         <div>
+            <TopNavbar />
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    <Navbar />
                     <Routes>
-                        {/* <Route element={<Home />} path="/" /> */}
+                        <Route element={<Home />} path="/" />
                         <Route element={<SignUp  />} path="/signup" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<AboutUs />} path="/aboutUs" />
-                        <Route element={<Session />} path="/session">
-                            <Route path='home' element={<Home />} />
-                            {/* <Route path='/protected-two' element={<ProtectedTwo />} />  */}
+                        <Route path="/session" element={<ProtectedRoute />}>
+                            <Route path="profile" element={<Profile />} />
+                            <Route path="favorites" element={<Favorites />} />
+                            <Route path="cart" element={<Cart />} />
                         </Route>
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
-                    <Footer />
                 </ScrollToTop>
             </BrowserRouter>
         </div>
+        </Fade>
     );
 };
 
