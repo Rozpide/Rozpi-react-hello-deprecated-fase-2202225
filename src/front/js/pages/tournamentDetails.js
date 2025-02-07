@@ -12,13 +12,22 @@ export const TournamentDetails = () => {
     const { store, actions } = useContext(Context)
     const params = useParams()
 
+    useEffect( () => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {   //Si no hay token redirijo al login.
+            navigate('/login');
+            return;
+        }
+
+        if (!actions.checkUser) navigate('/')
+
+    }, [navigate]);
+
     useEffect(() => {
-        // Solo llamamos a getOneTournament cuando el Id cambia
         if (params.id) {
             actions.getOneTournament(params.id);
             actions.getTournamentParticipants(params.id)
-
-
         }
     }, [params.id]);
 
@@ -76,9 +85,7 @@ export const TournamentDetails = () => {
 
             <div className="container d-flex justify-content-center">
                 {store.torneo?.participants && store.torneo.teams?.length > 0 ? (
-                    store.torneo.teams.map((team) => (
-                        <TeamCard key={team.id} team={team} />
-                    ))
+                    store.torneo.teams.map((team) => (<TeamCard key={team.id} team={team} />))
                 ) : (
                     <p className="m-3">Aun no hay equipos registrados aún.</p>
                 )}
