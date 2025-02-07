@@ -458,7 +458,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             removeParticipant: async (tournamentId, playerId) => {      //Delete un participante de un torneo
                 try {
-                    const resp = await fetch(`${process.env.BACKEND_URL}/tournaments/${tournamentId}/remove_player/${playerId}`, {
+                    const resp = await fetch(`${process.env.BACKEND_URL}/api/tournaments/${tournamentId}/remove_player/${playerId}`, {
                         method: "DELETE",
                         headers: {
                             "Content-Type": "application/json",

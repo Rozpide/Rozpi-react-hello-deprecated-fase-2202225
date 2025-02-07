@@ -8,7 +8,7 @@ export const SignUp = () => {
   console.log(store.user);
   return (
     <div className="container mt-5">
-      <div className="row position-relative h-100">
+      <div className="row position-relative h-100 flex-row-reverse">
         {/* Columna para el formulario */}
         <div className="col-md-6 d-flex justify-content-center align-items-center position-relative order-md-1 order-2">
           {/* Fondo de la imagen en pantallas pequeñas */}
@@ -36,17 +36,17 @@ export const SignUp = () => {
         </div>
 
 
-          {/* Columna con la imagen en pantallas grandes */}
-          <div className="col-md-6 d-none d-md-flex justify-content-center align-items-center position-relative order-md-2 order-1">
-            <img
-              src={process.env.BACKEND_URL + "/foto-signup.png"}
-              alt="Imagen de Registro"
-              className="img-fluid w-100 h-100 object-fit-contain object-position-center"
-            />
-          </div>
+        {/* Columna con la imagen en pantallas grandes */}
+        <div className="col-md-6 d-none d-md-flex justify-content-center align-items-center position-relative order-md-2 order-1">
+          <img
+            src={process.env.BACKEND_URL + "/foto-signup.png"}
+            alt="Imagen de Registro"
+            className="img-fluid w-100 h-100 object-fit-contain object-position-center"
+          />
         </div>
       </div>
+    </div>
 
-      );
+  );
 };
 

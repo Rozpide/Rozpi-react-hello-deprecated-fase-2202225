@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import "../../styles/home.css";
 import { Formulario } from "../component/formulario.jsx";
@@ -9,39 +9,61 @@ import 'font-awesome/css/font-awesome.min.css';
 export const Home = () => {
 	const { store, actions } = useContext(Context);
 
+	useEffect(() => {
+		actions.getTournaments();
+	}, []);
+
 	return (
 		<div className="home-container">
 			<section
 				className="section home__section-1 position-relative d-flex align-items-center justify-content-center"
 				style={{ backgroundImage: `url(${process.env.BACKEND_URL + "/padel-court.jpg"})` }}
 			>
-				<div className="position-absolute bottom-0 start-50 translate-middle-x text-center w-100 mb-5 home__section-1--bg">
+				<div className="position-absolute bottom-0 start-50 translate-middle-x text-center w-100 home__section-1--bg">
 					<h1>¿Qué es PadelZone?</h1>
 					<p className="mt-3">
 						La plataforma perfecta para organizar y participar en eventos deportivos, diseñada para la creación y organización de torneos
 					</p>
 				</div>
 			</section>
-			<section className="section home__section-2 bg-light py-5">
-				<h1 className="text-center p-3">
+			<section className="section home__section-2 bg-light">
+				<h1 className="text-center p-5">
 					<i className="fa fa-trophy"></i> Últimos torneos añadidos <i className="fa fa-trophy"></i>
 				</h1>
-				<div className="container">
+				<div className="container py-5">
 					<div className="row g-4"> {/* Espaciado entre las cartas */}
 						{/* Torneo 1 */}
 						<div className="col-lg-4 col-md-6">
 							<div className="card shadow-lg rounded-3 overflow-hidden">
 								<div className="card-body d-flex flex-column p-4">
-									<h4 className="card-title mb-3">
+									<img
+										src={store.tournaments.length > 0 ? store.tournaments[store.tournaments.length - 1].image : "Imagen torneo 1"}
+										alt="Profile-img"
+										className="rounded-circle border border-3 align-self-center"
+										style={{ width: "200px", height: "200px", objectFit: "cover" }}
+									/>
+									<h4 className="card-title mb-2 mt-4 text-center">
 										{store.tournaments.length > 0 ? store.tournaments[store.tournaments.length - 1].name : "Torneo 1"}
 									</h4>
-									<p className="card-text flex-grow-1 text-muted">
+									<p className="card-text flex-grow-1 text-muted mb-1 home__capitalize--p">
+										{store.tournaments.length > 0
+											? new Date(store.tournaments[store.tournaments.length - 1].schedule)
+												.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) || "Dia Torneo 1"
+											: "No hay torneos disponibles"}
+									</p>
+									<p className="card-text flex-grow-1 text-muted mb-1">
+										{store.tournaments.length > 0
+											? new Date(store.tournaments[store.tournaments.length - 1].schedule)
+												.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) || "Hora Torneo 1"
+											: "No hay torneos disponibles"}
+									</p>
+									<p className="card-text flex-grow-1 text-muted mb-1 home__capitalize--p">
 										{store.tournaments.length > 0
 											? store.tournaments[store.tournaments.length - 1].host?.address || "Ubicación Torneo 1"
 											: "No hay torneos disponibles"}
 									</p>
 									<Link
-										to={`/tournaments/${store.tournaments.length > 0 ? store.tournaments[store.tournaments.length - 1].id : ""}`}
+										to={`/tournament/view/${store.tournaments.length > 0 ? store.tournaments[store.tournaments.length - 1].id : ""}`}
 										className="btn btn-primary align-self-center mt-3 w-100"
 									>
 										Información
@@ -54,18 +76,36 @@ export const Home = () => {
 						<div className="col-lg-4 col-md-6">
 							<div className="card shadow-lg rounded-3 overflow-hidden">
 								<div className="card-body d-flex flex-column p-4">
-									<h4 className="card-title mb-3">
+									<img
+										src={store.tournaments.length > 1 ? store.tournaments[store.tournaments.length - 2].image : "Imagen torneo 2"}
+										alt="Profile-img"
+										className="rounded-circle border border-3 align-self-center"
+										style={{ width: "200px", height: "200px", objectFit: "cover" }}
+									/>
+									<h4 className="card-title mb-2 mt-4 text-center">
 										{store.tournaments.length > 1
 											? store.tournaments[store.tournaments.length - 2].name
 											: "Torneo 2"}
 									</h4>
-									<p className="card-text flex-grow-1 text-muted">
+									<p className="card-text flex-grow-1 text-muted mb-1 home__capitalize--p">
+										{store.tournaments.length > 1
+											? new Date(store.tournaments[store.tournaments.length - 2].schedule)
+												.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) || "Dia Torneo 2"
+											: "No hay torneos disponibles"}
+									</p>
+									<p className="card-text flex-grow-1 text-muted mb-1">
+										{store.tournaments.length > 1
+											? new Date(store.tournaments[store.tournaments.length - 2].schedule)
+												.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) || "Hora Torneo 2"
+											: "No hay torneos disponibles"}
+									</p>
+									<p className="card-text flex-grow-1 text-muted mb-1 home__capitalize--p">
 										{store.tournaments.length > 1
 											? store.tournaments[store.tournaments.length - 2].host?.address || "Ubicación Torneo 2"
 											: "No hay torneos disponibles"}
 									</p>
 									<Link
-										to={`/tournaments/${store.tournaments.length > 1 ? store.tournaments[store.tournaments.length - 2].id : ""}`}
+										to={`/tournament/view/${store.tournaments.length > 1 ? store.tournaments[store.tournaments.length - 2].id : ""}`}
 										className="btn btn-primary align-self-center mt-3 w-100"
 									>
 										Información
@@ -78,18 +118,36 @@ export const Home = () => {
 						<div className="col-lg-4 col-md-6">
 							<div className="card shadow-lg rounded-3 overflow-hidden">
 								<div className="card-body d-flex flex-column p-4">
-									<h4 className="card-title mb-3">
+								<img
+										src={store.tournaments.length > 2 ? store.tournaments[store.tournaments.length - 3].image: "Imagen torneo 3"}
+										alt="Profile-img"
+										className="rounded-circle border border-3 align-self-center"
+										style={{ width: "200px", height: "200px", objectFit: "cover" }}
+									/>
+									<h4 className="card-title mb-2 mt-4 text-center">
 										{store.tournaments.length > 2
 											? store.tournaments[store.tournaments.length - 3].name
 											: "Torneo 3"}
 									</h4>
-									<p className="card-text flex-grow-1 text-muted">
+									<p className="card-text flex-grow-1 text-muted mb-1 home__capitalize--p">
+										{store.tournaments.length > 2
+											? new Date(store.tournaments[store.tournaments.length - 3].schedule)
+												.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) || "Dia Torneo 3"
+											: "No hay torneos disponibles"}
+									</p>
+									<p className="card-text flex-grow-1 text-muted mb-1">
+										{store.tournaments.length > 2
+											? new Date(store.tournaments[store.tournaments.length - 3].schedule)
+												.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) || "Hora Torneo 3"
+											: "No hay torneos disponibles"}
+									</p>
+									<p className="card-text flex-grow-1 text-muted mb-1 home__capitalize--p">
 										{store.tournaments.length > 2
 											? store.tournaments[store.tournaments.length - 3].host?.address || "Ubicación Torneo 3"
 											: "No hay torneos disponibles"}
 									</p>
 									<Link
-										to={`/tournaments/${store.tournaments.length > 2 ? store.tournaments[store.tournaments.length - 3].id : ""}`}
+										to={`/tournament/view/${store.tournaments.length > 2 ? store.tournaments[store.tournaments.length - 3].id : ""}`}
 										className="btn btn-primary align-self-center mt-3 w-100"
 									>
 										Información
@@ -102,11 +160,11 @@ export const Home = () => {
 				</div>
 			</section>
 
-			<section className="section home__section-3  p-5">
+			<section className="section home__section-3">
 				<div className="container">
 					<div className="row">
 
-						<div className="col-md-4">
+						<div className="col-md-4 my-3">
 							<div className="card h-100 d-flex flex-column bg-dark text-white">
 								<div className="card-body d-flex flex-column p-4">
 									<h5 className="card-title text-center">Encuentra Torneos</h5>
@@ -118,7 +176,7 @@ export const Home = () => {
 							</div>
 						</div>
 
-						<div className="col-md-4">
+						<div className="col-md-4 my-3">
 							<div className="card h-100 d-flex flex-column bg-dark text-white">
 								<div className="card-body d-flex flex-column">
 									<h5 className="card-title text-center">Crea Eventos</h5>
@@ -130,7 +188,7 @@ export const Home = () => {
 							</div>
 						</div>
 
-						<div className="col-md-4">
+						<div className="col-md-4 my-3">
 							<div className="card h-100 d-flex flex-column bg-dark text-white">
 								<div className="card-body d-flex flex-column">
 									<h5 className="card-title text-center">Conecta con jugadores</h5>
@@ -139,7 +197,7 @@ export const Home = () => {
 								</div>
 							</div>
 						</div>
-						
+
 					</div>
 				</div>
 			</section>

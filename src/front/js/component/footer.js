@@ -4,12 +4,14 @@ import { FaGithub, FaInstagram, FaXTwitter } from "react-icons/fa6";
 
 
 export const Footer = () => (
-	<footer className="footer mt-auto py-3 bg-dark text-white d-flex justify-content-between align-items-center px-4">
+	<footer className="footer mt-auto p-5 bg-dark text-white d-flex justify-content-between align-items-center">
 
-		<h5 className="mb-0">PadelZone</h5>
+		<h2 className="mb-0"><strong>PadelZone</strong></h2>
 
-
-		<p className="mb-0">© {new Date().getFullYear()} 4Geeks Academy Final Project · Alejandro, José y Marcos · All right reserved</p>
+		<div>
+			<p className="mb-3 text-center">Cookie Policy · Privacy Policy</p>
+			<p className="mb-0">© {new Date().getFullYear()} 4Geeks Academy Final Project · Alejandro, José y Marcos · All right reserved</p>
+		</div>
 
 		<div>
 			<div className="d-flex gap-3">
