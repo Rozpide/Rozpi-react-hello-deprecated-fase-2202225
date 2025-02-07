@@ -502,6 +502,30 @@ def remove_participant(tournament_id, player_id):
         db.session.delete(participant)
         db.session.commit()
 
+        # Verificamos si el participante era parte de algún equipo
+        team = Teams.query.filter(
+            (Teams.left == participant.id) | (Teams.right == participant.id),
+            Teams.tournament_id == tournament_id
+        ).first()
+
+        # Verificamos si un participante fue eliminado asignamos none como valor
+        if team:
+            if team.left == participant.id:
+                team.left = None
+            elif team.right == participant.id:
+                team.right = None
+
+            # Si el equipo tiene solo un miembro, lo dejamos abierto
+            if team.left is None or team.right is None:
+                pass
+
+            # Verificamos si ambos jugadores han sido eliminados
+            if team.left is None and team.right is None:
+                db.session.delete(team)
+
+            db.session.commit()
+
+        # Actualizamos el conteo de participantes
         tournament = Tournaments.query.get(tournament_id)
         tournament.participants_registered = Participants.query.filter_by(tournament_id=tournament.id).count()
         
@@ -510,6 +534,7 @@ def remove_participant(tournament_id, player_id):
         return jsonify({'msg': 'Jugador eliminado del torneo:', 'participants_registered': tournament.participants_registered}), 200
     
     except Exception as e:
+        db.session.rollback()
         return jsonify({'msg': 'Error al eliminar el jugador', 'error': str(e)}), 500
     
 
@@ -540,9 +565,24 @@ def create_team(tournament_id):
         # Si todos los participantes han sido asignados
         if not participants_unasigned:
             return jsonify({'msg': 'Todos los participantes ya están en un equipo'}), 400
+        
+        # Buscamos un equipo con un solo miembro (si existe)
+        team_with_one_member = Teams.query.filter_by(tournament_id=tournament_id).filter(
+            (Teams.left != None) & (Teams.right == None) |
+            (Teams.right != None) & (Teams.left == None)
+        ).first()
 
-        existing_teams_count = Teams.query.filter_by(tournament_id=tournament_id).count()
-        team_number = existing_teams_count + 1
+        # Si encontramos un equipo con solo un miembro, añadimos al siguiente participante
+        if team_with_one_member:
+            if team_with_one_member.left is None:
+                team_with_one_member.left = participants_unasigned[0].id
+            else:
+                team_with_one_member.right = participants_unasigned[0].id
+            db.session.commit()
+            participants_unasigned = participants_unasigned[1:]
+        else:
+            existing_teams_count = Teams.query.filter_by(tournament_id=tournament_id).count()
+            team_number = existing_teams_count + 1
         
         while len(participants_unasigned) >= 2:
             new_team = Teams(
