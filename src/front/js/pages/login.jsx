@@ -1,7 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import "../../styles/login.css"
 import { useNavigate  } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import { Loader } from "../component/loader";
 
 import { Context } from "../store/appContext";
 
@@ -24,7 +25,27 @@ export const Login = () => {
     }
   }
 
-  return (
+  const [isLoading, setIsLoading] = useState(false);
+      useEffect(() => {
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+        }, 1500);
+    
+        return () => clearTimeout(timer); 
+      }, []);
+    
+    const inicioLoader = async () => {
+      setIsLoading(true);
+        await waitingWearever();
+        setIsLoading(false);
+    
+    }
+    
+    useEffect(() => {
+        inicioLoader();
+    }, []) 
+
+  return (isLoading) ? <Loader /> : (
     <>
       <section className="container">
         <h1>Log in</h1>

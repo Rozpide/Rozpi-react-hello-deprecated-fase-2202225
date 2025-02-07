@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/signup.css"
 import { Button } from "react-bootstrap";
+import { Loader } from "../component/loader";
 
 export const SignUp = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const actualizador = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,8 +38,28 @@ export const SignUp = () => {
       setError(err.message);
     }
   };
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
 
-  return (
+    return () => clearTimeout(timer); 
+  }, []);
+
+const inicioLoader = async () => {
+  setIsLoading(true);
+    await waitingWearever();
+    setIsLoading(false);
+
+}
+
+useEffect(() => {
+    inicioLoader();
+}, []) 
+
+
+  return  (isLoading) ? <Loader /> : (
     <section className="container">
       <h1>Registro</h1>
       <form onSubmit={handleSubmit}> {/* Se corrige el evento onSubmit */}
