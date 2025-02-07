@@ -48,7 +48,7 @@ export const Login = () => {
             required
           />
           {error && <p className="error">{error}</p>}
-          <Button className="button1"> Entrar </Button>
+          <Button className="button1" type="submit"> Entrar </Button>
         </form>
       </section>
     </>
