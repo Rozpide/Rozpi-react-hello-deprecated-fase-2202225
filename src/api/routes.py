@@ -128,7 +128,7 @@ def editPlayer():
         return jsonify({'msg': 'Todos los campos son necesarios'}), 400
 
     # Conecta player con user y Buscar al jugador por ID
-    player = Players.query.join(Users, Users.id == Players.id).filter(Users.id == id).first()
+    player = Players.query.join(Users, Users.player_id == Players.id).filter(Users.id == id).first()
 
     if not player:
         return jsonify({'msg': 'El jugador no existe'}), 404
@@ -502,6 +502,35 @@ def remove_participant(tournament_id, player_id):
         db.session.delete(participant)
         db.session.commit()
 
+        # Verificamos si el participante era parte de algún equipo
+        team = Teams.query.filter(
+            (Teams.left == participant.id) | (Teams.right == participant.id),
+            Teams.tournament_id == tournament_id
+        ).first()
+
+        # Verificamos si un participante fue eliminado asignamos none como valor
+        if team:
+            # Actualizar el equipo, eliminando al participante
+            if team.left == participant.id:
+                team.left = None
+            elif team.right == participant.id:
+                team.right = None
+
+            # Si ambos jugadores fueron eliminados, eliminamos el equipo
+            if team.left is None and team.right is None:
+                db.session.delete(team)  # Eliminamos el equipo de la base de datos
+            else:
+                db.session.commit()
+
+            # Si el equipo tiene un hueco, llamamos a la función de crear equipo para rellenarlo
+            if team.left is None or team.right is None:
+                create_team(tournament_id)  # Llamamos a create_team para que se encargue de asignar el siguiente participante
+
+        # Eliminar al participante de la tabla de participantes
+        db.session.delete(participant)
+        db.session.commit()
+
+        # Actualizar el número de participantes registrados en el torneo
         tournament = Tournaments.query.get(tournament_id)
         tournament.participants_registered = Participants.query.filter_by(tournament_id=tournament.id).count()
         
@@ -510,11 +539,12 @@ def remove_participant(tournament_id, player_id):
         return jsonify({'msg': 'Jugador eliminado del torneo:', 'participants_registered': tournament.participants_registered}), 200
     
     except Exception as e:
+        db.session.rollback()
         return jsonify({'msg': 'Error al eliminar el jugador', 'error': str(e)}), 500
     
 
 
-# ////////////////////////////////////////////TEAMS////////////////////////////////////////////
+# __________________________________________________TEAMS__________________________________________________
 
 @api.route('/tournaments/<int:tournament_id>/teams', methods=['POST'])        #POST todos los equipos de un torneo
 @jwt_required()
@@ -540,9 +570,24 @@ def create_team(tournament_id):
         # Si todos los participantes han sido asignados
         if not participants_unasigned:
             return jsonify({'msg': 'Todos los participantes ya están en un equipo'}), 400
+        
+        # Buscamos un equipo con un solo miembro (si existe)
+        team_with_one_member = Teams.query.filter_by(tournament_id=tournament_id).filter(
+            (Teams.left != None) & (Teams.right == None) |
+            (Teams.right != None) & (Teams.left == None)
+        ).first()
 
-        existing_teams_count = Teams.query.filter_by(tournament_id=tournament_id).count()
-        team_number = existing_teams_count + 1
+        # Si encontramos un equipo con solo un miembro, añadimos al siguiente participante
+        if team_with_one_member:
+            if team_with_one_member.left is None:
+                team_with_one_member.left = participants_unasigned[0].id
+            else:
+                team_with_one_member.right = participants_unasigned[0].id
+            db.session.commit()
+            participants_unasigned = participants_unasigned[1:]
+        else:
+            existing_teams_count = Teams.query.filter_by(tournament_id=tournament_id).count()
+            team_number = existing_teams_count + 1
         
         while len(participants_unasigned) >= 2:
             new_team = Teams(
