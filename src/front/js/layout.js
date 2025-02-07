@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
@@ -16,10 +16,32 @@ import { ProtectedOne } from "./pages/protected/protected-one.jsx";
 import { ProtectedTwo } from "./pages/protected/protected-two.jsx";
 
 //create your first component
+
+export const Loader = () => {
+    return (<>
+         <div className="loader-container">
+      <div className="loader"></div>
+    </div>
+    </>)
+}
+
+
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);  
+        }, 1000); 
+    }, []);
+
+    
+    if (loading) {
+        return <Loader />;
+    }
 
     if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
 

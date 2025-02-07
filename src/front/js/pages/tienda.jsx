@@ -5,13 +5,12 @@ export const Tienda = () => {
   const [isLoading, setIsLoading] = useState(false);
 
  
+    const waitingWearever = async() => {
+      new Promise((resolve) => {
+        setTimeout(()=> resolve(), 1000)
+      })
+    }
 
-   const waitingWearever = async() => {
-       await new Promise((resolve) => {
-            setTimeout(() => resolve, 1000)
-        })
-     }
-  
 
     const inicioLoader = async () => {
       setIsLoading(true);

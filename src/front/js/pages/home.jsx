@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Loader } from "../component/loader";
 
 export const Home = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  
 
   useEffect(() => {
       const timer = setTimeout(() => {

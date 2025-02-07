@@ -10,13 +10,14 @@ export const SignUp = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer); 
-  }, []);
+  
+    useEffect(() => {
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+        }, 500);
+    
+        return () => clearTimeout(timer); 
+      }, []);
 
   const actualizador = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
