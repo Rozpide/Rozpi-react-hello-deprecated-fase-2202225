@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import Filters from "../component/Filters";
 import ProductCard from "../component/ProductCard";
-import SearchBar from "../component/SearchBar";
 import "../../styles/store.css";
 
 export const Store = () => {
@@ -12,7 +11,6 @@ export const Store = () => {
     const [error, setError] = useState(null);
 
     const [activeFilters, setActiveFilters] = useState({
-        search: "",
         category: null,
         priceRange: { min: null, max: null },
     });
@@ -34,14 +32,10 @@ export const Store = () => {
     useEffect(() => {
         // Filtrar productos cada vez que cambian los productos o los filtros
         const filterProducts = () => {
-            const { search, category, priceRange } = activeFilters;
+            const { category, priceRange } = activeFilters;
             const products = Array.isArray(store.allProducts) ? store.allProducts : [];
 
             const filtered = products.filter((product) => {
-                const matchesSearch = search
-                    ? product.name.toLowerCase().includes(search.toLowerCase())
-                    : true;
-
                 const matchesCategory = category
                     ? product.categories.some((cat) => cat.id === parseInt(category, 10))
                     : true;
@@ -50,7 +44,7 @@ export const Store = () => {
                     (!priceRange.min || product.price >= parseFloat(priceRange.min)) &&
                     (!priceRange.max || product.price <= parseFloat(priceRange.max));
 
-                return matchesSearch && matchesCategory && matchesPrice;
+                return matchesCategory && matchesPrice;
             });
 
             setFilteredProducts(filtered);
@@ -58,13 +52,6 @@ export const Store = () => {
 
         filterProducts();
     }, [store.allProducts, activeFilters]);
-
-    const handleSearch = (searchTerm) => {
-        setActiveFilters((prevFilters) => ({
-            ...prevFilters,
-            search: searchTerm,
-        }));
-    };
 
     const handleFilters = (filters) => {
         setActiveFilters((prevFilters) => ({
@@ -80,8 +67,7 @@ export const Store = () => {
     return (
         <div className="store-container">
             <h1 className="store-title">Nuestra Tienda</h1>
-            {/* Barra de búsqueda */}
-            <SearchBar onSearch={handleSearch} />
+            
             {/* Filtros */}
             <Filters onApplyFilters={handleFilters} categories={store.categories} />
             
