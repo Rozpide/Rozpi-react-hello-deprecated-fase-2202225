@@ -8,11 +8,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             isAdmin: false,
             categories: [],
             featuredProducts: [],
-            allProducts: [],
+            allProducts: [], // Aquí ya no se maneja búsqueda
             totalProducts: 0, // Total de productos para paginación
             totalPages: 0,    // Total de páginas
             cart: [],         // Estado para almacenar los productos del carrito
-       
         },
         actions: {
             // Obtener mensaje desde el backend
@@ -38,7 +37,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("No se encontró el token");
                     return false;
                 }
-            
+
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/auth/current`, {
                         method: "GET",
@@ -47,7 +46,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             "Content-Type": "application/json",
                         },
                     });
-            
+
                     if (!response.ok) {
                         console.error("Error al verificar administrador:", response.status, response.statusText);
                         if (response.status === 401 || response.status === 403) {
@@ -56,7 +55,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         }
                         return false;
                     }
-            
+
                     const user = await response.json();
                     setStore({ user, isAdmin: user.is_admin });
                     return user.is_admin;
@@ -64,14 +63,14 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al verificar administrador:", error.message);
                     return false;
                 }
-            },            
+            },
 
             // Obtener categorías
             fetchCategories: async () => {
                 try {
                     const response = await fetch(`${API_URL}/api/categories`);
                     if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-            
+
                     const categories = await response.json();
                     console.log("Categories Loaded:", categories);
                     setStore({ categories });
@@ -79,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al obtener categorías:", error.message);
                     setStore({ categories: [] });
                 }
-            },            
+            },
 
             // Crear un producto
             createProduct: async (productData) => {
@@ -114,7 +113,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const response = await fetch(`${API_URL}/api/products?featured=true&page=1&per_page=5`);
                     if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-            
+
                     const data = await response.json();
                     setStore({ featuredProducts: data.products });
                 } catch (error) {
@@ -127,7 +126,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/products`);
                     if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-            
+
                     const data = await response.json();
                     console.log("Todos los productos:", data); // Verifica la estructura
                     setStore({ allProducts: data.products }); // Solo guardar los productos
@@ -135,40 +134,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al obtener todos los productos:", error.message);
                     setStore({ allProducts: [] });
                 }
-            },                   
-
-            // Buscar productos con filtros
-            searchProducts: async (search = '', categoryId = null, page = 1, perPage = 10) => {
-                try {
-                    const params = new URLSearchParams({
-                        search,
-                        page,
-                        per_page: perPage,
-                    });
-
-                    if (categoryId) {
-                        params.append('category_id', categoryId);
-                    }
-
-                    const response = await fetch(`${API_URL}/api/products?${params.toString()}`);
-                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-
-                    const data = await response.json();
-                    setStore({
-                        allProducts: data.products,
-                        totalProducts: data.total,
-                        totalPages: data.pages,
-                    });
-                } catch (error) {
-                    console.error("Error al buscar productos:", error.message);
-                }
             },
 
             addToCart: async (product) => {
                 const token = localStorage.getItem("token");
                 const userId = JSON.parse(localStorage.getItem("user")).id;
                 console.log("Enviando producto al carrito:", product);
-            
+
                 try {
                     const response = await fetch(`${API_URL}/api/cart`, {
                         method: "POST",
@@ -182,16 +154,16 @@ const getState = ({ getStore, getActions, setStore }) => {
                             user_id: userId,
                         }),
                     });
-            
+
                     if (!response.ok) {
                         const error = await response.json();
                         console.error("Error al añadir al carrito:", error.message);
                         return { success: false, message: error.message };
                     }
-            
+
                     const data = await response.json();
                     console.log("Producto añadido al carrito:", data); // Verifica que la respuesta sea la esperada
-            
+
                     // Actualizar el carrito en el estado global
                     setStore({ cart: [...getStore().cart, data] });
                     alert("Producto añadido al carrito"); // Asegúrate de que se muestra la alerta
@@ -200,7 +172,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al realizar la solicitud:", error.message);
                     return { success: false, message: error.message };
                 }
-            },                        
+            },
 
             // Obtener el carrito de compras del usuario
             getCart: async () => {

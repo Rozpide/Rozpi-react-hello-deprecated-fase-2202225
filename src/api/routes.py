@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import jwt
 import datetime
 import stripe
-from api.models import db, Product, Order, Notification, OrderItem
+from api.models import db, Product, Order
 from api.utils import APIException
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -90,31 +90,3 @@ def get_orders():
 
     orders = Order.query.filter_by(user_id=user_id).all()
     return jsonify([order.serialize() for order in orders]), 200
-
-@api.route('/notifications', methods=['GET'])
-def get_notifications():
-    user_id = request.args.get('user_id')
-    if not user_id:
-        return jsonify({"message": "El ID del usuario es obligatorio"}), 400
-
-    notifications = Notification.query.filter_by(user_id=user_id).all()
-    return jsonify([notification.serialize() for notification in notifications]), 200
-
-@api.route('/notifications', methods=['POST'])
-def create_or_update_notification():
-    data = request.get_json()
-    if not data.get('message') or not data.get('user_id'):
-        return jsonify({"message": "El mensaje y el ID del usuario son requeridos"}), 400
-
-    notification = Notification.query.filter_by(user_id=data['user_id']).first()
-    if notification:
-        notification.message = data['message']
-        db.session.commit()
-        return jsonify({"message": "Notificación actualizada"}), 200
-
-    new_notification = Notification(user_id=data['user_id'], message=data['message'])
-    db.session.add(new_notification)
-    db.session.commit()
-    return jsonify({"message": "Notificación creada"}), 201
-
-# Agregar más endpoints según sea necesario

@@ -16,15 +16,13 @@ if not os.path.exists(UPLOAD_FOLDER):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Ruta para obtener productos con soporte de paginación y productos destacados
+# Ruta para obtener todos los productos con la opción de productos destacados
 @product_routes.route('/', methods=['GET'])
 def get_products():
     try:
-        page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 10, type=int)
-        featured = request.args.get('featured', 'false').lower() == 'true'
         search = request.args.get('search', '', type=str)
         category_id = request.args.get('category_id', type=int)
+        featured = request.args.get('featured', 'false').lower() == 'true'  # Para filtrar productos destacados
 
         query = Product.query
 
@@ -37,15 +35,10 @@ def get_products():
         if category_id:
             query = query.join(Product.categories).filter(Category.id == category_id)
 
-        pagination = query.paginate(page=page, per_page=per_page, error_out=False)
-        products = [product.serialize() for product in pagination.items]
+        products = [product.serialize() for product in query.all()]
 
         return jsonify({
-            "products": products,
-            "total": pagination.total,
-            "page": pagination.page,
-            "per_page": pagination.per_page,
-            "pages": pagination.pages
+            "products": products
         }), 200
     except Exception as e:
         return jsonify({"error": "Error al obtener productos", "details": str(e)}), 500
