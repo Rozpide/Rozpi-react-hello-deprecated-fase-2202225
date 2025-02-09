@@ -3,10 +3,12 @@ import React from 'react'
 import Card from 'react-bootstrap/Card';
 import Logo from '../../../img/logo.jpg';
 import Profilecard from "../../../styles/profileCard.css"
+import CloudinaryUploadWidget from '../../component/CloudinaryUploadWidget'
 
 export const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const defaultProfileImage = Logo;
+  const [profileImage, setProfileImage] = useState('');
   const [profileData, setProfileData] = useState({
     name: '',
     age: '',
@@ -15,6 +17,12 @@ export const Profile = () => {
     email: '',
     profileImage: defaultProfileImage,
   });
+
+  useEffect(() => {
+    if (!!profileImage) {
+      setProfileData({ ...profileData, profileImage });
+    }
+  }, [profileImage])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,21 +46,21 @@ export const Profile = () => {
     }
   };
 
-  const handleSave = async() => {
+  const handleSave = async () => {
     setIsEditing(false);
     const token = localStorage.getItem("token");
     try {
       const response = await fetch(`${process.env.BACKEND_URL}api/profile`, {
-        method: "PUT", 
+        method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify(profileData)
       })
-       console.log(response)
+      console.log(response)
     } catch (error) {
-      
+
     }
     console.log('Datos guardados:', profileData);
   };
@@ -162,12 +170,7 @@ export const Profile = () => {
             {/* Input para cambiar la imagen de perfil */}
             <div className="form-group">
               <label htmlFor="profileImage">Cambiar Imagen de Perfil</label>
-              <input
-                type="file"
-                id="profileImage"
-                onChange={handleImageChange}
-                className="form-control mb-2"
-              />
+              <CloudinaryUploadWidget setImageURL={setProfileImage} folder="profiles" />
             </div>
 
             <button onClick={handleSave} className="btn btn-success btn-block">Guardar Cambios</button>
