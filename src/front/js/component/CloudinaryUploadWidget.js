@@ -1,8 +1,21 @@
 import React, { useEffect, useRef } from 'react';
+import { Cloudinary } from '@cloudinary/url-gen';
 
-const CloudinaryUploadWidget = ({ uwConfig, setImageURL }) => {
+export const CLOUDINARY_CLOUD_NAME = 'hzxyensd5';
+export const CLOUDINARY_UPLOAD_PRESET = 'aoh4fpwm';
+
+
+const CloudinaryUploadWidget = ({ folder, setImageURL }) => {
   const uploadWidgetRef = useRef(null);
   const uploadButtonRef = useRef(null);
+  new Cloudinary({ cloud: { cloudName: CLOUDINARY_CLOUD_NAME }, });
+
+  const uwConfig = {
+    cloudName: CLOUDINARY_CLOUD_NAME,
+    uploadPreset: CLOUDINARY_UPLOAD_PRESET,
+    folder,
+    theme: 'green',
+};
 
   useEffect(() => {
     const initializeUploadWidget = () => {
@@ -12,9 +25,7 @@ const CloudinaryUploadWidget = ({ uwConfig, setImageURL }) => {
           uwConfig,
           (error, result) => {
             if (!error && result && result.event === 'success') {
-              console.log('Upload successful:', result.info);
               const { url } = result.info
-              console.log(url);
               setImageURL(url);
             }
           }
