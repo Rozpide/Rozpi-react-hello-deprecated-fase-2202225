@@ -16,14 +16,18 @@ if not os.path.exists(UPLOAD_FOLDER):
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Ruta para obtener todos los productos sin paginación
+# Ruta para obtener todos los productos con la opción de productos destacados
 @product_routes.route('/', methods=['GET'])
 def get_products():
     try:
         search = request.args.get('search', '', type=str)
         category_id = request.args.get('category_id', type=int)
+        featured = request.args.get('featured', 'false').lower() == 'true'  # Para filtrar productos destacados
 
         query = Product.query
+
+        if featured:
+            query = query.filter_by(featured=True)
 
         if search:
             query = query.filter(Product.name.ilike(f'%{search}%'))

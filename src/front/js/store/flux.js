@@ -8,21 +8,14 @@ const getState = ({ getStore, getActions, setStore }) => {
             isAdmin: false,
             categories: [],
             featuredProducts: [],
-            allProducts: [], // Aquí ya no se maneja búsqueda
-            totalProducts: 0, // Total de productos para paginación
-            totalPages: 0,    // Total de páginas
-            cart: [],         // Estado para almacenar los productos del carrito
+            allProducts: [],
+            cart: [],
+            cartItemCount: 0,
         },
         actions: {
-            // Obtener mensaje desde el backend
             getMessage: async () => {
                 try {
                     const response = await fetch(`${API_URL}/api/hello`);
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        console.error("Error del servidor:", errorText);
-                        throw new Error(`Error ${response.status}: ${errorText}`);
-                    }
                     const data = await response.json();
                     setStore({ message: data.message });
                 } catch (error) {
@@ -30,7 +23,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            // Verificar si el usuario es administrador
             checkAdmin: async () => {
                 const token = localStorage.getItem("token");
                 if (!token) {
@@ -48,7 +40,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
 
                     if (!response.ok) {
-                        console.error("Error al verificar administrador:", response.status, response.statusText);
+                        console.error("Error al verificar administrador:", response.status);
                         if (response.status === 401 || response.status === 403) {
                             localStorage.removeItem("token");
                             window.location.href = "/login";
@@ -65,14 +57,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            // Obtener categorías
             fetchCategories: async () => {
                 try {
                     const response = await fetch(`${API_URL}/api/categories`);
-                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-
                     const categories = await response.json();
-                    console.log("Categories Loaded:", categories);
                     setStore({ categories });
                 } catch (error) {
                     console.error("Error al obtener categorías:", error.message);
@@ -80,7 +68,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            // Crear un producto
             createProduct: async (productData) => {
                 const token = localStorage.getItem("token");
                 try {
@@ -100,7 +87,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
 
                     const product = await response.json();
-                    console.log("Producto creado:", product);
                     return { success: true, product };
                 } catch (error) {
                     console.error("Error en la solicitud al crear producto:", error.message);
@@ -108,12 +94,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            // Obtener productos destacados
             getFeaturedProducts: async () => {
                 try {
-                    const response = await fetch(`${API_URL}/api/products?featured=true&page=1&per_page=5`);
-                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-
+                    const response = await fetch(`${API_URL}/api/products?featured=true`);
                     const data = await response.json();
                     setStore({ featuredProducts: data.products });
                 } catch (error) {
@@ -121,15 +104,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            // Obtener todos los productos
             getAllProducts: async () => {
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/products`);
-                    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
-
                     const data = await response.json();
-                    console.log("Todos los productos:", data); // Verifica la estructura
-                    setStore({ allProducts: data.products }); // Solo guardar los productos
+                    setStore({ allProducts: data.products });
                 } catch (error) {
                     console.error("Error al obtener todos los productos:", error.message);
                     setStore({ allProducts: [] });
@@ -139,8 +118,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             addToCart: async (product) => {
                 const token = localStorage.getItem("token");
                 const userId = JSON.parse(localStorage.getItem("user")).id;
-                console.log("Enviando producto al carrito:", product);
-
+            
                 try {
                     const response = await fetch(`${API_URL}/api/cart`, {
                         method: "POST",
@@ -154,19 +132,20 @@ const getState = ({ getStore, getActions, setStore }) => {
                             user_id: userId,
                         }),
                     });
-
+            
                     if (!response.ok) {
                         const error = await response.json();
                         console.error("Error al añadir al carrito:", error.message);
                         return { success: false, message: error.message };
                     }
-
+            
                     const data = await response.json();
-                    console.log("Producto añadido al carrito:", data); // Verifica que la respuesta sea la esperada
-
-                    // Actualizar el carrito en el estado global
                     setStore({ cart: [...getStore().cart, data] });
-                    alert("Producto añadido al carrito"); // Asegúrate de que se muestra la alerta
+
+                    const totalItems = getStore().cart.reduce((total, item) => total + item.quantity, 0);
+                    setStore({ cartItemCount: totalItems });
+            
+                    alert("Producto añadido al carrito");
                     return { success: true, message: "Producto añadido al carrito" };
                 } catch (error) {
                     console.error("Error al realizar la solicitud:", error.message);
@@ -174,10 +153,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            // Obtener el carrito de compras del usuario
             getCart: async () => {
                 const token = localStorage.getItem("token");
                 const userId = JSON.parse(localStorage.getItem("user")).id;
+
                 try {
                     const response = await fetch(`${API_URL}/api/cart?user_id=${userId}`, {
                         headers: {
@@ -191,11 +170,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     const cartItems = await response.json();
                     setStore({ cart: cartItems });
+
+                    const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+                    setStore({ cartItemCount: totalItems });
                 } catch (error) {
                     console.error("Error al obtener el carrito:", error.message);
-                    setStore({ cart: [] });
+                    setStore({ cart: [], cartItemCount: 0 });
                 }
             },
+
+            clearCart: async () => {
+                const token = localStorage.getItem("token");
+                const userId = JSON.parse(localStorage.getItem("user")).id;
+            
+                try {
+                    const response = await fetch(`${API_URL}/api/clear-cart`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    });
+            
+                    const result = await response.json();
+            
+                    if (response.ok) {
+                        setStore({ cart: [], cartItemCount: 0 });
+                        localStorage.setItem("cart", JSON.stringify([]));
+                        console.log("Carrito vaciado exitosamente");
+                    } else {
+                        console.error("Error al vaciar el carrito:", result.message);
+                    }
+                } catch (error) {
+                    console.error("Error al vaciar el carrito:", error);
+                }
+            },            
         },
     };
 };

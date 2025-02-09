@@ -60,9 +60,6 @@ def update_category(category_id):
         if not category:
             return jsonify({"error": "Categoría no encontrada"}), 404
 
-        if Category.query.filter(Category.id != category_id, Category.name == name).first():
-            return jsonify({"error": "Ya existe otra categoría con ese nombre"}), 400
-
         category.name = name
         db.session.commit()
 

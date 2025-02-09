@@ -1,13 +1,9 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint
 from flask_cors import CORS
-from werkzeug.security import check_password_hash, generate_password_hash
-import jwt
-import datetime
 import stripe
-from api.models import db, Product, Order, Notification, OrderItem
-from api.utils import APIException
+from api.models import Cart, db, Product
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 # Cargar las variables de entorno
@@ -57,64 +53,4 @@ def create_payment():
         return jsonify({'id': session.id}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-@api.route('/hello', methods=['GET'])
-def handle_hello():
-    return jsonify({"message": "Hello! I'm a message from the backend"}), 200
-
-@api.route('/orders', methods=['POST'])
-def create_order():
-    data = request.get_json()
-    if not data.get('user_id') or not data.get('product_id') or not data.get('quantity'):
-        return jsonify({"message": "Usuario, producto y cantidad son requeridos"}), 400
-
-    product = Product.query.get(data['product_id'])
-    if not product:
-        return jsonify({"message": "Producto no encontrado"}), 404
-
-    new_order = Order(
-        user_id=data['user_id'],
-        product_id=data['product_id'],
-        quantity=data['quantity'],
-        total_price=product.price * data['quantity']
-    )
-    db.session.add(new_order)
-    db.session.commit()
-    return jsonify({"message": "Pedido creado exitosamente"}), 201
-
-@api.route('/orders', methods=['GET'])
-def get_orders():
-    user_id = request.args.get('user_id')
-    if not user_id:
-        return jsonify({"message": "El ID del usuario es obligatorio"}), 400
-
-    orders = Order.query.filter_by(user_id=user_id).all()
-    return jsonify([order.serialize() for order in orders]), 200
-
-@api.route('/notifications', methods=['GET'])
-def get_notifications():
-    user_id = request.args.get('user_id')
-    if not user_id:
-        return jsonify({"message": "El ID del usuario es obligatorio"}), 400
-
-    notifications = Notification.query.filter_by(user_id=user_id).all()
-    return jsonify([notification.serialize() for notification in notifications]), 200
-
-@api.route('/notifications', methods=['POST'])
-def create_or_update_notification():
-    data = request.get_json()
-    if not data.get('message') or not data.get('user_id'):
-        return jsonify({"message": "El mensaje y el ID del usuario son requeridos"}), 400
-
-    notification = Notification.query.filter_by(user_id=data['user_id']).first()
-    if notification:
-        notification.message = data['message']
-        db.session.commit()
-        return jsonify({"message": "Notificación actualizada"}), 200
-
-    new_notification = Notification(user_id=data['user_id'], message=data['message'])
-    db.session.add(new_notification)
-    db.session.commit()
-    return jsonify({"message": "Notificación creada"}), 201
-
-# Agregar más endpoints según sea necesario
+    

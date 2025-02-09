@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from api.models import db, Product, Cart, OrderItem
+from api.models import db, Product, Cart
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 cart_routes = Blueprint('cart_routes', __name__)
@@ -46,9 +46,22 @@ def add_to_cart():
 @jwt_required()
 def remove_from_cart(id):
     cart_item = Cart.query.get(id)
-    if not cart_item:
-        return jsonify({"message": "Producto no encontrado en el carrito"}), 404
 
-    db.session.delete(cart_item)
+    if cart_item:
+        db.session.delete(cart_item)
+        db.session.commit()
+        return jsonify({"message": "Producto eliminado del carrito"}), 200
+    
+    return jsonify({"message": "El producto no estaba en el carrito, por lo que no se eliminó."}), 200
+
+# Limpiar el carrito después del pago
+@cart_routes.route('/clear-cart', methods=['POST'])
+@jwt_required()
+def clear_cart():
+    user_id = get_jwt_identity()  # Obtener el ID del usuario desde el JWT
+
+    # Eliminar todos los productos del carrito para el usuario
+    Cart.query.filter_by(user_id=user_id).delete()
     db.session.commit()
-    return jsonify({"message": "Producto eliminado del carrito"}), 200
+
+    return jsonify({"message": "Carrito vaciado exitosamente"}), 200
