@@ -19,6 +19,8 @@ import { TopNavbar } from "./component/topNavbar.js";
 import { ProtectedRoute } from "./pages/session.jsx";
 import { useState } from "react";
 
+import { CloudinaryImage } from "./pages/cloudinary.jsx";
+
 
 
 
@@ -41,6 +43,7 @@ const Layout = () => {
                         <Route element={<SignUp  />} path="/signup" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<AboutUs />} path="/aboutUs" />
+                        <Route element={<CloudinaryImage />} path="/cloudinary" />
                         <Route path="/session" element={<ProtectedRoute />}>
                             <Route path="profile" element={<Profile />} />
                             <Route path="favorites" element={<Favorites />} />
