@@ -1,3 +1,23 @@
+//  const loginDispatcher = {
+// 	get: async(email, password) => {
+// 		const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+// 			method: "POST",
+// 			body: JSON.stringify({ email, password }),
+// 			headers: { "Content-Type": "application/json" }
+// 		  })
+// 		  const data = await response.json()
+// 		  if (!response.ok) {
+// 			return false
+// 		  }
+// 		  else {
+// 			localStorage.setItem("token", data.token)
+// 			return true
+// 		  }
+// 	}
+// }
+
+
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
