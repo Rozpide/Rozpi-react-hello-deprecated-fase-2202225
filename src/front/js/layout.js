@@ -4,6 +4,7 @@ import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import { AboutUs } from "./pages/aboutUs.jsx";
 import { SignUp  } from "./pages/signup.jsx";
+import { Admin  } from "./pages/admin.jsx";
 import { Login } from "./pages/login.jsx";
 import injectContext from "./store/appContext";
 import { Footer } from "./component/footer";
@@ -20,9 +21,6 @@ import { ProtectedRoute } from "./pages/session.jsx";
 import { useState } from "react";
 
 import { CloudinaryImage } from "./pages/cloudinary.jsx";
-
-
-
 
 //create your first component
 const Layout = () => {
@@ -50,6 +48,7 @@ const Layout = () => {
                             <Route path="favorites" element={<Favorites />} />
                             <Route path="cart" element={<Cart />} />
                         </Route>
+                        <Route path="admin" element={<Admin />} />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                 </ScrollToTop>
