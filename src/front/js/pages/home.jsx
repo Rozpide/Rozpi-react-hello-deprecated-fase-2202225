@@ -41,7 +41,7 @@ export const Home = () => {
 
   return (isLoading) ? <Loader /> : (
     <>
-    <button onclick={eliminarToken}>Log out</button>
+    <button onClick={eliminarToken}>Log out</button>
     <Slider />
     </>
   )
