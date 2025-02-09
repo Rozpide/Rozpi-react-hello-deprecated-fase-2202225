@@ -8,6 +8,16 @@ import { Loader } from "../component/loader";
 
 
 export const Home = () => {
+  const eliminarToken = () => {
+    if (localStorage.getItem('token')) {
+        localStorage.removeItem('token');
+        console.log('Token eliminado');
+        alert('Has cerrado sesión correctamente');
+    } else {
+        console.log('No hay token almacenado');
+        alert('Primero inicia sesión');
+    }
+}
 
   const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
@@ -31,6 +41,7 @@ export const Home = () => {
 
   return (isLoading) ? <Loader /> : (
     <>
+    <button onclick={eliminarToken}>Log out</button>
     <Slider />
     </>
   )
