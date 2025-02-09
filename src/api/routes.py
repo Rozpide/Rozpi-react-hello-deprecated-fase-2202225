@@ -55,34 +55,23 @@ def get_profile():
     return jsonify(user.serialize()), 200
 
 
+@api.route("/profile", methods=["PUT"])
+@jwt_required()  
+def update_profile():
+    user_email = get_jwt_identity()
 
-# @api.route("/profile", methods=["GET"])
-# @jwt_required()
-# def get_profile():
-#     user_email = get_jwt_identity()
-#     user = User.query.filter_by(email=user_email).first()
+    user = User.query.filter_by(email=user_email).first()
 
-#     if not user:
-#         return jsonify({"msg": "Usuario no encontrado"}), 404
-#     return jsonify(user.serialize()), 200
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+    data = request.get_json()
 
-# @api.route("/profile", methods=["PUT"])
-# @jwt_required()  
-# def update_profile():
-#     user_email = get_jwt_identity()
+    user.name = data.get("name", user.name)
+    user.age = data.get("age", user.age)
+    user.location = data.get("location", user.location)
+    user.description = data.get("description", user.description)
+    user.profile_image = data.get("profileImage", user.profile_image)
 
-#     user = User.query.filter_by(email=user_email).first()
+    db.session.commit()
 
-#     if not user:
-#         return jsonify({"msg": "Usuario no encontrado"}), 404
-#     data = request.get_json()
-
-#     user.name = data.get("name", user.name)
-#     user.age = data.get("age", user.age)
-#     user.location = data.get("location", user.location)
-#     user.description = data.get("description", user.description)
-#     user.profile_image = data.get("profileImage", user.profile_image)
-
-#     db.session.commit()
-
-#     return jsonify({"msg": "Perfil actualizado correctamente"}), 200
+    return jsonify({"msg": "Perfil actualizado correctamente"}), 200

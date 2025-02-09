@@ -16,7 +16,6 @@ export const Profile = () => {
     profileImage: defaultProfileImage,
   });
 
-  // para manejar el cambio en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProfileData((prev) => ({
@@ -25,7 +24,6 @@ export const Profile = () => {
     }));
   };
 
-  // cambio de la imagen de perfil
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -40,20 +38,31 @@ export const Profile = () => {
     }
   };
 
-  // para manejar el guardado de cambios
-  const handleSave = () => {
+  const handleSave = async() => {
     setIsEditing(false);
-    // Aquí podemos hacer una llamada al backend para hacer los cambios
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(`${process.env.BACKEND_URL}api/profile`, {
+        method: "PUT", 
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(profileData)
+      })
+       console.log(response)
+    } catch (error) {
+      
+    }
     console.log('Datos guardados:', profileData);
   };
 
-  // Función para obtener los datos del perfil desde el backend
   const fetchProfileData = async () => {
-    const token = localStorage.getItem("jwtToken");
+    const token = localStorage.getItem("token");
 
     if (token) {
       try {
-        const response = await fetch("https://potential-yodel-4jqpwp9xvqg4377r7-3000.app.github.dev", {
+        const response = await fetch(`${process.env.BACKEND_URL}api/profile`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
