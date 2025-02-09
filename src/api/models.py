@@ -17,3 +17,26 @@ class User(db.Model):
             "email": self.email,
             # do not serialize the password, its a security breach
         }
+    
+    # class User(db.Model):
+    # __tablename__ = 'users'
+
+    # id = db.Column(db.Integer, primary_key=True)  
+    # name = db.Column(db.String(100), nullable=False)  
+    # age = db.Column(db.Integer, nullable=True) 
+    # location = db.Column(db.String(100), nullable=True)  
+    # description = db.Column(db.Text, nullable=True)  
+    # email = db.Column(db.String(120), unique=True, nullable=False)  
+    # profile_image = db.Column(db.String(255), nullable=True)
+ 
+
+    # def serialize(self):
+    #     return {
+    #         "id": self.id,
+    #         "name": self.name,
+    #         "age": self.age,
+    #         "location": self.location,
+    #         "description": self.description,
+    #         "email": self.email,
+    #         "profile_image": self.profile_image,
+    #     }
