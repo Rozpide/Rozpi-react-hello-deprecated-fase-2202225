@@ -31,6 +31,7 @@ const Layout = () => {
     const basename = process.env.BASENAME || "";
     
     if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    console.log("Backend URL:", process.env.BACKEND_URL);
 
     return (
         <Fade>
