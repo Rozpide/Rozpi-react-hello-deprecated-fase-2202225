@@ -21,3 +21,39 @@ h4 {
     display: flex;
     align-self: center;
 }
+
+
+.alerta {
+    background: #00444E !important; 
+    color: #FDFDFD !important;
+    border-radius: 10px !important;
+  }
+  
+  .titulo {
+    font-size: 22px !important;
+    font-weight: bold !important;
+  }
+  
+  .boton {
+    background-color: #F1F381 !important; 
+    color: #5c615e !important;
+    border-radius: 5px !important;
+  }
+
+  
+.error-alert {
+    background: #1e293b  !important; 
+    color: white !important;
+    border-radius: 10px !important;
+  }
+  
+  .error-title {
+    font-size: 20px !important;
+    font-weight: bold !important;
+  }
+  
+  .error-button {
+    background-color: #990000; 
+    color: white !important;
+    border-radius: 5px !important;
+  }
