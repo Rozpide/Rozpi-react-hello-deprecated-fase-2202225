@@ -5,6 +5,7 @@ import { Button } from "react-bootstrap";
 import { Loader } from "../component/loader";
 import Swal from "sweetalert2";
 
+
 export const SignUp = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [error, setError] = useState(null);
