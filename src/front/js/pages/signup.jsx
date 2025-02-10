@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/signup.css"
 import { Button } from "react-bootstrap";
 import { Loader } from "../component/loader";
+import Swal from "sweetalert2";
+
 
 export const SignUp = () => {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
@@ -16,26 +18,58 @@ export const SignUp = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+
     
+    
+
     try {
       const response = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
+
+      }); 
+      const data = await response.json(); 
+
       });
       
-      const data = await response.json();
+    
+
 
       if (!response.ok) {
         throw new Error(data.message || "Error al registrar usuario");
       }
+    
+      Swal.fire({
+        title: "Registro exitoso",
+        text: "¡Ahora puedes iniciar sesión!",
+        icon: "success",
+        confirmButtonText: "Aceptar",
+        customClass: {
+          popup: "alerta",
+          title: "titulo",
+          confirmButton: "boton",
+        },
+      });
 
-      alert("Registro exitoso");
-      setError(null); // Limpiar errores previos si los hay
+      
+  
+      setError(null);
       navigate("/login");
+  
     } catch (err) {
-      setError(err.message);
+      Swal.fire({
+        title: "Error",
+        text: err.message,
+        icon: "error",
+        confirmButtonText: "Reintentar",
+        customClass: {
+          popup: "error-alert",
+          title: "error-title",
+          confirmButton: "error-button",
+        },
+      });
     }
   };
   
@@ -62,7 +96,7 @@ useEffect(() => {
   return  (isLoading) ? <Loader /> : (
     <section className="container">
       <h1>Registro</h1>
-      <form onSubmit={handleSubmit}> {/* Se corrige el evento onSubmit */}
+      <form onSubmit={handleSubmit}> {}
         <input
           type="text"
           name="username"

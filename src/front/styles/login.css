@@ -35,3 +35,33 @@ form {
     align-self: center;
     padding: 2rem;
 }
+
+/* css de alerta */
+
+.alerta {
+    background: #2d3748 !important; 
+    color: white !important;
+    border-radius: 10px !important;
+  }
+  
+  .titulo {
+    font-size: 22px !important;
+    font-weight: bold !important;
+  }
+  
+  .boton {
+    background-color: #990000 !important; 
+    color: white !important;
+    border-radius: 5px !important;
+  }
+
+  .swal2-footer a {
+    color: white !important;  
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .swal2-footer a:hover {
+    text-decoration: underline;
+    color: #f0a139 !important; 
+  }
