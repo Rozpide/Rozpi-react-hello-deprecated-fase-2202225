@@ -41,6 +41,8 @@ function runIteration(){
     // se asigna una cookie aleatoria para la llamada
     randomCookieSetter();
     console.log("obteniendo datos de página: ",env.values[0].value);
+    
+    
     // se lanza la llamada
     newman.run({
             collection: require('./postman_scrapG2A/G2A_API.postman_collection.json'),
@@ -65,7 +67,6 @@ function runIteration(){
                                 let resultantBasePrice = item.price.amount + " €"
                                 if (!item.path.includes("account")){
                                     globalResponses.push({
-                                        pagina: currentIteration,
                                         path: item.path,
                                         name: resultantName,
                                         basePrice: resultantBasePrice

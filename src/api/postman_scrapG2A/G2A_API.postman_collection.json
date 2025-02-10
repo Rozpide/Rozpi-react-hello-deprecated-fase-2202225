@@ -13,6 +13,18 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
 							"function sleep(milliseconds) {\r",
 							"  var start = new Date().getTime();\r",
 							"  for (var i = 0; i < 1e7; i++) {\r",
@@ -34,9 +46,7 @@
 							"} else {\r",
 							"    console.error(\"La variable 'page' no es un número válido\");\r",
 							"    return;\r",
-							"}\r",
-							"\r",
-							""
+							"}"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -62,7 +72,7 @@
 					},
 					{
 						"key": "Cookie",
-						"value": "YAAQIFUQYGjZNbaUAQAA8ejg2wII/b+CZoLMaoy7V3u1zOuJQinVs+C/Snqc4goUMXOniMsxsVqwBjnfOr7/BH8tZR3wZL6Q0CLL0BAl3mgk46LXS5lVKB4f8SALG4BCBI6gI7xLpgV1T/jQR41pq/pqKYXakWMU0NVIoS/0s0J07V3F7O4c3bENtWzFmCk6AaRogZVBkFZhSPnp2cCC3eqiRE6hmB9AlI1lI9PSny7LxA7u0ytXgS/G0JwGyITltQhu4B5BGyGH9rCmDjd2Oss8z4hjr/J5Zmemm0GNu4ALPwvc+SQukXO7U5S7i/mlU1g/2VMGxP79PrFRWUVOCEURsp7iDCmF30fvXtlbhLG23KQvAXNtupeEaQPvWz8el0QYuoC6zgfhTtQe8UPyN9tPUitRVeW+3nWXfyBNwH6y+RTLFfqgeifjxHS0/Jt+wykPu1irTGma; _abck=A70B1A1372DB523C7CD759C6BED9AF24~-1~YAAQIFUQYB7Qb7eUAQAAElUk5Q0r7L3yqvTjIWNGCUnwBiKe80R/OWr3fjCtSOXaeXB0ofEY0pF2nRDxAcfcSi5H4i+0YivMma2Nz2vWF0TPlAqCNGxarISUWZ4mN2vE+sjR5Peo5rClwXiDLnSgZZNTNijlnm5zVAFOv/rshRINm+63+we5yhH/TfRQofzNvVlFiztqLlAbgEb3vMsDHp6MOlrQjZ4JDnN1VoELu5EVDRXOwxz8gDWqkYj9i70XNuybz7Vy+Uee7+UBX08T/w75nurOADaKSiNK202X0rIfiAvhW30ZOp/KpAhN1avDV3sRBq8p2AjLsTbXaaeFjdKIqMAbYcSty4lFDLD32pKHqcxsV/Yc8XRm7ZeWsw6+QW0+chVfFMvCRi+joOztlT2hK9iBugEph/CkckvhJbMym7zleZq8rw3uDzHsQa8hIxiKpw==~-1~-1~-1; bm_s=YAAQIFUQYGbHcreUAQAA/fI15QJD6c4WXyWvdW28zhzSPjWzsmXoTP1VViqQ63NQXkFTWYrLoJ+MDEXsLptGrQCR/BPjMgSCm1THW1gfSYC0RX0vljRhG0t9bEZyr0q8w/7Lmtrf5mg0ZjDNu9+jU0GFdgLZQEv5KsOdNbeO3I4NtSRPFBZyXDDlFxoA4FexQWXUOpT3VaxvB4Y+4En6uU+XvDMw3hdPMkVZS578llFlc+7txejZw21CEYzOquL+QUuIdYKvg0WVQD5HJt2UArpqhx31dwgYftvqacdeMVVC/8xBNhsyiwpXOwnzIZYvUuBQVfSMSuaJID9ieJrvmzHDJAQOIGddia5zO8+zpOOcWb6bQs/7IOI6XrOfD0djLFRyd3Ti6q3PS1iWqaR5Xj8XwMQLxEjHevYCT5yhB6kyr/EDmiFzurB2yAvnDyultkb51MgHDuIL; bm_ss=ab8e18ef4e; bm_sz=0A43C08A3CED426C3929BEDB50F4E547~YAAQIFUQYGfHcreUAQAA/fI15RpnMsBgzqUZjwHYoawVO2KUGavH+rPQOz/IyR05IIG7LlW979PpBQeLuyKKIrzxlsW7WskXHa1wmsoLoHurUdCHMjreyFxs/kvVpTKYL69pRA5IdpyT7ixtn0p8LLFn7l8ZPi9aj7UPII97uO68b/StdZQ55kKy3UfVyrK2JHiRzx+UrMVxtJ40XUFKWrP0CUK9akqdiCJ0IeagNOAbquVRU9HBNc8H8k1x2U4uvqqNigOKK4q2ehntKVtAr6ts2L+LbZeZgCdE4lDqvfldAPYTT74nHvl5DkMh9/oQYeq4BwX2DzJw5fi8RQ2FcK3+/Zx7FzLS8aA21n1f9A0nVIHNLtHn2yjr7ulrKMO1D+gyfIbo8xjYFpcjGwC/kQZagkUmaYPVB4Ep0diAkBOhJvxkM9lCgBjx2G2cpyPYjLDYEmwWT+E=~3159107~3752502",
+						"value": "YAAQIFUQYGjZNbaUAQAA8ejg2wII/b+CZoLMaoy7V3u1zOuJQinVs+C/Snqc4goUMXOniMsxsVqwBjnfOr7/BH8tZR3wZL6Q0CLL0BAl3mgk46LXS5lVKB4f8SALG4BCBI6gI7xLpgV1T/jQR41pq/pqKYXakWMU0NVIoS/0s0J07V3F7O4c3bENtWzFmCk6AaRogZVBkFZhSPnp2cCC3eqiRE6hmB9AlI1lI9PSny7LxA7u0ytXgS/G0JwGyITltQhu4B5BGyGH9rCmDjd2Oss8z4hjr/J5Zmemm0GNu4ALPwvc+SQukXO7U5S7i/mlU1g/2VMGxP79PrFRWUVOCEURsp7iDCmF30fvXtlbhLG23KQvAXNtupeEaQPvWz8el0QYuoC6zgfhTtQe8UPyN9tPUitRVeW+3nWXfyBNwH6y+RTLFfqgeifjxHS0/Jt+wykPu1irTGma",
 						"type": "text"
 					},
 					{
@@ -87,7 +97,7 @@
 					}
 				],
 				"url": {
-					"raw": "https://www.g2a.com/search/api/v3/products?itemsPerPage=50&include[0]=filters&include[1]=frodo&currency=EUR&isWholesale=false&category=189&f[platform][0]=1&sort=bestsellers-first&page={{page}}",
+					"raw": "https://www.g2a.com/search/api/v3/products?itemsPerPage=50&include[0]=filters&include[1]=frodo&currency=EUR&isWholesale=false&f[device][0]=1118&f[platform][0]=1&f[region][0]=8355&f[type][0]=10&f[type][1]=8&page={{page}}&sort=bestsellers-first&category=189&",
 					"protocol": "https",
 					"host": [
 						"www",
@@ -122,20 +132,40 @@
 							"value": "false"
 						},
 						{
-							"key": "category",
-							"value": "189"
+							"key": "f[device][0]",
+							"value": "1118"
 						},
 						{
 							"key": "f[platform][0]",
 							"value": "1"
 						},
 						{
-							"key": "sort",
-							"value": "bestsellers-first"
+							"key": "f[region][0]",
+							"value": "8355"
+						},
+						{
+							"key": "f[type][0]",
+							"value": "10"
+						},
+						{
+							"key": "f[type][1]",
+							"value": "8"
 						},
 						{
 							"key": "page",
 							"value": "{{page}}"
+						},
+						{
+							"key": "sort",
+							"value": "bestsellers-first"
+						},
+						{
+							"key": "category",
+							"value": "189"
+						},
+						{
+							"key": "",
+							"value": null
 						}
 					]
 				}
