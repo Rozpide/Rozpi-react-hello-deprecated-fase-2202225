@@ -4,6 +4,7 @@ import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import { AboutUs } from "./pages/aboutUs.jsx";
 import { SignUp  } from "./pages/signup.jsx";
+import { Admin  } from "./pages/admin.jsx";
 import { Login } from "./pages/login.jsx";
 import injectContext from "./store/appContext";
 import { Footer } from "./component/footer";
@@ -21,9 +22,6 @@ import { useState } from "react";
 
 import { CloudinaryImage } from "./pages/cloudinary.jsx";
 
-
-
-
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -31,6 +29,7 @@ const Layout = () => {
     const basename = process.env.BASENAME || "";
     
     if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    console.log("Backend URL:", process.env.BACKEND_URL);
 
     return (
         <Fade>
@@ -49,6 +48,7 @@ const Layout = () => {
                             <Route path="favorites" element={<Favorites />} />
                             <Route path="cart" element={<Cart />} />
                         </Route>
+                        <Route path="admin" element={<Admin />} />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                 </ScrollToTop>
