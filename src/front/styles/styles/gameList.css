@@ -1,0 +1,51 @@
+.game-list-container {
+    width: 90%;
+    margin: auto;
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.filters button {
+    padding: 10px;
+    background: lightgray;
+    border: none;
+    cursor: pointer;
+}
+
+.advanced-search {
+    background: black;
+    color: white;
+}
+
+.games-table {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.game-row {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.game-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.game-info {
+    flex-grow: 1;
+}
+
+.favorite-btn, .price-btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+}

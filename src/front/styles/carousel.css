@@ -1,0 +1,30 @@
+.carousel-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.carousel {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.carousel-items {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+.carousel-item img {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.carousel-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
