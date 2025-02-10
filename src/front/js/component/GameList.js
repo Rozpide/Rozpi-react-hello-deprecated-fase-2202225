@@ -9,10 +9,12 @@ export const GameList = () => {
     return (
         <div className="game-list-container">
             <div className="filters">
-                <button>Rating</button>
-                <button>Relevancia</button>
-                <button>Precio</button>
-                <button>Sorpréndeme</button>
+            <div className="filter-group">
+        <button>Rating</button>
+        <button>Relevancia</button>
+        <button>Precio</button>
+        <button>Sorpréndeme</button>
+            </div>
                 <button className="advanced-search">Búsqueda avanzada</button>
             </div>
             <div className="games-table">
