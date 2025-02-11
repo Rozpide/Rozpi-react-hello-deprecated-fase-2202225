@@ -1,8 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship, declarative_base
+
+Base = declarative_base()
 
 db = SQLAlchemy()
 
 class User(db.Model):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=True)  
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -27,3 +32,31 @@ class User(db.Model):
             "profileImage": self.profile_image,
             # do not serialize the password, its a security breach
         }
+    
+
+class Product(db.Model):
+    __tablename__ = 'product'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=True)
+    price = db.Column(db.Integer, nullable=True)  
+    description = db.Column(db.Text, nullable=True)    
+    profile_image = db.Column(db.String(255), nullable=True)
+
+    def __repr__(self):
+        return f'<User {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "price": self.price,
+            "description": self.description,
+            "profileImage": self.profile_image,
+        }
+    
+    
+class Cart(Base):
+    __tablename__ = 'cart'
+    id = Column(Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
+    product = db.relationship(Product)

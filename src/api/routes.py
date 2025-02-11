@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
+from api.models import db, User, Product, Cart
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -75,3 +75,27 @@ def update_profile():
     db.session.commit()
 
     return jsonify({"msg": "Perfil actualizado correctamente"}), 200
+
+
+@api.route('/shop', methods=['GET'])
+def get_products():
+    product = Product.query.all()
+    serialized_product = list([product.serialize() for product in product])
+    print(serialized_product)
+    if not product:
+        return jsonify({"msg": "no product found"}), 404
+    else:
+        return jsonify(serialized_product), 200
+    
+
+@api.route('/cart', methods=['GET'])
+def get_cart():
+    cart = Cart.query.all()
+    serialized_cart = list([cart.serialize() for cart in cart])
+    print(serialized_cart)
+    if not cart:
+        return jsonify({"msg": "no cart found"}), 404
+    else:
+        return jsonify(serialized_cart), 200
+    
+
