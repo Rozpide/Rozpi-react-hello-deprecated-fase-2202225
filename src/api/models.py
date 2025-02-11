@@ -64,7 +64,7 @@ class Tags(db.Model):
             "games": [game.games_serialize() for game in self.games] if self.games else None
         }
 
-    def game_serialize(self):
+    def game_tag_serialize(self):
         return {
             "tag_name": self.tag_name,
         }
@@ -97,7 +97,7 @@ class Games(db.Model):
             "g2a_price": self.g2a_price,
             "g2a_url": self.g2a_url,
             "steam_price": self.steam_price,
-            "game_tags": [tag.game_serialize() for tag in self.game_tags] if self.game_tags else None
+            "game_tags": [tag.game_tag_serialize() for tag in self.game_tags] if self.game_tags else None
         }
 
     def games_serialize(self):
