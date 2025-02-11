@@ -55,9 +55,9 @@ const CloudinaryUploadWidget = ({ folder, setImageURL }) => {
     <button
       ref={uploadButtonRef}
       id="upload_widget"
-      className="cloudinary-button"
+      className="cloudinary-button btn btn-primary btn-block"
     >
-      Upload
+      Upload Image
     </button>
   );
 };
