@@ -94,6 +94,17 @@ export const Profile = () => {
     fetchProfileData();
   }, []);
 
+    const eliminarToken = () => {
+      if (localStorage.getItem('token')) {
+          localStorage.removeItem('token');
+          console.log('Token eliminado');
+          alert('Has cerrado sesión correctamente');
+      } else {
+          console.log('No hay token almacenado');
+          alert('Primero inicia sesión');
+      }
+  }
+
 
   return (
     <Card className="profile-card" style={{ maxWidth: '18rem', margin: 'auto' }}>
@@ -206,6 +217,8 @@ export const Profile = () => {
             </div>
 
             <button onClick={() => setIsEditing(true)} className="btn btn-primary btn-block">Editar Perfil</button>
+            <br></br>
+            <button onClick={eliminarToken}>Log out</button>
           </>
         )}
       </Card.Body>

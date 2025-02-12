@@ -62,7 +62,6 @@ export const Login = () => {
     <>
       <section className="container">
         <h1>Log in</h1>
-
         <form
           className="formulario"
           onSubmit={handleSubmit}

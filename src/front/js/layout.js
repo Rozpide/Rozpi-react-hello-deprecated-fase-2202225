@@ -9,13 +9,13 @@ import { Login } from "./pages/login.jsx";
 import injectContext from "./store/appContext";
 import { Footer } from "./component/footer";
 import { Home } from "./pages/home.jsx";
-import { Newsletter } from "./pages/newsletter.jsx";
 import { Tienda } from "./pages/tienda.jsx";
 import { Profile } from "./pages/protected/profile.jsx";
 import { Favorites } from "./pages/protected/favorites.jsx";
 import { Cart } from "./pages/protected/cart.jsx";
 import { Fade } from "react-reveal";
 import { TopNavbar } from "./component/topNavbar.js";
+import { Slidetobuy } from "./pages/Slidetobuy.jsx";
 
 import { ProtectedRoute } from "./pages/session.jsx";
 import { useState } from "react";
@@ -41,6 +41,7 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<SignUp  />} path="/signup" />
                         <Route element={<Login />} path="/login" />
+                        <Route element={<Slidetobuy />} path="/slidetobuy" />
                         <Route element={<AboutUs />} path="/aboutUs" />
                         <Route element={<CloudinaryImage />} path="/cloudinary" />
                         <Route path="/session" element={<ProtectedRoute />}>
