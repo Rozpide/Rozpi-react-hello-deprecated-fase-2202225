@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
+from api.models import db, User, Games, Tags, Favourites
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -62,7 +62,8 @@ def post_game():
         steam_price = request_data.get('steamPrice'),
         game_tags = tags
     )
-    
+    db.session.add(result)
+    db.session.commit()
     return jsonify(result.serialize()), 200
 
 
