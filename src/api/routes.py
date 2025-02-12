@@ -15,7 +15,7 @@ api = Blueprint('api', __name__)
 # jwt = JWTManager(api)
 
 # Allow CORS requests to this API
-CORS(api)
+CORS( api )
 
 @api.route("signup", methods=["POST"])
 def create_token():
@@ -76,26 +76,47 @@ def update_profile():
 
     return jsonify({"msg": "Perfil actualizado correctamente"}), 200
 
+# ----------------------------------------------------------------------
 
-@api.route('/shop', methods=['GET'])
+@api.route('products', methods=['GET'])
 def get_products():
-    product = Product.query.all()
-    serialized_product = list([product.serialize() for product in product])
-    print(serialized_product)
-    if not product:
-        return jsonify({"msg": "no product found"}), 404
-    else:
-        return jsonify(serialized_product), 200
+    products = Product.query.all()
+    # Retornamos una lista (vacía en caso de no haber productos) con la serialización de cada producto.
+    return jsonify([p.serialize() for p in products]), 200
+
+
+@api.route('products', methods=['POST'])
+def create_product():
+    data = request.get_json()
+    try:
+        new_product = Product(
+            name=data.get('name'),
+            price=data.get('price'),
+            description=data.get('description'),
+            image_url=data.get('image_url')
+        )
+        db.session.add(new_product)
+        db.session.commit()
+        return jsonify({
+            "msg": "Product created successfully",
+            "product": new_product.serialize()
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
+
     
 
-@api.route('/cart', methods=['GET'])
+@api.route('cart', methods=['GET'])
 def get_cart():
-    cart = Cart.query.all()
-    serialized_cart = list([cart.serialize() for cart in cart])
-    print(serialized_cart)
-    if not cart:
-        return jsonify({"msg": "no cart found"}), 404
-    else:
-        return jsonify(serialized_cart), 200
+    carts = Cart.query.all()
+    def serialize(self):
+        return {
+            "id": self.id,
+            "product": self.product.serialize() if self.product else None
+        }
+    serialized_cart = [c.serialize() for c in carts]
+    # Retornamos una lista, incluso si está vacía.
+    return jsonify(serialized_cart), 200
     
 

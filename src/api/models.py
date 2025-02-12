@@ -37,13 +37,13 @@ class User(db.Model):
 class Product(db.Model):
     __tablename__ = 'product'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=True)
-    price = db.Column(db.Integer, nullable=True)  
-    description = db.Column(db.Text, nullable=True)    
-    profile_image = db.Column(db.String(255), nullable=True)
+    name = db.Column(db.String(100), nullable=False)         # Antes: nombre
+    price = db.Column(db.Float, nullable=False)                # Antes: precio
+    description = db.Column(db.Text, nullable=False)           # Antes: descripcion
+    image_url = db.Column(db.String(255), nullable=False)        # Antes: imagen_url
 
     def __repr__(self):
-        return f'<User {self.name}>'
+        return f'<Product {self.name}>'
 
     def serialize(self):
         return {
@@ -51,12 +51,28 @@ class Product(db.Model):
             "name": self.name,
             "price": self.price,
             "description": self.description,
-            "profileImage": self.profile_image,
+            "image_url": self.image_url
         }
     
     
-class Cart(Base):
+class Cart(db.Model):
     __tablename__ = 'cart'
-    id = Column(Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
-    product = db.relationship(Product)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    
+    quantity = db.Column(db.Integer, nullable=False, default=1)
+    user = db.relationship("User", backref=db.backref("cart_items", lazy=True))
+    product = db.relationship("Product")
+    
+    def __repr__(self):
+        return f'<Cart {self.id} - Product {self.product_id} - Qty {self.quantity}>'
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user": self.user.serialize() if self.user else None,
+            "product": self.product.serialize() if self.product else None,
+            "quantity": self.quantity
+        }
