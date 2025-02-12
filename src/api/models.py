@@ -144,7 +144,6 @@ class Matches(db.Model):
             "participants_match": [participant.serialize() for participant in self.participants_match] if self.participants_match else None
     }
 
-
 class Teams(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)

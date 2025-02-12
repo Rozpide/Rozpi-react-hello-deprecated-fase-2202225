@@ -246,7 +246,7 @@ def edit_host():
     
 
 
-# /////////////////////////////////////CHECK TIPO USUARIO/////////////////////////////////////
+# //_________________________________________CHECK TIPO USUARIO_________________________________________
 
 @api.route('/check', methods=['GET'])
 @jwt_required()
@@ -262,7 +262,7 @@ def checkUser():
     
     
 
-# /////////////////////////////////////////TOURNAMENT/////////////////////////////////////////
+# //_________________________________________TOURNAMENT_________________________________________
 
 @api.route('/tournaments', methods=['POST'])
 @jwt_required()
@@ -373,7 +373,7 @@ def delete_tournament(id):
 
 
 
-# /////////////////////////////////////////PARTICIPANTS/////////////////////////////////////////
+# //_________________________________________PARTICIPANTS_________________________________________
 
 @api.route('/tournaments/<int:tournament_id>/participate', methods=['POST'])        #POST todos los participantes de un torneo
 @jwt_required()
@@ -638,7 +638,7 @@ def get_teams_by_tournament(tournament_id):
 
 
 
-# //////////////////////////////////////MATCH & MATCH_PARTICIPANTS//////////////////////////////////////
+# //_________________________________________MATCH & MATCH_PARTICIPANTS_________________________________________
 
 @api.route('/tournaments/<int:tournament_id>/matches', methods=['POST'])  # POST de las tablas de match de un torneo
 @jwt_required()
@@ -725,7 +725,7 @@ def get_matches_by_tournament(tournament_id):
 
 
 
-# /////////////////////////////////////////CLOUDINARY/////////////////////////////////////////
+# //_________________________________________CLOUDINARY_________________________________________
 
 @api.route('/upload', methods=['POST'])
 def upload():
@@ -738,7 +738,7 @@ def upload():
 
 
 
-# /////////////////////////////////////////LOGOUT/////////////////////////////////////////
+# //_________________________________________LOGOUT_________________________________________
 blacklisted_tokens = set()
 
 @api.route('/logout', methods=['POST'])
