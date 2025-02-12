@@ -107,7 +107,7 @@ export const Profile = () => {
 
 
   return (
-    <Card className="profile-card" style={{ maxWidth: '18rem', margin: 'auto' }}>
+    <Card className="profile-card" style={{ maxWidth: '18rem', margin: 'auto', height: '100%' }}>
       <Card.Img
         variant="top"
         src={profileData.profileImage || defaultProfileImage}
@@ -115,7 +115,6 @@ export const Profile = () => {
         className="rounded-circle"
         style={{ objectFit: 'cover', width: '140px', height: '170px', margin: '0 auto' }}
       />
-
       <Card.Body>
         {isEditing ? (
           <>
@@ -142,7 +141,6 @@ export const Profile = () => {
                 className="form-control mb-2"
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="location">Ubicación</label>
               <input
@@ -221,6 +219,7 @@ export const Profile = () => {
             <button onClick={eliminarToken}>Log out</button>
           </>
         )}
+          
       </Card.Body>
     </Card>
   );
