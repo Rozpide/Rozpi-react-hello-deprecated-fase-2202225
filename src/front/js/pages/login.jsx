@@ -49,7 +49,7 @@ export const Login = () => {
     
     const inicioLoader = async () => {
       setIsLoading(true);
-        await waitingWearever();
+        await waitingWarever();
         setIsLoading(false);
     
     }
