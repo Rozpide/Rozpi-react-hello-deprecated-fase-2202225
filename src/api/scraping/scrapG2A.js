@@ -44,10 +44,6 @@ let cookies = ["YAAQIFUQYGjZNbaUAQAA8ejg2wII/b+CZoLMaoy7V3u1zOuJQinVs+C/Snqc4goU
     "YAAQIFUQYGjZNbaUAQAA8ejg2wII/b+CZoLMaoy7V3u1zOuJQinVs+C/Snqc4goUMXOniMsxsVqwBjnfOr7/BH8tZR3wZL6Q0CLL0BAl3mgk46LXS5lVKB4f8SALG4BCBI6gI7xLpgV1T/jQR41pq/pqKYXakWMU0NVIoS/0s0J07V3F7O4c3bENtWzFmCk6AaRogZVBkFZhSPnp2cCC3eqiRE6hmB9AlI1lI9PSny7LxA7u0ytXgS/G0JwGyITltQhu4B5BGyGH9rCmDjd2Oss8z4hjr/J5Zmemm0GNu4ALPwvc+SQukXO7U5S7i/mlU1g/2VMGxP79PrFRWUVOCEURsp7iDCmF30fvXtlbhLG23KQvAXNtupeEaQPvWz8el0QYuoC6zgfhTtQe8UPyN9tPUitRVeW+3nWXfyBNwH6y+RTLFfqgeifjxHS0/Jt+wykPu1irTGma; _abck=A70B1A1372DB523C7CD759C6BED9AF24~-1~YAAQIFUQYAajybmUAQAAQ22w9Q2JKRK8arA+c3OK7GZWkI2Ot/IflKc7xN1BZpu8Le5tI5f15XPKb/7nEtC5BhZd8Ro7WSktXKBennflsptFX4P7oryw3vQRY0+xAdf1uk4DiQ4R90el/8ljnXnczC6khACIsz5oCykmuKcP69YsbBBG+auY58durWEi/zNSqYE/cPziuk5aB3kZ/dZv5v9polVQlyXRAhOQyjBaU+QkjE5GgnowaURhY2DAqzgAisV0n2Hxeg+MOS0cADvOrcPuHKU9pQFhavKacK0VE1tO7ufzNH4fWJnnG+d3I0DlG/EIZcYpaZ2k6HquXD+C2WF26a4UjNE9GHP/zmO5IpwCCGtRRERIs5tp6TeHZEWJatGU6ZRdx48lety78uTOMJXrPOYCLpZL9XL18vrvgpGni5+QUzYBvLgaGhlaT5wP2CHiMw==~-1~-1~-1; bm_s=YAAQIFUQYOhiyrmUAQAAaN+z9QJ62c3jf7LUSa8E5tDye2+QiGlZU5K+sLk08zo4gg9A2f4Ze1P2R++RXVupPnFLb3GBEJ58CzPW1FXR5vA+4A2iSV6K/r5WeGfHRdoIH8WiiRhIO8mxrOmZ94/Uh7kpaaWR+2toYC6DMXTSolG/CciBYqJoMyTgS/50jOhpc8J8a0BoiRp1L5Nvhklwvz22OzgfcTMg/uu5+2XnTnbG6BH89aNFTMx6OD04yDrDyqkqfwZHAmV4fO5WT01qZbqfC168bqZBPe285gdqVNufsWNwRgaf+H89J8qDlpMs8dOsMk3EEZw+MQSlhEYk4s29yPCEZteGuCfTsm6WbcMAWcDjDBZYolP+EzWzJDIvT6BK4/yV8AxBaP6cq7tO27ZmJe3Ly0qM+IIYzDZgU9IjNP+tQtPq17xUvZujpevYhZlZMhw9jBLb; bm_ss=ab8e18ef4e; bm_sz=8C67A602A30D5B2F1AF3102ABF0D85F0~YAAQIFUQYOliyrmUAQAAaN+z9RrXq0hS4T+b4CRAc1D/Ar+vQU/pPBwzkLyYD4u1+FJiBzw7nIeP+9FOCpFAcqXkv2ilJbaE6m/xsWgeMMAsHWl13Jr3KDSye2TDUUdJmSJsdbBIeGrF+7nYIj5m6DoKbysTOjwnJyqdDimUc7VpQKl0q55beCFZZ+p6CDVG4vSLoXiR5QE06lGm9o6QBTy05hffiKsSwACNNjVm5cE6UFydzP61xInvoKLW2oeFzDBAbWLt6WgxrqFv88sbiA+otcUAmgIE+EK1eRwnXn7VJdbvovdm1de574HRllWB5sN8YxQMS4HTbJQ/b7K6PRgnR+zdzodewwE0wQIXVyX84VYR0tIiHJbljyxD9QnwL+d5R/tID9PkQVFso9nG5QqcrMveza6SSC9wdQgYyvpFrmZPyel0bfufChlRaam5IC1lT9I=~4604227~3683138"
 ]
 
-// variables que manejan que página se llama de la API junto con variable donde se almacenan los datos
-const maxIterations = 10;
-let currentIteration = 1;
-let globalResponses = [];
 
 // función para asignar una cookie aleatoria para la llamada del array de cookies
 function randomCookieSetter(){
@@ -63,11 +59,14 @@ function randomNumber(){
 }
 
 export async function runIteration() {
+    // variables que manejan que página se llama de la API junto con variable donde se almacenan los datos
+    const maxIterations = 50;
+    let currentIteration = 1;
+    let globalResponses = [];
     while (currentIteration <= maxIterations) {
         console.log("obteniendo datos de página:", currentIteration);
         env.values[0].value = currentIteration;
         randomCookieSetter();
-
         try {
             await new Promise((resolve, reject) => {
                 newman.run({
@@ -129,9 +128,8 @@ export async function runIteration() {
     }
 
     // Save results after finishing iterations
-    fs.writeFileSync('responses.json', JSON.stringify(globalResponses, null, 2), 'utf8');
-    console.log('Archivo responses.json generado con los datos filtrados.');
+    // fs.writeFileSync('responses.json', JSON.stringify(globalResponses, null, 2), 'utf8');
+    // console.log('Archivo responses.json generado con los datos filtrados.');
+    
     return globalResponses;
 }
-
-runIteration()

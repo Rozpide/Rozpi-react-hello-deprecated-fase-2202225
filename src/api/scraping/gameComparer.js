@@ -1,12 +1,12 @@
 import {runIteration} from "./scrapG2A.js";
-import {saveDataToJson} from "./scrapSteam.js";
-import { writeFileSync } from 'fs';
+import {scrapeSteamData} from "./scrapSteam.js";
+import {writeFileSync} from 'fs';
 
 
 async function main() {
     try {
         // Run the async operations
-        const jsonSteamDumpData = await saveDataToJson(); // Data from Steam
+        const jsonSteamDumpData = await scrapeSteamData(); // Data from Steam
         const jsonG2AData = await runIteration();        // Data from G2A
         console.log('G2A Data:', jsonG2AData);
 

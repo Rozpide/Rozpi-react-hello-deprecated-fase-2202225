@@ -94,8 +94,8 @@ async function Xe() {
             // Create an object using the values we just read
             d[a] = new $(v, y, E, E + u, o, h, g, w, x, N);
         }
-        
-        return d.filter(game => game.votes > 1000 && game.price !== 0);;  // Return the array of objects over 500 votes
+        // IMPORTANT FILTER, determines total number of games scraped from steam
+        return d.filter(game => game.votes > 1000 && game.price !== 0);  //Return the array of game objects over 500 votes and not free
     } else {
         return [];  // Return an empty array if the expected identifier is not found
     }
@@ -134,7 +134,7 @@ function Ce(e) {
 Xe().then(data => console.log("Extracted dump.br")).catch(err => console.error(err));
 
 
-export async function saveDataToJson() {
+export async function scrapeSteamData() {
     try {
         const data = await Xe(); // Fetch processed data
         
@@ -160,4 +160,4 @@ export async function saveDataToJson() {
     }
 }
 
-saveDataToJson();
+scrapeSteamData();
