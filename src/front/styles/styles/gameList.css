@@ -1,0 +1,117 @@
+/* Contenedor general */
+.game-list-container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Filtros alineados en fila */
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filters button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.filters button:hover {
+    background: #ddd;
+}
+
+/* Lista de juegos con bordes */
+.games-table {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fff;
+}
+
+/* Fila de cada juego */
+.game-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 15px;
+}
+
+/* Imagen del juego */
+.game-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 15px;
+}
+
+/* Información del juego */
+.game-info {
+    flex-grow: 1;
+}
+
+/* Botones alineados a la derecha */
+.game-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.favorite-btn,
+.price-btn {
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+}
+
+.price-btn {
+    border: 1px solid #000;
+    background: #fff;
+    font-weight: bold;
+}
+
+
+/* Contenedor de filtros con flexbox */
+.filters {
+    display: flex;
+    justify-content: space-between; /* Separa los grupos a izquierda y derecha */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Grupo de botones alineados a la izquierda */
+.filter-group {
+    display: flex;
+    gap: 10px; /* Espaciado entre botones */
+}
+
+/* Estilo de los botones */
+.filters button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f0f0f0;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.filters button:hover {
+    background: #ddd;
+}
+
+/* Alineación de Búsqueda Avanzada a la derecha */
+.advanced-search {
+    margin-left: auto; /* Empuja el botón a la derecha */
+}
