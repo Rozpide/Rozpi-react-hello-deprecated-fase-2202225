@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import { Loader } from "../component/loader";
+import Tinderslider from '../component/tinderSlider';
 
 
-export const Newsletter = () => {
+export const Slidetobuy = () => {
 
   const [isLoading, setIsLoading] = useState(false);
         useEffect(() => {
@@ -26,6 +27,6 @@ export const Newsletter = () => {
 
 
   return (isLoading) ? <Loader /> : (
-    <h1>Newsletter</h1>
+    <Tinderslider />
   )
 }

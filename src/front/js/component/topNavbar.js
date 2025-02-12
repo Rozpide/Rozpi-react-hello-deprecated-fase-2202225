@@ -24,7 +24,7 @@ export const TopNavbar = () => {
                     <Navbar.Collapse id="navbarScroll">
                         <Nav>
                             <Nav.Link className='linkButtom' href="/">Home</Nav.Link>
-                            <Nav.Link className='linkButtom' href="/newsletter">Newsletter</Nav.Link>
+                            <Nav.Link className='linkButtom' href="/slidetobuy">Slide to Buy</Nav.Link>
                             <Nav.Link className='linkButtom' href="/tienda">Shop</Nav.Link>
                             <Nav.Link className='linkButtom' href="/aboutUs">About us</Nav.Link>
                             <Nav.Link className='linkButtom' href=""></Nav.Link>
