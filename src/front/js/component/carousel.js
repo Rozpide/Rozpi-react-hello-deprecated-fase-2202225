@@ -8,7 +8,7 @@ export const Carousel = ({ title, games }) => {
             <div className="carousel">
                 <button className="carousel-btn left">{"<"}</button>
                 <div className="carousel-items">
-                    {games?.map((game, index) => (//puede ser un valor nulo agrego?
+                    {games?.map((game, index) => (// It can be null, so add a ?
                         <div key={index} className="carousel-item">
                             <img src={game.image} alt={game.name} />
                         </div>

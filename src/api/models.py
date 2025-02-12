@@ -1,8 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey, Table, String, DateTime, Integer, Float
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, relationship, mapped_column 
 from typing import List
 from datetime import datetime
+
+
 
 db = SQLAlchemy()
 
