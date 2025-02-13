@@ -79,7 +79,7 @@ def get_all_tags():
     return jsonify(response_body), 200
 
 def fetch_steam_data():
-    url = "https://store.steampowered.com/api/appdetails?appids=746"
+    url = "https://store.steampowered.com/api/appdetails?appids=57690"
     response = requests.get(url)  
     if response.status_code == 200:
         return response.json()
