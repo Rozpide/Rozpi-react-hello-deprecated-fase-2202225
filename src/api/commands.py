@@ -33,7 +33,9 @@ def setup_commands(app):
     # $ flask insert-game-data
     @app.cli.command("insert-game-data")
     def insert_game_data():
-        counter = 0
+        added_games_counter = 0
+        modified_games_counter = 0
+
         with open("src/api/scraping/matchedGames.json") as file:
             data = json.load(file)
             for game_data in data:
@@ -42,8 +44,26 @@ def setup_commands(app):
                 existing_game = db.session.query(Games).filter_by(name=game_name).first()
 
                 if existing_game:
-                    print(f"Game '{game_name}' already exists, skipping.")
-                    continue
+                    print(f"Game '{game_name}' already exists")
+                    updated = False
+                    
+                    if game_data.get("g2aPrice") != existing_game.g2a_price:
+                        existing_game.g2a_price = game_data.get("g2aPrice")
+                        updated = True
+
+                    if game_data.get("steamPrice") != existing_game.steam_price:
+                        existing_game.steam_price = game_data.get("steamPrice")
+                        updated = True
+
+                    if game_data.get("g2aUrl") != existing_game.g2a_url:
+                        existing_game.g2a_url = game_data.get("g2aUrl")
+                        updated = True
+
+                    if updated:
+                        db.session.commit()
+                        modified_games_counter += 1
+                    
+                    continue 
 
                 game = Games()
                 game.name = game_name
@@ -61,7 +81,11 @@ def setup_commands(app):
                 counter+=1
                 db.session.add(game)
                 db.session.commit()
-            print(f"Added {counter} games to the database")
+            print(f"Added {added_games_counter} games to the database")
+            print(f"Added {modified_games_counter} games to the database")
+        
+
+
 
     @app.cli.command("delete-all-game-data")
     def delete_all_game_data():
