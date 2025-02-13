@@ -133,16 +133,16 @@ def post_tag():
         
     return jsonify({"Added tags": added_tags})
 
-def fetch_steam_data():
-    url = "https://store.steampowered.com/api/appdetails?appids=57690"
+def fetch_steam_data(appId):
+    url = f"https://store.steampowered.com/api/appdetails?appids={appId}"
     response = requests.get(url)  
     if response.status_code == 200:
         return response.json()
     return None
 
-@api.route('/steam/test', methods=['GET'])
-def get_steam_data():
-    data = fetch_steam_data()
+@api.route('/steam/<int:appId>', methods=['GET'])
+def get_steam_data(appId):
+    data = fetch_steam_data(appId)
     
     if data:
         response = jsonify(data)
