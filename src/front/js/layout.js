@@ -55,6 +55,7 @@ const Layout = () => {
                 </ScrollToTop>
             </BrowserRouter>
         </div>
+        <Footer />
         </Fade>
     );
 };
