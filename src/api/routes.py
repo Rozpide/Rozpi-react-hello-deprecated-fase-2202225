@@ -76,7 +76,7 @@ def post_game():
         game_tags = tags
     )
     db.session.add(result)
-    # db.session.commit()
+    db.session.commit()
     return jsonify(result.serialize()), 201
 
 
@@ -99,7 +99,6 @@ def post_tag():
     tags = request_data.get("tags")
     if not isinstance(tags, list):
             return jsonify({"error": "tags must be a list"}), 400
-    # print(tags)
     added_tags = []
     for tag in tags:
         try:
