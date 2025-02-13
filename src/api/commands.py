@@ -1,6 +1,7 @@
 
 import click
-from api.models import db, User
+from api.models import db, User, Games
+import json
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
@@ -29,6 +30,70 @@ def setup_commands(app):
 
         print("All test users created")
 
-    @app.cli.command("insert-test-data")
-    def insert_test_data():
-        pass
+    # $ flask insert-game-data
+    @app.cli.command("insert-game-data")
+    def insert_game_data():
+        added_games_counter = 0
+        modified_games_counter = 0
+
+        with open("src/api/scraping/matchedGames.json") as file:
+            data = json.load(file)
+            for game_data in data:
+                game_name = game_data.get("name")
+
+                existing_game = db.session.query(Games).filter_by(name=game_name).first()
+
+                if existing_game:
+                    print(f"Game '{game_name}' already exists")
+                    updated = False
+                    
+                    if game_data.get("g2aPrice") != existing_game.g2a_price:
+                        existing_game.g2a_price = game_data.get("g2aPrice")
+                        updated = True
+
+                    if game_data.get("steamPrice") != existing_game.steam_price:
+                        existing_game.steam_price = game_data.get("steamPrice")
+                        updated = True
+
+                    if game_data.get("g2aUrl") != existing_game.g2a_url:
+                        existing_game.g2a_url = game_data.get("g2aUrl")
+                        updated = True
+
+                    if updated:
+                        db.session.commit()
+                        modified_games_counter += 1
+                    
+                    continue 
+
+                game = Games()
+                game.name = game_name
+                game.app_id = game_data.get("appId")
+                game.release = game_data.get("release")
+                game.image_id = game_data.get("imageID")
+                game.score = game_data.get("score")
+                game.g2a_price = game_data.get("g2aPrice")
+                game.g2a_url = game_data.get("g2aUrl")
+                game.steam_price = game_data.get("steamPrice")
+                game.g2a_url = game_data.get("g2aUrl")
+                # game.game_tags = game_data.get("tags")
+
+                print(game)
+                counter+=1
+                db.session.add(game)
+                db.session.commit()
+            print(f"Added {added_games_counter} games to the database")
+            print(f"Added {modified_games_counter} games to the database")
+        
+
+
+
+    @app.cli.command("delete-all-game-data")
+    def delete_all_game_data():
+        try:
+            num_deleted = db.session.query(Games).delete()
+            db.session.commit()
+            print(f"Deleted {num_deleted} games from the database.")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error deleting games: {e}")
+            
