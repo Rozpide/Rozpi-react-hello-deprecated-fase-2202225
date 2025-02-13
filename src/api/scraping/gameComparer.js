@@ -3,7 +3,7 @@ import {scrapeSteamData} from "./scrapSteam.js";
 import {writeFileSync} from 'fs';
 
 
-async function main() {
+async function compareSteamG2A() {
     try {
         // Run the async operations
         const jsonSteamDumpData = await scrapeSteamData(); // Data from Steam
@@ -65,11 +65,12 @@ async function main() {
         console.log(`Filtered and got ${filteredmatchedGames.length} games`);
 
         writeFileSync('matchedGames.json', JSON.stringify(filteredmatchedGames, null, 2));
+        return filteredmatchedGames
     } catch (error) {
         console.error("Error in main process:", error);
     }
 }
 
-main()
+compareSteamG2A()
 
 

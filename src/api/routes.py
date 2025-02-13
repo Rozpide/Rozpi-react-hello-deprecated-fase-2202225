@@ -5,6 +5,8 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Games, Tags, Favourites
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+import requests
+import subprocess
 
 api = Blueprint('api', __name__)
 
@@ -75,3 +77,29 @@ def get_all_tags():
         "results": results
     }
     return jsonify(response_body), 200
+
+def fetch_steam_data():
+    url = "https://store.steampowered.com/api/appdetails?appids=746"
+    response = requests.get(url)  
+    if response.status_code == 200:
+        return response.json()
+    return None
+
+@api.route('/steam/test', methods=['GET'])
+def get_steam_data():
+    data = fetch_steam_data()
+    
+    if data:
+        response = jsonify(data)
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        print("Sending response...")
+        return response
+    else:
+        print("Failed to fetch data from Steam API")
+        return jsonify({"error": "Failed to fetch data from Steam API"}), 500
+    
+# @api.route('/games', methods=['PUT'])
+# def change_all_game_data():
+    
