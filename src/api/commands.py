@@ -62,4 +62,14 @@ def setup_commands(app):
                 db.session.add(game)
                 db.session.commit()
             print(f"Added {counter} games to the database")
-        pass
+
+    @app.cli.command("delete-all-game-data")
+    def delete_all_game_data():
+        try:
+            num_deleted = db.session.query(Games).delete()
+            db.session.commit()
+            print(f"Deleted {num_deleted} games from the database.")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error deleting games: {e}")
+            
