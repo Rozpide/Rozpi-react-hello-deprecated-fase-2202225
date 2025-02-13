@@ -49,6 +49,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (!response.ok) throw new Error("Error en la respuesta de la API");
 
 					const data = await response.json();
+					console.log(response);
+					
 
 					if (data["57690"]?.success) {
 						const gameData = data["57690"].data;

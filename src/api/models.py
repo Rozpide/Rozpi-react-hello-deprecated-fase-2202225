@@ -56,6 +56,7 @@ class Tags(db.Model):
     __tablename__ = "tags"
     id: Mapped[int] = mapped_column(primary_key=True)
     tag_name: Mapped[str] = mapped_column(String(30), unique=True, nullable=False)
+    steam_id: Mapped[int] = mapped_column(nullable=True)
     # relación con games
     games: Mapped[List["Games"]] = relationship(secondary=tags_games_association_table, back_populates="game_tags")
 
@@ -63,12 +64,20 @@ class Tags(db.Model):
         return {
             "id": self.id,
             "tag_name": self.tag_name,
+            "steam_id": self.steam_id,
             "games": [game.games_serialize() for game in self.games] if self.games else None
         }
 
     def game_tag_serialize(self):
         return {
             "tag_name": self.tag_name,
+        }
+    
+    def tag_serialize(self):
+         return {
+            "id": self.id,
+            "tag_name": self.tag_name,
+            "steam_id": self.steam_id
         }
 
 class Games(db.Model):
