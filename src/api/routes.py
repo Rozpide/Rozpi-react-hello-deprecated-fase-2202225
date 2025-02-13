@@ -22,6 +22,7 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+# endpoints de juegos
 @api.route("/games", methods=['GET'])
 def get_all_games():
     data = db.session.scalars(db.select(Games)).all()
@@ -52,13 +53,14 @@ def post_game():
             return jsonify({"error": "tags must be a list"}), 400
     for tag_id in tags_id:
         try:
-            db.session.execute(db.select(Tags).filter_by(id=tag_id)).scalar_one()
+            db.session.execute(db.select(Tags).filter_by(steam_id=tag_id)).scalar_one()
         except NoResultFound:
             print(f"tag_id not found in database {tag_id}")
         except:
             pass  
     try:
-        tags = db.session.scalars(db.select(Tags).filter(Tags.id.in_(tags_id))).all()
+        tags = db.session.scalars(db.select(Tags).filter(Tags.steam_id.in_(tags_id))).all()
+        print(tags)
     except Exception as e:
         print("Error al intentar postear juego: ", e)
         pass
@@ -74,15 +76,58 @@ def post_game():
         game_tags = tags
     )
     db.session.add(result)
-    db.session.commit()
+    # db.session.commit()
     return jsonify(result.serialize()), 201
 
 
+# endpoints de tags
 @api.route("/tags", methods=['GET'])
 def get_all_tags():
     data = db.session.scalars(db.select(Tags)).all()
     results = list(map(lambda item: item.serialize(), data))
+    if len(results) < 1:
+        return jsonify({"msg": "No available tags"}), 200
     response_body = {
         "results": results
     }
     return jsonify(response_body), 200
+
+
+@api.route("/tags", methods=['POST'])
+def post_tag():
+    request_data=request.json
+    tags = request_data.get("tags")
+    if not isinstance(tags, list):
+            return jsonify({"error": "tags must be a list"}), 400
+    # print(tags)
+    added_tags = []
+    for tag in tags:
+        try:
+            if not isinstance(tag[0], str):
+                return jsonify({"error": "The first value of each array needs to be a string"}), 400
+            if str(tag[0]).isnumeric():
+                return jsonify({"error": "The first value of each array can not be a number"}), 400
+            tag_name = db.session.execute(db.select(Tags).filter_by(tag_name=tag[0])).scalar_one()
+            if tag_name:
+                return({"msg": f"tag with same name already exists {tag_name.tag_serialize()}"}), 400
+        except NoResultFound:
+            pass
+        try:
+            if not str(tag[1]).isnumeric():
+                return jsonify({"error": "The second value of each array needs to be a number"}), 400
+            tag_steam_id = db.session.execute(db.select(Tags).filter_by(steam_id=tag[1])).scalar_one()
+            if tag_steam_id:
+                return({"msg": f"tag with same steam_id already exists {tag_steam_id.tag_serialize()}"}), 400
+        except NoResultFound:
+            pass
+
+        new_tag = Tags(
+            tag_name = tag[0],
+            steam_id = tag[1]
+        )
+        added_tags.append(new_tag.tag_serialize())
+        print(new_tag.tag_serialize())
+        db.session.add(new_tag)
+        db.session.commit()
+        
+    return jsonify({"Added tags": added_tags})
