@@ -35,7 +35,7 @@ export const GameList = () => {
                 {Array.isArray(store.videogames) && store.videogames.length > 0 ? (
                     store.videogames.map((game) => (
                         <div key={game.id} className="game-row" onClick={() => handleGameClick(game.id)}>
-                            <img src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.appId}/capsule_231x87.jpg`} alt={game.name} className="game-image" />
+                            <img src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.app_id}/capsule_231x87.jpg`} alt={game.name} className="game-image"/>
                             <div className="game-info">
                                 <h4>{game.name}</h4>
                                 <p>Información extra</p>

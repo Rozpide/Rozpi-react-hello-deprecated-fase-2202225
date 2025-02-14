@@ -78,19 +78,19 @@ def setup_commands(app):
                 game.g2a_url = game_data.get("g2aUrl")
                 # game.game_tags = game_data.get("tags")
                 # tags_data = game_data.get("tags", [])
-                tags_result = []
-                for tag in game_tags: 
-                    print(tag)
-                    tag_result = Tags.query.filter_by(steam_id=tag).first()
-                    print(tag_result)
-                    if not tag_result:
-                        print("Missing tag in BBDD: ", tag)
-                    #     tag = Tags(tag_name=tag_name)
-                    #     db.session.add(tag)
-                    #     db.session.commit()
-                    tags_result.append(tag_result)
-                game.game_tags = tags_result
-                print (tags_result)
+                # tags_result = []
+                # for tag in game_tags: 
+                #     print(tag)
+                #     tag_result = Tags.query.filter_by(steam_id=tag).first()
+                #     print(tag_result)
+                #     if not tag_result:
+                #         print("Missing tag in BBDD: ", tag)
+                #     #     tag = Tags(tag_name=tag_name)
+                #     #     db.session.add(tag)
+                #     #     db.session.commit()
+                #     tags_result.append(tag_result)
+                # game.game_tags = tags_result
+                # print (tags_result)
                 print(game)
                 added_games_counter+=1
                 db.session.add(game)
@@ -101,7 +101,7 @@ def setup_commands(app):
         
 
 
-
+    # $ flask delete-all-game-data
     @app.cli.command("delete-all-game-data")
     def delete_all_game_data():
         try:
