@@ -12,7 +12,7 @@ import subprocess
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
-CORS(api)
+CORS(api)#proteccion solo cuando permito
 
 
 @api.route('/hello', methods=['POST', 'GET'])
