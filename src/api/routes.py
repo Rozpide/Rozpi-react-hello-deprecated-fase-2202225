@@ -25,17 +25,17 @@ def handle_hello():
     return jsonify(response_body), 200
 
 # endpoints de juegos
+# @api.route("/games", methods=['GET'])
+# def get_all_games():
+#     data = db.session.scalars(db.select(Games)).all()
+#     results = list(map(lambda item: item.serialize(), data))
+#     response_body = {
+#         "results": results
+#     }
+#     return jsonify(response_body), 200
+
+
 @api.route("/games", methods=['GET'])
-def get_all_games():
-    data = db.session.scalars(db.select(Games)).all()
-    results = list(map(lambda item: item.serialize(), data))
-    response_body = {
-        "results": results
-    }
-    return jsonify(response_body), 200
-
-
-@api.route("/games/test", methods=['GET'])
 def get_page_games():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 10, type=int)

@@ -78,7 +78,7 @@ def setup_commands(app):
                 # game.game_tags = game_data.get("tags")
 
                 print(game)
-                counter+=1
+                added_games_counter+=1
                 db.session.add(game)
                 db.session.commit()
             print(f"Added {added_games_counter} games to the database")
