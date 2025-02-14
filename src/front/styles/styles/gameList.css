@@ -1,11 +1,11 @@
-/* Contenedor general */
+
 .game-list-container {
     width: 80%;
     margin: auto;
     padding: 20px;
 }
 
-/* Filtros alineados en fila */
+
 .filters {
     display: flex;
     justify-content: center;
@@ -26,7 +26,7 @@
     background: #ddd;
 }
 
-/* Lista de juegos con bordes */
+
 .games-table {
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -34,7 +34,7 @@
     background: #fff;
 }
 
-/* Fila de cada juego */
+
 .game-row {
     display: flex;
     align-items: center;
@@ -42,7 +42,7 @@
     padding: 15px;
 }
 
-/* Imagen del juego */
+
 .game-image {
     width: 80px;
     height: 80px;
@@ -51,12 +51,12 @@
     margin-right: 15px;
 }
 
-/* Información del juego */
+
 .game-info {
     flex-grow: 1;
 }
 
-/* Botones alineados a la derecha */
+
 .game-buttons {
     display: flex;
     align-items: center;
@@ -83,21 +83,21 @@
 }
 
 
-/* Contenedor de filtros con flexbox */
+/* Container con flexbox */
 .filters {
     display: flex;
-    justify-content: space-between; /* Separa los grupos a izquierda y derecha */
+    justify-content: space-between; /* Separe groups left and rigth */
     align-items: center;
     margin-bottom: 20px;
 }
 
-/* Grupo de botones alineados a la izquierda */
+/* aligne Left */
 .filter-group {
     display: flex;
-    gap: 10px; /* Espaciado entre botones */
+    gap: 10px; /* Space between butons */
 }
 
-/* Estilo de los botones */
+/* Bton style */
 .filters button {
     padding: 10px 15px;
     border-radius: 5px;
@@ -111,7 +111,7 @@
     background: #ddd;
 }
 
-/* Alineación de Búsqueda Avanzada a la derecha */
+/* Aligne Rigth */
 .advanced-search {
-    margin-left: auto; /* Empuja el botón a la derecha */
+    margin-left: auto; 
 }
