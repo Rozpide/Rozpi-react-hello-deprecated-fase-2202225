@@ -121,7 +121,7 @@ def post_tag():
                 return jsonify({"error": "The first value of each array can not be a number"}), 400
             tag_name = db.session.execute(db.select(Tags).filter_by(tag_name=tag[0])).scalar_one()
             if tag_name:
-                return({"msg": f"tag with same name already exists {tag_name.tag_serialize()}"}), 400
+                return jsonify({"msg": f"tag with same name already exists {tag_name.tag_serialize()}"}), 400
         except NoResultFound:
             pass
         try:

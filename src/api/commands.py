@@ -1,6 +1,6 @@
 
 import click
-from api.models import db, User, Games
+from api.models import db, User, Games, Tags
 import json
 
 """
@@ -40,6 +40,7 @@ def setup_commands(app):
             data = json.load(file)
             for game_data in data:
                 game_name = game_data.get("name")
+                game_tags = game_data.get("tags")
 
                 existing_game = db.session.query(Games).filter_by(name=game_name).first()
 
@@ -76,11 +77,25 @@ def setup_commands(app):
                 game.steam_price = game_data.get("steamPrice")
                 game.g2a_url = game_data.get("g2aUrl")
                 # game.game_tags = game_data.get("tags")
-
+                # tags_data = game_data.get("tags", [])
+                tags_result = []
+                for tag in game_tags: 
+                    print(tag)
+                    tag_result = Tags.query.filter_by(steam_id=tag).first()
+                    print(tag_result)
+                    if not tag_result:
+                        print("Missing tag in BBDD: ", tag)
+                    #     tag = Tags(tag_name=tag_name)
+                    #     db.session.add(tag)
+                    #     db.session.commit()
+                    tags_result.append(tag_result)
+                game.game_tags = tags_result
+                print (tags_result)
                 print(game)
                 added_games_counter+=1
                 db.session.add(game)
                 db.session.commit()
+                # return
             print(f"Added {added_games_counter} games to the database")
             print(f"Added {modified_games_counter} games to the database")
         
