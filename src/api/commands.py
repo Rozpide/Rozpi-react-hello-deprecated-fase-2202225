@@ -1,6 +1,7 @@
 
 import click
 from api.models import db, User, Games, Tags
+from sqlalchemy.sql import text
 import json
 
 """
@@ -60,6 +61,14 @@ def setup_commands(app):
                         existing_game.g2a_url = game_data.get("g2aUrl")
                         updated = True
 
+                    if game_tags != existing_game.game_tags:
+                        tags_result = []
+                        for tag in game_tags:
+                            tag_result = Tags.query.filter_by(steam_id=tag).first()
+                            tags_result.append(tag_result)
+                            existing_game.game_tags = tags_result
+                            updated = True    
+
                     if updated:
                         db.session.commit()
                         modified_games_counter += 1
@@ -78,26 +87,25 @@ def setup_commands(app):
                 game.g2a_url = game_data.get("g2aUrl")
                 # game.game_tags = game_data.get("tags")
                 # tags_data = game_data.get("tags", [])
-                # tags_result = []
-                # for tag in game_tags: 
-                #     print(tag)
-                #     tag_result = Tags.query.filter_by(steam_id=tag).first()
-                #     print(tag_result)
-                #     if not tag_result:
-                #         print("Missing tag in BBDD: ", tag)
-                #     #     tag = Tags(tag_name=tag_name)
-                #     #     db.session.add(tag)
-                #     #     db.session.commit()
-                #     tags_result.append(tag_result)
-                # game.game_tags = tags_result
+                tags_result = []
+                for tag in game_tags: 
+                    # print(tag)
+                    tag_result = Tags.query.filter_by(steam_id=tag).first()
+                    # print(tag_result)
+                    if not tag_result:
+                        print("Missing tag in BBDD: ", tag)
+                        # tag = Tags(tag_name=tag)
+                        # db.session.add(tag)
+                        # db.session.commit()
+                    tags_result.append(tag_result)
+                game.game_tags = tags_result
                 # print (tags_result)
                 print(game)
                 added_games_counter+=1
                 db.session.add(game)
                 db.session.commit()
-                # return
             print(f"Added {added_games_counter} games to the database")
-            print(f"Added {modified_games_counter} games to the database")
+            print(f"Modified {modified_games_counter} games to the database")
         
 
 
@@ -111,4 +119,31 @@ def setup_commands(app):
         except Exception as e:
             db.session.rollback()
             print(f"Error deleting games: {e}")
-            
+
+
+    @app.cli.command("insert-game-tag-data")
+    def insert_game_tag_data():
+        try:
+            with open("src/api/tags.json") as file:
+                data = json.load(file)
+                tags = data.get("tags")
+                for tag_data in tags:
+                    tag = Tags()
+                    tag.tag_name = tag_data[0]
+                    tag.steam_id = tag_data[1]
+                    db.session.add(tag)
+                    db.session.commit()
+        except Exception as e:
+            print(f"Error adding tags: {e}")
+    
+
+    @app.cli.command("delete-all-tag-data")
+    def delete_all_tag_data():
+        try:
+            db.session.execute(text('DELETE FROM tags_games_association_table')) 
+            db.session.query(Tags).delete()
+            db.session.commit()
+            print("Tags y relaciones eliminados")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error: {e}")
