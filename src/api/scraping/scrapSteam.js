@@ -1,4 +1,4 @@
-// import fs from 'fs';
+import fs from 'fs';
 // import path from 'path';
 // import { fileURLToPath } from 'url'; 
 
@@ -58,6 +58,9 @@ async function Xe() {
         for (let a = 0; a < r; a++) {
             s[a] = t.readString();  // Read each tag name as a string
         }
+
+        const jsonContent = JSON.stringify({tags: s.map((tag, s) => [tag, s])}, null, 2); // Updated tags.json creator
+        fs.writeFileSync('/workspaces/Fs-Spain_85-AllGamesDB/src/api/tags.json', jsonContent, 'utf-8')
 
         $.tagNames = s;  // Store tag names globally or in a global object
 
