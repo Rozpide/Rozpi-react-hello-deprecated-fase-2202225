@@ -133,7 +133,7 @@ def setup_commands(app):
                     tag.steam_id = tag_data[1]
                     db.session.add(tag)
                     db.session.commit()
-                    print("Tags insertados")
+                print("Tags insertados")
         except Exception as e:
             print(f"Error adding tags: {e}")
     
