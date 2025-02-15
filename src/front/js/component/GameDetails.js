@@ -7,7 +7,7 @@ export const GameDetails = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        actions.fetchGames(id);
+        actions.fetchGameDetails(id);
         console.log(store.videogames);
         
     }, [id]);

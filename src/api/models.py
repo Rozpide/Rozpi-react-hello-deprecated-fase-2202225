@@ -55,7 +55,7 @@ class Favourites(db.Model):
 class Tags(db.Model):
     __tablename__ = "tags"
     id: Mapped[int] = mapped_column(primary_key=True)
-    tag_name: Mapped[str] = mapped_column(String(30), unique=True, nullable=False)
+    tag_name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     steam_id: Mapped[int] = mapped_column(nullable=True)
     # relación con games
     games: Mapped[List["Games"]] = relationship(secondary=tags_games_association_table, back_populates="game_tags")
