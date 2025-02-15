@@ -42,7 +42,17 @@ def get_page_games():
     if per_page > 10:
         per_page = 10
     pagination = Games.query.paginate(page=page, per_page=per_page, error_out=False)
-    response = jsonify({"result": [game.serialize() for game in pagination.items]})
+    result_data = {
+        "result": [game.serialize() for game in pagination.items]
+    }
+    # print(result_data[re])
+    if len(result_data["result"]) < 1:
+        response = jsonify({"Error": "no data in the page"})
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        return response, 404
+    response = jsonify(result_data)
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
