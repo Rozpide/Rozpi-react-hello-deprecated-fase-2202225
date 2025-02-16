@@ -18,7 +18,7 @@ export const GameList = () => {
     }
 
     return (
-        <div className="game-list-container">
+        <div className="game-list-container d-flex flex-column">
             {/* <div className="filters">
                 <ul className="nav nav-tabs">
                     <li className="nav-item">
@@ -44,7 +44,7 @@ export const GameList = () => {
                             <img src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.app_id}/capsule_231x87.jpg`} alt={game.name} className="game-image"/>
                             <div className="game-info">
                                 <h4>{game.name}</h4>
-                                <p>Información extra</p>
+                                {game.game_tags.slice(0, 3).map((tag) => tag.tag_name).join(', ')}
                             </div>
                             {/* <button className="favorite-btn">❤️</button> */}
                             <button className="price-btn">{gamePriceComparer(game)}</button>
@@ -53,6 +53,9 @@ export const GameList = () => {
                 ) : (
                     <p>No hay videojuegos disponibles</p>
                 )}
+            </div>
+            <div className='m-auto mt-2'>
+                <button className='btn btn-warning' onClick={() => navigate("/allgames")} role="button">View more!</button>
             </div>
         </div>
     );
