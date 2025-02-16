@@ -41,22 +41,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const store = getStore();
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/steam/${appId}`);
-					console.log("TEST",response);
+					// console.log(response);
 					if (!response.ok) throw new Error("Error en la respuesta de la API");
 					const data = await response.json();
-					console.log("AQUI",data);
+					// console.log(data);
 					console.log(data[appId].data.name);
 					let resultSteam = data[appId].data
-					// console.log(data[appId].short_description);
-					// console.log(data[appId].screenshots);
 					setStore({...store, 
 						selectedGame: {
 							...store.selectedGame,
 							shortDescription: resultSteam.short_description,
-							screenshots: resultSteam.screenshots
+							screenshots: resultSteam.screenshots,
+							movies: resultSteam.movies
 						}
 					})
-					console.log(store.selectedGame);
+					console.log("AQUI",store.selectedGame);
 					
 					return data[appId].data
 					

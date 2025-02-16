@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Context } from '../store/appContext';
 import '../../styles/GameDetails.css';
@@ -6,10 +6,12 @@ import '../../styles/GameDetails.css';
 export const GameDetails = () => {
     const { store, actions } = useContext(Context);
     const { id } = useParams();
+    const [gameTags, setGameTags] = useState("");
 
     useEffect(() => {
         actions.fetchGameDetails(store.selectedGame["app_id"]);
         console.log(store.videogames);
+        prepareTags()
     }, [id]);
 
     const game = store.selectedGame;
@@ -17,7 +19,15 @@ export const GameDetails = () => {
     if (!game) {
         return <div>Cargando...</div>;
     }
-    // row col-12 text-center justify-content-center
+
+    function prepareTags() {
+        let resultantTags = store.selectedGame.game_tags.map((tag) => {
+            return " " + tag.tag_name
+        })
+        setGameTags(resultantTags.toString())
+        return
+    }
+
     return (
         <div className='row w-100 mx-auto text-center justify-content-center'>
             <div className='mt-5 d-flex flex-column col-lg-5 col-11 mx-auto d-none d-lg-block'>
@@ -40,7 +50,15 @@ export const GameDetails = () => {
                             <td>{game.g2a_price} €</td>
                         </tr>
                         <tr>
-                            <td colspan="2">Tags:</td>
+                            <td>
+                                <a className='btn btn-warning' href={`https://store.steampowered.com/app/${store.selectedGame.app_id}`} role="button" target="_blank">Visit store</a>
+                            </td>
+                            <td>
+                                <a className='btn btn-warning' href={`https://www.g2a.com/es/${store.selectedGame.g2a_url}`} role="button" target="_blank">Visit store</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Tags:{gameTags}.</td>
                         </tr>
                     </tbody>
 
