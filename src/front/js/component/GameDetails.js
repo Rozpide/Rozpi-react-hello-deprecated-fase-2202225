@@ -17,17 +17,17 @@ export const GameDetails = () => {
     if (!game) {
         return <div>Cargando...</div>;
     }
-
+    // row col-12 text-center justify-content-center
     return (
-        <div className='row text-center justify-content-center'>
-            <div className='d-flex flex-column col-lg-5 col-11 mx-auto'>
+        <div className='row w-100 mx-auto text-center justify-content-center'>
+            <div className='mt-5 d-flex flex-column col-lg-5 col-11 mx-auto d-none d-lg-block'>
                 <img src={game.image} alt={game.name} />
                 <p>{game.shortDescription}</p>
                 {/* Details*/}
             </div>
-            <div className='d-flex flex-column col-lg-5 col-11 mx-auto'>
+            <div className='mt-5 d-flex flex-column col-lg-5 col-11 mx-auto'>
                 <h1>{game.name}</h1>
-                <table className='table table-bordered border-primary'>
+                <table className='table table-bordered border-primary mt-3'>
                     <thead>
                         <tr>
                             <th scope="col">Steam</th>
@@ -48,6 +48,11 @@ export const GameDetails = () => {
                 <div className='d-flex justify-content-center align-items-center  mx-auto border border-success border-4 rounded-circle fluid-ratio'>
                     {game.score} %
                 </div>
+            </div>
+            <div className='mt-5 d-flex flex-column col-lg-5 col-11 mx-auto d-block d-lg-none'>
+                <img src={game.image} alt={game.name} />
+                <p>{game.shortDescription}</p>
+                {/* Details*/}
             </div>
         </div>
     );
