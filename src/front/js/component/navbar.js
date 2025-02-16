@@ -8,11 +8,11 @@ export const Navbar = () => {
         <nav className="navbar">
             <div className="container">
                 <Link to="/" className="logo">All <span>Games DB</span></Link>
-                <input type="text" className="search-bar" placeholder="Search" />
+                {/* <input type="text" className="search-bar" placeholder="Search" />
                 <div className="nav-buttons">
                     <button className="favorites">⭐ Favoritos</button>
                     <button className="logout">🔴 Logout</button>
-                </div>
+                </div> */}
             </div>
         </nav>
     );

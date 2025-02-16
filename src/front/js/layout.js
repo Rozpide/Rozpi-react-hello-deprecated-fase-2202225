@@ -12,6 +12,7 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { Videogames } from "./pages/Videogames"
 import { GameSearchList } from "./pages/gameSearchList";
+import { GameDetails } from './component/GameDetails';
 
 
 
@@ -32,6 +33,7 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Videogames />} path="/videogames" />
+                        <Route element={<GameDetails />} path="/game/:id" />
                         <Route element={<GameSearchList />} path="/allgames" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>

@@ -4,18 +4,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			videogames: [],
 			tags: [],
 			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			specificVideogameSteamId: 0,
+			selectedGame: {}
 		},
 		actions: {
 			exampleFunction: () => {
@@ -43,14 +33,35 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				setStore({ demo: demo });
 			},
-
-			fetchGameDetails: async (appId) => {
+			setSpecificVideogameSteamId : (game) => {
+				const store = getStore();
+				setStore({...store, selectedGame: game});
+			},
+			fetchGameDetails: async (appId) => { 
+				const store = getStore();
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/steam/${appId}`);
+					console.log("TEST",response);
 					if (!response.ok) throw new Error("Error en la respuesta de la API");
-
 					const data = await response.json();
-					console.log(data);
+					console.log("AQUI",data);
+					console.log(data[appId].data.name);
+					let resultSteam = data[appId].data
+					// console.log(data[appId].short_description);
+					// console.log(data[appId].screenshots);
+					setStore({...store, 
+						selectedGame: {
+							...store.selectedGame,
+							shortDescription: resultSteam.short_description,
+							screenshots: resultSteam.screenshots
+						}
+					})
+					console.log(store.selectedGame);
+					
+					return data[appId].data
+					
+					
+					
 
 
 					// if (data) {
