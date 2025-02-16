@@ -3,6 +3,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			videogames: [],
 			tags: [],
+			videogamesSearch: [],
+			currentSearchPage: 1,
 			message: null,
 			specificVideogameSteamId: 0,
 			selectedGame: {}
@@ -33,11 +35,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				setStore({ demo: demo });
 			},
-			setSpecificVideogameSteamId : (game) => {
+			setSpecificVideogameSteamId: (game) => {
 				const store = getStore();
-				setStore({...store, selectedGame: game});
+				setStore({ ...store, selectedGame: game });
 			},
-			fetchGameDetails: async (appId) => { 
+			fetchGameDetails: async (appId) => {
 				const store = getStore();
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/steam/${appId}`);
@@ -47,20 +49,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// console.log(data);
 					console.log(data[appId].data.name);
 					let resultSteam = data[appId].data
-					setStore({...store, 
+					setStore({
+						...store,
 						selectedGame: {
 							...store.selectedGame,
 							shortDescription: resultSteam.short_description,
 							screenshots: resultSteam.screenshots,
-							movies: resultSteam.movies
+							movies: resultSteam.movies,
+							image: resultSteam.header_image
 						}
 					})
-					console.log("AQUI",store.selectedGame);
-					
+					console.log("AQUI", store.selectedGame);
+
 					return data[appId].data
-					
-					
-					
+
+
+
 
 
 					// if (data) {
@@ -86,9 +90,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/games?page=${page}`);
 					const data = await response.json()
 					console.log(data);
-					
+
 					setStore({ videogames: data.result })
-					
+
 				} catch (error) {
 					console.log(error)
 				}
@@ -101,11 +105,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 					let tagNames = data.results.map((tag) => tag.tag_name)
 					setStore({ tags: tagNames })
 					// console.log(getStore().tags);
-					
+
 				} catch (error) {
 					console.log(error)
 				}
 			},
+
+			fetchSearchGames: async (page) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/games?page=${page}`);
+					const data = await response.json()
+					console.log(data);
+
+					setStore({ videogamesSearch: data.result })
+
+				} catch (error) {
+					console.log(error)
+				}
+			},
+			handlePagination: async(page) => {
+				getStore().currentSearchPage = page
+				await getActions().fetchSearchGames(page)
+				
+			}
 
 		}
 	};

@@ -31,7 +31,7 @@ export const GameDetails = () => {
     return (
         <div className='row w-100 mx-auto text-center justify-content-center'>
             <div className='mt-5 d-flex flex-column col-lg-5 col-11 mx-auto d-none d-lg-block'>
-                <img src={game.image} alt={game.name} />
+                <img src={game.image} alt={game.name} className='mb-2'/>
                 <p>{game.shortDescription}</p>
                 {/* Details*/}
             </div>
