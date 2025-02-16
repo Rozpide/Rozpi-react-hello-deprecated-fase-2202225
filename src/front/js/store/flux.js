@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			videogames: [],
+			tags: [],
 			message: null,
 			demo: [
 				{
@@ -70,9 +71,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			fetchGames: async () => {
+			fetchGames: async (page) => {
 				try {
-					const response = await fetch(`${process.env.BACKEND_URL}/api/games`);
+					const response = await fetch(`${process.env.BACKEND_URL}/api/games?page=${page}`);
 					const data = await response.json()
 					console.log(data);
 					
@@ -81,7 +82,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.log(error)
 				}
-			}
+			},
+			fetchTags: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/tags`);
+					const data = await response.json()
+					// console.log(data);
+					let tagNames = data.results.map((tag) => tag.tag_name)
+					setStore({ tags: tagNames })
+					// console.log(getStore().tags);
+					
+				} catch (error) {
+					console.log(error)
+				}
+			},
+
 		}
 	};
 };

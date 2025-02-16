@@ -15,6 +15,7 @@ ReactDOM.render(<Layout />, document.querySelector("#app"));
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Home } from './pages/home';
 import { GameDetails } from './component/GameDetails';
+import { GameSearchList } from './pages/gameSearchList';
 import { GameList } from './component/GameList';
 
 
@@ -24,8 +25,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/game/:id" element={<GameDetails />} />
-                <Route path="/" element={<GameList />} />
-
+                <Route path="/allgames" element={<GameSearchList />} />
             </Routes>
         </Router>
     );
