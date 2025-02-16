@@ -43,8 +43,8 @@ export const GameList = () => {
                         <div key={game.id} className="game-row" onClick={() => handleGameClick(game)}>
                             <img src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.app_id}/capsule_231x87.jpg`} alt={game.name} className="game-image"/>
                             <div className="game-info">
-                                <h4>{game.name}</h4>
-                                {game.game_tags.slice(0, 3).map((tag) => tag.tag_name).join(', ')}
+                                <h4 className='game-title'>{game.name}</h4>
+                                <p className='tags'>{game.game_tags.slice(0, 3).map((tag) => tag.tag_name).join(', ')}</p>
                             </div>
                             {/* <button className="favorite-btn">❤️</button> */}
                             <button className="price-btn">{gamePriceComparer(game)}</button>
