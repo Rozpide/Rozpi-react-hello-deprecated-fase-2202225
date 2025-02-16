@@ -1,0 +1,7 @@
+.fluid-ratio{
+    position: relative;
+    width: 10%;
+    min-width: 78px;
+    aspect-ratio: 1/1;
+    text-align: center;
+}

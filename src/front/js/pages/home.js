@@ -9,8 +9,8 @@ export const Home = () => {
 
     return (
         <div className="home-container">
-            <Carousel title="Top most popular PC games" games={store.videogames} />
-            <Carousel title="New games" games={store.videogames} />
+            {/* <Carousel title="Top most popular PC games" games={store.videogames} />
+            <Carousel title="New games" games={store.videogames} /> */}
             <GameList />
         </div>
     );
