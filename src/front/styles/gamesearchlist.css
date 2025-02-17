@@ -1,13 +1,89 @@
+@media (max-width: 425px) and (min-width: 320px) {
+    .games-search-table {
+        width: 100%;
+    }
+    .tags {
+        display: none;
+    }
+    .favorite-btn {
+        padding: 0px;
+    }
+    .game-row {
+        flex-direction: column;
+    }
+    .game-image {
+        margin-bottom: 10px;
+        margin-right: 0px;
+    }
+    .search-editor {
+        display: none !important;
+    }
+}
+
+@media (max-width: 832px) and (min-width: 425px) {
+    .tags {
+        display: none;
+    }
+
+}
+
+@media (min-width: 576px) {
+    .games-search-table {
+        width: 100%;
+    }
+    .game-image {
+        width: 231px;
+        height: 87px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-right: 15px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .games-search-table {
+        width: 90%;
+    }
+    .search-editor {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .games-search-table {
+        width: 70%;
+    }
+    .search-editor {
+        width: 30%;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    .games-search-table {
+        width: 70%;
+    }
+    .search-editor {
+        width: 30%;
+    }
+}
+
+@media (min-width: 1400px) {
+    .games-search-table {
+        width: 70%;
+    }
+    .search-editor {
+        width: 30%;
+    }
+}
+
 .games-search-table {
     margin: 50px 30px 50px 30px;
-    width: 70%;
     padding-bottom: 0px;
 }
 
 .search-editor {
     margin-top: 50px;
     margin-left: 30px;
-    width: 30%;
     height: min-content;
 }
 
