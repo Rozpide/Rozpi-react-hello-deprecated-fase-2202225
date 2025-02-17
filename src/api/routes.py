@@ -7,13 +7,16 @@ from api.utils import generate_sitemap, APIException
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_cors import CORS
 import requests
+from flask import request, jsonify, Blueprint
 import subprocess
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_bcrypt import Bcrypt
+
 
 api = Blueprint('api', __name__)
 bcrypt = Bcrypt()
+blacklist = set()
 
 
 # Allow CORS requests to this API
@@ -190,42 +193,55 @@ def get_steam_data(appId):
 
 
 #registro 
-@api.route('/register', methods=['POST'])
-def register():
-    data = request.json
-    email = data.get("email")
-    password = data.get("password")
+# @api.route('/register', methods=['POST'])
+# def register():
+#     data = request.json
+#     email = data.get("email")
+#     password = data.get("password")
 
-    if not email or not password:
-        return jsonify({"error": "Faltan datos"}), 400
+#     if not email or not password:
+#         return jsonify({"error": "Faltan datos"}), 400
 
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
-        return jsonify({"error": "El usuario ya existe"}), 400
+#     existing_user = User.query.filter_by(email=email).first()
+#     if existing_user:
+#         return jsonify({"error": "El usuario ya existe"}), 400
 
-    new_user = User(email=email)
-    new_user.set_password(password)
-    db.session.add(new_user)
-    db.session.commit()
+#     new_user = User(email=email)
+#     new_user.set_password(password)
+#     db.session.add(new_user)
+#     db.session.commit()
 
-    return jsonify({"message": "Usuario registrado exitosamente"}), 201
+#     return jsonify({"message": "Usuario registrado exitosamente"}), 201
 
 
 
 #login
-@api.route('/login', methods=['POST'])
+@api.route("/login", methods=["POST"])
 def login():
-    data = request.json
-    email = data.get("email")
-    password = data.get("password")
+    data = request.get_json()
+    if not data or "email" not in data or "password" not in data:
+        return jsonify({"msg": "Email and password are required"}), 400
 
-    user = User.query.filter_by(email=email).first()
-    if not user or not user.check_password(password):
-        return jsonify({"error": "Credenciales inválidas"}), 401
+    user = User.query.filter_by(email=data["email"]).first()
+    if not user or not user.check_password(data["password"]):
+        return jsonify({"msg": "Wrong credentials"}), 401
 
+    # Creamos el token de acceso
     access_token = create_access_token(identity=user.id)
     return jsonify({"token": access_token, "user": user.serialize()}), 200
 
+
+#logout
+@api.route("/logout", methods=["POST"])
+@jwt_required()
+def logout():
+    jti = get_jwt()["jti"]  # Identificador único del token
+    blacklist.add(jti)  # Agregar a la lista negra
+    return jsonify({"msg": "Cierre de sesión exitoso"}), 200
+
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(jwt_header, jwt_payload):
+    return jwt_payload["jti"] in blacklist
 
 #profile
 @api.route('/profile', methods=['GET'])
@@ -238,3 +254,21 @@ def profile():
         return jsonify({"error": "Usuario no encontrado"}), 404
 
     return jsonify(user.serialize()), 200
+
+
+@api.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+
+    # Verificar si el email ya está registrado
+    existing_user = User.query.filter_by(email=data["email"]).first()
+    if existing_user:
+        return jsonify({"msg": "El usuario ya existe"}), 400
+
+    # Crear nuevo usuario
+    new_user = User(email=data["email"])
+    new_user.set_password(data["password"])  # Hashear contraseña
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"msg": "Usuario registrado con éxito"}), 201

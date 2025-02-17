@@ -154,8 +154,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 			logout: () => {
 				localStorage.removeItem("token");
 				setStore({ user: null, token: null });
-			}
+			},
+			signup: async (email, password) => {
+				try {
+					const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ email, password }),
+					});
 
+					const data = await response.json();
+					if (response.ok) {
+						return true;  // Registro exitoso
+					} else {
+						console.error("Error en el registro:", data.msg);
+						return false;  // Registro fallido
+					}
+				} catch (error) {
+					console.error("Error en la solicitud:", error);
+					return false;
+				}
+			}
 		}
 	};
 };
