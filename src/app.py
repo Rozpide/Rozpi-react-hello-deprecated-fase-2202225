@@ -11,6 +11,12 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 
+from flask_jwt_extended import JWTManager
+
+app.config["JWT_SECRET_KEY"] = "supersecretkey"
+jwt = JWTManager(app)
+
+
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"

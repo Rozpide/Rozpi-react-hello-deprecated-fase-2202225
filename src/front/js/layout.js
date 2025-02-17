@@ -13,7 +13,9 @@ import { Footer } from "./component/footer";
 import { Videogames } from "./pages/Videogames"
 import { GameSearchList } from "./pages/gameSearchList";
 import { GameDetails } from './component/GameDetails';
-
+import Login from "./views/Login";
+import Dashboard from "./views/Dashboard";
+import PrivateRoute from "./components/PrivateRoute";
 
 
 const Layout = () => {
@@ -21,7 +23,7 @@ const Layout = () => {
 
     const basename = process.env.BASENAME || "";
 
-    if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
         <div>
@@ -36,8 +38,18 @@ const Layout = () => {
                         <Route element={<GameDetails />} path="/game/:id" />
                         <Route element={<GameSearchList />} path="/allgames" />
                         <Route element={<h1>Not found!</h1>} />
-                    </Routes>
-                    <Footer />
+                        <Routes>
+                            {/* Ruta pública */}
+                            <Route path="/login" element={<Login />} />
+
+                            {/* Ruta protegida */}
+                            <Route path="/dashboard" element={
+                                <PrivateRoute>
+                                    <Dashboard />
+                                </PrivateRoute>
+                            } />
+                        </Routes>
+                        <Footer />
                 </ScrollToTop>
             </BrowserRouter>
         </div>

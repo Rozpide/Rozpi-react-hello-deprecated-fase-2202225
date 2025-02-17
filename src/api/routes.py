@@ -8,8 +8,13 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_cors import CORS
 import requests
 import subprocess
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_bcrypt import Bcrypt
 
 api = Blueprint('api', __name__)
+bcrypt = Bcrypt()
+
 
 # Allow CORS requests to this API
 CORS(api)#proteccion solo cuando permito
@@ -182,4 +187,54 @@ def get_steam_data(appId):
     
 # @api.route('/games', methods=['PUT'])
 # def change_all_game_data():
-    
+
+
+#registro 
+@api.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    if not email or not password:
+        return jsonify({"error": "Faltan datos"}), 400
+
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"error": "El usuario ya existe"}), 400
+
+    new_user = User(email=email)
+    new_user.set_password(password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"message": "Usuario registrado exitosamente"}), 201
+
+
+
+#login
+@api.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    user = User.query.filter_by(email=email).first()
+    if not user or not user.check_password(password):
+        return jsonify({"error": "Credenciales inválidas"}), 401
+
+    access_token = create_access_token(identity=user.id)
+    return jsonify({"token": access_token, "user": user.serialize()}), 200
+
+
+#profile
+@api.route('/profile', methods=['GET'])
+@jwt_required()
+def profile():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    return jsonify(user.serialize()), 200

@@ -1,6 +1,8 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			user: null,
+			token: localStorage.getItem("token") || null,
 			videogames: [],
 			tags: [],
 			videogamesSearch: [],
@@ -123,10 +125,35 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
-			handlePagination: async(page) => {
+			handlePagination: async (page) => {
 				getStore().currentSearchPage = page
 				await getActions().fetchSearchGames(page)
-				
+
+			},
+
+			login: async (email, password) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ email, password })
+					});
+
+					if (!response.ok) throw new Error("Error en las credenciales");
+
+					const data = await response.json();
+					localStorage.setItem("token", data.token);
+					setStore({ user: data.user, token: data.token });
+
+					return true;
+				} catch (error) {
+					console.error(error);
+					return false;
+				}
+			},
+			logout: () => {
+				localStorage.removeItem("token");
+				setStore({ user: null, token: null });
 			}
 
 		}
