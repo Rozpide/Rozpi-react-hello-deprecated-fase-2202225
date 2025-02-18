@@ -63,13 +63,13 @@ export const GameSearchList = () => {
                             <a className="page-link" onClick={() => actions.handlePagination(store.currentSearchPage - 1)} href="#">Previous</a>
                         </li>
 
-                        {store.currentSearchPage > 4 && (
+                        {store.currentSearchPage > 5 && (
                             <li className="page-item" onClick={() => actions.handlePagination(1)}>
                                 <a className="page-link" href="#">1</a>
                             </li>
                         )}
 
-                        {store.currentSearchPage > 3 && (
+                        {store.currentSearchPage > 6 && (
                             <li className="page-item disabled">
                                 <span className="page-link">...</span>
                             </li>
@@ -85,13 +85,13 @@ export const GameSearchList = () => {
                                 </li>
                             ))}
 
-                        {store.currentSearchPage < store.numberOfPagesFromSearch - 3 && (
+                        {store.currentSearchPage < store.numberOfPagesFromSearch - 4 && (
                             <li className="page-item disabled">
                                 <span className="page-link">...</span>
                             </li>
                         )}
 
-                        {store.currentSearchPage < store.numberOfPagesFromSearch - 4 && (
+                        {store.currentSearchPage < store.numberOfPagesFromSearch - 3 && (
                             <li className="page-item" onClick={() => actions.handlePagination(store.numberOfPagesFromSearch)}>
                                 <a className="page-link" href="#">{store.numberOfPagesFromSearch}</a>
                             </li>
