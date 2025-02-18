@@ -7,7 +7,8 @@ from api.utils import generate_sitemap, APIException
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from flask_cors import CORS
 import requests
-import subprocess
+from math import ceil
+
 
 api = Blueprint('api', __name__)
 
@@ -42,8 +43,10 @@ def get_page_games():
     if per_page > 10:
         per_page = 10
     pagination = Games.query.paginate(page=page, per_page=per_page, error_out=False)
+    total_pages = ceil(pagination.total / per_page)
     result_data = {
-        "result": [game.serialize() for game in pagination.items]
+        "result": [game.serialize() for game in pagination.items],
+        "total_pages": total_pages
     }
     # print(result_data[re])
     if len(result_data["result"]) < 1:
@@ -182,4 +185,26 @@ def get_steam_data(appId):
     
 # @api.route('/games', methods=['PUT'])
 # def change_all_game_data():
+
+# /search?filter=example
+@api.route("/search", methods=['GET'])
+def get_search_request():
+    game_name = request.args.get('filter', default='', type=str).strip()
     
+    # Query the database with a limit of 5 results
+    query = db.select(Games).limit(5)  # Always limit to 5 games
+    
+    if game_name:
+        query = query.where(Games.name.ilike(f"%{game_name}%"))
+
+    games = db.session.scalars(query).all()
+    # Format the response with only required fields
+    search_output = [game.serialize() for game in games]
+
+
+    response = jsonify(search_output)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+
+    return response, 200
