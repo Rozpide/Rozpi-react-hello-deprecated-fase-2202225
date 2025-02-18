@@ -143,3 +143,93 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* Estilo para los botones con degradado verde */
+/* Contenedor principal de la barra de navegación */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #222;
+    padding: 10px 20px;
+    color: white;
+}
+
+/* Logo */
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+}
+
+/* Alineación de los elementos a la derecha */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espaciado entre los elementos */
+}
+
+/* Contenedor de búsqueda */
+.search-container {
+    position: relative;
+}
+
+/* Barra de búsqueda */
+.search-bar {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 250px;
+}
+
+/* Dropdown de búsqueda */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    min-width: 200px;
+    z-index: 10;
+}
+
+.dropdown-menu .dropdown-item {
+    padding: 8px 12px;
+    color: #333;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-menu .dropdown-item:hover {
+    background: #f1f1f1;
+}
+
+/* Contenedor de los botones */
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Estilo para los botones con degradado verde */
+.btn-green {
+    background: linear-gradient(to bottom, #6DDA9E, #4FB77F);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-green:hover {
+    background: linear-gradient(to bottom, #5FCB8D, #3E9F6E);
+    transform: scale(1.05);
+}
+
+.btn-green:active {
+    transform: scale(0.95);
+}

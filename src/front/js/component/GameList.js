@@ -8,13 +8,13 @@ export const GameList = () => {
     const navigate = useNavigate();
 
     const handleGameClick = (game) => {
-        actions.setSpecificVideogameSteamId(game)
+        actions.setSpecificVideogameSteamId(game);
         navigate(`/game/${game.id}`);
     };
 
     function gamePriceComparer(game) {
         if (game.steam_price > game.g2a_price) return game.g2a_price + " €";
-        else return game.steam_price + ` € ${<i class="fa-brands fa-steam"></i>}`;
+        else return game.steam_price + ` € ${<i className="fa-brands fa-steam"></i>}`;
     }
 
     return (
@@ -40,8 +40,13 @@ export const GameList = () => {
             <div className="games-table">
                 {Array.isArray(store.videogames) && store.videogames.length > 0 ? (
                     store.videogames.map((game) => (
-                        <div key={game.id} className="game-row" onClick={() => handleGameClick(game)}>
-                            <img src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.app_id}/capsule_231x87.jpg`} alt={game.name} className="game-image" />
+                        <div key={game.id} className="game-row">
+                            <img 
+                                src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.app_id}/capsule_231x87.jpg`} 
+                                alt={game.name} 
+                                className="game-image hover-effect" 
+                                onClick={() => handleGameClick(game)}
+                            />
                             <div className="game-info">
                                 <h4 className='game-title'>{game.name}</h4>
                                 <p className='tags'>{game.game_tags.slice(0, 3).map((tag) => tag.tag_name).join(', ')}</p>
