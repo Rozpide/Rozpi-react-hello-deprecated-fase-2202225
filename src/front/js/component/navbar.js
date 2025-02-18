@@ -17,7 +17,7 @@ const Navbar = () => {
                         className="btn btn-warning"
                         onClick={() => {
                             setDropdownOpen(!isDropdownOpen);
-                            setView("menu"); 
+                            setView("menu");
                         }}
                     >
                         Signup/Login
@@ -31,13 +31,14 @@ const Navbar = () => {
                             {view === "menu" && (
                                 <ul className="list-unstyled">
                                     <li>
-                                        <button className="dropdown-item" onClick={() => setView("signup")}>Signup</button>
+                                        <button className="dropdown-item" onClick={() => setView("signup")}>Singup</button>
                                     </li>
                                     <li>
                                         <button className="dropdown-item" onClick={() => setView("login")}>Login</button>
                                     </li>
                                 </ul>
                             )}
+
 
 
                             {view === "signup" && (
