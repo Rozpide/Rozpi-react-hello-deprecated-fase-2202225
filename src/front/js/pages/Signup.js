@@ -12,10 +12,10 @@ const Signup = () => {
         e.preventDefault();
         const success = await actions.signup(email, password);
         if (success) {
-            navigate("/login");  // Redirigir al login tras el registro 
-        } else {
-            alert("Error en el registro");
-        }
+            navigate("/login"); } // Redirigir al login tras el registro NO NAVEGA AL LOGIN
+        // } else {
+        //     alert("Error en el registro");
+        // }
     };
 
     return (

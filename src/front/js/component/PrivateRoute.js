@@ -4,10 +4,10 @@ import { Context } from "../store/appContext";
 
 const PrivateRoute = ({ children }) => {
     const { store } = useContext(Context);
-    return store.token ? children : <Navigate to="/login" />;
+    const token = localStorage.getItem("token");
+    return (store.token ? children : <Navigate to="/login" />);
 };
-{
-    const token = localStorage.getItem("token"); // Verifica si hay un token
-    return token ? <Outlet /> : <Navigate to="/login" />;
-};
+
+
+
 export default PrivateRoute;

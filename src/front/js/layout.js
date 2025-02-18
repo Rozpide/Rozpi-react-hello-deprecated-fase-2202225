@@ -13,9 +13,10 @@ import { Footer } from "./component/footer";
 import { Videogames } from "./pages/Videogames";
 import { GameSearchList } from "./pages/gameSearchList";
 import { GameDetails } from "./component/GameDetails";
-import Login from "./views/Login";
-import Dashboard from "./views/Dashboard";
-import PrivateRoute from "./components/PrivateRoute";
+import Login from "./component/Login";
+// import Dashboard from "./views/Dashboard";
+import PrivateRoute from "./component/PrivateRoute";
+import Signup from "./pages/Signup";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -39,11 +40,11 @@ const Layout = () => {
                         <Route element={<Login />} path="/login" />
 
                         {/* Ruta protegida */}
-                        <Route element={
+                        {/* <Route element={
                             <PrivateRoute>
                                 <Dashboard />
                             </PrivateRoute>
-                        } path="/dashboard" />
+                        } path="/dashboard" /> */}
 
                         {/* Página de error 404 */}
                         <Route element={<h1>Not found!</h1>} path="*" />

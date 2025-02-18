@@ -16,7 +16,7 @@ from flask_bcrypt import Bcrypt
 
 api = Blueprint('api', __name__)
 bcrypt = Bcrypt()
-blacklist = set()
+
 
 
 # Allow CORS requests to this API
@@ -232,16 +232,16 @@ def login():
 
 
 #logout
-@api.route("/logout", methods=["POST"])
-@jwt_required()
-def logout():
-    jti = get_jwt()["jti"]  # Identificador único del token
-    blacklist.add(jti)  # Agregar a la lista negra
-    return jsonify({"msg": "Cierre de sesión exitoso"}), 200
+# @api.route("/logout", methods=["POST"])
+# @jwt_required()
+# def logout():
+#     jti = get_jwt()["jti"]  # Identificador único del token
+#     blacklist.add(jti)  # Agregar a la lista negra
+#     return jsonify({"msg": "Cierre de sesión exitoso"}), 200
 
-@jwt.token_in_blocklist_loader
-def check_if_token_in_blacklist(jwt_header, jwt_payload):
-    return jwt_payload["jti"] in blacklist
+# @jwt.token_in_blocklist_loader
+# def check_if_token_in_blacklist(jwt_header, jwt_payload):
+#     return jwt_payload["jti"] in blacklist
 
 #profile
 @api.route('/profile', methods=['GET'])
@@ -266,8 +266,8 @@ def signup():
         return jsonify({"msg": "El usuario ya existe"}), 400
 
     # Crear nuevo usuario
-    new_user = User(email=data["email"])
-    new_user.set_password(data["password"])  # Hashear contraseña
+    new_user = User(email=data["email"],password=data["password"])
+    # new_user.set_password(data["password"]) 
     db.session.add(new_user)
     db.session.commit()
 
