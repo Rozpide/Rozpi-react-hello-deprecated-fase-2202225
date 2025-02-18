@@ -250,40 +250,27 @@ def signup():
         return jsonify({"msg": "El usuario ya existe"}), 400
 
     # Crear nuevo usuario
-    new_user = User(email=data["email"])
-    new_user.set_password(data["password"])  # Hashear contraseña
+    new_user = User(email=data["email"],password=data["password"])
+    # new_user.set_password(data["password"])  # Hashear contraseña
     db.session.add(new_user)
     db.session.commit()
 
     return jsonify({"msg": "Usuario registrado con éxito"}), 201
 
-#login
+#login modificado el login 
 @api.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
     if not data or "email" not in data or "password" not in data:
         return jsonify({"msg": "Email and password are required"}), 400
-
     user = User.query.filter_by(email=data["email"]).first()
-    if not user or not user.check_password(data["password"]):
-        return jsonify({"msg": "Wrong credentials"}), 401
-
+ 
     # Creamos el token de acceso
     access_token = create_access_token(identity=user.email)
     return jsonify({"token": access_token, "user": user.serialize()}), 200
 
 
-#logout
-# @api.route("/logout", methods=["POST"])
-# @jwt_required()
-# def logout():
-#     jti = get_jwt()["jti"]  # Identificador único del token
-#     blacklist.add(jti)  # Agregar a la lista negra
-#     return jsonify({"msg": "Cierre de sesión exitoso"}), 200
 
-# @jwt.token_in_blocklist_loader
-# def check_if_token_in_blacklist(jwt_header, jwt_payload):
-#     return jwt_payload["jti"] in blacklist
 
 #profile, obtenemos usuario y favoritos
 @api.route('/profile', methods=['GET'])

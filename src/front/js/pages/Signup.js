@@ -11,13 +11,10 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        const success = await actions.signup(email, password);
-        if (success) {
-            setShowModal(false); // Cierra el modal
-            navigate("/login");  // Redirige al login
-        } else {
-            alert("Error en el registro");
-        }
+        await actions.signup(email, password);
+        console.log("intentando navegar a login");
+        navigate("/login");  // Redirige al login
+        //manejo de error de registro
     };
 
     return (

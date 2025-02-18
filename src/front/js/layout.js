@@ -37,9 +37,12 @@ const Layout = () => {
                         <Route element={<GameSearchList />} path="/allgames" />
                         <Route element={<Signup />} path="/signup" />
                         <Route element={<Login />} path="/login" />
-                        <Route element={<PrivateRoute>
-                            <Dashboard />
-                        </PrivateRoute>
+
+                        {/* Ruta protegida */}
+                        <Route element={
+                            <PrivateRoute>
+                                <Dashboard />
+                            </PrivateRoute>
                         } path="/dashboard" />
                         <Route element={<h1>Not found!</h1>} path="*" />
                     </Routes>
