@@ -62,22 +62,41 @@ export const GameSearchList = () => {
                         <li className={`page-item ${store.currentSearchPage <= 1 ? "disabled" : ""}`} >
                             <a className="page-link" onClick={() => actions.handlePagination(store.currentSearchPage - 1)} href="#">Previous</a>
                         </li>
-                        {/* <li className="page-item active" aria-current="page">
-                            <a className="page-link" href="#">1</a>
-                        </li>
-                        <li className="page-item" >
-                            <a className="page-link" href="#">2</a>
-                        </li>
-                        <li className="page-item">
-                            <a className="page-link" href="#">3</a>
-                        </li>
-                        <li className="page-item">
-                            <a className="page-link" href="#">4</a>
-                        </li>
-                        <li className="page-item">
-                            <a className="page-link" href="#">5</a>
-                        </li> */}
-                        <li className="page-item">
+
+                        {store.currentSearchPage > 4 && (
+                            <li className="page-item" onClick={() => actions.handlePagination(1)}>
+                                <a className="page-link" href="#">1</a>
+                            </li>
+                        )}
+
+                        {store.currentSearchPage > 3 && (
+                            <li className="page-item disabled">
+                                <span className="page-link">...</span>
+                            </li>
+                        )}
+
+                        {Array.from(
+                            { length: 8 },
+                            (_, index) => store.currentSearchPage - 4 + index)
+                            .filter(page => page >= 1 && page <= store.numberOfPagesFromSearch)
+                            .map(page => (
+                                <li key={page} className={`page-item ${store.currentSearchPage === page ? "active" : ""}`} onClick={() => actions.handlePagination(page)}>
+                                    <a className="page-link" href="#">{page}</a>
+                                </li>
+                            ))}
+
+                        {store.currentSearchPage < store.numberOfPagesFromSearch - 3 && (
+                            <li className="page-item disabled">
+                                <span className="page-link">...</span>
+                            </li>
+                        )}
+
+                        {store.currentSearchPage < store.numberOfPagesFromSearch - 4 && (
+                            <li className="page-item" onClick={() => actions.handlePagination(store.numberOfPagesFromSearch)}>
+                                <a className="page-link" href="#">{store.numberOfPagesFromSearch}</a>
+                            </li>
+                        )}
+                        <li className={`page-item ${store.currentSearchPage >= store.numberOfPagesFromSearch ? "disabled" : ""}`}>
                             <a className="page-link" onClick={() => actions.handlePagination(store.currentSearchPage + 1)} href="#">Next</a>
                         </li>
                     </ul>

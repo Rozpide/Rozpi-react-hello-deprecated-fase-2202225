@@ -4,6 +4,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			videogames: [],
 			tags: [],
 			videogamesSearch: [],
+			videogameSearchNameResult: [],
+			numberOfPagesFromSearch: null,
 			currentSearchPage: 1,
 			message: null,
 			specificVideogameSteamId: 0,
@@ -117,7 +119,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const data = await response.json()
 					console.log(data);
 
-					setStore({ videogamesSearch: data.result })
+					setStore({ videogamesSearch: data.result, numberOfPagesFromSearch: data.total_pages })
 
 				} catch (error) {
 					console.log(error)
@@ -127,8 +129,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getStore().currentSearchPage = page
 				await getActions().fetchSearchGames(page)
 				
+			},
+			queryGameName: async(gameName) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/search?filter=${gameName}`);
+					const data = await response.json()
+					console.log(data);
+					setStore({videogameSearchNameResult: data})
+				} catch (error) {
+					console.log(error);
+					
+				}
+			},
+			resetVideogameSearchNameResult: () => {
+				setStore({videogameSearchNameResult: []})
 			}
-
 		}
 	};
 };
