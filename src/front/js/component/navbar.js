@@ -1,84 +1,70 @@
-import React, { useState } from "react";
+import React, {useState, useContext, useEffect} from "react";
+import { Link } from "react-router-dom";
+import "../../styles/styles/navbar.css"
+import { Context } from '../store/appContext';
+import { useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
-    const [view, setView] = useState("menu"); // Puede ser: "menu", "signup", "login"
+export const Navbar = () => {
+    const [query, setQuery] = useState("")
+    const { store, actions } = useContext(Context);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [view, setView] = useState("menu"); 
+    const navigate = useNavigate();
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const handleGameClick = (game) => {
+        actions.setSpecificVideogameSteamId(game)
+        navigate(`/game/${game.id}`);
+        setQuery("")
+        actions.resetVideogameSearchNameResult()
+    };
+    
+    useEffect(() => {
+        if (query === "") {
+            actions.resetVideogameSearchNameResult()
+            return
+        }
+        const debounceAPI = setTimeout(() => {
+            const handleQuery = async () => {
+                if (query.trim() !== "") {
+                    await actions.queryGameName(query)
+                }
+            }
+            handleQuery()
+        }, 400)
+        return () => clearTimeout(debounceAPI)
+    },[query])
+    
 
     return (
-        <nav className="navbar navbar-dark bg-dark px-3">
-            <span className="navbar-brand" style={{ color: "yellow", fontWeight: "bold" }}>
-                All Games DB
-            </span>
-
-            <div className="ml-auto">
-                <div className="dropdown">
-                    {/* Botón que abre el dropdown */}
-                    <button
-                        className="btn btn-warning"
-                        onClick={() => {
-                            setDropdownOpen(!isDropdownOpen);
-                            setView("menu");
-                        }}
-                    >
-                        Signup/Login
-                    </button>
-
-
-                    {isDropdownOpen && (
-                        <div className="dropdown-menu show" style={{ display: "block", position: "absolute", right: 0, padding: "10px", width: "250px" }}>
-
-
-                            {view === "menu" && (
-                                <ul className="list-unstyled">
-                                    <li>
-                                        <button className="dropdown-item" onClick={() => setView("signup")}>Singup</button>
-                                    </li>
-                                    <li>
-                                        <button className="dropdown-item" onClick={() => setView("login")}>Login</button>
-                                    </li>
-                                </ul>
-                            )}
-
-
-
-                            {view === "signup" && (
-                                <div>
-                                    <h5 className="dropdown-header">Register</h5>
-                                    <form>
-                                        <div className="mb-2">
-                                            <input type="text" className="form-control" placeholder="Nombre de usuario" />
-                                        </div>
-                                        <div className="mb-2">
-                                            <input type="email" className="form-control" placeholder="Email" />
-                                        </div>
-                                        <div className="mb-2">
-                                            <input type="password" className="form-control" placeholder="Password" />
-                                        </div>
-                                        <button type="submit" className="btn btn-primary w-100">Register</button>
-                                    </form>
-                                    <button className="btn btn-link w-100 mt-2" onClick={() => setView("menu")}>Go Back</button>
-                                </div>
-                            )}
-
-
-                            {view === "login" && (
-                                <div>
-                                    <h5 className="dropdown-header">Login</h5>
-                                    <form>
-                                        <div className="mb-2">
-                                            <input type="email" className="form-control" placeholder="Correo electrónico" />
-                                        </div>
-                                        <div className="mb-2">
-                                            <input type="password" className="form-control" placeholder="Contraseña" />
-                                        </div>
-                                        <button type="submit" className="btn btn-success w-100">Login</button>
-                                    </form>
-                                    <button className="btn btn-link w-100 mt-2" onClick={() => setView("menu")}>Go back</button>
-                                </div>
-                            )}
-                        </div>
-                    )}
+        <nav className="navbar">
+            <div className="container">
+                <Link to="/" className="logo">All <span>Games DB</span></Link>
+                <div className="justify-content-center">
+                    <input type="text" className="search-bar m-auto" placeholder="Search games" data-bs-toggle="dropdown" aria-expanded={isDropdownOpen ? "true" : "false"} value={query} onBlur={() => setTimeout(toggleDropdown, 100)} onFocus={toggleDropdown} onChange={e => setQuery(e.target.value)}/>
+                    <ul className={`dropdown-menu dropdown-menu-end d-flex flex-column ${isDropdownOpen ? "show" : "visually-hidden"}`}>
+                        {store.videogameSearchNameResult && store.videogameSearchNameResult.length > 0 ?
+                            store.videogameSearchNameResult.map((game) => (
+                                <li key={game.id}>
+                                    <a className="dropdown-item d-flex flex-row" onClick={() => handleGameClick(game)}>
+                                        <img src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.app_id}/capsule_184x69.jpg`} alt={game.name} className="game-image-search my-auto" />
+                                        <p className="game-name my-auto me-2">{game.name} </p>
+                                        <p className="price my-auto">{game.steam_price > game.g2a_price ? game.g2a_price : game.steam_price} €</p>
+                                    </a>
+                                </li>
+                            ))
+                            :
+                            ""
+                        }
+                    </ul>
                 </div>
+                {/* <div className="nav-buttons">
+                    <button className="favorites">⭐ Favoritos</button>
+                    <button className="logout">🔴 Logout</button>
+                </div> */}
             </div>
         </nav>
     );
