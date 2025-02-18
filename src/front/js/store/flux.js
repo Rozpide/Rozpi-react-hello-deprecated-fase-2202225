@@ -1,6 +1,8 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			user: null,
+			token: localStorage.getItem("token") || null,
 			videogames: [],
 			tags: [],
 			videogamesSearch: [],
@@ -125,7 +127,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error)
 				}
 			},
-			handlePagination: async(page) => {
+			handlePagination: async (page) => {
 				getStore().currentSearchPage = page
 				await getActions().fetchSearchGames(page)
 				
@@ -143,6 +145,51 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			resetVideogameSearchNameResult: () => {
 				setStore({videogameSearchNameResult: []})
+			},
+
+			login: async (email, password) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ email, password })
+					});
+
+					if (!response.ok) throw new Error("Error en las credenciales");
+
+					const data = await response.json();
+					localStorage.setItem("token", data.token);
+					setStore({ user: data.user, token: data.token });
+
+					return true;
+				} catch (error) {
+					console.error(error);
+					return false;
+				}
+			},
+			logout: () => {
+				localStorage.removeItem("token");
+				setStore({ user: null, token: null });
+			},
+			signup: async (email, password) => {
+				try {
+					const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ email, password }),
+					});
+
+					const data = await response.json();
+					if (response.ok) {
+						return true;  // Registro exitoso
+					} else {
+						console.error("Error en el registro:", data.msg);
+						return false;  // Registro fallido
+					}
+				} catch (error) {
+					console.error("Error en la solicitud:", error);
+					return false;
+				}
 			}
 		}
 	};

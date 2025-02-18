@@ -3,6 +3,8 @@ from sqlalchemy import ForeignKey, Table, String, DateTime, Integer, Float
 from sqlalchemy.orm import Mapped, relationship, mapped_column 
 from typing import List
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 
@@ -24,8 +26,11 @@ class User(db.Model):
     favourites: Mapped[List["Favourites"]] = relationship()
     # last_login: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    def __repr__(self):
-        return f'<User {self.email}>'
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def serialize(self):
         return {
