@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 const Navbar = () => {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
-    const [showSignupForm, setShowSignupForm] = useState(false);
+    const [view, setView] = useState("menu"); // Puede ser: "menu", "signup", "login"
 
     return (
         <nav className="navbar navbar-dark bg-dark px-3">
-            <Link to="/" className="navbar-brand">
-                <span style={{ color: "yellow", fontWeight: "bold" }}>All Games DB</span>
-            </Link>
+            <span className="navbar-brand" style={{ color: "yellow", fontWeight: "bold" }}>
+                All Games DB
+            </span>
 
             <div className="ml-auto">
                 <div className="dropdown">
@@ -18,43 +17,63 @@ const Navbar = () => {
                         className="btn btn-warning"
                         onClick={() => {
                             setDropdownOpen(!isDropdownOpen);
-                            setShowSignupForm(false); // Reiniciar vista del dropdown
+                            setView("menu"); 
                         }}
                     >
-                        Acceder/Registrarse
+                        Signup/Login
                     </button>
 
-                    {/* Dropdown visible si isDropdownOpen es true */}
+
                     {isDropdownOpen && (
                         <div className="dropdown-menu show" style={{ display: "block", position: "absolute", right: 0, padding: "10px", width: "250px" }}>
 
-                            {/* Verificamos si el usuario quiere registrarse */}
-                            {showSignupForm ? (
+
+                            {view === "menu" && (
+                                <ul className="list-unstyled">
+                                    <li>
+                                        <button className="dropdown-item" onClick={() => setView("signup")}>Signup</button>
+                                    </li>
+                                    <li>
+                                        <button className="dropdown-item" onClick={() => setView("login")}>Login</button>
+                                    </li>
+                                </ul>
+                            )}
+
+
+                            {view === "signup" && (
                                 <div>
-                                    <h5 className="dropdown-header">Registro</h5>
+                                    <h5 className="dropdown-header">Register</h5>
                                     <form>
                                         <div className="mb-2">
                                             <input type="text" className="form-control" placeholder="Nombre de usuario" />
                                         </div>
+                                        <div className="mb-2">
+                                            <input type="email" className="form-control" placeholder="Email" />
+                                        </div>
+                                        <div className="mb-2">
+                                            <input type="password" className="form-control" placeholder="Password" />
+                                        </div>
+                                        <button type="submit" className="btn btn-primary w-100">Register</button>
+                                    </form>
+                                    <button className="btn btn-link w-100 mt-2" onClick={() => setView("menu")}>Go Back</button>
+                                </div>
+                            )}
+
+
+                            {view === "login" && (
+                                <div>
+                                    <h5 className="dropdown-header">Login</h5>
+                                    <form>
                                         <div className="mb-2">
                                             <input type="email" className="form-control" placeholder="Correo electrónico" />
                                         </div>
                                         <div className="mb-2">
                                             <input type="password" className="form-control" placeholder="Contraseña" />
                                         </div>
-                                        <button type="submit" className="btn btn-primary w-100">Registrarse</button>
+                                        <button type="submit" className="btn btn-success w-100">Login</button>
                                     </form>
-                                    <button className="btn btn-link w-100 mt-2" onClick={() => setShowSignupForm(false)}>Volver</button>
+                                    <button className="btn btn-link w-100 mt-2" onClick={() => setView("menu")}>Go back</button>
                                 </div>
-                            ) : (
-                                <ul className="list-unstyled">
-                                    <li>
-                                        <button className="dropdown-item" onClick={() => setShowSignupForm(true)}>Signup</button>
-                                    </li>
-                                    <li>
-                                        <Link className="dropdown-item" to="/login">Login</Link>
-                                    </li>
-                                </ul>
                             )}
                         </div>
                     )}
@@ -65,22 +84,6 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-//vista de dashboard modificar
-// export const Navbar = () => {
-//     return (
-//         <nav className="navbar">
-//             <div className="container">
-//                 <Link to="/" className="logo">All <span>Games DB</span></Link>
-//                 {/* <input type="text" className="search-bar" placeholder="Search" />
-//                 <div className="nav-buttons">
-//                     <button className="favorites">⭐ Favoritos</button>
-//                     <button className="logout">🔴 Logout</button>
-//                 </div> */}
-//             </div>
-//         </nav>
-//     );
-// };
 
 
 // import React from "react";
