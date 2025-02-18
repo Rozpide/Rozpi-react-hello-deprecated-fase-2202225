@@ -7,37 +7,44 @@ const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const [showModal, setShowModal] = useState(false);
 
-    const handleSubmit = async (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
         const success = await actions.signup(email, password);
         if (success) {
-            navigate("/login"); } // Redirigir al login tras el registro NO NAVEGA AL LOGIN
-        // } else {
-        //     alert("Error en el registro");
-        // }
+            setShowModal(false); // Cierra el modal
+            navigate("/login");  // Redirige al login
+        } else {
+            alert("Error en el registro");
+        }
     };
 
     return (
         <div>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button type="submit">Register</button>
-            </form>
+            {/* activa el modal */}
+            <button className="btn btn-primary" onClick={() => setShowModal(true)}>Signup</button>
+
+            {/*  Bootstrap */}
+            {showModal && (
+                <div className="modal show d-block" tabIndex="-1">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Regístrate</h5>
+                                <button type="button" className="close" onClick={() => setShowModal(false)}>&times;</button>
+                            </div>
+                            <div className="modal-body">
+                                <form onSubmit={handleSignup}>
+                                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="form-control mb-2" />
+                                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Contraseña" className="form-control mb-2" />
+                                    <button type="submit" className="btn btn-success">Registrarse</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

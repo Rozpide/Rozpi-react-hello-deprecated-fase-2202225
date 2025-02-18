@@ -19,7 +19,7 @@ export const GameList = () => {
 
     return (
         <div className="game-list-container d-flex flex-column">
-            {/* <div className="filters">
+           <div className="filters">
                 <ul className="nav nav-tabs">
                     <li className="nav-item">
                         <a className="nav-link active" href="#">Rating</a>
@@ -35,7 +35,7 @@ export const GameList = () => {
                     </li>
                 </ul>
                 <button className="btn btn-secondary advanced-search">Búsqueda avanzada</button>
-            </div> */}
+            </div> 
 
             <div className="games-table">
                 {Array.isArray(store.videogames) && store.videogames.length > 0 ? (
@@ -46,7 +46,7 @@ export const GameList = () => {
                                 <h4 className='game-title'>{game.name}</h4>
                                 <p className='tags'>{game.game_tags.slice(0, 3).map((tag) => tag.tag_name).join(', ')}</p>
                             </div>
-                            {/* <button className="favorite-btn">❤️</button> */}
+                           <button className="favorite-btn">❤️</button> 
                             <button className="price-btn">{gamePriceComparer(game)}</button>
                         </div>
                     ))
