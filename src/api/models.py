@@ -43,7 +43,7 @@ class User(db.Model):
 class Favourites(db.Model):
     __tablename__ = "favourites"
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(250), nullable=False)
+    # name: Mapped[str] = mapped_column(String(250), nullable=False)
     # relación con user
     user_favourites_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     # relación con Games
@@ -53,7 +53,7 @@ class Favourites(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name,
+            # "name": self.name,
             "favourite_game": self.favourite_game.serialize() if self.favourite_game else None,
         }
 

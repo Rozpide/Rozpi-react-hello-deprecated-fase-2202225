@@ -302,9 +302,10 @@ def profile():
 @jwt_required()
 def post_favorite():
     request_data = request.json
-    game_id = request_data.get('game_id')
-    print(request_data)
     email = get_jwt_identity()
+    if not request_data or not "game_id" in request_data or not email:
+        return jsonify({"error": "missing game_id or auth token"}), 400
+    game_id = request_data.get('game_id')
     try:
         user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one()
     except NoResultFound:
@@ -315,14 +316,40 @@ def post_favorite():
         return jsonify({"error": "Game not found"}), 404
     try:
         favorites = db.session.execute(db.select(Favourites).filter_by(favourite_game=game, user_favourites_id=user.id)).scalar_one()
+        if favorites:
+            return jsonify({"error": "favorite already exist"}), 400
     except NoResultFound:
-        # print("estoy")
         pass
+    except:
+        return jsonify({"error": "Something went wrong while trying to post new favourite"}), 500
     new_favorite = Favourites(
         user_favourites_id = user.id,
         favourite_game = game
     )
-    print(new_favorite)
     db.session.add(new_favorite)
     db.session.commit()
-    return jsonify({"msg": new_favorite.serialize()})
+    return jsonify({"msg": new_favorite.serialize()}), 201
+
+# endpoint delete favorites
+@api.route('/profile/favorites', methods=['Delete'])
+@jwt_required()
+def delete_favorite():
+    request_data = request.json
+    email = get_jwt_identity()
+    if not request_data or not "favorite_id" in request_data or not email:
+        return jsonify({"error": "missing favorite_id or auth token"}), 400
+    favorite_id = request_data.get('favorite_id')
+    try:
+        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one()
+    except NoResultFound:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+    try:
+        game = db.session.execute(db.select(Favourites).filter_by(id=favorite_id, user_favourites_id=user.id)).scalar_one()
+    except NoResultFound:
+        return jsonify({"error": "The favorite you are trying to delete doesn't exist"}), 404
+    except Exception as e:
+        return jsonify({"error": f"something went wrong {e}"}), 500
+    db.session.delete(game)
+    db.session.commit()
+    return jsonify({"msg": "favourite game deleted"}), 200
+    
