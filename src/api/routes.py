@@ -14,6 +14,7 @@ import subprocess
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_bcrypt import Bcrypt
+from app import jwt
 
 
 api = Blueprint('api', __name__)
@@ -240,7 +241,21 @@ def get_search_request():
 
 #     return jsonify({"message": "Usuario registrado exitosamente"}), 201
 
+@api.route('/signup', methods=['POST'])
+def signup():
+    data = request.get_json()
+    # Verificar si el email ya está registrado
+    existing_user = User.query.filter_by(email=data["email"]).first()
+    if existing_user:
+        return jsonify({"msg": "El usuario ya existe"}), 400
 
+    # Crear nuevo usuario
+    new_user = User(email=data["email"])
+    new_user.set_password(data["password"])  # Hashear contraseña
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"msg": "Usuario registrado con éxito"}), 201
 
 #login
 @api.route("/login", methods=["POST"])
@@ -254,7 +269,7 @@ def login():
         return jsonify({"msg": "Wrong credentials"}), 401
 
     # Creamos el token de acceso
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=user.email)
     return jsonify({"token": access_token, "user": user.serialize()}), 200
 
 
@@ -270,32 +285,44 @@ def logout():
 def check_if_token_in_blacklist(jwt_header, jwt_payload):
     return jwt_payload["jti"] in blacklist
 
-#profile
+#profile, obtenemos usuario y favoritos
 @api.route('/profile', methods=['GET'])
 @jwt_required()
 def profile():
-    user_id = get_jwt_identity()
-    user = User.query.get(user_id)
-
-    if not user:
+    email = get_jwt_identity()
+    try:
+        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one()
+    except NoResultFound:
         return jsonify({"error": "Usuario no encontrado"}), 404
 
     return jsonify(user.serialize()), 200
 
-
-@api.route('/signup', methods=['POST'])
-def signup():
-    data = request.get_json()
-
-    # Verificar si el email ya está registrado
-    existing_user = User.query.filter_by(email=data["email"]).first()
-    if existing_user:
-        return jsonify({"msg": "El usuario ya existe"}), 400
-
-    # Crear nuevo usuario
-    new_user = User(email=data["email"])
-    new_user.set_password(data["password"])  # Hashear contraseña
-    db.session.add(new_user)
+# endpoint para añadir favoritos al usuario
+@api.route('/profile/favorites', methods=['POST'])
+@jwt_required()
+def post_favorite():
+    request_data = request.json
+    game_id = request_data.get('game_id')
+    print(request_data)
+    email = get_jwt_identity()
+    try:
+        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one()
+    except NoResultFound:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+    try:
+        game = db.session.execute(db.select(Games).filter_by(id=game_id)).scalar_one()
+    except NoResultFound:
+        return jsonify({"error": "Game not found"}), 404
+    try:
+        favorites = db.session.execute(db.select(Favourites).filter_by(favourite_game=game, user_favourites_id=user.id)).scalar_one()
+    except NoResultFound:
+        # print("estoy")
+        pass
+    new_favorite = Favourites(
+        user_favourites_id = user.id,
+        favourite_game = game
+    )
+    print(new_favorite)
+    db.session.add(new_favorite)
     db.session.commit()
-
-    return jsonify({"msg": "Usuario registrado con éxito"}), 201
+    return jsonify({"msg": new_favorite.serialize()})

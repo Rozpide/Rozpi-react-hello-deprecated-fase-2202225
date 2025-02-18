@@ -13,9 +13,10 @@ import { Footer } from "./component/footer";
 import { Videogames } from "./pages/Videogames";
 import { GameSearchList } from "./pages/gameSearchList";
 import { GameDetails } from "./component/GameDetails";
-import Login from "./views/Login";
-import Dashboard from "./views/Dashboard";
-import PrivateRoute from "./components/PrivateRoute";
+import Login from "./component/Login";
+import Signup from "./pages/Signup";
+// import Dashboard from "./views/Dashboard";
+import {PrivateRoute, TokenVerify} from "./component/PrivateRoute";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -41,7 +42,7 @@ const Layout = () => {
                         {/* Ruta protegida */}
                         <Route element={
                             <PrivateRoute>
-                                <Dashboard />
+                                {/* <Dashboard /> */}
                             </PrivateRoute>
                         } path="/dashboard" />
 

@@ -6,8 +6,9 @@ const PrivateRoute = ({ children }) => {
     const { store } = useContext(Context);
     return store.token ? children : <Navigate to="/login" />;
 };
-{
+
+const TokenVerify = () => {
     const token = localStorage.getItem("token"); // Verifica si hay un token
     return token ? <Outlet /> : <Navigate to="/login" />;
 };
-export default PrivateRoute;
+export {PrivateRoute, TokenVerify};
