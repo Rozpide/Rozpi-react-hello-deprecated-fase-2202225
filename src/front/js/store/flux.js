@@ -171,21 +171,47 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.removeItem("token");
 				setStore({ user: null, token: null });//borra token cierra sesion
 			},
+
 			signup: async (email, password) => {
 				try {
-					const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+					const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/api/signup", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ email, password }),
 					});
 
 					const data = await response.json();
+					if (response.ok) {
+						console.log("Usuario registrado con éxito", data);
+						return data;
+					} else {
+						console.error("Error en el registro:", data);
+						return false;
+					}
 
 				} catch (error) {
 					console.error("Error en la solicitud:", error);
 					return false;
 				}
 			}
+
+
+
+			// signup: async (email, password) => {
+			// 	try {
+			// 		const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+			// 			method: "POST",
+			// 			headers: { "Content-Type": "application/json" },
+			// 			body: JSON.stringify({ email, password }),
+			// 		});
+
+			// 		const data = await response.json();
+
+			// 	} catch (error) {
+			// 		console.error("Error en la solicitud:", error);
+			// 		return false;
+			// 	}
+			// }
 		}
 	};
 };

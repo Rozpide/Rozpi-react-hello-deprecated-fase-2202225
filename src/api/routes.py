@@ -220,42 +220,22 @@ def get_search_request():
     return response, 200
 
 
-#registro 
-# @api.route('/register', methods=['POST'])
-# def register():
-#     data = request.json
-#     email = data.get("email")
-#     password = data.get("password")
-
-#     if not email or not password:
-#         return jsonify({"error": "Faltan datos"}), 400
-
-#     existing_user = User.query.filter_by(email=email).first()
-#     if existing_user:
-#         return jsonify({"error": "El usuario ya existe"}), 400
-
-#     new_user = User(email=email)
-#     new_user.set_password(password)
-#     db.session.add(new_user)
-#     db.session.commit()
-
-#     return jsonify({"message": "Usuario registrado exitosamente"}), 201
-
 @api.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
-    # Verificar si el email ya está registrado
+    # Verifica si el usuario ya existe
     existing_user = User.query.filter_by(email=data["email"]).first()
     if existing_user:
-        return jsonify({"msg": "El usuario ya existe"}), 400
+        return jsonify({"msg": "Existing user"}), 400
 
-    # Crear nuevo usuario
-    new_user = User(email=data["email"],password=data["password"])
-    # new_user.set_password(data["password"])  # Hashear contraseña
+    # Crear el nuevo usuario
+    new_user = User(email=data["email"], password=data["password"])  
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"msg": "Usuario registrado con éxito"}), 201
+    return jsonify({"msg": "User Signed up!"}), 201
+
+
 
 #login modificado el login 
 @api.route("/login", methods=["POST"])

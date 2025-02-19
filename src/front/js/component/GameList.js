@@ -41,10 +41,10 @@ export const GameList = () => {
                 {Array.isArray(store.videogames) && store.videogames.length > 0 ? (
                     store.videogames.map((game) => (
                         <div key={game.id} className="game-row">
-                            <img 
-                                src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.app_id}/capsule_231x87.jpg`} 
-                                alt={game.name} 
-                                className="game-image hover-effect" 
+                            <img
+                                src={`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.app_id}/capsule_231x87.jpg`}
+                                alt={game.name}
+                                className="game-image hover-effect"
                                 onClick={() => handleGameClick(game)}
                             />
                             <div className="game-info">

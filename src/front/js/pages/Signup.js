@@ -11,15 +11,19 @@ const Signup = () => {
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        await actions.signup(email, password);
-        console.log("intentando navegar a login");
-        navigate("/login");  // Redirige al login
-        //manejo de error de registro
+        const result = await actions.signup(email, password);
+        if (result) {
+            console.log("Redirigiendo al login...");
+            navigate("/login");
+        } else {
+            console.error("Error en el registro, no se pudo redirigir.");
+        }
     };
+
 
     return (
         <div>
-            {/* activa el modal */}
+            {/* activar el modal */}
             <button className="btn btn-primary" onClick={() => setShowModal(true)}>Signup</button>
 
             {/*  Bootstrap */}
@@ -28,14 +32,14 @@ const Signup = () => {
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Regístrate</h5>
+                                <h5 className="modal-title">Register</h5>
                                 <button type="button" className="close" onClick={() => setShowModal(false)}>&times;</button>
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSignup}>
                                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" className="form-control mb-2" />
                                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Contraseña" className="form-control mb-2" />
-                                    <button type="submit" className="btn btn-success">Registrarse</button>
+                                    <button type="submit" className="btn btn-success">Register</button>
                                 </form>
                             </div>
                         </div>

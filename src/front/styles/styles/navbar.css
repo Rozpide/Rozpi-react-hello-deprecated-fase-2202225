@@ -37,7 +37,6 @@
     border-radius: 5px;
 }
 
-
 .custom-green-btn {
     background: linear-gradient(to bottom, #4FB77F, #2E8B57);
     color: white;
@@ -47,12 +46,10 @@
     transition: background 0.3s ease, transform 0.1s ease;
 }
 
-
 .custom-green-btn:hover {
     background: linear-gradient(to bottom, #58C488, #237A4A);
     transform: scale(1.05);
 }
-
 
 .btn-price {
     background: linear-gradient(to bottom, #4FB77F, #2E8B57);
@@ -76,6 +73,16 @@
     border-radius: 0.5rem;
     background-color: #fff;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    right: 0;
+    left: auto;
+    position: absolute;
+    transform: translateX(-10px);
+    z-index: 1050;
+    min-width: 200px;
+}
+
+.nav-buttons .dropdown {
+    position: relative;
 }
 
 /* Styling each list item */
@@ -92,7 +99,6 @@
     transform: scale(1.05);
     transition: transform 0.2s ease;
 }
-
 
 .dropdown-menu li:hover .game-image-search {
     transform: scale(1.1);
@@ -144,8 +150,7 @@
     text-overflow: ellipsis;
 }
 
-/* Estilo para los botones con degradado verde */
-/* Contenedor principal de la barra de navegación */
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -207,13 +212,13 @@
     background: #f1f1f1;
 }
 
-/* Contenedor de los botones */
+
 .nav-buttons {
     display: flex;
     gap: 10px;
 }
 
-/* Estilo para los botones con degradado verde */
+/* Degradado verde */
 .btn-green {
     background: linear-gradient(to bottom, #6DDA9E, #4FB77F);
     color: white;
@@ -232,4 +237,68 @@
 
 .btn-green:active {
     transform: scale(0.95);
+}
+
+
+/* Estilosdropdown y formulario */
+.signup-dropdown, .login-dropdown {
+    background-color: #c8e6c9; /* Fondo verde claro */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 15px;
+    width: 270px; /*  ancho del dropdown */
+    box-sizing: border-box; 
+}
+
+.signup-form, .login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+input[type="email"], input[type="text"], input[type="password"] {
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: #ffffff;
+    width: 100%;
+    box-sizing: border-box; /* Padding que no sobresalga  */
+}
+
+input[type="email"]:focus, input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #4caf50; 
+    outline: none;
+}
+
+input::placeholder {
+    color: #999;
+}
+
+/* Estilos  botones */
+.btn-submit {
+    background-color: #388e3c; /* Verde más oscuro */
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background-color: #2e7d32; /* verde oscuro en hover */
+}
+
+.btn-green {
+    background-color: #66bb6a;
+    color: white;
+}
+
+.btn-green:hover {
+    background-color: #4caf50;
 }
