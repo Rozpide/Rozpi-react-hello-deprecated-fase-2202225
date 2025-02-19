@@ -174,26 +174,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			signup: async (email, password) => {
 				try {
-					const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/api/signup", {
+					const response = await fetch("https://cuddly-space-doodle-v6gxqw5vpq7rfprv4-3001.app.github.dev/api/signup", {
 						method: "POST",
-						headers: { "Content-Type": "application/json" },
+						headers: {
+							"Content-Type": "application/json",
+						},
 						body: JSON.stringify({ email, password }),
 					});
 
-					const data = await response.json();
-					if (response.ok) {
-						console.log("Usuario registrado con éxito", data);
-						return data;
-					} else {
-						console.error("Error en el registro:", data);
+					if (!response.ok) {
+						const errorData = await response.json();
+						console.error("Error en el registro:", errorData);
 						return false;
 					}
 
+					const data = await response.json();
+					console.log("Registro exitoso:", data);
+					return true;
 				} catch (error) {
-					console.error("Error en la solicitud:", error);
+					console.error("Error en la petición:", error);
 					return false;
 				}
 			}
+
 
 
 
