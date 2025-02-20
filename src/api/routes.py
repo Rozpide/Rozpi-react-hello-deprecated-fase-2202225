@@ -232,7 +232,7 @@ def signup():
     new_user = User(email=data["email"], password=data["password"])  
     db.session.add(new_user)
     db.session.commit()
-
+#requeri password emails y encriptar pass
     return jsonify({"msg": "User Signed up!"}), 201
 
 
@@ -319,4 +319,20 @@ def delete_favorite():
     db.session.delete(game)
     db.session.commit()
     return jsonify({"msg": "favourite game deleted"}), 200
+
+
+# #enpoint para el carrusel de juegos mas populares
+# @api.route("/games/popular", methods=['GET'])
+# def get_popular_games():
+#     """Retunr 10 most popular games"""
+#     try:
+#         popular_games = db.session.scalars(
+#             db.select(Games).order_by(Games.score.desc()).limit(10)#filtra de 10
+#         ).all()
+#         results = [game.serialize() for game in popular_games]
+
+#         return jsonify({"results": results}), 200
+#     except Exception as e:
+#         return jsonify({"error": f"Error obtaining games: {str(e)}"}), 500
+
     

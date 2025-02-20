@@ -243,11 +243,25 @@ export const Navbar = () => {
         });
     };
 
-    const handleSignupSubmit = (e) => {
+    const handleSignupSubmit = async (e) => {
         e.preventDefault();
-        console.log("Signup Data", formData);
-        setIsSignupOpen(false);
+        const result = await actions.signup(formData.email, formData.password);
+        if (result) {
+            console.log("Redirigiendo al login...");
+            navigate("/login");
+        } else {
+            console.error("Error en el registro, no se pudo redirigir.");
+        }
     };
+
+
+    const handleloginSubmit = async (e) => {
+        e.preventDefault();
+        const success = await actions.login(formData.email, formData.password);
+        if (success) navigate("/dashboard");
+        else alert("Error credencials");
+    };
+
 
     const handleGameClick = (game) => {
         actions.setSpecificVideogameSteamId(game);
@@ -346,11 +360,14 @@ export const Navbar = () => {
                             <button className="btn btn-green" onClick={toggleLogin}>Login</button>
                             {isLoginOpen && (
                                 <div className="dropdown-menu dropdown-menu-end show login-dropdown">
-                                    <form className="login-form">
+                                    <form onSubmit={handleloginSubmit} className="login-form">
                                         <div className="form-group">
                                             <label htmlFor="login-email">Email:</label>
                                             <input
                                                 type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleInputChange}
                                                 id="login-email"
                                                 placeholder="Enter your email"
                                                 required
@@ -361,6 +378,9 @@ export const Navbar = () => {
                                             <input
                                                 type="password"
                                                 id="login-password"
+                                                name="password"
+                                                value={formData.password}
+                                                onChange={handleInputChange}
                                                 placeholder="Enter your password"
                                                 required
                                             />

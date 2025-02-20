@@ -155,6 +155,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						body: JSON.stringify({ email, password })
 					});
 
+
 					if (!response.ok) throw new Error("Error en las credenciales");
 
 					const data = await response.json();
