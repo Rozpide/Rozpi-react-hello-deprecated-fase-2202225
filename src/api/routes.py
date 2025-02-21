@@ -58,31 +58,19 @@ def login():
 @jwt_required()
 def get_all_users():
     users = User.query.all()
-    user_list = [{"id": user.id, "email": user.email, "is_active": user.is_active, "is_admin": user.is_admin} for user in users]
+    user_list = [
+        {
+            "id": user.id,
+            "email": user.email,
+            "is_active": user.is_active,
+            "is_admin": user.is_admin,
+            "phone": user.phone,
+            "address": user.address
+        } for user in users
+    ]
     return jsonify(user_list), 200
 200
 
-@api.route('/update/<int:id>', methods=['PUT'])
-@jwt_required()
-def update_user(id):
-    user = User.query.get(id)
-    
-    if not user:
-        raise APIException("User not found", status_code=404)
-    
-    body = request.get_json()
-
-    if not body:
-        raise APIException("You need to specify the request body as a JSON object", status_code=400)
-    
-    if 'email' in body:
-        user.email = body['email']
-    if 'password' in body:
-        user.password = body['password']
-    
-    db.session.commit()
-    
-    return jsonify({"message": "User information updated successfully"}), 200
 
 @api.route('/delete/<int:id>', methods=['DELETE'])
 @jwt_required()
@@ -96,3 +84,32 @@ def delete_user(id):
     db.session.commit()
     
     return jsonify({"message": f"User with id {id} deleted successfully"}), 200
+
+@api.route('/users/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_user(id):
+    current_user_id = get_jwt_identity()
+    user = User.query.get(id)
+
+    if not user:
+        raise APIException("User not found", status_code=404)
+
+    body = request.get_json()
+    if not body:
+        raise APIException("You need to specify the request body as a JSON object", status_code=400)
+
+    if 'email' in body:
+        user.email = body['email']
+    if 'password' in body:
+        user.password = body['password']
+    if 'is_active' in body:
+        user.is_active = body['is_active']
+    if 'is_admin' in body:
+        user.is_admin = body['is_admin']
+    if 'phone' in body:
+        user.phone = body['phone']
+    if 'address' in body:
+        user.address = body['address']
+
+    db.session.commit()
+    return jsonify({"message": "User information updated successfully"}), 200
