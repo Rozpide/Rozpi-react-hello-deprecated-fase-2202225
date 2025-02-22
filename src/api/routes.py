@@ -113,3 +113,39 @@ def update_user(id):
 
     db.session.commit()
     return jsonify({"message": "User information updated successfully"}), 200
+
+#--------------------------------------------OBTENER INFORMACION DE UN USUARIO--------------------------------------------
+@api.route('/users/<int:id>', methods=['GET'])
+@jwt_required()
+def get_user(id):
+    user = User.query.get(id)
+    if not user:
+        raise APIException("User not found", status_code=404)
+    return jsonify({
+        "id": user.id,
+        "email": user.email,
+        "is_active": user.is_active,
+        "is_admin": user.is_admin,
+        "phone": user.phone,
+        "address": user.address
+    }), 200
+    #-------------------------------------CREAR VARIOS USUARIOS A LA VEZ-------------------------------------
+@api.route('/users', methods=['POST'])
+@jwt_required()
+def create_users():
+    body = request.get_json()
+    if not body:
+        raise APIException("You need to specify the request body as a JSON object", status_code=400)
+    if not isinstance(body, list):
+        raise APIException("The request body must be a JSON array", status_code=400)
+    
+    for user_data in body:
+        if 'email' not in user_data or 'password' not in user_data:
+            continue
+        user = User(email=user_data['email'], password=user_data['password'], is_active=True)
+        db.session.add(user)
+
+    db.session.commit()
+    return jsonify({"message": "Users created successfully"}), 201
+    
+    
