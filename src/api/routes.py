@@ -17,6 +17,8 @@ def handle_hello():
     }
     return jsonify(response_body), 200
 
+#--------------------AÑADIR O REGISTRAR UN USUARIO--------------------------------------------
+
 @api.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json()
@@ -33,6 +35,8 @@ def signup():
     db.session.commit()
 
     return jsonify({"message": "User created successfully"}), 201
+
+#---------------------LOGIN OBTENER EL TOKEN--------------------------------------------
 
 @api.route('/login', methods=['POST'])
 def login():
@@ -54,6 +58,8 @@ def login():
 
     return jsonify({"token": access_token}), 200
 
+#--------------------------------------------OBTENER TODOS LOS USUARIOS--------------------------------------------
+
 @api.route('/users', methods=['GET'])
 @jwt_required()
 def get_all_users():
@@ -72,7 +78,8 @@ def get_all_users():
 200
 
 
-@api.route('/delete/<int:id>', methods=['DELETE'])
+#-------------------------------BORRAR UN USUARIO-------------------------------------
+
 @jwt_required()
 def delete_user(id):
     user = User.query.get(id)
@@ -84,7 +91,7 @@ def delete_user(id):
     db.session.commit()
     
     return jsonify({"message": f"User with id {id} deleted successfully"}), 200
-
+#--------------------------------------------MODIFICAR INFORMACION DE UN USUARIO TODOS LOS CAMPOS-------------------------------------------
 @api.route('/users/<int:id>', methods=['PUT'])
 @jwt_required()
 def update_user(id):
@@ -147,5 +154,33 @@ def create_users():
 
     db.session.commit()
     return jsonify({"message": "Users created successfully"}), 201
-    
+  
+#---------------------------MODIFICAR PARCIALMENTE LA INFORMACION DE UN USUARIO--------------------------------
+@api.route('/users/<int:id>', methods=['PATCH'])
+@jwt_required()
+def partial_update_user(id):
+    user = User.query.get(id)
+    if not user:
+        raise APIException("User not found", status_code=404)
+
+    body = request.get_json()
+    if not body:
+        raise APIException("You need to specify the request body as a JSON object", status_code=400)
+
+    if 'email' in body:
+        user.email = body['email']
+    if 'password' in body:
+        user.password = body['password']
+    if 'is_active' in body:
+        user.is_active = body['is_active']
+    if 'is_admin' in body:
+        user.is_admin = body['is_admin']
+    if 'phone' in body:
+        user.phone = body['phone']
+    if 'address' in body:
+        user.address = body['address']
+
+    db.session.commit()
+    return jsonify({"message": "User information partially updated successfully"}), 200
+
     
