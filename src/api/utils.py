@@ -1,4 +1,12 @@
 from flask import jsonify, url_for
+from api.models import db, User, Task
+
+def update_task_summary(user_id):
+    user = User.query.get(user_id)
+    tasks = Task.query.filter_by(user_id=user_id).all()
+    task_titles = [task.title for task in tasks]
+    user.task_summary = ', '.join(task_titles)
+    db.session.commit()
 
 class APIException(Exception):
     status_code = 400

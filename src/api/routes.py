@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Task
-from api.utils import generate_sitemap, APIException
+from api.utils import generate_sitemap, APIException, update_task_summary
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import datetime
@@ -9,6 +9,8 @@ api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+
+
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
@@ -71,7 +73,8 @@ def get_all_users():
             "is_active": user.is_active,
             "is_admin": user.is_admin,
             "phone": user.phone,
-            "address": user.address
+            "address": user.address,
+            "tasks": [task.serialize() for task in user.tasks] # Incluir tareas en la serialización
         } for user in users
     ]
     return jsonify(user_list), 200
@@ -183,6 +186,8 @@ def partial_update_user(id):
     db.session.commit()
     return jsonify({"message": "User information partially updated successfully"}), 200
 
+#------------------------- CREAR TAREA--------------------------------------------
+
 @api.route('/tasks', methods=['POST'])
 @jwt_required()
 def create_task():
@@ -195,8 +200,12 @@ def create_task():
     task = Task(title=body['title'], description=body.get('description'), user_id=user_id)
     db.session.add(task)
     db.session.commit()
+    
+    update_task_summary(user_id)  # Actualizar el resumen de tareas del usuario
 
     return jsonify({"message": "Task created successfully"}), 201
+
+#-------------------------OBTENER TODAS LAS TAREAS--------------------------------------------
 
 @api.route('/tasks', methods=['GET'])
 @jwt_required()
@@ -205,6 +214,8 @@ def get_tasks():
     tasks = Task.query.filter_by(user_id=user_id).all()
     tasks_list = [task.serialize() for task in tasks]
     return jsonify(tasks_list), 200
+
+#-------------------------MODIFICAR TAREA--------------------------------------------
 
 @api.route('/tasks/<int:id>', methods=['PUT'])
 @jwt_required()
@@ -229,6 +240,8 @@ def update_task(id):
 
     db.session.commit()
     return jsonify({"message": "Task updated successfully"}), 200
+
+#-------------------------BORRAR TAREA--------------------------------------------
 
 @api.route('/tasks/<int:id>', methods=['DELETE'])
 @jwt_required()

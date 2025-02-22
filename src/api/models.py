@@ -23,7 +23,8 @@ class User(db.Model):
             "address": self.address,  # Incluir dirección en la serialización
             "phone": self.phone,      # Incluir teléfono en la serialización
             "is_active": self.is_active,
-            "is_admin": self.is_admin  # Incluir is_admin en la serialización
+            "is_admin": self.is_admin,  # Incluir is_admin en la serialización
+            "tasks": [task.serialize() for task in self.tasks] # Incluir tareas en la serialización
         }
 
 class Task(db.Model):
