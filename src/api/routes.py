@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Task
+from api.models import db, User, Task, PredefinedTask
 from api.utils import generate_sitemap, APIException, update_task_summary
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -257,3 +257,52 @@ def delete_task(id):
     db.session.commit()
     return jsonify({"message": "Task deleted successfully"}), 200
     
+
+@api.route('/predefined_tasks', methods=['POST'])
+@jwt_required()
+def create_predefined_task():
+    body = request.get_json()
+    
+    if not body or 'title' not in body:
+        raise APIException("You need to specify the title", status_code=400)
+
+    task = PredefinedTask(title=body['title'], description=body.get('description'))
+    db.session.add(task)
+    db.session.commit()
+
+    return jsonify({"message": "Predefined task created successfully"}), 201
+
+@api.route('/predefined_tasks', methods=['GET'])
+@jwt_required()
+def get_predefined_tasks():
+    tasks = PredefinedTask.query.all()
+    task_list = [task.serialize() for task in tasks]
+    return jsonify(task_list), 200
+
+
+
+@api.route('/assign_task', methods=['POST'])
+@jwt_required()
+def assign_task():
+    body = request.get_json()
+
+    if not body or 'task_id' not in body or 'user_id' not in body:
+        raise APIException("You need to specify the task_id and user_id", status_code=400)
+
+    predefined_task = PredefinedTask.query.get(body['task_id'])
+    if not predefined_task:
+        raise APIException("Predefined task not found", status_code=404)
+
+    user_id = body['user_id']
+    user = User.query.get(user_id)
+    if not user:
+        raise APIException("User not found", status_code=404)
+
+    task = Task(title=predefined_task.title, description=predefined_task.description, user_id=user_id)
+    db.session.add(task)
+    db.session.commit()
+
+    # Actualizar el resumen de tareas
+    update_task_summary(user_id)
+
+    return jsonify({"message": "Task assigned to user successfully"}), 201
