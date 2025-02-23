@@ -32,8 +32,8 @@ export const Demo = () => {
 				})}
 			</ul>
 			<br />
-			<Link to="/">
-				<button className="btn btn-primary">Back home</button>
+			<Link to="/demo">
+				<button className="btn btn-primary">VOLVER AL MENU</button>
 			</Link>
 		</div>
 	);

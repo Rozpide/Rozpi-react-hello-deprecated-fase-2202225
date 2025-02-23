@@ -51,7 +51,7 @@ def login():
     if not body:
         raise APIException("You need to specify the request body as a JSON object", status_code=400)
     if 'email' not in body:
-        raise APIException("You need to specify the email", status_code=400)
+        raise APIException("You need to specify the email ", status_code=400)
     if 'password' not in body:
         raise APIException("You need to specify the password", status_code=400)
 

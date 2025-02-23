@@ -14,7 +14,7 @@ const Login = () => {
             const response = await axios.post(`${process.env.BACKEND_URL}/api/login`, { email, password });
             if (response.status === 200) {
                 alert("Logged in successfully!");
-                navigate("/users/<int:id>");
+                navigate("/demo");
             }
         } catch (error) {
             alert("There was an error logging in.");
