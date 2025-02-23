@@ -32,7 +32,11 @@ def signup():
     if 'password' not in body:
         raise APIException("You need to specify the password", status_code=400)
 
-    user = User(email=body['email'], password=body['password'], is_active=True)
+    user = User(
+        email=body['email'],
+        password=body['password'],
+        is_active=True
+    )
     db.session.add(user)
     db.session.commit()
 
