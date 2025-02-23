@@ -82,7 +82,7 @@ def get_all_users():
 
 
 #-------------------------------BORRAR UN USUARIO-------------------------------------
-
+@api.route('/users/<int:id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(id):
     user = User.query.get(id)
@@ -257,6 +257,7 @@ def delete_task(id):
     db.session.commit()
     return jsonify({"message": "Task deleted successfully"}), 200
     
+#------------------------CREAR TAREA PREDEFINIDA--------------------------------------------
 
 @api.route('/predefined_tasks', methods=['POST'])
 @jwt_required()
@@ -272,6 +273,8 @@ def create_predefined_task():
 
     return jsonify({"message": "Predefined task created successfully"}), 201
 
+#------------------------OBTENER TAREAS PREDEFINIDAS--------------------------------------------
+
 @api.route('/predefined_tasks', methods=['GET'])
 @jwt_required()
 def get_predefined_tasks():
@@ -279,7 +282,7 @@ def get_predefined_tasks():
     task_list = [task.serialize() for task in tasks]
     return jsonify(task_list), 200
 
-
+#---------------------ASIGNAR TAREA--------------------------------------------
 
 @api.route('/assign_task', methods=['POST'])
 @jwt_required()
