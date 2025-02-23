@@ -99,7 +99,7 @@ def delete_user(id):
     
     return jsonify({"message": f"User with id {id} deleted successfully"}), 200
 #--------------------------------------------MODIFICAR INFORMACION DE UN USUARIO TODOS LOS CAMPOS-------------------------------------------
-@api.route('/users/<int:id>', methods=['PUT'])
+@api.route('/users/<int:id>', methods=['PUT', 'PATCH', 'POST'])
 @jwt_required()
 def update_user(id):
     current_user_id = get_jwt_identity()

@@ -11,10 +11,10 @@ const Login = () => {
         e.preventDefault();
         // Aquí puedes agregar la lógica de inicio de sesión
         try {
-            const response = await axios.post(`${process.env.BACKEND_URL}/login`, { email, password });
+            const response = await axios.post(`${process.env.BACKEND_URL}/api/login`, { email, password });
             if (response.status === 200) {
                 alert("Logged in successfully!");
-                navigate("/");
+                navigate("/users/<int:id>");
             }
         } catch (error) {
             alert("There was an error logging in.");
