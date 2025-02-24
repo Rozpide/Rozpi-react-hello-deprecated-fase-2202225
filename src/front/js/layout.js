@@ -6,16 +6,16 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
-import User from "./pages/user";  // Importa el componente User
-import PredefinedTasks from "./component/PredefinedTasks";  // Importa el componente PredefinedTasks
-import Register from "./pages/Register";  // Importa el componente Register
-import Login from "./pages/Login";  // Importa el componente Login
+import User from "./pages/user"; 
+import PredefinedTasks from "./component/PredefinedTasks"; 
+import Register from "./pages/Register"; 
+import Login from "./pages/Login";
+import UpdateUser from "./pages/UpdateUser";  // Importa el componente UpdateUser
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 
-//create your first component
 const Layout = () => {
     const basename = process.env.BASENAME || "";
 
@@ -30,10 +30,11 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<User />} path="/admin/user" />  {/* Ruta para el componente User */}
-                        <Route element={<PredefinedTasks />} path="/admin/task" />  {/* Ruta para el componente PredefinedTasks */}
-                        <Route element={<Register />} path="/register" />  {/* Ruta para el componente Register */}
-                        <Route element={<Login />} path="/login" />  {/* Ruta para el componente Login */}
+                        <Route element={<User />} path="/admin/user" /> 
+                        <Route element={<PredefinedTasks />} path="/admin/task" /> 
+                        <Route element={<Register />} path="/register" /> 
+                        <Route element={<Login />} path="/login" /> 
+                        <Route element={<UpdateUser />} path="/update-user" />  {/* Ruta para el componente UpdateUser */}
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

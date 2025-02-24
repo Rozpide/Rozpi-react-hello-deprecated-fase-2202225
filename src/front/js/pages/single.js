@@ -16,7 +16,7 @@ export const Single = props => {
 
 			<Link to="/demo">
 				<span className="btn btn-primary btn-lg" href="#" role="button">
-					VUELVE AL MENU
+					VOLVER MENU PRIVADO
 				</span>
 			</Link>
 		</div>
